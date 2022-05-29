@@ -1,5 +1,7 @@
 import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
+import { useEffect, useState } from "react";
 import Form from "../Form";
+import axios from "axios";
 
 export default function Home() {
   const [connection, connect, disconnect] = useViewerConnection();
@@ -18,11 +20,24 @@ export default function Home() {
     }
   };
 
+  const [model, setModel] = useState<BackEndModel | any>(null);
+
+  useEffect(() => {
+    if (isConnected) {
+      axios
+        .get(`${process.env.REACT_APP_BACKEND_BASE_URL}/api/model_aliases`)
+        .then((response) => {
+          console.log(response);
+          setModel(response.data);
+        });
+    }
+  }, [isConnected]);
+
   return (
     <>
-      {isConnected && (
+      {isConnected && Boolean(model) && (
         <>
-          <Form />
+          <Form model={model} />
         </>
       )}
       {showButton && (
