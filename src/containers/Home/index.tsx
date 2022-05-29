@@ -1,6 +1,5 @@
-import React from "react";
 import { EthereumAuthProvider, useViewerConnection } from "@self.id/framework";
-import Form from "./Form";
+import Form from "../Form";
 
 export default function Home() {
   const [connection, connect, disconnect] = useViewerConnection();
