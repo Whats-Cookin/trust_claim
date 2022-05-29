@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Env variable
+
+Example .env file. Set the backend base url to what endpoint the backend is running on.
+
+```
+REACT_APP_BACKEND_BASE_URL=http://localhost:9000
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
