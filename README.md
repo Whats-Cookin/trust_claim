@@ -8,6 +8,7 @@ Example .env file. Set the backend base url to what endpoint the backend is runn
 
 ```
 REACT_APP_BACKEND_BASE_URL=http://localhost:9000
+REACT_APP_CERAMIC_URL=http://localhost:7007
 ```
 
 ## Available Scripts
