@@ -9,8 +9,11 @@ import styles from "./styles";
 import { AuthProps } from "./types";
 
 const Auth = ({ setAuth }: AuthProps) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [usernameLogin, setUsernameLogin] = useState("");
+  const [passwordLogin, setPasswordLogin] = useState("");
+
+  const [usernameRegister, setUsernameRegister] = useState("");
+  const [passwordRegister, setPasswordRegister] = useState("");
 
   const handleLogin = () => {
     setAuth(true);
@@ -26,21 +29,21 @@ const Auth = ({ setAuth }: AuthProps) => {
           Login
         </Typography>
         <TextField
-          value={username}
+          value={usernameLogin}
           fullWidth
           label="Username"
           sx={styles.inputField}
           variant="filled"
-          onChange={(e: any) => setUsername(e.currentTarget.value)}
+          onChange={(e: any) => setUsernameLogin(e.currentTarget.value)}
           type="text"
         />
         <TextField
-          value={password}
+          value={passwordLogin}
           fullWidth
           label="Password"
           sx={styles.inputField}
           variant="filled"
-          onChange={(e: any) => setPassword(e.currentTarget.value)}
+          onChange={(e: any) => setPasswordLogin(e.currentTarget.value)}
           type="password"
         />
         <Box sx={styles.submitButtonWrap}>
@@ -59,21 +62,21 @@ const Auth = ({ setAuth }: AuthProps) => {
           Register
         </Typography>
         <TextField
-          value={username}
+          value={usernameRegister}
           fullWidth
           label="Username"
           sx={styles.inputField}
           variant="filled"
-          onChange={(e: any) => setUsername(e.currentTarget.value)}
+          onChange={(e: any) => setUsernameRegister(e.currentTarget.value)}
           type="text"
         />
         <TextField
-          value={password}
+          value={passwordRegister}
           fullWidth
           label="Password"
           sx={styles.inputField}
           variant="filled"
-          onChange={(e: any) => setPassword(e.currentTarget.value)}
+          onChange={(e: any) => setPasswordRegister(e.currentTarget.value)}
           type="password"
         />
         <Box sx={styles.submitButtonWrap}>
