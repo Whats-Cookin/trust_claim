@@ -9,10 +9,15 @@ import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import axios from "../../axiosInstance";
 
 import styles from "./styles";
 
-const Form = ({ setAuth }) => {
+const Form = ({
+  setAuth,
+}: {
+  setAuth: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [subject, setSubject] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
@@ -47,6 +52,8 @@ const Form = ({ setAuth }) => {
           reviewRating: reviewRatingAsNumber,
         };
 
+        await axios.post(`/api/claim`, payload);
+
         setSubject("");
         setClaim("");
         setObject("");
@@ -57,8 +64,8 @@ const Form = ({ setAuth }) => {
         setEffectiveDate(new Date());
         setConfidence(1);
         setReviewRating(1);
-      } catch (err) {
-        console.log(err);
+      } catch (err: any) {
+        console.error(err.message);
       }
     }
   };
@@ -95,6 +102,8 @@ const Form = ({ setAuth }) => {
   ];
 
   const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     setAuth(false);
   };
 
