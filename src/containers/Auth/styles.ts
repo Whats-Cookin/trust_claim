@@ -1,28 +1,20 @@
 const styles = {
-  formContainer: {
-    mt: 5,
-    mb: 10,
-  },
-  formHeading: {
-    mb: 3,
-  },
-  inputFieldWrap: {
+  authWrap: {
     display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    maxWidth: 600,
-    rowGap: 3,
-    mb: 4,
+    columnGap: 4,
+  },
+  authContainer: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: 2,
   },
   inputField: {
     backgroundColor: "white",
-    width: "48%",
   },
   submitButtonWrap: {
     display: "flex",
     justifyContent: "flex-end",
     width: "100%",
-    columnGap: 3,
   },
   submitButton: {
     backgroundColor: "white",
@@ -33,5 +25,4 @@ const styles = {
     },
   },
 };
-
 export default styles;

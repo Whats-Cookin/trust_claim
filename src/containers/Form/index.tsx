@@ -1,6 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useViewerConnection } from "@self.id/framework";
-import { DataModel } from "@glazed/datamodel";
+import React, { useState } from "react";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -11,28 +9,10 @@ import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { ceramic } from "../../utils";
-import axios from "axios";
 
 import styles from "./styles";
 
-const Form = ({
-  model: { aliases, schemaCeramicId },
-}: {
-  model: BackEndModel;
-}) => {
-  const model = useMemo(() => new DataModel({ ceramic, aliases }), [aliases]);
-  const [connection] = useViewerConnection();
-
-  useEffect(() => {
-    if (connection.status === "connected") {
-      const did = connection.selfID.did;
-      did.authenticate().then(() => {
-        ceramic.did = connection.selfID.did;
-      });
-    }
-  }, [connection]);
-
+const Form = ({ setAuth }) => {
   const [subject, setSubject] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
@@ -54,7 +34,7 @@ const Form = ({
         const confidenceAsNumber = Number(confidence);
         const reviewRatingAsNumber = Number(reviewRating);
 
-        const ceramicPayload = {
+        const payload = {
           subject,
           claim,
           object,
@@ -66,26 +46,6 @@ const Form = ({
           confidence: confidenceAsNumber,
           reviewRating: reviewRatingAsNumber,
         };
-
-        const ceramicTileDoc = await model.createTile("Claim", ceramicPayload);
-        const schemaFromDoc = ceramicTileDoc.metadata.schema;
-
-        const tileCeramicId = ceramicTileDoc.id.toString();
-        console.log("id", tileCeramicId);
-        console.log("content", ceramicTileDoc.content);
-        console.log("schema", schemaFromDoc);
-
-        const backendPayload = {
-          ...ceramicTileDoc.content,
-          tileCeramicId,
-          schemaCeramicId,
-        };
-
-        // TO DO move the hardcoded urls to .env file
-        await axios.post(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/api/claim_tile`,
-          backendPayload
-        );
 
         setSubject("");
         setClaim("");
@@ -134,6 +94,10 @@ const Form = ({
     },
   ];
 
+  const handleLogout = () => {
+    setAuth(false);
+  };
+
   return (
     <form className="Form">
       <Container sx={styles.formContainer}>
@@ -150,7 +114,7 @@ const Form = ({
                 sx={styles.inputField}
                 variant="filled"
                 key={i}
-                onChange={(event) => setter(event.currentTarget.value)}
+                onChange={(event: any) => setter(event.currentTarget.value)}
                 type={type}
                 inputProps={{ ...rest }}
               />
@@ -171,20 +135,17 @@ const Form = ({
             />
           </LocalizationProvider>
         </Box>
-        {/* <label htmlFor="objcet" className="Label">
-        Object:
-      </label>
-      <br />
-      <input
-        id="object"
-        type="text"
-        value={source}
-        onChange={handleSourceChange}
-        className="Input"
-      /> */}
         <Box sx={styles.submitButtonWrap}>
           <Button
-            onClick={async (event) => await handleSubmission(event)}
+            onClick={handleLogout}
+            variant="contained"
+            size="large"
+            sx={styles.submitButton}
+          >
+            Logout
+          </Button>
+          <Button
+            onClick={async (event: any) => await handleSubmission(event)}
             variant="contained"
             size="large"
             sx={styles.submitButton}
