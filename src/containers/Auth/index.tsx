@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -8,18 +9,47 @@ import Button from "@mui/material/Button";
 import styles from "./styles";
 import { AuthProps } from "./types";
 
+const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+
 const Auth = ({ setAuth }: AuthProps) => {
-  const [usernameLogin, setUsernameLogin] = useState("");
+  const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
 
-  const [usernameRegister, setUsernameRegister] = useState("");
+  const [emailRegister, setEmailRegister] = useState("");
   const [passwordRegister, setPasswordRegister] = useState("");
 
-  const handleLogin = () => {
-    setAuth(true);
+  const handleLogin = async () => {
+    try {
+      if (!emailLogin || !passwordLogin) {
+        throw new Error("Both email and password are required fields.");
+      }
+      const loginUrl = `${BACKEND_BASE_URL}/auth/login`;
+      const data = { email: emailLogin, password: passwordLogin };
+      const {
+        data: { accessToken, refreshToken },
+      } = await axios.post<{ accessToken: string; refreshToken: string }>(
+        loginUrl,
+        data
+      );
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      setAuth(true);
+    } catch (err: any) {
+      console.error("Error: ", err?.message);
+    }
   };
-  const handleRegister = () => {
-    setAuth(true);
+
+  const handleRegister = async () => {
+    try {
+      if (!emailRegister || !passwordRegister) {
+        throw new Error("Both email and password are required fields.");
+      }
+      const signupUrl = `${BACKEND_BASE_URL}/auth/signup`;
+      const data = { email: emailRegister, password: passwordRegister };
+      await axios.post(signupUrl, data);
+    } catch (err: any) {
+      console.error("Error: ", err?.message);
+    }
   };
 
   return (
@@ -29,13 +59,13 @@ const Auth = ({ setAuth }: AuthProps) => {
           Login
         </Typography>
         <TextField
-          value={usernameLogin}
+          value={emailLogin}
           fullWidth
-          label="Username"
+          label="Email"
           sx={styles.inputField}
           variant="filled"
-          onChange={(e: any) => setUsernameLogin(e.currentTarget.value)}
-          type="text"
+          onChange={(e: any) => setEmailLogin(e.currentTarget.value)}
+          type="email"
         />
         <TextField
           value={passwordLogin}
@@ -62,13 +92,13 @@ const Auth = ({ setAuth }: AuthProps) => {
           Register
         </Typography>
         <TextField
-          value={usernameRegister}
+          value={emailRegister}
           fullWidth
-          label="Username"
+          label="Email"
           sx={styles.inputField}
           variant="filled"
-          onChange={(e: any) => setUsernameRegister(e.currentTarget.value)}
-          type="text"
+          onChange={(e: any) => setEmailRegister(e.currentTarget.value)}
+          type="email"
         />
         <TextField
           value={passwordRegister}
