@@ -1,8 +1,4 @@
 const styles = {
-  authWrap: {
-    display: "flex",
-    columnGap: 4,
-  },
   authContainer: {
     display: "flex",
     flexDirection: "column",

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -13,11 +16,10 @@ import axios from "../../axiosInstance";
 
 import styles from "./styles";
 
-const Form = ({
-  setAuth,
-}: {
-  setAuth: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const Form = () => {
+  const [isSnackbarOpen, toggleSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
   const [subject, setSubject] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
@@ -28,6 +30,8 @@ const Form = ({
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(1);
   const [reviewRating, setReviewRating] = useState(1);
+
+  const navigate = useNavigate();
 
   const handleSubmission = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -52,7 +56,10 @@ const Form = ({
           reviewRating: reviewRatingAsNumber,
         };
 
-        await axios.post(`/api/claim`, payload);
+        await axios.post(`/api/claim`, payload).then(() => {
+          toggleSnackbar(true);
+          setSnackbarMessage("Claim submitted successfully!");
+        });
 
         setSubject("");
         setClaim("");
@@ -67,6 +74,9 @@ const Form = ({
       } catch (err: any) {
         console.error(err.message);
       }
+    } else {
+      toggleSnackbar(true);
+      setSnackbarMessage("Please fill out all fields.");
     }
   };
 
@@ -104,11 +114,28 @@ const Form = ({
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    setAuth(false);
+    navigate("/login");
   };
 
   return (
     <form className="Form">
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => toggleSnackbar(false)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <Alert
+          onClose={() => toggleSnackbar(false)}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Container sx={styles.formContainer}>
         <Typography variant="h4" sx={styles.formHeading}>
           Polling Form
