@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
-import { useEffect } from "react";
+import Loader from "./components/Loader";
 
 import Home from "./containers/Form";
 import Login from "./containers/Login";
@@ -11,6 +13,10 @@ import "./App.css";
 
 const App = () => {
   const [isAuth, setAuth] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [isSnackbarOpen, toggleSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,15 +36,35 @@ const App = () => {
     setAuth(isAuthenticated);
   }, []);
 
+  const commonProps = { toggleSnackbar, setSnackbarMessage, setLoading };
+
   return (
     <div className="App">
       <header className="App-header">
+        <Snackbar
+          open={isSnackbarOpen}
+          autoHideDuration={3000}
+          onClose={() => toggleSnackbar(false)}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+        >
+          <Alert
+            onClose={() => toggleSnackbar(false)}
+            severity="info"
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+        <Loader open={loading} />
         <Routes>
-          {isAuth && <Route path="/" element={<Home />} />}
+          {!isAuth && <Route path="/" element={<Home {...commonProps} />} />}
           {!isAuth && (
             <>
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
+              <Route path="login" element={<Login {...commonProps} />} />
+              <Route path="register" element={<Register {...commonProps} />} />
             </>
           )}
         </Routes>

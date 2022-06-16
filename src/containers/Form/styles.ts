@@ -18,6 +18,9 @@ const styles = {
     backgroundColor: "white",
     width: "48%",
   },
+  sliderField: {
+    width: "48%",
+  },
   submitButtonWrap: {
     display: "flex",
     justifyContent: "flex-end",

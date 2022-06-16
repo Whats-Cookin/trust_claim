@@ -8,10 +8,15 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import styles from "./styles";
+import ILoginProps from "./types";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-const Login = () => {
+const Login = ({
+  toggleSnackbar,
+  setSnackbarMessage,
+  setLoading,
+}: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
 
@@ -20,19 +25,25 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       if (!emailLogin || !passwordLogin) {
+        toggleSnackbar(true);
+        setSnackbarMessage("Both email and password are required fields.");
         throw new Error("Both email and password are required fields.");
+      } else {
+        console.log("hello");
+        setLoading(true);
+        const loginUrl = `${BACKEND_BASE_URL}/auth/login`;
+        const data = { email: emailLogin, password: passwordLogin };
+        const {
+          data: { accessToken, refreshToken },
+        } = await axios.post<{ accessToken: string; refreshToken: string }>(
+          loginUrl,
+          data
+        );
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setLoading(false);
+        navigate("/");
       }
-      const loginUrl = `${BACKEND_BASE_URL}/auth/login`;
-      const data = { email: emailLogin, password: passwordLogin };
-      const {
-        data: { accessToken, refreshToken },
-      } = await axios.post<{ accessToken: string; refreshToken: string }>(
-        loginUrl,
-        data
-      );
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-      navigate("/");
     } catch (err: any) {
       console.error("Error: ", err?.message);
     }

@@ -7,11 +7,16 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
+import IRegisterProps from "./types";
 import styles from "./styles";
 
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-const Register = () => {
+const Register = ({
+  toggleSnackbar,
+  setSnackbarMessage,
+  setLoading,
+}: IRegisterProps) => {
   const [emailRegister, setEmailRegister] = useState("");
   const [passwordRegister, setPasswordRegister] = useState("");
 
@@ -20,11 +25,17 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       if (!emailRegister || !passwordRegister) {
+        toggleSnackbar(true);
+        setSnackbarMessage("Both email and password are required fields.");
         throw new Error("Both email and password are required fields.");
+      } else {
+        setLoading(true);
+        const signupUrl = `${BACKEND_BASE_URL}/auth/signup`;
+        const data = { email: emailRegister, password: passwordRegister };
+        await axios.post(signupUrl, data);
+        setLoading(false);
+        navigate("/login");
       }
-      const signupUrl = `${BACKEND_BASE_URL}/auth/signup`;
-      const data = { email: emailRegister, password: passwordRegister };
-      await axios.post(signupUrl, data).then(() => navigate("/login"));
     } catch (err: any) {
       console.error("Error: ", err?.message);
     }
