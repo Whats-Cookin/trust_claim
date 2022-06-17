@@ -17,9 +17,15 @@ const styles = {
   inputField: {
     backgroundColor: "white",
     width: "48%",
+    "@media screen and (max-width: 712px)": {
+      width: "100%",
+    },
   },
   sliderField: {
     width: "48%",
+    "@media screen and (max-width: 712px)": {
+      width: "100%",
+    },
   },
   submitButtonWrap: {
     display: "flex",

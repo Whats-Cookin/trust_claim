@@ -27,9 +27,7 @@ const Login = ({
       if (!emailLogin || !passwordLogin) {
         toggleSnackbar(true);
         setSnackbarMessage("Both email and password are required fields.");
-        throw new Error("Both email and password are required fields.");
       } else {
-        console.log("hello");
         setLoading(true);
         const loginUrl = `${BACKEND_BASE_URL}/auth/login`;
         const data = { email: emailLogin, password: passwordLogin };
@@ -45,6 +43,9 @@ const Login = ({
         navigate("/");
       }
     } catch (err: any) {
+      setLoading(false);
+      toggleSnackbar(true);
+      setSnackbarMessage("User not Found!");
       console.error("Error: ", err?.message);
     }
   };

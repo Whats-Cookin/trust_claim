@@ -27,7 +27,6 @@ const Register = ({
       if (!emailRegister || !passwordRegister) {
         toggleSnackbar(true);
         setSnackbarMessage("Both email and password are required fields.");
-        throw new Error("Both email and password are required fields.");
       } else {
         setLoading(true);
         const signupUrl = `${BACKEND_BASE_URL}/auth/signup`;
@@ -37,7 +36,10 @@ const Register = ({
         navigate("/login");
       }
     } catch (err: any) {
-      console.error("Error: ", err?.message);
+      setLoading(false);
+      toggleSnackbar(true);
+      setSnackbarMessage(err.response.data.message);
+      console.error("Error: ", err.response.data.message);
     }
   };
 

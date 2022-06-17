@@ -60,13 +60,9 @@ const App = () => {
         </Snackbar>
         <Loader open={loading} />
         <Routes>
-          {!isAuth && <Route path="/" element={<Home {...commonProps} />} />}
-          {!isAuth && (
-            <>
-              <Route path="login" element={<Login {...commonProps} />} />
-              <Route path="register" element={<Register {...commonProps} />} />
-            </>
-          )}
+          <Route path="/" element={<Home {...commonProps} />} />
+          <Route path="login" element={<Login {...commonProps} />} />
+          <Route path="register" element={<Register {...commonProps} />} />
         </Routes>
       </header>
     </div>
