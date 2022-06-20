@@ -43,7 +43,6 @@ const Form = ({
       try {
         const effectiveDateAsString = effectiveDate.toISOString();
         const confidenceAsNumber = Number(confidence);
-        const reviewRatingAsNumber = Number(reviewRating);
 
         const payload = {
           subject,
@@ -55,28 +54,36 @@ const Form = ({
           source,
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
-          reviewRating: reviewRatingAsNumber,
+          reviewRating: reviewRating,
         };
 
         setLoading(true);
-        await axios.post(`/api/claim`, payload).then(() => {
+        const res = await axios.post(`/api/claim`, payload);
+        if (res.status === 201) {
+          setLoading(false);
           toggleSnackbar(true);
           setSnackbarMessage("Claim submitted successfully!");
-        });
 
-        setSubject("");
-        setClaim("");
-        setObject("");
-        setQualifier("");
-        setAspect("");
-        setHowKnow("");
-        setSource("");
-        setEffectiveDate(new Date());
-        setConfidence(1);
-        setReviewRating([0, 5]);
-        setLoading(false);
+          setSubject("");
+          setClaim("");
+          setObject("");
+          setQualifier("");
+          setAspect("");
+          setHowKnow("");
+          setSource("");
+          setEffectiveDate(new Date());
+          setConfidence(1);
+          setReviewRating([0, 5]);
+        } else {
+          setLoading(false);
+          toggleSnackbar(true);
+          setSnackbarMessage("Something went wrong!");
+        }
       } catch (err: any) {
-        console.error(err.message);
+        setLoading(false);
+        toggleSnackbar(true);
+        setSnackbarMessage(err.response.data.message);
+        console.error("err", err.response.data.message);
       }
     } else {
       setLoading(false);
@@ -138,6 +145,7 @@ const Form = ({
           )}
           <Box sx={styles.sliderField}>
             <Box display="flex" flexDirection="column">
+              <Typography variant="body2">Review Rating</Typography>
               <Slider
                 getAriaLabel={() => "Review rating"}
                 value={reviewRating}
