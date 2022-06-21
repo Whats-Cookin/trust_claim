@@ -19,6 +19,10 @@ const styles = {
       "&:hover": {
         backgroundColor: "white",
       },
+      "&:focus": {
+        backgroundColor: "white",
+      },
+      
       backgroundColor: "white",
     },
     width: "48%",

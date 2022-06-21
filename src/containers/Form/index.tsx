@@ -31,7 +31,7 @@ const Form = ({
   const [source, setSource] = useState("");
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(1);
-  const [reviewRating, setReviewRating] = useState([0, 5]);
+  const [reviewRating, setReviewRating] = useState(0);
 
   const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ const Form = ({
       try {
         const effectiveDateAsString = effectiveDate.toISOString();
         const confidenceAsNumber = Number(confidence);
+        const reviewRatingAsNumber = Number(reviewRating);
 
         const payload = {
           subject,
@@ -54,7 +55,7 @@ const Form = ({
           source,
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
-          reviewRating: reviewRating,
+          reviewRating: reviewRatingAsNumber,
         };
 
         setLoading(true);
@@ -73,7 +74,7 @@ const Form = ({
           setSource("");
           setEffectiveDate(new Date());
           setConfidence(1);
-          setReviewRating([0, 5]);
+          setReviewRating(0);
         } else {
           setLoading(false);
           toggleSnackbar(true);
@@ -149,18 +150,15 @@ const Form = ({
               <Slider
                 getAriaLabel={() => "Review rating"}
                 value={reviewRating}
-                onChange={(_: Event, rating: number[]): void =>
-                  setReviewRating(rating)
+                onChange={(_: Event, rating: number | number[]): void =>
+                  setReviewRating(Number(rating))
                 }
                 min={0}
                 max={5}
                 valueLabelDisplay="auto"
               />
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="body2">{reviewRating[0]}</Typography>
-                <Typography variant="body2">{reviewRating[1]}</Typography>
-              </Box>
             </Box>
+            <Typography variant="body2">{reviewRating}</Typography>
           </Box>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
