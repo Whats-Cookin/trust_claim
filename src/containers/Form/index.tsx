@@ -31,7 +31,7 @@ const Form = ({
   const [source, setSource] = useState("");
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(1);
-  const [reviewRating, setReviewRating] = useState([0, 5]);
+  const [reviewRating, setReviewRating] = useState(0);
 
   const navigate = useNavigate();
 
@@ -59,24 +59,32 @@ const Form = ({
         };
 
         setLoading(true);
-        await axios.post(`/api/claim`, payload).then(() => {
+        const res = await axios.post(`/api/claim`, payload);
+        if (res.status === 201) {
+          setLoading(false);
           toggleSnackbar(true);
           setSnackbarMessage("Claim submitted successfully!");
-        });
 
-        setSubject("");
-        setClaim("");
-        setObject("");
-        setQualifier("");
-        setAspect("");
-        setHowKnow("");
-        setSource("");
-        setEffectiveDate(new Date());
-        setConfidence(1);
-        setReviewRating([0, 5]);
-        setLoading(false);
+          setSubject("");
+          setClaim("");
+          setObject("");
+          setQualifier("");
+          setAspect("");
+          setHowKnow("");
+          setSource("");
+          setEffectiveDate(new Date());
+          setConfidence(1);
+          setReviewRating(0);
+        } else {
+          setLoading(false);
+          toggleSnackbar(true);
+          setSnackbarMessage("Something went wrong!");
+        }
       } catch (err: any) {
-        console.error(err.message);
+        setLoading(false);
+        toggleSnackbar(true);
+        setSnackbarMessage(err.response.data.message);
+        console.error("err", err.response.data.message);
       }
     } else {
       setLoading(false);
@@ -138,21 +146,19 @@ const Form = ({
           )}
           <Box sx={styles.sliderField}>
             <Box display="flex" flexDirection="column">
+              <Typography variant="body2">Review Rating</Typography>
               <Slider
                 getAriaLabel={() => "Review rating"}
                 value={reviewRating}
-                onChange={(_: Event, rating: number[]): void =>
-                  setReviewRating(rating)
+                onChange={(_: Event, rating: number | number[]): void =>
+                  setReviewRating(Number(rating))
                 }
                 min={0}
                 max={5}
                 valueLabelDisplay="auto"
               />
-              <Box display="flex" justifyContent="space-between">
-                <Typography variant="body2">{reviewRating[0]}</Typography>
-                <Typography variant="body2">{reviewRating[1]}</Typography>
-              </Box>
             </Box>
+            <Typography variant="body2">{reviewRating}</Typography>
           </Box>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
