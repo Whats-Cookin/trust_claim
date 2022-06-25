@@ -10,13 +10,15 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-between",
+    textAlign: "left",
     maxWidth: 600,
     rowGap: 3,
     mb: 4,
   },
   inputField: {
-    backgroundColor: "white",
     "& .MuiFilledInput-root": {
+      backgroundColor: "white",
+
       "&:hover": {
         backgroundColor: "white",
       },
