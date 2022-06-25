@@ -16,6 +16,30 @@ const styles = {
   },
   inputField: {
     backgroundColor: "white",
+    "& .MuiFilledInput-root": {
+      "&:hover": {
+        backgroundColor: "white",
+      },
+      "&:focus": {
+        backgroundColor: "white",
+      },
+    },
+    width: "48%",
+    "@media screen and (max-width: 712px)": {
+      width: "100%",
+    },
+  },
+  dropdownField: {
+    "& .MuiSelect-select": {
+      "&:hover": {
+        backgroundColor: "white",
+      },
+      "&:focus": {
+        backgroundColor: "white",
+      },
+
+      backgroundColor: "white",
+    },
     width: "48%",
     "@media screen and (max-width: 712px)": {
       width: "100%",
