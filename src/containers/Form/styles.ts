@@ -10,12 +10,38 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-between",
+    textAlign: "left",
     maxWidth: 600,
     rowGap: 3,
     mb: 4,
   },
   inputField: {
-    backgroundColor: "white",
+    "& .MuiFilledInput-root": {
+      backgroundColor: "white",
+
+      "&:hover": {
+        backgroundColor: "white",
+      },
+      "&:focus": {
+        backgroundColor: "white",
+      },
+    },
+    width: "48%",
+    "@media screen and (max-width: 712px)": {
+      width: "100%",
+    },
+  },
+  dropdownField: {
+    "& .MuiSelect-select": {
+      "&:hover": {
+        backgroundColor: "white",
+      },
+      "&:focus": {
+        backgroundColor: "white",
+      },
+
+      backgroundColor: "white",
+    },
     width: "48%",
     "@media screen and (max-width: 712px)": {
       width: "100%",

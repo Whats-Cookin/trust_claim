@@ -13,6 +13,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import axios from "../../axiosInstance";
+import Dropdown from "../../components/Dropdown";
 
 import IHomeProps from "./types";
 import styles from "./styles";
@@ -94,18 +95,95 @@ const Form = ({
   };
 
   const inputFieldLabelArr = [
-    { label: "Subject", value: subject, setter: setSubject, type: "text" },
-    { label: "Claim", value: claim, setter: setClaim, type: "text" },
-    { label: "Object", value: object, setter: setObject, type: "text" },
+    {
+      label: "Subject",
+      value: subject,
+      setter: setSubject,
+      type: "text",
+      fieldType: "inputField",
+    },
+    {
+      label: "Claim",
+      value: claim,
+      setter: setClaim,
+      type: "text",
+      fieldType: "dropdown",
+      options: [
+        "rated",
+        "same_as",
+        "performed",
+        "helped",
+        "harmed",
+        "scam",
+        "owns",
+        "related_to",
+      ],
+    },
+    {
+      label: "Aspect",
+      value: aspect,
+      setter: setAspect,
+      type: "text",
+      fieldType: "dropdown",
+      options: [
+        "impact: social",
+        "impact: climate",
+        "impact: work",
+        "impact: financial",
+        "impact: educational",
+        "quality: technical",
+        "quality: asthetic",
+        "quality: taste",
+        "quality: journalistic",
+        "quality: academic",
+        "quality: fun",
+        "risk: scam",
+        "risk: justice",
+        "risk: safety",
+        "risk: reliability",
+        "relationship: works-for",
+        "relationship: same-as",
+      ],
+    },
+    {
+      label: "How Known",
+      value: howKnown,
+      setter: setHowKnow,
+      type: "text",
+      fieldType: "dropdown",
+      options: [
+        "first_hand",
+        "second_hand",
+        "website",
+        "verified_website",
+        "verified_login",
+        "signed_claim",
+        "blockchain",
+        "physical_document",
+        "integration",
+      ],
+    },
+    {
+      label: "Object",
+      value: object,
+      setter: setObject,
+      type: "text",
+      fieldType: "inputField",
+    },
     {
       label: "Qualifier",
       value: qualifier,
       setter: setQualifier,
       type: "text",
+      fieldType: "inputField",
     },
-    { label: "Aspect", value: aspect, setter: setAspect, type: "text" },
-    { label: "How Known", value: howKnown, setter: setHowKnow, type: "text" },
-    { label: "Source", value: source, setter: setSource, type: "text" },
+    {
+      label: "Source",
+      value: source,
+      setter: setSource,
+      type: "text",
+      fieldType: "inputField",
+    },
     {
       label: "Confidence",
       value: confidence,
@@ -113,6 +191,7 @@ const Form = ({
       type: "number",
       min: 1,
       max: 5,
+      fieldType: "inputField",
     },
   ];
 
@@ -130,19 +209,33 @@ const Form = ({
         </Typography>
         <Box sx={styles.inputFieldWrap}>
           {inputFieldLabelArr.map(
-            ({ label, value, setter, type, ...rest }: any, i) => (
-              <TextField
-                value={value}
-                fullWidth
-                label={label}
-                sx={styles.inputField}
-                variant="filled"
-                key={i}
-                onChange={(event: any) => setter(event.currentTarget.value)}
-                type={type}
-                inputProps={{ ...rest }}
-              />
-            )
+            (
+              { label, value, setter, options, type, fieldType, ...rest }: any,
+              i
+            ) =>
+              fieldType === "inputField" ? (
+                <TextField
+                  value={value}
+                  fullWidth
+                  label={label}
+                  sx={styles.inputField}
+                  variant="filled"
+                  key={i}
+                  onChange={(event: any) => setter(event.currentTarget.value)}
+                  type={type}
+                  inputProps={{ ...rest }}
+                />
+              ) : (
+                <Dropdown
+                  key={i}
+                  label={label}
+                  value={value}
+                  setter={setter}
+                  options={options}
+                  sx={styles.dropdownField}
+                  variant="filled"
+                />
+              )
           )}
           <Box sx={styles.sliderField}>
             <Box display="flex" flexDirection="column">
