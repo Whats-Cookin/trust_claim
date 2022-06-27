@@ -31,7 +31,7 @@ const Form = ({
   const [howKnown, setHowKnow] = useState("");
   const [source, setSource] = useState("");
   const [effectiveDate, setEffectiveDate] = useState(new Date());
-  const [confidence, setConfidence] = useState(1);
+  const [confidence, setConfidence] = useState(0.0);
   const [reviewRating, setReviewRating] = useState(0);
 
   const navigate = useNavigate();
@@ -189,9 +189,10 @@ const Form = ({
       value: confidence,
       setter: setConfidence,
       type: "number",
-      min: 1,
-      max: 5,
+      min: 0.0,
+      max: 1.0,
       fieldType: "inputField",
+      step: 0.01,
     },
   ];
 
