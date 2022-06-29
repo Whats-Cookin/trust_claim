@@ -20,5 +20,21 @@ const styles = {
       backgroundColor: "grey.300",
     },
   },
+  authLinkButton: {
+    textDecoration: "none",
+    backgroundColor: "white",
+    color: "black",
+
+    "&:hover": {
+      backgroundColor: "grey.300",
+    },
+    padding: "16px 20px",
+    fontSize: "20px",
+    display: "flex",
+    justifyContent: "center",
+  },
+  authIcon: {
+    marginLeft: "10px",
+  },
 };
 export default styles;
