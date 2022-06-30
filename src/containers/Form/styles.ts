@@ -16,16 +16,16 @@ const styles = {
     mb: 4,
   },
   inputField: {
-    "& .MuiFilledInput-root": {
+    "& .MuiFilledInput-input ": {
       backgroundColor: "white",
-
+    },
+    "& .MuiInputBase-root ": {
       "&:hover": {
         backgroundColor: "white",
       },
-      "&:focus": {
-        backgroundColor: "white",
-      },
+      backgroundColor: "white",
     },
+
     width: "48%",
     "@media screen and (max-width: 712px)": {
       width: "100%",
