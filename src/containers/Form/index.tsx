@@ -238,22 +238,36 @@ const Form = ({
                 />
               )
           )}
-          <Box sx={styles.sliderField}>
-            <Box display="flex" flexDirection="column">
-              <Typography variant="body2">Review Rating</Typography>
-              <Slider
-                getAriaLabel={() => "Review rating"}
-                value={reviewRating}
-                onChange={(_: Event, rating: number | number[]): void =>
-                  setReviewRating(Number(rating))
-                }
-                min={0}
-                max={5}
-                valueLabelDisplay="auto"
-              />
+          {claim === "rated" && aspect.includes("quality:") ? (
+            <Box sx={styles.sliderField}>
+              <Box display="flex" flexDirection="column">
+                <Typography variant="body2">Review Rating</Typography>
+                <Slider
+                  getAriaLabel={() => "Review rating"}
+                  value={reviewRating}
+                  onChange={(_: Event, rating: number | number[]): void =>
+                    setReviewRating(Number(rating))
+                  }
+                  min={0}
+                  max={5}
+                  valueLabelDisplay="auto"
+                />
+              </Box>
+              <Typography variant="body2">{reviewRating}</Typography>
             </Box>
-            <Typography variant="body2">{reviewRating}</Typography>
-          </Box>
+          ) : (
+            <TextField
+              value={reviewRating}
+              fullWidth
+              label="Review Rating"
+              sx={styles.inputField}
+              variant="filled"
+              onChange={(event: any) =>
+                setReviewRating(event.currentTarget.value)
+              }
+              type="number"
+            />
+          )}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Effective Date"
