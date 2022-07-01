@@ -132,7 +132,7 @@ const Form = ({
         "impact:financial",
         "impact:educational",
         "quality:technical",
-        "quality:aesthetic",
+        "quality:asthetic",
         "quality:taste",
         "quality:journalistic",
         "quality:academic",
