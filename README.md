@@ -11,6 +11,7 @@ ssh -l ubuntu -i [key] trustclaims.whatscookin.us
 cd /home/ubuntu/trust_claim
 git pull
 npm run build
+cd /home/ubuntu/trust_claim/dist
 cp -r ./ /var/www/trust_claim/
 ```
 TODO: ci pipeline
