@@ -5,9 +5,9 @@ import Alert from "@mui/material/Alert";
 
 import Loader from "./components/Loader";
 
-import Home from "./containers/Form";
 import Login from "./containers/Login";
 import Register from "./containers/Register";
+import Home from "./containers/Home";
 
 import "./App.css";
 
