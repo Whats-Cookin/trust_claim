@@ -20,6 +20,7 @@ const styles={
         zIndex:10,
         display:"flex",
         columnGap:"5px",
+        backgroundColor:"white",
     }
 }
 
