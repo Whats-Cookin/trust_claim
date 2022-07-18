@@ -1,15 +1,14 @@
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo } from "react";
 import Cytoscape from "cytoscape";
 
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 
 import Modal from "../../components/Modal";
 
-import allClaims from "./allClaims";
+import allClaims from "./output.json";
 import cyConfig from "./cyConfig";
 import styles from "./styles";
 

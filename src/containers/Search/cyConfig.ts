@@ -9,19 +9,20 @@ const cyConfig = (containerRef: any) => ({
     {
       selector: "node",
       style: {
-        height: 400,
-        width: 400,
-        shape: "rectangle",
+        height: 140,
+        width: 140,
+        shape: "cicle",
         "border-radius": "10%",
         "border-color": "#000",
         "border-width": 3,
         "border-opacity": 0.5,
         "background-color": "#0074d9",
-        "text-color": "#0074d9",
+        "color": "#fff",
+        "font-weight": "semi-bold",
         "text-halign": "center",
         "text-valign": "center",
-        "text-wrap": "ellipsis",
-        "text-max-width": 350,
+        "text-wrap": "wrap",
+        "text-max-width": 100,
         "text-overflow-wrap": "break-word",
         content: "data(label)",
       },
@@ -63,7 +64,7 @@ const cyConfig = (containerRef: any) => ({
     // padding: 10
     // name:"cose",
     // name: "random",
-    name: "circle",
+    name: "concentric",
   },
 });
 

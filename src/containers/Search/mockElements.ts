@@ -1,4 +1,4 @@
-import allClaims from "./allClaims";
+import allClaims from "./output.json";
 
 const getNodes = () => {
   const nodes: any[] = [];
