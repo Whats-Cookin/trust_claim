@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 
 import Loader from "./components/Loader";
-
+import Snackbar from "./components/Snackbar";
 import Login from "./containers/Login";
 import Register from "./containers/Register";
 import Home from "./containers/Home";
@@ -13,8 +11,6 @@ import Search from "./containers/Search";
 import "./App.css";
 
 const App = () => {
-  const [isAuth, setAuth] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [isSnackbarOpen, toggleSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -34,39 +30,26 @@ const App = () => {
     if (!isAuthenticated && location.pathname === "/") {
       navigate("/login");
     }
-    setAuth(isAuthenticated);
   }, []);
 
   const commonProps = { toggleSnackbar, setSnackbarMessage, setLoading };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <Snackbar
-          open={isSnackbarOpen}
-          autoHideDuration={3000}
-          onClose={() => toggleSnackbar(false)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-        >
-          <Alert
-            onClose={() => toggleSnackbar(false)}
-            severity="info"
-            sx={{ width: "100%" }}
-          >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-        <Loader open={loading} />
-        <Routes>
-          <Route path="/" element={<Home {...commonProps} />} />
-          <Route path="login" element={<Login {...commonProps} />} />
-          <Route path="register" element={<Register {...commonProps} />} />
-          <Route path="/search" element={<Search />} />
-        </Routes>
-      </header>
+    <div className="container">
+      <Snackbar
+        snackbarMessage={snackbarMessage}
+        isSnackbarOpen={isSnackbarOpen}
+        toggleSnackbar={toggleSnackbar}
+      />
+      <Loader open={loading} />
+      <Routes>
+        <Route path="/" element={<Home {...commonProps} />}>
+          <Route path=":id" element={<Home {...commonProps} />} />
+        </Route>
+        <Route path="login" element={<Login {...commonProps} />} />
+        <Route path="register" element={<Register {...commonProps} />} />
+        <Route path="search" element={<Search />} />
+      </Routes>
     </div>
   );
 };

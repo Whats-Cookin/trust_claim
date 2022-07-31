@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import Cytoscape from "cytoscape";
 
 import Container from "@mui/material/Container";
@@ -8,51 +8,61 @@ import Button from "@mui/material/Button";
 
 import Modal from "../../components/Modal";
 
-import allClaims from "./output.json";
+import claims from "./mockData/nodes.json";
 import cyConfig from "./cyConfig";
 import styles from "./styles";
 
 const Search = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [cy, setCy] = useState<any>(null);
 
   const ref = useRef<any>(null);
 
-  const cy = useMemo(() => {
-    return Cytoscape(cyConfig(ref.current));
+  useEffect(() => {
+    if (!cy) setCy(Cytoscape(cyConfig(ref.current)));
   }, [ref.current]);
 
   useMemo(() => {
-    // event listner for when a node is clicked
-    cy.on("tap", "node", function (e) {
-      e.preventDefault();
-      var node = e.target;
+    if (cy) {
+      // event listner for when a node is clicked
+      cy.on("tap", "node", (event: any) => {
+        event.preventDefault();
+        var node = event.target;
 
-      //getting the claim data for selected node
-      const currentClaim = allClaims.find(
-        (claim) => claim.id === parseInt(node.id(), 10)
-      );
+        // temp code to get the node id
+        const locallySavedNodes = JSON.parse(
+          localStorage.getItem("savedClaims") || "[]"
+        );
 
-      if (currentClaim) {
-        setSelectedNode(currentClaim);
-        setOpenModal(true);
-      }
-    });
+        const nodes = [...claims, ...locallySavedNodes];
 
-    // add hover state pointer cursor on node
-    cy.on("mouseover", "node", (event) => {
-      const container = event?.cy?.container();
-      if (container) {
-        container.style.cursor = "pointer";
-      }
-    });
+        //getting the claim data for selected node
+        const currentClaim = nodes.find(
+          (claim: any) => claim.data.id == node.id()
+        );
 
-    cy.on("mouseout", "node", (event) => {
-      const container = event?.cy?.container();
-      if (container) {
-        container.style.cursor = "default";
-      }
-    });
+        if (currentClaim) {
+          setSelectedNode(currentClaim.data);
+          setOpenModal(true);
+        }
+      });
+
+      // add hover state pointer cursor on node
+      cy.on("mouseover", "node", (event: any) => {
+        const container = event?.cy?.container();
+        if (container) {
+          container.style.cursor = "pointer";
+        }
+      });
+
+      cy.on("mouseout", "node", (event: any) => {
+        const container = event?.cy?.container();
+        if (container) {
+          container.style.cursor = "default";
+        }
+      });
+    }
   }, [cy]);
 
   return (

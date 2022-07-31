@@ -7,7 +7,7 @@ const styles = {
     maxWidth: "600px",
     width: "100%",
     height: "100%",
-    maxHeight: "600px",
+    maxHeight: "450px",
     bgcolor: "background.paper",
     border: "2px solid #004",
     boxShadow: 24,

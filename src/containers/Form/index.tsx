@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -18,6 +18,8 @@ import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
 
+import nodes from "../Search/mockData/nodes.json";
+
 const Form = ({
   toggleSnackbar,
   setSnackbarMessage,
@@ -33,8 +35,28 @@ const Form = ({
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(0.0);
   const [reviewRating, setReviewRating] = useState(0);
+  const [connectedNode, setConnectedNode] = useState(null);
 
   const navigate = useNavigate();
+  const params = useParams();
+  const { id } = params;
+
+  const fetchClaimWithId = async (id: string) => {
+    // temp mock stuff
+    const locallySavedNodes = JSON.parse(
+      localStorage.getItem("savedClaims") || "[]"
+    );
+
+    const claims = [...nodes, ...locallySavedNodes];
+    const node: any = claims.find(
+      (node: any) => node.data.id == parseInt(id, 10)
+    );
+
+    if (node) {
+      setConnectedNode(node.data);
+      setObject(node.data.subject);
+    }
+  };
 
   const handleSubmission = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -45,8 +67,10 @@ const Form = ({
         const effectiveDateAsString = effectiveDate.toISOString();
         const confidenceAsNumber = Number(confidence);
         const reviewRatingAsNumber = Number(reviewRating);
+        const newtempClaimId = parseInt(`${Date.now()}${Math.random}`, 10);
 
         const payload = {
+          id: newtempClaimId,
           subject,
           claim,
           object,
@@ -59,6 +83,25 @@ const Form = ({
           reviewRating: reviewRatingAsNumber,
         };
 
+        /**
+         * TODO: add edges on api call
+         */
+
+        // temporary solution by adding data and edges in localstorage
+        if (connectedNode && connectedNode?.id) {
+          const locallySavedNode = JSON.parse(
+            localStorage.getItem("savedClaims") || "[]"
+          );
+          const edge = {
+            source: connectedNode?.id,
+            target: newtempClaimId,
+            relation: claim + "-" + confidenceAsNumber,
+          };
+          locallySavedNode.push({ data: payload });
+          locallySavedNode.push({ data: edge });
+          localStorage.setItem("savedClaims", JSON.stringify(locallySavedNode));
+        }
+        // ---------------------------------------------------------------------------------
         setLoading(true);
         const res = await axios.post(`/api/claim`, payload);
         if (res.status === 201) {
@@ -84,8 +127,14 @@ const Form = ({
       } catch (err: any) {
         setLoading(false);
         toggleSnackbar(true);
-        setSnackbarMessage(err.response.data.message);
-        console.error("err", err.response.data.message);
+        if (err.message === "Network Error") {
+          setSnackbarMessage("Not connected to internet!");
+          // temp solution
+          navigate("/search");
+        } else {
+          setSnackbarMessage(err.response.data.message);
+        }
+        console.error("err", err);
       }
     } else {
       setLoading(false);
@@ -211,6 +260,9 @@ const Form = ({
     navigate("/login");
   };
 
+  useEffect(() => {
+    if (id) fetchClaimWithId(id);
+  }, [id]);
   return (
     <form className="Form">
       <Container sx={styles.formContainer}>

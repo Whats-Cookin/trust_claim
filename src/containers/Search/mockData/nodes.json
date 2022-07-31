@@ -1,0 +1,82 @@
+[
+  {
+    "data": {
+      "id": 1,
+      "subject": "Open Trust Claims",
+      "object": "Fight with Bad actors",
+      "claim": "claim",
+      "aspect": "impact:work",
+      "howKnown": "first_hand",
+      "qualifier": "participated in",
+      "source": "https://en.wikipedia.org/wiki/Fake_news",
+      "effectiveDate": "2022-06-21T12:37:26.714Z",
+      "confidence": 10,
+      "reviewRating": 1,
+      "userId": 1,
+      "issuerId": "http://trustclaims.whatscookin.us/users/1",
+      "issuerIdType": "URL",
+      "createdAt": "2022-06-21T12:37:26.714Z",
+      "lastUpdatedAt": "2022-06-21T12:37:26.714Z"
+    }
+  },
+  {
+    "data": {
+      "id": 2,
+      "subject": "Sakshi",
+      "object": "Open Trust Claims",
+      "claim": "claim",
+      "aspect": "impact:work",
+      "howKnown": "first_hand",
+      "qualifier": "works on",
+      "source": "https://www.linkedin.com/in/sakshibahuguna/",
+      "effectiveDate": "2022-06-21T12:37:26.714Z",
+      "confidence": 10,
+      "reviewRating": 1,
+      "userId": 1,
+      "issuerId": "http://trustclaims.whatscookin.us/users/1",
+      "issuerIdType": "URL",
+      "createdAt": "2022-06-21T12:37:26.714Z",
+      "lastUpdatedAt": "2022-06-21T12:37:26.714Z"
+    }
+  },
+  {
+    "data": {
+      "id": 3,
+      "subject": "Nishant",
+      "object": "Open Trust Claims",
+      "claim": "claim",
+      "aspect": "impact:work",
+      "howKnown": "first_hand",
+      "qualifier": "works on",
+      "source": "https://github.com/youngnishant",
+      "effectiveDate": "2022-06-21T12:37:26.714Z",
+      "confidence": 10,
+      "reviewRating": 1,
+      "userId": 1,
+      "issuerId": "http://trustclaims.whatscookin.us/users/1",
+      "issuerIdType": "URL",
+      "createdAt": "2022-06-21T12:37:26.714Z",
+      "lastUpdatedAt": "2022-06-21T12:37:26.714Z"
+    }
+  },
+  {
+    "data": {
+      "id": 4,
+      "subject": "Fight with Bad actors",
+      "object": "Wikipedia",
+      "claim": "claim",
+      "aspect": "impact:work",
+      "howKnown": "first_hand",
+      "qualifier": "to",
+      "source": "https://en.wikipedia.org/wiki/Fake_news",
+      "effectiveDate": "2022-06-21T12:37:26.714Z",
+      "confidence": 10,
+      "reviewRating": 1,
+      "userId": 1,
+      "issuerId": "http://trustclaims.whatscookin.us/users/1",
+      "issuerIdType": "URL",
+      "createdAt": "2022-06-21T12:37:26.714Z",
+      "lastUpdatedAt": "2022-06-21T12:37:26.714Z"
+    }
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "data": {
+      "source": 2,
+      "target": 1,
+      "relation": "works on"
+    }
+  },
+  {
+    "data": {
+      "source": 3,
+      "target": 1,
+      "relation": "works on"
+    }
+  },
+  {
+    "data": {
+      "source": 1,
+      "target": 4,
+      "relation": "to"
+    }
+  }
+]
