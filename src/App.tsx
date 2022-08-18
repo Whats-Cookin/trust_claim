@@ -5,7 +5,7 @@ import Loader from "./components/Loader";
 import Snackbar from "./components/Snackbar";
 import Login from "./containers/Login";
 import Register from "./containers/Register";
-import Home from "./containers/Home";
+import Form from "./containers/Form";
 import Search from "./containers/Search";
 
 import "./App.css";
@@ -43,9 +43,7 @@ const App = () => {
       />
       <Loader open={loading} />
       <Routes>
-        <Route path="/" element={<Home {...commonProps} />}>
-          <Route path=":id" element={<Home {...commonProps} />} />
-        </Route>
+        <Route path="/" element={<Form {...commonProps} />} />
         <Route path="login" element={<Login {...commonProps} />} />
         <Route path="register" element={<Register {...commonProps} />} />
         <Route path="search" element={<Search {...commonProps} />} />

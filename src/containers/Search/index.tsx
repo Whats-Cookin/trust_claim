@@ -9,8 +9,9 @@ import Button from "@mui/material/Button";
 import axios from "../../axiosInstance";
 import Modal from "../../components/Modal";
 import cyConfig from "./cyConfig";
-import styles from "./styles";
 import IHomeProps from "./types";
+import { parseClaims } from "./graph.utils";
+import styles from "./styles";
 
 const Search = (homeProps: IHomeProps) => {
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
@@ -18,72 +19,34 @@ const Search = (homeProps: IHomeProps) => {
   const ref = useRef<any>(null);
 
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
-  const [searchVal, setSearchVal] = useState(
-    "http://trustclaims.whatscookin.us/local/company/VEJA"
-  );
-  const [fetchedClaims, setFetchedClaims] = useState<any>([]);
-  const [graphElements, setGraphElements] = useState<any>([]);
-
+  const [selectedClaim, setSelectedClaim] = useState<any>(null);
+  const [graphElement, setGraphElement] = useState<any>([]);
+  const [claims, setClaims] = useState<any>([]);
   const [cy, setCy] = useState<any>(null);
+  const [searchVal, setSearchVal] = useState("");
 
-  useMemo(() => {
-    if (fetchedClaims) {
-      const elements: any = [];
-      fetchedClaims.forEach((claim: any) => {
-        // adding subject node
-        if (claim.subject) {
-          const uri = new URL(claim.subject);
-          elements.push({
-            data: {
-              id: claim.subject,
-              label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
-            },
-          });
-        }
-        // adding object node
-        if (claim.object) {
-          const uri = new URL(claim.object);
-          elements.push({
-            data: {
-              id: claim.object,
-              label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
-            },
-          });
-        }
-        // adding edge between subject and object
-        if (claim.subject && claim.object)
-          elements.push({
-            data: {
-              id: claim.id,
-              source: claim.subject,
-              target: claim.object,
-              relation: claim.claim,
-            },
-          });
-      });
-      setGraphElements(elements);
-    }
-  }, [fetchedClaims]);
-
-  const fetchClaims = async () => {
-    if (searchVal.trim() !== "") {
+  const fetchClaims = async (query: string) => {
+    if (query.trim() !== "") {
       setLoading(true);
       try {
-        const res = await axios.get(`/api/claim`, {
-          params: { search: searchVal },
+        const res = await axios.get(`/api/claim?page=1&limit=5`, {
+          params: { search: query },
         });
-        if (res.data.length === 0) {
+
+        if (res.data.claims.length > 0) {
+          const parsedClaims = parseClaims(res.data.claims);
+          setGraphElement(
+            Array.from(new Set([...graphElement, ...parsedClaims]))
+          );
+          setClaims(Array.from(new Set([...claims, ...res.data.claims])));
+        } else {
           setSnackbarMessage("No results found");
           toggleSnackbar(true);
-        } else if (res.data.length > 0) {
-          setFetchedClaims(res.data);
         }
       } catch (err: any) {
         toggleSnackbar(true);
         setSnackbarMessage(err.message);
       } finally {
-        // setSearchVal("");
         setLoading(false);
       }
     }
@@ -91,16 +54,15 @@ const Search = (homeProps: IHomeProps) => {
 
   const handleSearchKeypress = async (event: any) => {
     if (event.key === "Enter" && searchVal.trim() !== "") {
-      await fetchClaims();
+      await fetchClaims(searchVal);
     }
   };
 
   useEffect(() => {
-    if (!cy && graphElements.length > 0) {
-      // @ts-ignore
-      setCy(Cytoscape(cyConfig(ref.current, graphElements)));
+    if (graphElement.length > 0) {
+      setCy(Cytoscape(cyConfig(ref.current, graphElement)));
     }
-  }, [ref.current, graphElements]);
+  }, [ref.current, graphElement]);
 
   useMemo(() => {
     if (cy) {
@@ -110,25 +72,32 @@ const Search = (homeProps: IHomeProps) => {
         var claim = event.target;
 
         //getting the claim data for selected node
-        const currentClaim = fetchedClaims.find(
+        const currentClaim = claims.find(
           (c: any) => String(c.id) === claim.id()
         );
 
         if (currentClaim) {
-          setSelectedNode(currentClaim);
+          setSelectedClaim(currentClaim);
           setOpenModal(true);
         }
       });
 
+      // handle node click to fetch further connected nodes
+      cy.on("tap", "node", (event: any) => {
+        event.preventDefault();
+        var claim = event.target;
+        fetchClaims(claim.id());
+      });
+
       // add hover state pointer cursor on node
-      cy.on("mouseover", "edge", (event: any) => {
+      cy.on("mouseover", "edge,node", (event: any) => {
         const container = event?.cy?.container();
         if (container) {
           container.style.cursor = "pointer";
         }
       });
 
-      cy.on("mouseout", "edge", (event: any) => {
+      cy.on("mouseout", "edge,node", (event: any) => {
         const container = event?.cy?.container();
         if (container) {
           container.style.cursor = "default";
@@ -142,7 +111,7 @@ const Search = (homeProps: IHomeProps) => {
       <Modal
         open={openModal}
         setOpen={setOpenModal}
-        selectedNode={selectedNode}
+        selectedClaim={selectedClaim}
       />
       <Box sx={styles.searchFieldContainer}>
         <TextField
@@ -152,7 +121,11 @@ const Search = (homeProps: IHomeProps) => {
           onChange={(e) => setSearchVal(e.target.value)}
           onKeyUp={handleSearchKeypress}
         />
-        <Button variant="contained" onClick={fetchClaims} disableElevation>
+        <Button
+          variant="contained"
+          onClick={() => fetchClaims(searchVal)}
+          disableElevation
+        >
           Search
         </Button>
       </Box>
