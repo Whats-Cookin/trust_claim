@@ -1,13 +1,6 @@
-import nodes from "./mockData/nodes.json";
-import edges from "./mockData/edges.json";
-
-const cyConfig = (containerRef: any) => {
-  const locallySavedNodes = JSON.parse(
-    localStorage.getItem("savedClaims") || "[]"
-  );
-
+const cyConfig = (containerRef: any, elements: object[]) => {
   return {
-    elements: [...nodes, ...edges, ...locallySavedNodes],
+    elements,
     container: containerRef || undefined,
     boxSelectionEnabled: false,
     autounselectify: true,
@@ -15,8 +8,8 @@ const cyConfig = (containerRef: any) => {
       {
         selector: "node",
         style: {
-          height: 140,
-          width: 140,
+          height: 300,
+          width: 300,
           shape: "cicle",
           "border-radius": "10%",
           "border-color": "#000",
@@ -30,7 +23,7 @@ const cyConfig = (containerRef: any) => {
           "text-wrap": "wrap",
           "text-max-width": 100,
           "text-overflow-wrap": "break-word",
-          content: "data(subject)",
+          content: "data(label)",
         },
       },
       {
@@ -45,7 +38,7 @@ const cyConfig = (containerRef: any) => {
           "control-point-distances": " 20px 30px 40px",
           "control-point-weights": "0.5 0.2 0.8",
           "text-rotation": "autorotate",
-          "text-margin-x": 40,
+          "text-margin-x": 30,
           "text-background-color": "#0074d9",
           content: "data(relation)",
         },
