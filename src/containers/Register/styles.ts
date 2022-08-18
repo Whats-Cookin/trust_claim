@@ -3,6 +3,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     rowGap: 2,
+    width:"100%",
+    maxWidth:"350px",
   },
   inputField: {
     backgroundColor: "white",
