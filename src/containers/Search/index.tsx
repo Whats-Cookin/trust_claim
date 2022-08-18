@@ -6,60 +6,101 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
+import axios from "../../axiosInstance";
 import Modal from "../../components/Modal";
-import dbClaims from "./mockData/dbClaims";
 import cyConfig from "./cyConfig";
 import styles from "./styles";
+import IHomeProps from "./types";
 
-const Search = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
-  const [cy, setCy] = useState<any>(null);
+const Search = (homeProps: IHomeProps) => {
+  const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
+
   const ref = useRef<any>(null);
 
-  const graphElements = useMemo(() => {
-    const elements: any = [];
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [searchVal, setSearchVal] = useState(
+    "http://trustclaims.whatscookin.us/local/company/VEJA"
+  );
+  const [fetchedClaims, setFetchedClaims] = useState<any>([]);
+  const [graphElements, setGraphElements] = useState<any>([]);
 
-    dbClaims.forEach((claim) => {
-      // adding subject node
-      if (claim.subject) {
-        const uri = new URL(claim.subject);
-        elements.push({
-          data: {
-            id: claim.subject,
-            label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
-          },
-        });
-      }
-      // adding object node
-      if (claim.object) {
-        const uri = new URL(claim.object);
-        elements.push({
-          data: {
-            id: claim.object,
-            label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
-          },
-        });
-      }
-      // adding edge between subject and object
-      if (claim.subject && claim.object)
-        elements.push({
-          data: {
-            id: claim.id,
-            source: claim.subject,
-            target: claim.object,
-            relation: claim.claim,
-          },
-        });
-    });
+  const [cy, setCy] = useState<any>(null);
 
-    return elements;
-  }, []);
+  useMemo(() => {
+    if (fetchedClaims) {
+      const elements: any = [];
+      fetchedClaims.forEach((claim: any) => {
+        // adding subject node
+        if (claim.subject) {
+          const uri = new URL(claim.subject);
+          elements.push({
+            data: {
+              id: claim.subject,
+              label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
+            },
+          });
+        }
+        // adding object node
+        if (claim.object) {
+          const uri = new URL(claim.object);
+          elements.push({
+            data: {
+              id: claim.object,
+              label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
+            },
+          });
+        }
+        // adding edge between subject and object
+        if (claim.subject && claim.object)
+          elements.push({
+            data: {
+              id: claim.id,
+              source: claim.subject,
+              target: claim.object,
+              relation: claim.claim,
+            },
+          });
+      });
+      setGraphElements(elements);
+    }
+  }, [fetchedClaims]);
+
+  const fetchClaims = async () => {
+    if (searchVal.trim() !== "") {
+      setLoading(true);
+      try {
+        const res = await axios.get(`/api/claim`, {
+          params: { search: searchVal },
+        });
+        if (res.data.length === 0) {
+          setSnackbarMessage("No results found");
+          toggleSnackbar(true);
+        } else if (res.data.length > 0) {
+          setFetchedClaims(res.data);
+        }
+      } catch (err: any) {
+        toggleSnackbar(true);
+        setSnackbarMessage(err.message);
+      } finally {
+        // setSearchVal("");
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleSearchKeypress = async (event: any) => {
+    if (event.key === "Enter" && searchVal.trim() !== "") {
+      await fetchClaims();
+    }
+  };
 
   useEffect(() => {
-    // @ts-ignore
-    if (!cy) setCy(Cytoscape(cyConfig(ref.current, graphElements)));
-  }, [ref.current]);
+    if (!cy && graphElements.length > 0) {
+      // @ts-ignore
+      setCy(Cytoscape(cyConfig(ref.current, graphElements)));
+    }
+  }, [ref.current, graphElements]);
 
   useMemo(() => {
     if (cy) {
@@ -69,7 +110,7 @@ const Search = () => {
         var claim = event.target;
 
         //getting the claim data for selected node
-        const currentClaim = dbClaims.find(
+        const currentClaim = fetchedClaims.find(
           (c: any) => String(c.id) === claim.id()
         );
 
@@ -104,8 +145,14 @@ const Search = () => {
         selectedNode={selectedNode}
       />
       <Box sx={styles.searchFieldContainer}>
-        <TextField label="Search" variant="outlined" />
-        <Button variant="contained" disableElevation>
+        <TextField
+          label="Search"
+          variant="outlined"
+          value={searchVal}
+          onChange={(e) => setSearchVal(e.target.value)}
+          onKeyUp={handleSearchKeypress}
+        />
+        <Button variant="contained" onClick={fetchClaims} disableElevation>
           Search
         </Button>
       </Box>

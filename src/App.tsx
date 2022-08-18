@@ -48,7 +48,7 @@ const App = () => {
         </Route>
         <Route path="login" element={<Login {...commonProps} />} />
         <Route path="register" element={<Register {...commonProps} />} />
-        <Route path="search" element={<Search />} />
+        <Route path="search" element={<Search {...commonProps} />} />
       </Routes>
     </div>
   );
