@@ -205,12 +205,6 @@ const Form = ({
     },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/login");
-  };
-
   return (
     <form className="Form">
       <Container sx={styles.formContainer}>
@@ -293,14 +287,6 @@ const Form = ({
           </LocalizationProvider>
         </Box>
         <Box sx={styles.submitButtonWrap}>
-          <Button
-            onClick={handleLogout}
-            variant="contained"
-            size="large"
-            sx={styles.submitButton}
-          >
-            Logout
-          </Button>
           <Button
             onClick={async (event: any) => await handleSubmission(event)}
             variant="contained"
