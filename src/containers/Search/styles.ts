@@ -4,12 +4,13 @@ const styles={
         height:"100%",
         width:"100%",
         backgroundColor: 'white',
-        overflow: 'hidden',
+        padding: 0,
+        margin: 0,
     },
     cy:{
         display: "block",
-        width:"100%",
-        height:"100vw",
+        width:"100vw",
+        height:"100vh",
         zIndex: 1,
     },
    
