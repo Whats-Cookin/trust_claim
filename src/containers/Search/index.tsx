@@ -17,60 +17,68 @@ const Search = (homeProps: IHomeProps) => {
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
 
   const ref = useRef<any>(null);
+  let claims: any[] = [];
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
-  const [graphElement, setGraphElement] = useState<any>([]);
-  const [claims, setClaims] = useState<any>([]);
   const [cy, setCy] = useState<any>(null);
   const [searchVal, setSearchVal] = useState("");
 
-  const fetchClaims = async (query: string) => {
-    if (query.trim() !== "") {
-      setLoading(true);
-      try {
-        const res = await axios.get(`/api/claim?page=1&limit=5`, {
-          params: { search: query },
-        });
-
-        if (res.data.claims.length > 0) {
-          const parsedClaims = parseClaims(res.data.claims);
-          setGraphElement(
-            Array.from(new Set([...graphElement, ...parsedClaims]))
-          );
-          setClaims(Array.from(new Set([...claims, ...res.data.claims])));
-        } else {
-          setSnackbarMessage("No results found");
-          toggleSnackbar(true);
-        }
-      } catch (err: any) {
-        toggleSnackbar(true);
-        setSnackbarMessage(err.message);
-      } finally {
-        setLoading(false);
-      }
+  const updateClaims = (search: boolean, newClaims: any) => {
+    if (search) {
+      const parsedClaims = parseClaims(newClaims);
+      cy.elements().remove();
+      cy.add(parsedClaims);
+      claims = newClaims;
+    } else {
+      const parsedClaims = parseClaims(newClaims);
+      cy.add(parsedClaims);
+      claims = [...claims, ...newClaims];
     }
+  };
+
+  const fetchClaims = async (query: string, search: boolean) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`/api/claim?page=1&limit=5`, {
+        params: { search: query },
+      });
+
+      if (res.data.claims.length > 0) {
+        updateClaims(search, res.data.claims);
+      } else {
+        setSnackbarMessage("No results found");
+        toggleSnackbar(true);
+      }
+    } catch (err: any) {
+      toggleSnackbar(true);
+      setSnackbarMessage(err.message);
+    } finally {
+      setLoading(false);
+      cy.layout({
+        name: "breadthfirst",
+        directed: true,
+        padding: 10,
+        animate: true,
+        animationDuration: 500,
+      }).run();
+      cy.center();
+    }
+  };
+
+  const handleSearch = async () => {
+    if (searchVal.trim() !== "") await fetchClaims(searchVal, true);
   };
 
   const handleSearchKeypress = async (event: any) => {
-    if (event.key === "Enter" && searchVal.trim() !== "") {
-      await fetchClaims(searchVal);
-    }
+    if (event.key === "Enter") handleSearch();
   };
-
-  useEffect(() => {
-    if (graphElement.length > 0) {
-      setCy(Cytoscape(cyConfig(ref.current, graphElement)));
-    }
-  }, [ref.current, graphElement]);
 
   useMemo(() => {
     if (cy) {
-      // event listner for when a node is clicked
       cy.on("tap", "edge", (event: any) => {
         event.preventDefault();
-        var claim = event.target;
-
+        const claim = event.target;
         //getting the claim data for selected node
         const currentClaim = claims.find(
           (c: any) => String(c.id) === claim.id()
@@ -85,8 +93,8 @@ const Search = (homeProps: IHomeProps) => {
       // handle node click to fetch further connected nodes
       cy.on("tap", "node", (event: any) => {
         event.preventDefault();
-        var claim = event.target;
-        fetchClaims(claim.id());
+        const claim = event.target;
+        fetchClaims(claim.id(), false);
       });
 
       // add hover state pointer cursor on node
@@ -106,6 +114,10 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy]);
 
+  useEffect(() => {
+    if (!cy) setCy(Cytoscape(cyConfig(ref.current)));
+  }, []);
+
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal
@@ -121,11 +133,7 @@ const Search = (homeProps: IHomeProps) => {
           onChange={(e) => setSearchVal(e.target.value)}
           onKeyUp={handleSearchKeypress}
         />
-        <Button
-          variant="contained"
-          onClick={() => fetchClaims(searchVal)}
-          disableElevation
-        >
+        <Button variant="contained" onClick={handleSearch} disableElevation>
           Search
         </Button>
       </Box>
