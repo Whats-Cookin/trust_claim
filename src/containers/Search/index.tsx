@@ -15,14 +15,14 @@ import styles from "./styles";
 
 const Search = (homeProps: IHomeProps) => {
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
-
   const ref = useRef<any>(null);
   let claims: any[] = [];
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [cy, setCy] = useState<any>(null);
-  const [searchVal, setSearchVal] = useState("");
+  const [searchVal, setSearchVal] = useState<string>("");
+  const claimsPageMemo: any[] = [];
 
   const updateClaims = (search: boolean, newClaims: any) => {
     if (search) {
@@ -37,10 +37,10 @@ const Search = (homeProps: IHomeProps) => {
     }
   };
 
-  const fetchClaims = async (query: string, search: boolean) => {
+  const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/claim?page=1&limit=5`, {
+      const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
         params: { search: query },
       });
 
@@ -67,7 +67,7 @@ const Search = (homeProps: IHomeProps) => {
   };
 
   const handleSearch = async () => {
-    if (searchVal.trim() !== "") await fetchClaims(searchVal, true);
+    if (searchVal.trim() !== "") await fetchClaims(searchVal, true, 1);
   };
 
   const handleSearchKeypress = async (event: any) => {
@@ -91,10 +91,23 @@ const Search = (homeProps: IHomeProps) => {
       });
 
       // handle node click to fetch further connected nodes
-      cy.on("tap", "node", (event: any) => {
+      cy.on("tap", "node", async (event: any) => {
         event.preventDefault();
         const claim = event.target;
-        fetchClaims(claim.id(), false);
+        const foundIndex = claimsPageMemo.findIndex(
+          (item) => item.id == claim.id()
+        );
+        if (foundIndex === -1) {
+          claimsPageMemo.push({ id: claim.id(), page: 1 });
+          await fetchClaims(claim.id(), false, 1);
+        } else {
+          claimsPageMemo[foundIndex].page++;
+          claimsPageMemo.push({
+            id: claim.id(),
+            page: claimsPageMemo[foundIndex].page,
+          });
+          await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
+        }
       });
 
       // add hover state pointer cursor on node
@@ -112,7 +125,7 @@ const Search = (homeProps: IHomeProps) => {
         }
       });
     }
-  }, [cy]);
+  }, [cy, claims]);
 
   useEffect(() => {
     if (!cy) setCy(Cytoscape(cyConfig(ref.current)));
