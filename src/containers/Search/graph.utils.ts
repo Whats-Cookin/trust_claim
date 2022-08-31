@@ -1,3 +1,10 @@
+const getLabel = (uri: any) => {
+  if (uri.hostname === "trustclaims.whatscookin.us") {
+    return decodeURIComponent(uri.pathname.split("/").pop());
+  }
+  return `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`;
+};
+
 const parseClaims = (claims: any) => {
   const elements: any[] = [];
 
@@ -5,20 +12,25 @@ const parseClaims = (claims: any) => {
     // adding subject node
     if (claim.subject) {
       const uri = new URL(claim.subject);
+      const label = getLabel(uri);
+
       elements.push({
         data: {
           id: claim.subject,
-          label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
+          label: label,
         },
       });
     }
+
     // adding object node
     if (claim.object) {
       const uri = new URL(claim.object);
+      const label = getLabel(uri);
+
       elements.push({
         data: {
           id: claim.object,
-          label: `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`,
+          label: label,
         },
       });
     }
