@@ -4,16 +4,10 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import ProfileDropdown from "../ProfileDropdown";
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/login");
-  };
-
   return (
     <Box sx={{ flexGrow: 1, width: "100%", overflow: "hidden" }}>
       <AppBar
@@ -27,20 +21,13 @@ const Navbar = ({ isAuth }: any) => {
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
             {isAuth ? (
               <>
-                <Button color="inherit" onClick={() => navigate("/")}>
+                {/* <Button color="inherit" onClick={() => navigate("/")}>
                   Create Claim
-                </Button>
+                </Button> */}
                 <Button color="inherit" onClick={() => navigate("/search")}>
                   Search
                 </Button>
-                <Button
-                  onClick={handleLogout}
-                  variant="contained"
-                  size="large"
-                  color="error"
-                >
-                  Logout
-                </Button>
+                <ProfileDropdown/>
               </>
             ) : (
               <>

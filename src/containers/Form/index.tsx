@@ -293,7 +293,7 @@ const Form = ({
             size="large"
             sx={styles.submitButton}
           >
-            Submit
+            send my opinion
           </Button>
         </Box>
       </Container>
