@@ -5,7 +5,10 @@ const styles = {
   },
   formHeading: {
     mb: 3,
-  },
+    textAlign: "center",
+    fontSize: "50px",
+    fontWeight:"bold"
+    },
   inputFieldWrap: {
     display: "flex",
     flexWrap: "wrap",
