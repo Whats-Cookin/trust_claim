@@ -59,14 +59,7 @@ const styles = {
     width: "100%",
     columnGap: 3,
   },
-  submitButton: {
-    backgroundColor: "white",
-    color: "black",
-
-    "&:hover": {
-      backgroundColor: "grey.300",
-    },
-  },
+  
 };
 
 export default styles;

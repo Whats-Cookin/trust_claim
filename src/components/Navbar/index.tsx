@@ -18,7 +18,7 @@ const Navbar = ({ isAuth }: any) => {
     <Box sx={{ flexGrow: 1, width: "100%", overflow: "hidden" }}>
       <AppBar
         position="static"
-        sx={{ backgroundColor: "grey.300", color: "black" }}
+        sx={{ backgroundColor: "#823e3e", color: "#280606" }}
       >
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
