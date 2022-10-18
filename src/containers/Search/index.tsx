@@ -22,7 +22,7 @@ const Search = (homeProps: IHomeProps) => {
   const ref = useRef<any>(null);
   let claims: any[] = [];
   const query = new URLSearchParams(search).get("query");
-
+  const [tempClaims, setTempClaims] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [cy, setCy] = useState<any>(null);
@@ -35,10 +35,12 @@ const Search = (homeProps: IHomeProps) => {
       cy.elements().remove();
       cy.add(parsedClaims);
       claims = newClaims;
+      setTempClaims(newClaims);
     } else {
       const parsedClaims = parseClaims(newClaims);
       cy.add(parsedClaims);
       claims = [...claims, ...newClaims];
+      setTempClaims([...tempClaims, ...newClaims]);
     }
   };
 
@@ -46,7 +48,7 @@ const Search = (homeProps: IHomeProps) => {
     setLoading(true);
     try {
       const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
-        params: { search: encodeURIComponent(query) },
+        params: { search: query },
       });
 
       if (res.data.claims.length > 0) {
@@ -61,24 +63,30 @@ const Search = (homeProps: IHomeProps) => {
     } finally {
       setLoading(false);
       cy.layout({
-        name: "breadthfirst",
+        name: "circle",
         directed: true,
-        padding: 10,
+        padding: 30,
         animate: true,
-        animationDuration: 500,
+        animationDuration: 1000,
       }).run();
       cy.center();
     }
   };
 
+  const openClaimsList = () => {
+    window.localStorage.setItem("claims", JSON.stringify(tempClaims));
+    navigate("/claims");
+  };
+
   const handleSearch = async () => {
+    window.localStorage.removeItem("claims");
     if (searchVal.trim() !== "") {
       navigate({
         pathname: "/search",
         search: `?query=${searchVal}`,
       });
 
-      await fetchClaims(searchVal, true, 1);
+      await fetchClaims(encodeURIComponent(searchVal), true, 1);
     }
   };
 
@@ -93,6 +101,7 @@ const Search = (homeProps: IHomeProps) => {
     setSearchVal("");
     cy.elements().remove();
     claims = [];
+    setTempClaims([]);
   };
 
   useMemo(() => {
@@ -174,7 +183,7 @@ const Search = (homeProps: IHomeProps) => {
           onKeyUp={handleSearchKeypress}
           sx={{
             "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#445744",
+              borderColor: "#000",
             },
           }}
         />
@@ -212,7 +221,30 @@ const Search = (homeProps: IHomeProps) => {
           Reset
         </Button>
       </Box>
-
+      {tempClaims.length > 0 && (
+        <Button
+          variant="outlined"
+          onClick={openClaimsList}
+          sx={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            zIndex: 100,
+            backgroundColor: "#fff",
+            color: "#445744",
+            fontWeight: "bold",
+            border: "2px solid #445744",
+            "&:hover": {
+              backgroundColor: "#fff",
+              border: "2px solid #445744",
+              color: "#445744",
+            },
+          }}
+          disableElevation
+        >
+          View Claims in List
+        </Button>
+      )}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   );
