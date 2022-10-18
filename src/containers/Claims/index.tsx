@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import * as moment from "moment";
 import IHomeProps from "./types";
 
 const Home = (homeProps: IHomeProps) => {
@@ -78,7 +77,12 @@ const Home = (homeProps: IHomeProps) => {
                   <strong>Type:</strong> {claim.claim}
                 </p>
                 <Typography sx={{ fontSize: 12 }}>
-                  {moment(claim.createdAt).format("DD/MMMM/YYYY")}
+                  {new Date(claim.createdAt).toLocaleDateString("en-us", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </Typography>
               </Typography>
               <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
