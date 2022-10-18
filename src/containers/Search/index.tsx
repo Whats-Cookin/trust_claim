@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import Cytoscape from "cytoscape";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -12,16 +12,21 @@ import cyConfig from "./cyConfig";
 import IHomeProps from "./types";
 import { parseClaims } from "./graph.utils";
 import styles from "./styles";
+import { Typography } from "@mui/material";
 
 const Search = (homeProps: IHomeProps) => {
+  const search = useLocation().search;
+  const navigate = useNavigate();
+
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
   const ref = useRef<any>(null);
   let claims: any[] = [];
+  const query = new URLSearchParams(search).get("query");
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [cy, setCy] = useState<any>(null);
-  const [searchVal, setSearchVal] = useState<string>("");
+  const [searchVal, setSearchVal] = useState<string>(query || "");
   const claimsPageMemo: any[] = [];
 
   const updateClaims = (search: boolean, newClaims: any) => {
@@ -41,7 +46,7 @@ const Search = (homeProps: IHomeProps) => {
     setLoading(true);
     try {
       const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
-        params: { search: query },
+        params: { search: encodeURIComponent(query) },
       });
 
       if (res.data.claims.length > 0) {
@@ -67,11 +72,27 @@ const Search = (homeProps: IHomeProps) => {
   };
 
   const handleSearch = async () => {
-    if (searchVal.trim() !== "") await fetchClaims(searchVal, true, 1);
+    if (searchVal.trim() !== "") {
+      navigate({
+        pathname: "/search",
+        search: `?query=${searchVal}`,
+      });
+
+      await fetchClaims(searchVal, true, 1);
+    }
   };
 
   const handleSearchKeypress = async (event: any) => {
-    if (event.key === "Enter") handleSearch();
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const reset = () => {
+    navigate("/search");
+    setSearchVal("");
+    cy.elements().remove();
+    claims = [];
   };
 
   useMemo(() => {
@@ -127,8 +148,14 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy, claims]);
 
+  useMemo(() => {
+    if (cy && query) handleSearch();
+  }, [cy]);
+
   useEffect(() => {
-    if (!cy) setCy(Cytoscape(cyConfig(ref.current)));
+    if (!cy) {
+      setCy(Cytoscape(cyConfig(ref.current)));
+    }
   }, []);
 
   return (
@@ -145,9 +172,44 @@ const Search = (homeProps: IHomeProps) => {
           value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
           onKeyUp={handleSearchKeypress}
+          sx={{
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#445744",
+            },
+          }}
         />
-        <Button variant="contained" onClick={handleSearch} disableElevation>
+        <Button
+          variant="contained"
+          onClick={handleSearch}
+          sx={{
+            backgroundColor: "#445744",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#445744",
+              color: "#fff",
+            },
+          }}
+          disableElevation
+        >
           Search
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={reset}
+          sx={{
+            backgroundColor: "#fff",
+            color: "#445744",
+            fontWeight: "bold",
+            border: "2px solid #445744",
+            "&:hover": {
+              backgroundColor: "#fff",
+              border: "2px solid #445744",
+              color: "#445744",
+            },
+          }}
+          disableElevation
+        >
+          Reset
         </Button>
       </Box>
 

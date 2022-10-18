@@ -18,10 +18,14 @@ const Navbar = ({ isAuth }: any) => {
     <Box sx={{ flexGrow: 1, width: "100%", overflow: "hidden" }}>
       <AppBar
         position="static"
-        sx={{ backgroundColor: "grey.300", color: "black" }}
+        sx={{ backgroundColor: "#607360", color: "white" }}
       >
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: "bold" }}
+          >
             Trust Claims
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
@@ -37,7 +41,15 @@ const Navbar = ({ isAuth }: any) => {
                   onClick={handleLogout}
                   variant="contained"
                   size="large"
-                  color="error"
+                  sx={{
+                    backgroundColor: "#445744",
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "#445744",
+                      color: "#fff",
+                    },
+                  }}
+                  disableElevation
                 >
                   Logout
                 </Button>

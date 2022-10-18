@@ -20,6 +20,14 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
     "effectiveDate",
   ];
 
+  const getTopicFromDomain = (url: string) => {
+    if (url.includes("trustclaims.whatscookin.us")) {
+      return url.split("/").at(-1);
+    } else {
+      return url;
+    }
+  };
+
   const isValidHttpUrl = (string: string) => {
     let url;
 
@@ -46,7 +54,17 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
                   {camelCaseToSimpleString(key)}
                 </Typography>
                 {isValidHttpUrl(selectedClaim[key]) ? (
-                  <a href={selectedClaim[key]} rel="noreferrer" target="_blank">
+                  <a
+                    href={
+                      key === "source"
+                        ? selectedClaim[key]
+                        : `/search?query=${getTopicFromDomain(
+                            selectedClaim[key]
+                          )}`
+                    }
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     {selectedClaim[key]}
                   </a>
                 ) : (
