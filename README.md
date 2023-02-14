@@ -15,3 +15,10 @@ cd /home/ubuntu/trust_claim/dist
 cp -r ./ /var/www/trust_claim/
 ```
 TODO: ci pipeline
+
+To run in a new location you must set these environment variables
+
+```
+VITE_GITHUB_CLIENT_ID=[...]
+VITE_BACKEND_BASE_URL=http://localhost:9000
+```
