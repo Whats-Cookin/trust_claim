@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import metaicon from "./metamask-icon.svg";
 
 import styles from "./styles";
 import ILoginProps from "./types";
@@ -91,6 +92,12 @@ const Login = ({
         <MuiLink href={githubUrl} sx={styles.authLinkButton}>
           Login with Github <GitHubIcon sx={styles.authIcon} />
         </MuiLink>
+      </Box>
+      <Box>
+        <div style={{ display:'flex',alignItems:'center',justifyContent:'center', background:'white', color:'black',padding:'1rem'}}>
+          Login with MetaMask{" "}
+          <img src={metaicon} style={{ width: "50px",height:'30px',}} alt="" />
+        </div>
       </Box>
       <Typography component="div" variant="h6">
         Or, Login with email and password
