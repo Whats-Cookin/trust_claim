@@ -56,6 +56,9 @@ const Navbar = ({ isAuth }: any) => {
               </>
             ) : (
               <>
+                <Button color="inherit" onClick={() => navigate("/search")}>
+                  Search
+                </Button>
                 <Button color="inherit" onClick={() => navigate("/login")}>
                   Login
                 </Button>
