@@ -84,7 +84,7 @@ const Form = ({
     } else {
       setLoading(false);
       toggleSnackbar(true);
-      setSnackbarMessage("complite your claim,please!.");
+      setSnackbarMessage("Subject and Claims are required fields.");
     }
   };
 
