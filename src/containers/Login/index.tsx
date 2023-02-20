@@ -17,6 +17,7 @@ const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`;
 
+
 const Login = ({
   toggleSnackbar,
   setSnackbarMessage,
@@ -24,6 +25,10 @@ const Login = ({
 }: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
+  const [ethAccountId, setEthAccountId] = useState("");
+
+  const loginButton = document.getElementById('loginButton');
+  const metamaskLink = document.getElementById('metamaskLink');
 
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
@@ -59,6 +64,12 @@ const Login = ({
     }
   }, []);
 
+
+  const handleWalletAuth = async () => {
+   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+   setEthAccountId(accounts[0]);
+  };
+
   const handleLogin = async () => {
     try {
       if (!emailLogin || !passwordLogin) {
@@ -85,13 +96,27 @@ const Login = ({
     }
   };
 
+  
+  // Check if Metamask is installed
+  let ethLoginOpt;
+  if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
+    ethLoginOpt = <button id="loginButton" onClick={handleWalletAuth}>Log in with Metamask</button>
+  } else {
+    ethLoginOpt = <p id="metamaskLink">To login with Ethereum <a href="https://metamask.io/" target="_blank">Install Metamask</a></p>
+  }
+
   return (
     <Box sx={styles.authContainer}>
+      <Box>
+      </Box>
       <Box>
         <MuiLink href={githubUrl} sx={styles.authLinkButton}>
           Login with Github <GitHubIcon sx={styles.authIcon} />
         </MuiLink>
       </Box>
+      <Box>
+      {ethLoginOpt}
+      </Box> 
       <Typography component="div" variant="h6">
         Or, Login with email and password
       </Typography>
