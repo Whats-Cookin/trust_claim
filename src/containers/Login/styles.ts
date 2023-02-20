@@ -3,8 +3,8 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     rowGap: 2,
-    width:"100%",
-    maxWidth:"350px",
+    width: "100%",
+    maxWidth: "350px",
     marginTop: 16,
   },
   inputField: {
@@ -14,6 +14,15 @@ const styles = {
     display: "flex",
     justifyContent: "flex-end",
     width: "100%",
+  },
+  authbtn: {
+    display: "flex",
+    cursor: "pointer",
+    gap: "2%",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "1rem",
   },
   submitButton: {
     backgroundColor: "white",
