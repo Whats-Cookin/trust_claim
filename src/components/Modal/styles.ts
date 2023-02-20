@@ -12,7 +12,7 @@ const styles = {
     border: "2px solid #004",
     boxShadow: 24,
     p: 4,
-    overflowY: "scroll",
+    overflowY: "hidden",
     overflowX: "hidden",
   },
   detailField: {
