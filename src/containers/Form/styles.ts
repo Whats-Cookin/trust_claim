@@ -2,6 +2,7 @@ const styles = {
   formContainer: {
     mt: 5,
     mb: 10,
+    height:"73.5vh",
   },
   formHeading: {
     mb: 3,
