@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { DIDSession } from "did-session";
+import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
+import { ComposeClient } from "@composedb/client";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -22,8 +25,6 @@ const Login = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
- 
- 
 }: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
@@ -31,7 +32,7 @@ const Login = ({
 
   const loginButton = document.getElementById("loginButton");
   const metamaskLink = document.getElementById("metamaskLink");
- 
+
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
       localStorage.setItem("accessToken", accessToken);
@@ -67,38 +68,52 @@ const Login = ({
   }, []);
 
   const handleWalletAuth = async () => {
-    const localStorageKey = "walletAuth";
-    const localStorageData = localStorage.getItem(localStorageKey);
-  
-    if (localStorageData) {
-      const { address, timestamp } = JSON.parse(localStorageData);
-      const currentTime = new Date().getTime();
-      const expirationTime = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-  
-      if (currentTime - timestamp < expirationTime) {
-        setEthAccountId(address);
-        navigate("/");
-        return;
-      }
-    }
-  
-    if (window.ethereum && window.ethereum.selectedAddress) {
-      setEthAccountId(window.ethereum.selectedAddress);
-      // Store the selected address and timestamp in locale storage
-      const currentTime = new Date().getTime();
-      const data = {
-        address: window.ethereum.selectedAddress,
-        timestamp: currentTime,
-      };
-      localStorage.setItem(localStorageKey, JSON.stringify(data));
-      // Navigate to a different page after successful authentication
-      navigate("/");
-    } else {
-      navigate("/login"); // Navigate to login page if the user is not authenticated
-    }
+  const ethProvider = window.ethereum; // import/get your web3 eth provider
+  const addresses = await ethProvider.request({
+    method: "eth_requestAccounts",
+  });
+  const accountId = await getAccountId(ethProvider, addresses[0]);
+
+  if (accountId) {
+    // User address is found, navigate to home page
+    // window.location.href = "/";
+    navigate('/')
+  } else {
+    // User address is not found, navigate to login page
+    navigate("/login");
+  }
+
+
+    // const localStorageKey = "walletAuth";
+    // const localStorageData = localStorage.getItem(localStorageKey);
+
+    // if (localStorageData) {
+    //   const { address, timestamp } = JSON.parse(localStorageData);
+    //   const currentTime = new Date().getTime();
+    //   const expirationTime = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
+
+    //   if (currentTime - timestamp < expirationTime) {
+    //     setEthAccountId(address);
+    //     navigate("/");
+    //     return;
+    //   }
+    // }
+
+    // if (window.ethereum && window.ethereum.selectedAddress) {
+    //   setEthAccountId(window.ethereum.selectedAddress);
+    //   // Store the selected address and timestamp in locale storage
+    //   const currentTime = new Date().getTime();
+    //   const data = {
+    //     address: window.ethereum.selectedAddress,
+    //     timestamp: currentTime,
+    //   };
+    //   localStorage.setItem(localStorageKey, JSON.stringify(data));
+    //   // Navigate to a different page after successful authentication
+    //   navigate("/");
+    // } else {
+    //   navigate("/login"); // Navigate to login page if the user is not authenticated
+    // }
   };
-  
-  
 
   const handleLogin = async () => {
     try {
@@ -130,8 +145,15 @@ const Login = ({
   let ethLoginOpt;
   if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <button id="loginButton" onClick={handleWalletAuth} style={styles.authbtn}>
-        Log in with Metamask <span ><img src={metamask} alt="" style={{ width:'30px' }} /></span>
+      <button
+        id="loginButton"
+        onClick={handleWalletAuth}
+        style={styles.authbtn}
+      >
+        Log in with Metamask{" "}
+        <span>
+          <img src={metamask} alt="" style={{ width: "30px" }} />
+        </span>
       </button>
     );
   } else {
@@ -153,11 +175,7 @@ const Login = ({
           Login with Github <GitHubIcon sx={styles.authIcon} />
         </MuiLink>
       </Box>
-      <Box>
-      
-          {ethLoginOpt} 
-       
-      </Box>
+      <Box>{ethLoginOpt}</Box>
       <Typography component="div" variant="h6">
         Or, Login with email and password
       </Typography>
