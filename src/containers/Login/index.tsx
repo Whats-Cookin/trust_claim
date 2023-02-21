@@ -76,14 +76,14 @@ const Login = ({
 
   if (accountId) {
     // User address is found, navigate to home page
-    // window.location.href = "/";
+    
     navigate('/')
   } else {
     // User address is not found, navigate to login page
     navigate("/login");
   }
 
-
+  
     // const localStorageKey = "walletAuth";
     // const localStorageData = localStorage.getItem(localStorageKey);
 
