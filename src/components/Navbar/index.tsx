@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 const Navbar = ({ isAuth }: any) => {
+  console.log(isAuth)
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -29,7 +30,7 @@ const Navbar = ({ isAuth }: any) => {
             Trust Claims
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
-            {isAuth ? (
+            { isAuth  ? (
               <>
                 <Button color="inherit" onClick={() => navigate("/")}>
                   Create Claim

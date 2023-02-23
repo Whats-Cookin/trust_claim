@@ -16,6 +16,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [isSnackbarOpen, toggleSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [metaNav, setMetaNav] = useState(false)
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const App = () => {
     }
   }, []);
 
-  const commonProps = { toggleSnackbar, setSnackbarMessage, setLoading };
+  const commonProps = { toggleSnackbar, setSnackbarMessage, setLoading,setMetaNav };
 
   return (
     <>
