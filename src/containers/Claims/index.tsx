@@ -115,7 +115,7 @@ const Home = (homeProps: IHomeProps) => {
                   borderTop: "1px #000 solid",
                 }}
               >
-                <strong>Statement:</strong> {claim.Statement}
+                <strong>Statement:</strong> {claim.statement}
               </Typography>
               <Typography
                 variant="body1"
