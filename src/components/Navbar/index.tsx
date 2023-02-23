@@ -19,7 +19,7 @@ const Navbar = ({ isAuth }: any) => {
     <Box sx={{ flexGrow: 1, width: "100%", overflow: "hidden" }}>
       <AppBar
         position="static"
-        sx={{ backgroundColor: "#823e3e", color: "#280606" }}
+        sx={{ backgroundColor: "#eeeeee", color: "#280606" }}
       >
         <Toolbar>
           <Typography
@@ -41,12 +41,11 @@ const Navbar = ({ isAuth }: any) => {
                 <Button
                   onClick={handleLogout}
                   variant="contained"
-                  size="large"
                   sx={{
-                    backgroundColor: "#445744",
+                    backgroundColor: "#333333",
                     color: "#fff",
                     "&:hover": {
-                      backgroundColor: "#445744",
+                      backgroundColor: "#222222",
                       color: "#fff",
                     },
                   }}
