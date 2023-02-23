@@ -86,23 +86,23 @@ const Home = (homeProps: IHomeProps) => {
                 </Typography>
               </Typography>
               <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
-                <strong>Subject:</strong>{" "}
+                <strong>Source:</strong>{" "}
+                <a
+                  href={`/search?query=${getTopicFromDomain(claim.source)}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {claim.source}
+                </a>
+              </Typography>
+              <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
+                <strong> Subject:</strong>{" "}
                 <a
                   href={`/search?query=${getTopicFromDomain(claim.subject)}`}
                   rel="noreferrer"
                   target="_blank"
                 >
                   {claim.subject}
-                </a>
-              </Typography>
-              <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
-                <strong> Object:</strong>{" "}
-                <a
-                  href={`/search?query=${getTopicFromDomain(claim.object)}`}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {claim.object}
                 </a>
               </Typography>
 
@@ -115,7 +115,7 @@ const Home = (homeProps: IHomeProps) => {
                   borderTop: "1px #000 solid",
                 }}
               >
-                <strong>Qualifier:</strong> {claim.qualifier}
+                <strong>Statement:</strong> {claim.statement}
               </Typography>
               <Typography
                 variant="body1"
