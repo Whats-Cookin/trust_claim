@@ -5,7 +5,7 @@ const styles = {
     rowGap: 2,
     width:"100%",
     maxWidth:"350px",
-    marginTop: 16,
+    marginTop: 4,
   },
   inputField: {
     backgroundColor: "white",

@@ -1,12 +1,12 @@
 .container {
   position: relative;
-  background-color: #deb9b9;
+  background-color: #eeeeee;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   /* justify-content: center; */
-  font-size: calc(10px + 2vmin);
+  font-size: calc(3px + 2vmin);
   color: rgb(37, 3, 3);
 }
 
@@ -15,5 +15,5 @@
 }
 
 button {
-  font-size: calc(10px + 2vmin);
+  font-size: calc(3px + 2vmin);
 }

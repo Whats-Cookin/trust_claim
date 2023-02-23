@@ -68,22 +68,21 @@ const Login = ({
   }, []);
 
   const handleWalletAuth = async () => {
-  const ethProvider = window.ethereum; // import/get your web3 eth provider
-  const addresses = await ethProvider.request({
-    method: "eth_requestAccounts",
-  });
-  const accountId = await getAccountId(ethProvider, addresses[0]);
+     const ethProvider = window.ethereum; // import/get your web3 eth provider
+     const addresses = await ethProvider.request({
+        method: "eth_requestAccounts",
+     });
+     const accountId = await getAccountId(ethProvider, addresses[0]);
 
-  if (accountId) {
-    // User address is found, navigate to home page
+     if (accountId) {
+       // User address is found, navigate to home page
     
-    navigate('/')
-  } else {
-    // User address is not found, navigate to login page
-    navigate("/login");
-  }
+         navigate('/')
+     } else {
+         // User address is not found, navigate to login page
+         navigate("/login");
+     }
 
-  
     // const localStorageKey = "walletAuth";
     // const localStorageData = localStorage.getItem(localStorageKey);
 
@@ -145,12 +144,16 @@ const Login = ({
   let ethLoginOpt;
   if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <MuiLink href={handleWalletAuth} sx={styles.authLinkButton}>
+      <button
+        id="loginButton"
+        onClick={handleWalletAuth}
+        style={styles.authbtn}
+      > 
         Log in with Metamask{" "}
         <span>
           <img src={metaicon} alt="" style={{ width: "30px" }} />
         </span>
-      </MuiLink>
+      </button>
     );
   } else {
     ethLoginOpt = (
@@ -165,14 +168,13 @@ const Login = ({
 
   return (
     <Box sx={styles.authContainer}>
-      <Box></Box>
       <Box>
         <MuiLink href={githubUrl} sx={styles.authLinkButton}>
           Login with Github <GitHubIcon sx={styles.authIcon} />
         </MuiLink>
       </Box>
       <Box>{ethLoginOpt}</Box>
-      <Typography component="div" variant="h6">
+      <Typography component="div" >
         Or, Login with email and password
       </Typography>
       <TextField

@@ -7,7 +7,7 @@ const styles = {
   formHeading: {
     mb: 3,
     textAlign: "center",
-    fontSize: "50px",
+    fontSize: "16px",
     fontWeight:"bold"
     },
   inputFieldWrap: {

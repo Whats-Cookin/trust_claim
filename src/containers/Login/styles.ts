@@ -5,7 +5,7 @@ const styles = {
     rowGap: 2,
     width: "100%",
     maxWidth: "350px",
-    marginTop: 16,
+    marginTop: 2,
   },
   inputField: {
     backgroundColor: "white",
@@ -18,10 +18,9 @@ const styles = {
   authbtn: {
     display: "flex",
     cursor: "pointer",
+    backgroundColor: "white",
     gap: "2%",
     width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
     padding: "1rem",
   },
   submitButton: {
@@ -40,10 +39,9 @@ const styles = {
     "&:hover": {
       backgroundColor: "grey.300",
     },
-    padding: "16px 20px",
-    fontSize: "20px",
+    padding: "10px 15px",
+    fontSize: "16px",
     display: "flex",
-    justifyContent: "center",
   },
   authIcon: {
     marginLeft: "10px",

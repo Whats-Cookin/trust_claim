@@ -191,10 +191,10 @@ const Search = (homeProps: IHomeProps) => {
           variant="contained"
           onClick={handleSearch}
           sx={{
-            backgroundColor: "#445744",
+            backgroundColor: "#333333",
             fontWeight: "bold",
             "&:hover": {
-              backgroundColor: "#445744",
+              backgroundColor: "#333333",
               color: "#fff",
             },
           }}
@@ -207,13 +207,13 @@ const Search = (homeProps: IHomeProps) => {
           onClick={reset}
           sx={{
             backgroundColor: "#fff",
-            color: "#445744",
+            color: "#333333",
             fontWeight: "bold",
-            border: "2px solid #445744",
+            border: "2px solid #333333",
             "&:hover": {
               backgroundColor: "#fff",
-              border: "2px solid #445744",
-              color: "#445744",
+              border: "2px solid #333333",
+              color: "#333333",
             },
           }}
           disableElevation
@@ -231,13 +231,13 @@ const Search = (homeProps: IHomeProps) => {
             right: "20px",
             zIndex: 100,
             backgroundColor: "#fff",
-            color: "#445744",
+            color: "#333333",
             fontWeight: "bold",
-            border: "2px solid #445744",
+            border: "2px solid #333333",
             "&:hover": {
               backgroundColor: "#fff",
-              border: "2px solid #445744",
-              color: "#445744",
+              border: "2px solid #333333",
+              color: "#333333",
             },
           }}
           disableElevation
