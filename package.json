@@ -8,6 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.9",
+    "@composedb/cli": "^0.3.1",
+    "@composedb/client": "^0.3.1",
     "@didtools/pkh-ethereum": "^0.0.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
@@ -20,7 +23,8 @@
     "moment": "^2.29.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "web3": "^1.8.2"
   },
   "devDependencies": {
     "@types/cytoscape": "^3.19.6",
