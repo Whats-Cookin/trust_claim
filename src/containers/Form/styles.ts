@@ -6,7 +6,10 @@ const styles = {
   },
   formHeading: {
     mb: 3,
-  },
+    textAlign: "center",
+    fontSize: "50px",
+    fontWeight:"bold"
+    },
   inputFieldWrap: {
     display: "flex",
     flexWrap: "wrap",
@@ -60,14 +63,7 @@ const styles = {
     width: "100%",
     columnGap: 3,
   },
-  submitButton: {
-    backgroundColor: "white",
-    color: "black",
-
-    "&:hover": {
-      backgroundColor: "grey.300",
-    },
-  },
+  
 };
 
 export default styles;
