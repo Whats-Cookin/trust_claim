@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 const Navbar = ({ isAuth }: any) => {
+  console.log(isAuth)
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -21,11 +22,15 @@ const Navbar = ({ isAuth }: any) => {
         sx={{ backgroundColor: "#823e3e", color: "#280606" }}
       >
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: "bold" }}
+          >
             Trust Claims
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
-            {isAuth ? (
+            { isAuth  ? (
               <>
                 <Button color="inherit" onClick={() => navigate("/")}>
                   Create Claim
@@ -37,13 +42,24 @@ const Navbar = ({ isAuth }: any) => {
                   onClick={handleLogout}
                   variant="contained"
                   size="large"
-                  color="error"
+                  sx={{
+                    backgroundColor: "#445744",
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "#445744",
+                      color: "#fff",
+                    },
+                  }}
+                  disableElevation
                 >
                   Logout
                 </Button>
               </>
             ) : (
               <>
+                <Button color="inherit" onClick={() => navigate("/search")}>
+                  Search
+                </Button>
                 <Button color="inherit" onClick={() => navigate("/login")}>
                   Login
                 </Button>

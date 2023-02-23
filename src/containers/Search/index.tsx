@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import Cytoscape from "cytoscape";
-
+import { useLocation, useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -12,16 +12,21 @@ import cyConfig from "./cyConfig";
 import IHomeProps from "./types";
 import { parseClaims } from "./graph.utils";
 import styles from "./styles";
+import { Typography } from "@mui/material";
 
 const Search = (homeProps: IHomeProps) => {
+  const search = useLocation().search;
+  const navigate = useNavigate();
+
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
   const ref = useRef<any>(null);
   let claims: any[] = [];
-
+  const query = new URLSearchParams(search).get("query");
+  const [tempClaims, setTempClaims] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [cy, setCy] = useState<any>(null);
-  const [searchVal, setSearchVal] = useState<string>("");
+  const [searchVal, setSearchVal] = useState<string>(query || "");
   const claimsPageMemo: any[] = [];
 
   const updateClaims = (search: boolean, newClaims: any) => {
@@ -30,10 +35,12 @@ const Search = (homeProps: IHomeProps) => {
       cy.elements().remove();
       cy.add(parsedClaims);
       claims = newClaims;
+      setTempClaims(newClaims);
     } else {
       const parsedClaims = parseClaims(newClaims);
       cy.add(parsedClaims);
       claims = [...claims, ...newClaims];
+      setTempClaims([...tempClaims, ...newClaims]);
     }
   };
 
@@ -56,22 +63,45 @@ const Search = (homeProps: IHomeProps) => {
     } finally {
       setLoading(false);
       cy.layout({
-        name: "breadthfirst",
+        name: "circle",
         directed: true,
-        padding: 10,
+        padding: 30,
         animate: true,
-        animationDuration: 500,
+        animationDuration: 1000,
       }).run();
       cy.center();
     }
   };
 
+  const openClaimsList = () => {
+    window.localStorage.setItem("claims", JSON.stringify(tempClaims));
+    navigate("/claims");
+  };
+
   const handleSearch = async () => {
-    if (searchVal.trim() !== "") await fetchClaims(searchVal, true, 1);
+    window.localStorage.removeItem("claims");
+    if (searchVal.trim() !== "") {
+      navigate({
+        pathname: "/search",
+        search: `?query=${searchVal}`,
+      });
+
+      await fetchClaims(encodeURIComponent(searchVal), true, 1);
+    }
   };
 
   const handleSearchKeypress = async (event: any) => {
-    if (event.key === "Enter") handleSearch();
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const reset = () => {
+    navigate("/search");
+    setSearchVal("");
+    cy.elements().remove();
+    claims = [];
+    setTempClaims([]);
   };
 
   useMemo(() => {
@@ -127,8 +157,14 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy, claims]);
 
+  useMemo(() => {
+    if (cy && query) handleSearch();
+  }, [cy]);
+
   useEffect(() => {
-    if (!cy) setCy(Cytoscape(cyConfig(ref.current)));
+    if (!cy) {
+      setCy(Cytoscape(cyConfig(ref.current)));
+    }
   }, []);
 
   return (
@@ -145,12 +181,70 @@ const Search = (homeProps: IHomeProps) => {
           value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
           onKeyUp={handleSearchKeypress}
+          sx={{
+            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#000",
+            },
+          }}
         />
-        <Button variant="contained" onClick={handleSearch} disableElevation>
+        <Button
+          variant="contained"
+          onClick={handleSearch}
+          sx={{
+            backgroundColor: "#445744",
+            fontWeight: "bold",
+            "&:hover": {
+              backgroundColor: "#445744",
+              color: "#fff",
+            },
+          }}
+          disableElevation
+        >
           Search
         </Button>
+        <Button
+          variant="outlined"
+          onClick={reset}
+          sx={{
+            backgroundColor: "#fff",
+            color: "#445744",
+            fontWeight: "bold",
+            border: "2px solid #445744",
+            "&:hover": {
+              backgroundColor: "#fff",
+              border: "2px solid #445744",
+              color: "#445744",
+            },
+          }}
+          disableElevation
+        >
+          Reset
+        </Button>
       </Box>
-
+      {tempClaims.length > 0 && (
+        <Button
+          variant="outlined"
+          onClick={openClaimsList}
+          sx={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            zIndex: 100,
+            backgroundColor: "#fff",
+            color: "#445744",
+            fontWeight: "bold",
+            border: "2px solid #445744",
+            "&:hover": {
+              backgroundColor: "#fff",
+              border: "2px solid #445744",
+              color: "#445744",
+            },
+          }}
+          disableElevation
+        >
+          View Claims in List
+        </Button>
+      )}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   );
