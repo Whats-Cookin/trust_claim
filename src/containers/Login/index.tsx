@@ -11,7 +11,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import metamask from "./metamask-icon.svg";
+import metaicon from "./metamask-icon.svg";
 
 import styles from "./styles";
 import ILoginProps from "./types";
@@ -145,16 +145,12 @@ const Login = ({
   let ethLoginOpt;
   if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <button
-        id="loginButton"
-        onClick={handleWalletAuth}
-        style={styles.authbtn}
-      >
+      <MuiLink href={handleWalletAuth} sx={styles.authLinkButton}>
         Log in with Metamask{" "}
         <span>
-          <img src={metamask} alt="" style={{ width: "30px" }} />
+          <img src={metaicon} alt="" style={{ width: "30px" }} />
         </span>
-      </button>
+      </MuiLink>
     );
   } else {
     ethLoginOpt = (
