@@ -1,7 +1,8 @@
 import axios, { AxiosError } from "axios";
+import { BACKEND_BASE_URL } from "../../utils/settings";
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_BASE_URL,
+  baseURL: BACKEND_BASE_URL,
   timeout: 10000,
 });
 

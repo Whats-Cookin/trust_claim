@@ -90,7 +90,7 @@ const Form = ({
 
   const inputFieldLabelArr = [
     {
-      label: "Subject",
+      label: "Subject (did or url)",
       value: subject,
       setter: setSubject,
       type: "text",
@@ -174,7 +174,7 @@ const Form = ({
       fieldType: "inputField",
     },
     {
-      label: "Qualifier",
+      label: "Statement",
       value: qualifier,
       setter: setQualifier,
       type: "text",
@@ -203,7 +203,7 @@ const Form = ({
     <form className="Form">
       <Container sx={styles.formContainer}>
         <Typography variant="h4" sx={styles.formHeading}>
-          Polling Form
+          Enter a Claim
         </Typography>
         <Box sx={styles.inputFieldWrap}>
           {inputFieldLabelArr.map(

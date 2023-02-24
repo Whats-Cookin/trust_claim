@@ -16,9 +16,8 @@ import metaicon from "./metamask-icon.svg";
 import styles from "./styles";
 import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";
+import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`;
 
 const Login = ({
