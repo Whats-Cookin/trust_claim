@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { DIDSession } from "did-session";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
 import { ComposeClient } from "@composedb/client";
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -12,7 +11,6 @@ import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import metaicon from "./metamask-icon.svg";
-
 import styles from "./styles";
 import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";

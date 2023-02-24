@@ -87,6 +87,18 @@ const ProfileDropdown = ({isAuth} : any) => {
                 <Box sx={
                     {textAlign: 'center'}
                 }>
+                     <Button  sx={
+                            {
+                                width: '85%',
+                                marginBottom: '1em',
+                                color: '#2f0101',
+                                backgroundColor: 'FAFAFA',
+                                boxShadow: 'none',
+                                border: 'none'
+                            }
+                    } onClick={() => navigate("/search")}>
+                  Search
+                </Button>
                     <Button disableRipple={true}
                         color="inherit"
                         onClick={
@@ -107,7 +119,7 @@ const ProfileDropdown = ({isAuth} : any) => {
 
                     <Button onClick={handleLogout}
                         disableRipple={true}
-                        color="inherit"
+                        color="error"
                         size="large">
                         Logout
                     </Button>

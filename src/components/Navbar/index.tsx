@@ -4,6 +4,13 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import {
+  Menu,
+  IconButton,
+  Fade,
+  Tooltip
+} from '@mui/material'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import ProfileDropdown from "../ProfileDropdown";
 
 const Navbar = ({ isAuth }: any) => {
@@ -28,20 +35,7 @@ const Navbar = ({ isAuth }: any) => {
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
             {isAuth ? (
               <>
-                <Button color="inherit" onClick={() => navigate("/")}>
-                  Create Claim
-                </Button>
-                <Button color="inherit" onClick={() => navigate("/search")}>
-                  Search
-                </Button>
-                <Button
-                  onClick={handleLogout}
-                  variant="contained"
-                  size="large"
-                  color="error"
-                >
-                  Logout
-                </Button>
+              <ProfileDropdown />
               </>
             ) : (
               <>
