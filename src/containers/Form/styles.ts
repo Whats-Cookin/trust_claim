@@ -2,10 +2,14 @@ const styles = {
   formContainer: {
     mt: 5,
     mb: 10,
+    height:"73.5vh",
   },
   formHeading: {
     mb: 3,
-  },
+    textAlign: "center",
+    fontSize: "16px",
+    fontWeight:"bold"
+    },
   inputFieldWrap: {
     display: "flex",
     flexWrap: "wrap",
@@ -59,14 +63,7 @@ const styles = {
     width: "100%",
     columnGap: 3,
   },
-  submitButton: {
-    backgroundColor: "white",
-    color: "black",
-
-    "&:hover": {
-      backgroundColor: "grey.300",
-    },
-  },
+  
 };
 
 export default styles;

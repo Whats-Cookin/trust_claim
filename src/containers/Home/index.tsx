@@ -4,6 +4,7 @@ import SearchWrapper from "../../components/SearchWrapper";
 import Claim from "../../components/Claim";
 import Form from "../Form";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 import IHomeProps from "./types";
 import { ClaimWrapper } from "./styles";
@@ -50,6 +51,7 @@ const Home = (homeProps: IHomeProps) => {
 
   return (
     <>
+      <Box sx={{ mt: 5 }}></Box>
       <SearchWrapper
         onChange={handleSearchValChange}
         onKeyUp={handleSearchKeypress}

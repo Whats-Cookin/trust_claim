@@ -20,8 +20,8 @@ const Dropdown = ({
 
   return (
     <Box sx={sx}>
-      <FormControl fullWidth variant="filled">
-        <InputLabel>{label}</InputLabel>
+   <FormControl fullWidth>
+        <InputLabel sx={{ml:2, mr:2}}>{label}</InputLabel>
         <Select
           value={value}
           label={value}

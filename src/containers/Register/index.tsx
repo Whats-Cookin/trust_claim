@@ -9,8 +9,7 @@ import Button from "@mui/material/Button";
 
 import IRegisterProps from "./types";
 import styles from "./styles";
-
-const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import { BACKEND_BASE_URL } from "../../utils/settings";
 
 const Register = ({
   toggleSnackbar,

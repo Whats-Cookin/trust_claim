@@ -8,6 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.9",
+    "@composedb/cli": "^0.3.1",
+    "@composedb/client": "^0.3.1",
+    "@didtools/pkh-ethereum": "^0.0.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.4",
@@ -15,10 +19,12 @@
     "@mui/x-date-pickers": "^5.0.0-alpha.5",
     "cytoscape": "^3.22.1",
     "date-fns": "^2.28.0",
+    "did-session": "^1.0.0",
     "moment": "^2.29.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-router-dom": "^6.3.0"
+    "react-router-dom": "^6.3.0",
+    "web3": "^1.8.2"
   },
   "devDependencies": {
     "@types/cytoscape": "^3.19.6",
