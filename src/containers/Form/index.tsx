@@ -53,9 +53,22 @@ const Form = ({
           reviewRating: reviewRatingAsNumber,
         };
 
+        // if logged in via metamask, write directly to composedb
+        // backend should subscribe to the model updates and add the data
+        // then we can pull it here
+        // TODO keep some state variable in a single place about our login state and method
+        
         setLoading(true);
-        const res = await axios.post(`/api/claim`, payload);
-        if (res.status === 201) {
+
+        const session = await LoadSession(); // only if we have a stored session
+        let res
+        if (session) { // we are logged in with ethereum
+            res = await PublishClaim(payload);
+        } else { // we are logged into backend
+            res = await axios.post(`/api/claim`, payload);
+        }
+
+        if (res.status === 201 || res.status === 'success')  {
           setLoading(false);
           toggleSnackbar(true);
           setSnackbarMessage("Claim submitted successfully!");
