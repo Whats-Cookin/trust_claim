@@ -14,6 +14,7 @@ const styles = {
     p: 4,
     overflowY: "hidden",
     overflowX: "hidden",
+    overflow: "hidden",
   },
   detailField: {
     display: "flex",

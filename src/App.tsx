@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-
 import Loader from "./components/Loader";
 import Snackbar from "./components/Snackbar";
 import Navbar from "./components/Navbar";

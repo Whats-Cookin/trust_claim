@@ -292,7 +292,7 @@ const Form = ({
               backgroundColor: "rgb(37, 3, 3)",
             }}}
           >
-            Submit
+            send my opinion
           </Button>
         </Box>
       </Container>
