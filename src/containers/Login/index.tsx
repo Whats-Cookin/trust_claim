@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { DIDSession } from "did-session";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
-import { ComposeClient } from "@composedb/client";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -11,9 +11,12 @@ import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import metaicon from "./metamask-icon.svg";
+
 import styles from "./styles";
 import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";
+// can change this if LoadSession intended to be private
+import { LoadSession } from "../../composedb/compose";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`;
@@ -22,6 +25,8 @@ const Login = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
+  isLoggedIn, // receive the isLoggedIn prop
+  setIsLoggedIn // receive the setIsLoggedIn prop
 }: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
@@ -35,6 +40,7 @@ const Login = ({
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       setLoading(false);
+      setIsLoggedIn(true); // set the isLoggedIn state to true
       navigate("/");
     },
     []
@@ -70,11 +76,18 @@ const Login = ({
         method: "eth_requestAccounts",
      });
      const accountId = await getAccountId(ethProvider, addresses[0]);
-
+     
      if (accountId) {
-       // User address is found, navigate to home page
-    
-         navigate('/')
+        // User address is found, start session & navigate to home page
+        const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId) 
+        // prepare the session with the ceramic client resources
+        const session = await LoadSession(authMethod)
+       
+       
+        isLoggedIn(true);
+ 
+        // now we should be ready to publish claims, go to the form 
+        navigate('/')
      } else {
          // User address is not found, navigate to login page
          navigate("/login");
