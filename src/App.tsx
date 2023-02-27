@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+
 import Loader from "./components/Loader";
 import Snackbar from "./components/Snackbar";
 import Navbar from "./components/Navbar";
@@ -15,7 +16,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [isSnackbarOpen, toggleSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [metaNav, setMetaNav] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // new state variable
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,16 +30,23 @@ const App = () => {
 
   useEffect(() => {
     const isAuthenticated = checkAuth();
+    setIsLoggedIn(isAuthenticated); // set the initial value of isLoggedIn
     if (!isAuthenticated && location.pathname === "/") {
       navigate("/login");
     }
-  }, []);
+  }, [location, navigate]); // add location and navigate to the dependency array
 
-  const commonProps = { toggleSnackbar, setSnackbarMessage, setLoading,setMetaNav };
+  const commonProps = {
+    toggleSnackbar,
+    setSnackbarMessage,
+    setLoading,
+    isLoggedIn, // pass the isLoggedIn state variable to child components
+    setIsLoggedIn, // pass the setIsLoggedIn function to child components
+  };
 
   return (
     <>
-      <Navbar isAuth={checkAuth()} />
+      <Navbar isAuth={isLoggedIn} />
       <div className="container">
         <Snackbar
           snackbarMessage={snackbarMessage}

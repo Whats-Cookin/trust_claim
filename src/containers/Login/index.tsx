@@ -25,8 +25,8 @@ const Login = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
-  isLoggedIn, // receive the isLoggedIn prop
-  setIsLoggedIn // receive the setIsLoggedIn prop
+  isLoggedIn, 
+  setIsLoggedIn 
 }: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
@@ -93,35 +93,7 @@ const Login = ({
          navigate("/login");
      }
 
-    // const localStorageKey = "walletAuth";
-    // const localStorageData = localStorage.getItem(localStorageKey);
-
-    // if (localStorageData) {
-    //   const { address, timestamp } = JSON.parse(localStorageData);
-    //   const currentTime = new Date().getTime();
-    //   const expirationTime = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-
-    //   if (currentTime - timestamp < expirationTime) {
-    //     setEthAccountId(address);
-    //     navigate("/");
-    //     return;
-    //   }
-    // }
-
-    // if (window.ethereum && window.ethereum.selectedAddress) {
-    //   setEthAccountId(window.ethereum.selectedAddress);
-    //   // Store the selected address and timestamp in locale storage
-    //   const currentTime = new Date().getTime();
-    //   const data = {
-    //     address: window.ethereum.selectedAddress,
-    //     timestamp: currentTime,
-    //   };
-    //   localStorage.setItem(localStorageKey, JSON.stringify(data));
-    //   // Navigate to a different page after successful authentication
-    //   navigate("/");
-    // } else {
-    //   navigate("/login"); // Navigate to login page if the user is not authenticated
-    // }
+  
   };
 
   const handleLogin = async () => {
