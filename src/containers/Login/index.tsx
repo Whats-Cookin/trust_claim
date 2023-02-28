@@ -18,6 +18,8 @@ import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
+import { LoadSession } from "../../composedb/compose";
+
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`;
 
 const Login = ({
@@ -75,8 +77,16 @@ const Login = ({
 
      if (accountId) {
        // User address is found, navigate to home page
+       // User address is found, start session & navigate to home page
+        const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId) 
+        // prepare the session with the ceramic client resources
+        const session = await LoadSession(authMethod)
+
+        // TODO set some state variable about how we are logged in 
+
+        // now we should be ready to publish claims, go to the form 
+        navigate('/')
     
-         navigate('/')
      } else {
          // User address is not found, navigate to login page
          navigate("/login");

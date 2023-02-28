@@ -6,12 +6,9 @@ import { ComposeClient } from '@composedb/client'
 // @ts-ignore
 import { definition } from './__generate__/trustclaims.js'
 
-const ethProvider = await window.ethereum.request({ method: 'eth_requestAccounts' });
-const addresses = await ethProvider.enable()
-const accountId = await getAccountId(ethProvider, addresses[0])
-const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
+const client = new ComposeClient({ ceramic: 'http://localhost:7007', definition })
 
-const loadSession = async(authMethod: AuthMethod):Promise<DIDSession> => {
+const LoadSession = async(authMethod?: AuthMethod):Promise<DIDSession | undefined> => {
   const sessionStr = localStorage.getItem('didsession')
   let session
 
@@ -19,20 +16,19 @@ const loadSession = async(authMethod: AuthMethod):Promise<DIDSession> => {
     session = await DIDSession.fromSession(sessionStr)
   }
 
-  if (!session || (session.hasSession && session.isExpired)) {
-    session = await DIDSession.authorize(authMethod, { resources: []})
+  if (authMethod && (!session || (session.hasSession && session.isExpired))) {
+    session = await DIDSession.authorize(authMethod, { resources: client.resources })
+    client.setDID(session.did)
     localStorage.setItem('didsession', session.serialize())
   }
 
   return session
 }
 
-const client = new ComposeClient({ ceramic: 'http://localhost:7007', definition })
-const resources = client.resources
-const session = await DIDSession.authorize(authMethod, { resources })
-client.setDID(session.did)
+const PublishClaim = async(session: any, payload: any):Promise<any> => {
+    console.log(session)
+    // TODO here actually write the LinkedClaim built from the fields in payload (some fields of the claim will be empty)
+    return {'status': 'success'}
+}
 
-
-console.log(session)
-
-export { client };
+export { client, LoadSession, PublishClaim };

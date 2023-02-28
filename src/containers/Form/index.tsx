@@ -9,6 +9,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "../../axiosInstance";
 import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
+import { LoadSession, PublishClaim } from "../../composedb/compose"
 import styles from "./styles";
 
 const Form = ({
@@ -54,8 +55,14 @@ const Form = ({
         };
 
         setLoading(true);
-        const res = await axios.post(`/api/claim`, payload);
-        if (res.status === 201) {
+        const session = await LoadSession();
+        let res
+        if (session) { // we are logged in with ethereum
+            res = await PublishClaim(session, payload);
+        } else { // we are logged into backend
+            res = await axios.post(`/api/claim`, payload);
+        }
+        if (res.status === 201 || res.status === 'success') {
           setLoading(false);
           toggleSnackbar(true);
           setSnackbarMessage("Claim submitted successfully!");
