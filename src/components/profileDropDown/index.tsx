@@ -26,7 +26,7 @@ const ProfileDropdown = ({isAuth} : any) => {
     useEffect(() => {
         setDisableTooltip(openMenu)
     }, [openMenu, setDisableTooltip])
-    const handleClick = event => {
+    const handleClick = (event:any )=> {
         setAnchorEl(event.currentTarget)
     }
     const handleClose = () => {
