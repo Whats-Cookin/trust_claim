@@ -1,3 +1,4 @@
+import "../../composedb/init"
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -11,11 +12,20 @@ import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
 
+
+
+import { LoadSession, PublishClaim } from "../../composedb/compose";
+
+type FormProps = {
+  isLoggedIn: boolean;
+};
+
 const Form = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
-}: IHomeProps) => {
+  isLoggedIn,
+}: IHomeProps & FormProps ) => {
   const [subject, setSubject] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
@@ -53,41 +63,74 @@ const Form = ({
           reviewRating: reviewRatingAsNumber,
         };
 
-        // if logged in via metamask, write directly to composedb
-        // backend should subscribe to the model updates and add the data
-        // then we can pull it here
-        // TODO keep some state variable in a single place about our login state and method
         
         setLoading(true);
 
-        const session = await LoadSession(); // only if we have a stored session
-        let res
-        if (session) { // we are logged in with ethereum
-            res = await PublishClaim(payload);
-        } else { // we are logged into backend
-            res = await axios.post(`/api/claim`, payload);
-        }
+          // if logged in via metamask, write directly to composedb
+          // backend should subscribe to the model updates and add the data
+          // then we can pull it here
+          // TODO keep some state variable in a single place about our login state and method
 
-        if (res.status === 201 || res.status === 'success')  {
-          setLoading(false);
-          toggleSnackbar(true);
-          setSnackbarMessage("Claim submitted successfully!");
-
-          setSubject("");
-          setClaim("");
-          setObject("");
-          setQualifier("");
-          setAspect("");
-          setHowKnow("");
-          setSource("");
-          setEffectiveDate(new Date());
-          setConfidence(1);
-          setReviewRating(0);
+        if (isLoggedIn) {
+          try {
+            // if logged in via metamask, write directly to composedb
+            const session = await LoadSession(); // only if we have a stored session
+            if (session) {
+              const res: any = await PublishClaim(session, payload);
+              if (res.status === 201 || res.status === "success") {
+                setLoading(false);
+                toggleSnackbar(true);
+                setSnackbarMessage("Claim submitted successfully!");
+        
+                setSubject("");
+                setClaim("");
+                setObject("");
+                setQualifier("");
+                setAspect("");
+                setHowKnow("");
+                setSource("");
+                setEffectiveDate(new Date());
+                setConfidence(1);
+                setReviewRating(0);
+              } else {
+                setLoading(false);
+                toggleSnackbar(true);
+                setSnackbarMessage("Something went wrong!");
+              }
+            } else {
+              throw new Error("Session not found");
+            }
+          } catch (err: any) {
+            setLoading(false);
+            toggleSnackbar(true);
+            setSnackbarMessage(err.message);
+            console.error("err", err);
+          }
         } else {
-          setLoading(false);
-          toggleSnackbar(true);
-          setSnackbarMessage("Something went wrong!");
+          // if not logged in, send to backend for processing
+          const res:any = await axios.post(`/api/claim`, payload);
+          if (res.status === 201 || res.status === "success") {
+            setLoading(false);
+            toggleSnackbar(true);
+            setSnackbarMessage("Claim submitted successfully!");
+        
+            setSubject("");
+            setClaim("");
+            setObject("");
+            setQualifier("");
+            setAspect("");
+            setHowKnow("");
+            setSource("");
+            setEffectiveDate(new Date());
+            setConfidence(1);
+            setReviewRating(0);
+          } else {
+            setLoading(false);
+            toggleSnackbar(true);
+            setSnackbarMessage("Something went wrong!");
+          }
         }
+        
       } catch (err: any) {
         setLoading(false);
         toggleSnackbar(true);

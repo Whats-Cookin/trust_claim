@@ -1,3 +1,4 @@
+import "../../composedb/init"
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -15,7 +16,6 @@ import metaicon from "./metamask-icon.svg";
 import styles from "./styles";
 import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";
-
 // can change this if LoadSession intended to be private
 import { LoadSession } from "../../composedb/compose";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
@@ -26,19 +26,22 @@ const Login = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
-}: ILoginProps) => {
+  isLoggedIn, // receive the isLoggedIn prop
+  setIsLoggedIn // receive the setIsLoggedIn prop
+  }: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
-  const [ethAccountId, setEthAccountId] = useState("");
+  // const [ethAccountId, setEthAccountId] = useState("");
 
-  const loginButton = document.getElementById("loginButton");
-  const metamaskLink = document.getElementById("metamaskLink");
+  // const loginButton = document.getElementById("loginButton");
+  // const metamaskLink = document.getElementById("metamaskLink");
 
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       setLoading(false);
+      setIsLoggedIn(true); // set the isLoggedIn state to true
       navigate("/");
     },
     []
@@ -69,57 +72,56 @@ const Login = ({
   }, []);
 
   const handleWalletAuth = async () => {
-     const ethProvider = window.ethereum; // import/get your web3 eth provider
-     const addresses = await ethProvider.request({
-        method: "eth_requestAccounts",
-     });
-     const accountId = await getAccountId(ethProvider, addresses[0]);
-     
-     if (accountId) {
-        // User address is found, start session & navigate to home page
-        const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId) 
-        // prepare the session with the ceramic client resources
-        const session = await loadSession(authMethod)
-       
-        // TODO set some state variable about how we are logged in 
- 
-        // now we should be ready to publish claims, go to the form 
-        navigate('/')
-     } else {
-         // User address is not found, navigate to login page
-         navigate("/login");
-     }
-
-    // const localStorageKey = "walletAuth";
-    // const localStorageData = localStorage.getItem(localStorageKey);
-
-    // if (localStorageData) {
-    //   const { address, timestamp } = JSON.parse(localStorageData);
-    //   const currentTime = new Date().getTime();
-    //   const expirationTime = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-
-    //   if (currentTime - timestamp < expirationTime) {
-    //     setEthAccountId(address);
-    //     navigate("/");
-    //     return;
-    //   }
-    // }
-
-    // if (window.ethereum && window.ethereum.selectedAddress) {
-    //   setEthAccountId(window.ethereum.selectedAddress);
-    //   // Store the selected address and timestamp in locale storage
-    //   const currentTime = new Date().getTime();
-    //   const data = {
-    //     address: window.ethereum.selectedAddress,
-    //     timestamp: currentTime,
-    //   };
-    //   localStorage.setItem(localStorageKey, JSON.stringify(data));
-    //   // Navigate to a different page after successful authentication
-    //   navigate("/");
-    // } else {
-    //   navigate("/login"); // Navigate to login page if the user is not authenticated
-    // }
+    const ethProvider = window.ethereum; // import/get your web3 eth provider
+  
+    // Request user account addresses
+    console.log("Requesting user account addresses...");
+    const addresses = await ethProvider.request({
+      method: "eth_requestAccounts",
+    });
+    console.log("User account addresses:", addresses);
+  
+    // Get user account ID
+    console.log("Getting user account ID...");
+    const accountId = await getAccountId(ethProvider, addresses[0]);
+    console.log("User account ID:", accountId);
+  
+    if (accountId) {
+      // User address is found, start session & navigate to home page
+      console.log("User is logged in. Starting session...");
+      const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId);
+      console.log("Authentication method:", authMethod);
+  
+      // Prepare the session with the ceramic client resources
+      console.log("Preparing session with ceramic client resources...");
+      const session = await LoadSession(authMethod);
+      console.log("Session:", session);
+      console.log("setLoading:", setLoading);
+      console.log("isLoggedIn:", isLoggedIn);
+  
+      // Set the user as logged in
+      setIsLoggedIn(true);
+  
+      // Check if session exists before navigating to home page
+      if (session) {
+        console.log("Session exists. Navigating to home page...");
+        window.addEventListener("load", () => {
+          navigate("/");
+        });
+      } else {
+        console.log("Session does not exist");
+      }
+    } else {
+      // User address is not found, navigate to login page
+      console.log("User is not logged in. Navigating to login page...");
+      navigate("/", { replace: true }); // Use replace instead of navigate
+  
+      // Set the user as logged out
+      setIsLoggedIn(false);
+    }
   };
+  
+  
 
   const handleLogin = async () => {
     try {
@@ -149,7 +151,7 @@ const Login = ({
 
   // Check if Metamask is installed
   let ethLoginOpt;
-  if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
+  if (!isLoggedIn && typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
     ethLoginOpt = (
       <button
         id="loginButton"
@@ -220,4 +222,5 @@ const Login = ({
     </Box>
   );
 };
+
 export default Login;
