@@ -16,6 +16,7 @@ import metaicon from "./metamask-icon.svg";
 import styles from "./styles";
 import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";
+import { useAuth } from "../../hooks/useAuth";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`;
@@ -28,14 +29,19 @@ const Login = ({
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
   const [ethAccountId, setEthAccountId] = useState("");
+  const { login } = useAuth();
 
   const loginButton = document.getElementById("loginButton");
   const metamaskLink = document.getElementById("metamaskLink");
 
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      login({
+        accessToken,
+        refreshToken,
+      });
+      //localStorage.setItem("accessToken", accessToken);
+      //localStorage.setItem("refreshToken", refreshToken);
       setLoading(false);
       navigate("/");
     },
@@ -55,7 +61,10 @@ const Login = ({
         })
         .then((res) => {
           const { accessToken, refreshToken } = res.data;
-          handleAuth(accessToken, refreshToken);
+          login({
+            accessToken,
+            refreshToken,
+          });
         })
         .catch((err) => {
           setLoading(false);

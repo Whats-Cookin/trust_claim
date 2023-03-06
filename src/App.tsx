@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
 
 import Loader from "./components/Loader";
 import Snackbar from "./components/Snackbar";
@@ -9,8 +9,21 @@ import Register from "./containers/Register";
 import Form from "./containers/Form";
 import Search from "./containers/Search";
 import Claims from "./containers/Claims";
+import { AuthProvider } from "./hooks/useAuth";
+
+import { useAuth } from "./hooks/useAuth";
 
 import "./App.css";
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 const App = () => {
   const [loading, setLoading] = useState(false);
@@ -21,25 +34,11 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const checkAuth = () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (accessToken && refreshToken) return true;
-    return false;
-  };
-
-  useEffect(() => {
-    const isAuthenticated = checkAuth();
-    if (!isAuthenticated && location.pathname === "/") {
-      navigate("/login");
-    }
-  }, []);
-
   const commonProps = { toggleSnackbar, setSnackbarMessage, setLoading,setMetaNav };
 
   return (
-    <>
-      <Navbar isAuth={checkAuth()} />
+    <AuthProvider>
+      <Navbar />
       <div className="container">
         <Snackbar
           snackbarMessage={snackbarMessage}
@@ -48,14 +47,16 @@ const App = () => {
         />
         <Loader open={loading} />
         <Routes>
-          <Route path="/" element={<Form {...commonProps} />} />
-          <Route path="login" element={<Login {...commonProps} />} />
+          <Route path="/" element={<ProtectedRoute>
+            <Form {...commonProps} />
+          </ProtectedRoute>} />
+          <Route path="login" element={<Login {...commonProps}/>} />
           <Route path="register" element={<Register {...commonProps} />} />
           <Route path="search" element={<Search {...commonProps} />} />
           <Route path="claims" element={<Claims {...commonProps} />} />
         </Routes>
       </div>
-    </>
+    </AuthProvider>
   );
 };
 
