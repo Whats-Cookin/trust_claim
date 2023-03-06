@@ -18,12 +18,16 @@
     "@mui/material": "^5.8.2",
     "@mui/x-date-pickers": "^5.0.0-alpha.5",
     "cytoscape": "^3.22.1",
+    "d3": "^5.16.0",
+    "d3-graph": "^0.0.2",
     "date-fns": "^2.28.0",
     "did-session": "^1.0.0",
     "moment": "^2.29.4",
-    "react": "^18.0.0",
+    "react": "^18.2.0",
     "react-dom": "^18.0.0",
+    "react-graph": "^0.0.7",
     "react-router-dom": "^6.3.0",
+    "react-thumbnail-generator": "^2.6.5",
     "web3": "^1.8.2"
   },
   "devDependencies": {
