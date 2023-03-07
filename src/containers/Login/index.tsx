@@ -53,6 +53,23 @@ const Login = ({
     []
   );
 
+  // name this later handleWalletAuth
+  const handleFromWalletAuth = useCallback(
+    (session: string) => {  // maybe also account id or wallet id or something? 
+// TODO add address id please
+      login({
+        session,
+      });
+      //localStorage.setItem("accessToken", accessToken);
+      //localStorage.setItem("refreshToken", refreshToken);
+      setLoading(false);
+      setIsLoggedIn(true); // set the isLoggedIn state to true
+      navigate("/");
+    },
+    []
+  );
+
+
   const navigate = useNavigate();
   const queryParams = useQueryParams();
   const githubAuthCode = queryParams.get("code");
@@ -80,6 +97,10 @@ const Login = ({
     }
   }, []);
 
+
+
+
+  // please change this name to handleWalletLogin
   const handleWalletAuth = async () => {
     const ethProvider = window.ethereum; // import/get your web3 eth provider
   
@@ -108,15 +129,10 @@ const Login = ({
       console.log("setLoading:", setLoading);
  
   
-      // Set the user as logged in
-      setIsLoggedIn(true);
   
       // Check if session exists before navigating to home page
       if (session) {
-        console.log("Session exists. Navigating to home page...");
-        window.addEventListener("load", () => {
-          navigate("/");
-        });
+          handleFromWalletAuth(session);
       } else {
         console.log("Session does not exist");
       }
