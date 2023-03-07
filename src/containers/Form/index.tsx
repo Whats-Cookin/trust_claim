@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import  {TextField,Grid,Button,Slider} from "@mui/material";
-import { DatePicker,LocalizationProvider  } from "@mui/x-date-pickers";
+import { TextField, Grid, Button, Slider } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import axios from "../../axiosInstance";
 import Dropdown from "../../components/Dropdown";
@@ -26,7 +26,6 @@ const Form = ({
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(0.0);
   const [reviewRating, setReviewRating] = useState(0);
-  
 
   const navigate = useNavigate();
 
@@ -214,7 +213,7 @@ const Form = ({
               fieldType === "inputField" ? (
                 <TextField
                   value={value}
-                  sx={{ml: 1, mr: 1, width: '22ch'}}
+                  sx={{ ml: 1, mr: 1, width: "22ch" }}
                   margin="dense"
                   variant="outlined"
                   fullWidth
@@ -230,9 +229,9 @@ const Form = ({
                   label={label}
                   value={value}
                   setter={setter}
-                  options={options}                  
+                  options={options}
                   variant="outlined"
-                  sx={{ml: 1, mr: 1,mb:.5 ,mt:1 ,width: '22ch'}}
+                  sx={{ ml: 1, mr: 1, mb: 0.5, mt: 1, width: "22ch" }}
                 />
               )
           )}
@@ -259,9 +258,9 @@ const Form = ({
               fullWidth
               label="Review Rating"
               variant="filled"
-              sx={{ml: 1, mr: 1, width: '22ch'}}
+              sx={{ ml: 1, mr: 1, width: "22ch" }}
               onChange={(event: any) =>
-              setReviewRating(event.currentTarget.value)
+                setReviewRating(event.currentTarget.value)
               }
               type="number"
             />
@@ -274,7 +273,7 @@ const Form = ({
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  sx={{ml: 1, mr: 1, width: '22ch'}}
+                  sx={{ ml: 1, mr: 1, width: "22ch" }}
                   variant="filled"
                 />
               )}
@@ -286,11 +285,15 @@ const Form = ({
             onClick={async (event: any) => await handleSubmission(event)}
             variant="contained"
             size="large"
-            sx={{ml: 1, mr: 1, width: '22ch',
-             backgroundColor: "#eeeeee",
-            "&:hover": {
-              backgroundColor: "rgb(37, 3, 3)",
-            }}}
+            sx={{
+              ml: 1,
+              mr: 1,
+              width: "22ch",
+              backgroundColor: "#eeeeee",
+              "&:hover": {
+                backgroundColor: "rgb(37, 3, 3)",
+              },
+            }}
           >
             Submit
           </Button>

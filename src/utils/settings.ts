@@ -1,4 +1,3 @@
-
 const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 

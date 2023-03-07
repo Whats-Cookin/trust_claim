@@ -23,14 +23,14 @@ const styles = {
     borderBottom: "1px solid #000",
     padding: "5px 10px",
   },
-  fieldContent:{
+  fieldContent: {
     overflow: "hidden",
     overflowWrap: "break-word",
   },
-  createClaimBtn:{
+  createClaimBtn: {
     display: "block",
-    margin:"20px 0 5px auto",
-  }
+    margin: "20px 0 5px auto",
+  },
 };
 
 export default styles;
