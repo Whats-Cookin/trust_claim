@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode, FC } from "react";
 import { Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
 
 import Loader from "./components/Loader";
@@ -15,14 +15,18 @@ import { useAuth } from "./hooks/useAuth";
 
 import "./App.css";
 
-const ProtectedRoute = ({ children }) => {
+type Props = {
+  children?: React.ReactNode
+};
+
+const ProtectedRoute: FC<Props> = ({ children }) => {
   const { user } = useAuth();
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 const App = () => {
