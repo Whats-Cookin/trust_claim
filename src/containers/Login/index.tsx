@@ -18,6 +18,7 @@ import ILoginProps from "./types";
 import { useQueryParams } from "../../hooks";
 // can change this if LoadSession intended to be private
 import { LoadSession } from "../../composedb/compose";
+import { useAuth } from "../../hooks/useAuth";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`;
@@ -26,20 +27,25 @@ const Login = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
-  isLoggedIn, // receive the isLoggedIn prop
-  setIsLoggedIn // receive the setIsLoggedIn prop
+  setIsLoggedIn,
   }: ILoginProps) => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
   // const [ethAccountId, setEthAccountId] = useState("");
+  const [ethAccountId, setEthAccountId] = useState("");
+  const { login } = useAuth();
 
   // const loginButton = document.getElementById("loginButton");
   // const metamaskLink = document.getElementById("metamaskLink");
 
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      login({
+        accessToken,
+        refreshToken,
+      });
+      //localStorage.setItem("accessToken", accessToken);
+      //localStorage.setItem("refreshToken", refreshToken);
       setLoading(false);
       setIsLoggedIn(true); // set the isLoggedIn state to true
       navigate("/");
@@ -60,7 +66,10 @@ const Login = ({
         })
         .then((res) => {
           const { accessToken, refreshToken } = res.data;
-          handleAuth(accessToken, refreshToken);
+          login({
+            accessToken,
+            refreshToken,
+          });
         })
         .catch((err) => {
           setLoading(false);
@@ -97,7 +106,7 @@ const Login = ({
       const session = await LoadSession(authMethod);
       console.log("Session:", session);
       console.log("setLoading:", setLoading);
-      console.log("isLoggedIn:", isLoggedIn);
+ 
   
       // Set the user as logged in
       setIsLoggedIn(true);
@@ -114,8 +123,8 @@ const Login = ({
     } else {
       // User address is not found, navigate to login page
       console.log("User is not logged in. Navigating to login page...");
-      navigate("/", { replace: true }); // Use replace instead of navigate
-  
+      navigate("/login"); 
+
       // Set the user as logged out
       setIsLoggedIn(false);
     }
@@ -151,7 +160,7 @@ const Login = ({
 
   // Check if Metamask is installed
   let ethLoginOpt;
-  if (!isLoggedIn && typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
+  if (typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask) {
     ethLoginOpt = (
       <button
         id="loginButton"

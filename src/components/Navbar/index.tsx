@@ -5,10 +5,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ProfileDropdown from "../profileDropDown/index";
+import { useAuth } from "../../hooks/useAuth";
 
-const Navbar = ({ isAuth }: any) => {
-  console.log(isAuth)
+const Navbar = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAuth = user != null;
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");

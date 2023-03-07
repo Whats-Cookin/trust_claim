@@ -11,17 +11,22 @@ import {
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import {useNavigate} from "react-router-dom"
 import PropTypes from 'prop-types'
+import { useAuth } from "../../hooks/useAuth";
+
+
 const ProfileDropdown = ({isAuth} : any) => {
     const navigate = useNavigate();
-    const handleLogout = () => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        navigate("/login");
-    };
+    const { logout } = useAuth();
 
     const [disableTooltip, setDisableTooltip] = useState(false)
     const [open, setOpen] = useState(false)
     const [anchorEl, setAnchorEl] = React.useState(null)
+    const handleLogout = () => {
+        // close dropdown menu
+        handleClose();
+        setOpen(false);
+        logout();
+    };
     const openMenu = Boolean(anchorEl)
     useEffect(() => {
         setDisableTooltip(openMenu)

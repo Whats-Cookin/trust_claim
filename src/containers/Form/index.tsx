@@ -16,16 +16,13 @@ import styles from "./styles";
 
 import { LoadSession, PublishClaim } from "../../composedb/compose";
 
-type FormProps = {
-  isLoggedIn: boolean;
-};
 
 const Form = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
-  isLoggedIn,
-}: IHomeProps & FormProps ) => {
+  setIsLoggedIn,
+}: IHomeProps ) => {
   const [subject, setSubject] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
@@ -71,7 +68,7 @@ const Form = ({
           // then we can pull it here
           // TODO keep some state variable in a single place about our login state and method
 
-        if (isLoggedIn) {
+        if (setIsLoggedIn(true)) {
           try {
             // if logged in via metamask, write directly to composedb
             const session = await LoadSession(); // only if we have a stored session
