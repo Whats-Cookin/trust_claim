@@ -11,7 +11,7 @@ import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
 import ThumbNail from "../../thumbnail/index"
-import Image from 'next/image';
+// import Image from 'next/image';
 import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined'
 import useImageResize from "../../hooks/useImageResize"
 import {useSnackbar} from 'notistack'
