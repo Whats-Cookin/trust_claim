@@ -11,10 +11,10 @@ import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
 import ThumbNail from "../../thumbnail/index"
-// import Image from 'next/image';
 import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined'
 import useImageResize from "../../hooks/useImageResize"
 import {useSnackbar} from 'notistack'
+import { useForm } from "react-hook-form";
 
 const Form = ({
   toggleSnackbar,
@@ -32,8 +32,8 @@ const Form = ({
   const [confidence, setConfidence] = useState(0.0);
   const [reviewRating, setReviewRating] = useState(0);
  const [image,setImage] = useState("");
- const imageResize = useImageResize();
- const {enqueueSnackbar} = useSnackbar()
+ 
+
   
 
   const navigate = useNavigate();
@@ -47,6 +47,8 @@ const Form = ({
         const effectiveDateAsString = effectiveDate.toISOString();
         const confidenceAsNumber = Number(confidence);
         const reviewRatingAsNumber = Number(reviewRating);
+        // const { watch,setValue} = useForm();
+        // const watchImage = watch('imageFile', null);
 
         const payload = {
           subject,
@@ -206,6 +208,8 @@ const Form = ({
       step: 0.01,
     },
   ];
+  const { watch,setValue} = useForm();
+  const watchImage = watch('imageFile', null);
 
   return (
     <form className="Form">
@@ -276,19 +280,7 @@ const Form = ({
             />
           )}
          
-         <Grid display="flex" justifyContent="center">
         
-         <label htmlFor="circleImage">
-            <Button
-              startIcon={<BackupOutlinedIcon />}
-              variant="outlined"
-              sx={{ml: 1, mr: 1, width: '25ch',height:"8ch"}}
-              component="span">
-              Choose Image
-            </Button>
-          </label>
-          
-        </Grid>
         
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
@@ -301,9 +293,21 @@ const Form = ({
                   sx={{ml: 1, mr: 1, width: '22ch'}}
                   variant="filled"
                 />
+                
               )}
             />
           </LocalizationProvider>
+          <Box display="flex" justifyContent="center"  sx={{ml: 1, mr: 1, width: '25ch' , borderStyle: "groove", borderWidth:"1px"}}>
+        
+        <ThumbNail
+       image={watchImage}
+       setImage={file => {
+         setValue('imageFile', file)
+       }}
+       />
+      
+      
+    </Box>
          
         </Box>
 

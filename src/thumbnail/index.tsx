@@ -4,7 +4,7 @@ import {Box, Button, Typography} from '@mui/material'
 import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined'
 import useImageResize from '../hooks/useImageResize'
 import {useSnackbar} from 'notistack'
-import Image from 'next/image'
+import ReactCrop from 'react-image-crop'
 import styled from '@emotion/styled'
 
 
@@ -23,7 +23,7 @@ const ImageWrap = styled.span`
   }
 `
 
-export default function ThumbNail({radius , initialImage ,image,setImage}) {
+export default function ThumbNail({radius , initialImage ,image, setImage}) {
   const imageResize = useImageResize()
   const {enqueueSnackbar} = useSnackbar()
 
@@ -35,7 +35,7 @@ export default function ThumbNail({radius , initialImage ,image,setImage}) {
             <Box display="flex" justifyContent="center">
               {radius === 'circle' ? (
                 <ImageWrap>
-                  <Image
+                  <img
                     width={302}
                     height={302}
                     src={image ? URL.createObjectURL(image) : initialImage}
@@ -44,9 +44,9 @@ export default function ThumbNail({radius , initialImage ,image,setImage}) {
                   />
                 </ImageWrap>
               ) : (
-                <Image
-                  width={200}
-                  height={200}
+                <img
+                  width={150}
+                  height={150}
                   src={image ? URL.createObjectURL(image) : initialImage}
                   style={{objectFit:"cover",margin: '1em'}}
                   alt="preview of selected file"
