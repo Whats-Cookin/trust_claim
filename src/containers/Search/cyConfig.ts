@@ -21,7 +21,8 @@ const cyConfig = (containerRef: any) => {
             "https://vignette.wikia.nocookie.net/logopedia/images/f/fc/Amazon.com_Favicon_2.svg/revision/latest/scale-to-width-down/280?cb=20160808095346",
           backgroundWidth: "300px",
           backgroundHeight: "300px",
-          backgroundOpacity: .5,
+          backgroundImageSize: "cover",
+          backgroundOpacity: 0.5,
           height: 300,
           width: 300,
           shape: "round-rectangle",
@@ -66,7 +67,7 @@ const cyConfig = (containerRef: any) => {
           borderOpacity: 0.5,
         },
       },
-
+     
       {
         selector: ":hover",
         style: {

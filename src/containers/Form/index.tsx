@@ -10,6 +10,11 @@ import axios from "../../axiosInstance";
 import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
+import ThumbNail from "../../thumbnail/index"
+import Image from 'next/image';
+import BackupOutlinedIcon from '@mui/icons-material/BackupOutlined'
+import useImageResize from "../../hooks/useImageResize"
+import {useSnackbar} from 'notistack'
 
 const Form = ({
   toggleSnackbar,
@@ -26,6 +31,9 @@ const Form = ({
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(0.0);
   const [reviewRating, setReviewRating] = useState(0);
+ const [image,setImage] = useState("");
+ const imageResize = useImageResize();
+ const {enqueueSnackbar} = useSnackbar()
   
 
   const navigate = useNavigate();
@@ -205,6 +213,7 @@ const Form = ({
         <Typography variant="h4" sx={styles.formHeading}>
           Enter a Claim
         </Typography>
+        
         <Box sx={styles.inputFieldWrap}>
           {inputFieldLabelArr.map(
             (
@@ -266,6 +275,21 @@ const Form = ({
               type="number"
             />
           )}
+         
+         <Grid display="flex" justifyContent="center">
+        
+         <label htmlFor="circleImage">
+            <Button
+              startIcon={<BackupOutlinedIcon />}
+              variant="outlined"
+              sx={{ml: 1, mr: 1, width: '25ch',height:"8ch"}}
+              component="span">
+              Choose Image
+            </Button>
+          </label>
+          
+        </Grid>
+        
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Effective Date"
@@ -280,7 +304,11 @@ const Form = ({
               )}
             />
           </LocalizationProvider>
+         
         </Box>
+
+       
+
         <Box sx={styles.submitButtonWrap}>
           <Button
             onClick={async (event: any) => await handleSubmission(event)}
