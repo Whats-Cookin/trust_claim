@@ -14,6 +14,9 @@ const Home = (homeProps: IHomeProps) => {
   };
 
   function removeTrailingSlash(url: string) {
+    if (typeof url != 'string') {
+        return url
+    }
     return url
       .replace(/\/+$/, "")
       .replace("https://", "")
@@ -21,6 +24,9 @@ const Home = (homeProps: IHomeProps) => {
   }
 
   const getTopicFromDomain = (url: string) => {
+    if (typeof url != 'string') {
+        return url
+    }
     if (url.includes("trustclaims.whatscookin.us")) {
       return url.split("/").at(-1);
     } else {
