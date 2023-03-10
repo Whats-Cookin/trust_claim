@@ -67,20 +67,20 @@ const Login = ({
   }, []);
 
   const handleWalletAuth = async () => {
-     const ethProvider = window.ethereum; // import/get your web3 eth provider
-     const addresses = await ethProvider.request({
-        method: "eth_requestAccounts",
-     });
-     const accountId = await getAccountId(ethProvider, addresses[0]);
+    const ethProvider = window.ethereum; // import/get your web3 eth provider
+    const addresses = await ethProvider.request({
+      method: "eth_requestAccounts",
+    });
+    const accountId = await getAccountId(ethProvider, addresses[0]);
 
-     if (accountId) {
-       // User address is found, navigate to home page
-    
-         navigate('/')
-     } else {
-         // User address is not found, navigate to login page
-         navigate("/login");
-     }
+    if (accountId) {
+      // User address is found, navigate to home page
+
+      navigate("/");
+    } else {
+      // User address is not found, navigate to login page
+      navigate("/login");
+    }
 
     // const localStorageKey = "walletAuth";
     // const localStorageData = localStorage.getItem(localStorageKey);
@@ -147,7 +147,7 @@ const Login = ({
         id="loginButton"
         onClick={handleWalletAuth}
         style={styles.authbtn}
-      > 
+      >
         Log in with Metamask{" "}
         <span>
           <img src={metaicon} alt="" style={{ width: "30px" }} />
@@ -173,9 +173,7 @@ const Login = ({
         </MuiLink>
       </Box>
       <Box>{ethLoginOpt}</Box>
-      <Typography component="div" >
-        Or, Login with email and password
-      </Typography>
+      <Typography component="div">Or, Login with email and password</Typography>
       <TextField
         value={emailLogin}
         fullWidth

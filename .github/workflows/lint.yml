@@ -26,4 +26,3 @@ jobs:
 
       - name: Run JS linter
         run: npx prettier --check "{src,source,test}/**/*.{js,ts,tsx,jsx,json}"
-
