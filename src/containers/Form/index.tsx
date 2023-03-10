@@ -17,6 +17,7 @@ const Form = ({
   setLoading,
 }: IHomeProps) => {
   const [subject, setSubject] = useState("");
+  const [subjectName, setSubjectName] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
   const [statement, setStatement] = useState("");
@@ -25,7 +26,7 @@ const Form = ({
   const [sourceURI, setSourceURI] = useState("");
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(0.0);
-  const [reviewRating, setReviewRating] = useState(0);
+  const [stars, setStars] = useState(0);
 
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const Form = ({
       try {
         const effectiveDateAsString = effectiveDate.toISOString();
         const confidenceAsNumber = Number(confidence);
-        const reviewRatingAsNumber = Number(reviewRating);
+        const starsAsNumber = Number(stars);
 
         const payload = {
           subject,
@@ -49,7 +50,7 @@ const Form = ({
           sourceURI,
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
-          reviewRating: reviewRatingAsNumber,
+          stars: starsAsNumber,
         };
 
         setLoading(true);
@@ -60,6 +61,7 @@ const Form = ({
           setSnackbarMessage("Claim submitted successfully!");
 
           setSubject("");
+          setSubjectName("");
           setClaim("");
           setObject("");
           setStatement("");
@@ -68,7 +70,7 @@ const Form = ({
           setSourceURI("");
           setEffectiveDate(new Date());
           setConfidence(1);
-          setReviewRating(0);
+          setStars(0);
         } else {
           setLoading(false);
           toggleSnackbar(true);
@@ -97,8 +99,8 @@ const Form = ({
     },
     {
       label: "Subject Name",
-      value: subject,
-      setter: setSubject,
+      value: subjectName,
+      setter: setSubjectName,
       type: "text",
       fieldType: "inputField",
     },
@@ -246,29 +248,29 @@ const Form = ({
           {claim === "rated" && aspect.includes("quality:") ? (
             <Box sx={styles.sliderField}>
               <Box display="flex" flexDirection="column">
-                <Typography variant="body2">Review Rating</Typography>
+                <Typography variant="body2">Review Rating "Stars"</Typography>
                 <Slider
-                  getAriaLabel={() => "Review rating"}
-                  value={reviewRating}
-                  onChange={(_: Event, rating: number | number[]): void =>
-                    setReviewRating(Number(rating))
+                  getAriaLabel={() => "Review rating (stars)"}
+                  value={stars}
+                  onChange={(_: Event, stars: number | number[]): void =>
+                    setStars(Number(stars))
                   }
                   min={0}
                   max={5}
                   valueLabelDisplay="auto"
                 />
               </Box>
-              <Typography variant="body2">{reviewRating}</Typography>
+              <Typography variant="body2">{stars}</Typography>
             </Box>
           ) : (
             <TextField
-              value={reviewRating}
+              value={stars}
               fullWidth
-              label="Review Rating"
+              label="Review Rating (stars)"
               variant="filled"
               sx={{ ml: 1, mr: 1, width: "22ch" }}
               onChange={(event: any) =>
-                setReviewRating(event.currentTarget.value)
+                setStars(event.currentTarget.value)
               }
               type="number"
             />
