@@ -90,12 +90,20 @@ const Form = ({
 
   const inputFieldLabelArr = [
     {
-      label: "Subject (did or url)",
+      label: "Subject",
       value: subject,
       setter: setSubject,
       type: "text",
       fieldType: "inputField",
     },
+    {
+      label: "Subject Name",
+      value: subject,
+      setter: setSubject,
+      type: "text",
+      fieldType: "inputField",
+    },
+
     {
       label: "Claim",
       value: claim,

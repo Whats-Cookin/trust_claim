@@ -22,6 +22,7 @@ const parseClaims = (claims: any) => {
       });
     }
 
+
     // adding object node
     if (claim.object) {
       const uri = new URL(claim.object);
