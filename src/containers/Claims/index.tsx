@@ -14,6 +14,9 @@ const Home = (homeProps: IHomeProps) => {
   };
 
   function removeTrailingSlash(url: string) {
+    if (typeof url != 'string') {
+        return url
+    }
     return url
       .replace(/\/+$/, "")
       .replace("https://", "")
@@ -21,6 +24,9 @@ const Home = (homeProps: IHomeProps) => {
   }
 
   const getTopicFromDomain = (url: string) => {
+    if (typeof url != 'string') {
+        return url
+    }
     if (url.includes("trustclaims.whatscookin.us")) {
       return url.split("/").at(-1);
     } else {
@@ -96,7 +102,7 @@ const Home = (homeProps: IHomeProps) => {
                 </a>
               </Typography>
               <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
-                <strong> Subject:</strong>{" "}
+                <strong> Subject Name:</strong>{" "}
                 <a
                   href={`/search?query=${getTopicFromDomain(claim.subject)}`}
                   rel="noreferrer"
@@ -104,7 +110,10 @@ const Home = (homeProps: IHomeProps) => {
                 >
                   {claim.subject}
                 </a>
+
+                
               </Typography>
+              
 
               <Typography
                 variant="body1"
@@ -128,6 +137,10 @@ const Home = (homeProps: IHomeProps) => {
               >
                 <strong>Source:</strong>{" "}
                 <a href={claim.source}>{claim.source}</a>
+
+                {/* <strong>subject Name:</strong>{" "}
+                <a href={claim.subjectName}>{claim.subjectName}</a> */}
+
               </Typography>
             </Card>
           ))}
