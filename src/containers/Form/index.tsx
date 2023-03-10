@@ -19,10 +19,10 @@ const Form = ({
   const [subject, setSubject] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
-  const [qualifier, setQualifier] = useState("");
+  const [statement, setStatement] = useState("");
   const [aspect, setAspect] = useState("");
   const [howKnown, setHowKnow] = useState("");
-  const [source, setSource] = useState("");
+  const [sourceURI, setSourceURI] = useState("");
   const [effectiveDate, setEffectiveDate] = useState(new Date());
   const [confidence, setConfidence] = useState(0.0);
   const [reviewRating, setReviewRating] = useState(0);
@@ -62,10 +62,10 @@ const Form = ({
           setSubject("");
           setClaim("");
           setObject("");
-          setQualifier("");
+          setStatement("");
           setAspect("");
           setHowKnow("");
-          setSource("");
+          setSourceURI("");
           setEffectiveDate(new Date());
           setConfidence(1);
           setReviewRating(0);
@@ -174,15 +174,15 @@ const Form = ({
     },
     {
       label: "Statement",
-      value: qualifier,
-      setter: setQualifier,
+      value: statement,
+      setter: setStatement,
       type: "text",
       fieldType: "inputField",
     },
     {
-      label: "Source",
-      value: source,
-      setter: setSource,
+      label: "Source URI",
+      value: sourceURI,
+      setter: setSourceURI,
       type: "text",
       fieldType: "inputField",
     },
