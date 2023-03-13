@@ -24,7 +24,8 @@ const App = () => {
   const checkAuth = () => {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    if (accessToken && refreshToken) return true;
+    const ethAddress = localStorage.getItem("ethAddress");
+    if (ethAddress || (accessToken && refreshToken)) return true;
     return false;
   };
 

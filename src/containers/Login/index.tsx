@@ -74,8 +74,8 @@ const Login = ({
     const accountId = await getAccountId(ethProvider, addresses[0]);
 
     if (accountId) {
-      // User address is found, navigate to home page
-
+      // User address is found, store and navigate to home page
+      localStorage.setItem("ethAddress", accountId.address)
       navigate("/");
     } else {
       // User address is not found, navigate to login page
