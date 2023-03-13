@@ -10,6 +10,7 @@ import axios from "../../axiosInstance";
 import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
+import { PublishClaim } from "../../composedb/compose";
 
 const Form = ({
   toggleSnackbar,
@@ -42,6 +43,7 @@ const Form = ({
 
         const payload = {
           subject,
+          subjectName,
           claim,
           object,
           statement,
@@ -54,7 +56,17 @@ const Form = ({
         };
 
         setLoading(true);
-        const res = await axios.post(`/api/claim`, payload);
+
+        // TODO better way of checking the login method
+        const did = localStorage.getItem('did')
+
+        let res
+        if (did) {
+           res = await PublishClaim(payload)
+        } else {    
+           res = await axios.post(`/api/claim`, payload);
+        }
+
         if (res.status === 201) {
           setLoading(false);
           toggleSnackbar(true);
