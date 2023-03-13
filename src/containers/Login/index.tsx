@@ -1,9 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { DIDSession } from "did-session";
-import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
-import { ComposeClient } from "@composedb/client";
+import { getAccountId } from "@didtools/pkh-ethereum";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -15,6 +13,7 @@ import metaicon from "./metamask-icon.svg";
 
 import styles from "./styles";
 import ILoginProps from "./types";
+import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from "../../hooks";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
@@ -76,6 +75,13 @@ const Login = ({
     if (accountId) {
       // User address is found, store and navigate to home page
       localStorage.setItem("ethAddress", accountId.address)
+      try {
+          const clients = useCeramicContext()
+          const { ceramic, composeClient } = clients
+          await authenticateCeramic(ceramic, composeClient)
+      } catch(e) {
+          console.log(`Error trying to authenticate ceramic: ${e}`)
+      }
       navigate("/");
     } else {
       // User address is not found, navigate to login page
