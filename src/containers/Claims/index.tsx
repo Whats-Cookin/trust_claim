@@ -8,12 +8,13 @@ import IHomeProps from "./types";
 const Home = (homeProps: IHomeProps) => {
   const [fetchedClaims, setFetchedClaims] = useState<any[]>([]);
 
+
   const getLocalClaims = async () => {
     const claims = JSON.parse(window.localStorage.getItem("claims") ?? "[]");
     setFetchedClaims(claims);
   };
 
-  function removeTrailingSlash(url: string) {
+  const  removeTrailingSlash =(url: string) => {
     if (typeof url != 'string') {
         return url
     }
@@ -149,4 +150,4 @@ const Home = (homeProps: IHomeProps) => {
   );
 };
 
-export default Home;
+export default Home ;
