@@ -1,75 +1,92 @@
-// import { render ,screen ,fireEvent, waitFor} from "@testing-library/react";
-// import Form  from "./index";
-// import { expect, describe, it, afterEach,test } from 'vitest';
-// import userEvent from "@testing-library/user-event";
-// import React from "react";
-// import axios from "../../axiosInstance";
-// import { act } from '@testing-library/react';
+import { render, screen, fireEvent  } from '@testing-library/react';
+import { test, expect } from 'vitest';
+import Form from './index';
+import axios from "axios";
+import { mockAxios, mock } from "../../mocks/axios";
+import MockAdapter from "axios-mock-adapter";
 
-// describe('Form', () => {
-//   test('renders form fields', async () => {
-//     await act(async () => {
-//       render(<Form />);
-//     });
+const mockFunction = (): any => {
+    // return a mock value here
+  }
+  
+test('Form', () => {
+    let mockToggleSnackbar = mockFunction();
+    let mockSetSnackbarMessage = mockFunction();
+    let mockSetLoading = mockFunction();
+    
 
-//     expect(screen.getByLabelText('Subject')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Subject Name')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Claim')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Aspect')).toBeInTheDocument();
-//     expect(screen.getByLabelText('How Known')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Object')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Statement')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Source URI')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Confidence')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Stars')).toBeInTheDocument();
-//     expect(screen.getByLabelText('Effective Date')).toBeInTheDocument();
-//   });
+  test('submission with subject and claim', async () => {
+    const { getByLabelText, getByText } = render(
+      <Form
+        toggleSnackbar={mockToggleSnackbar}
+        setSnackbarMessage={mockSetSnackbarMessage}
+        setLoading={mockSetLoading}
+      />
+    );
 
-//   test('submits the form with valid input', async () => {
-//     await act(async () => {
-//       render(<Form />);
-//     });
+    const subjectInput = getByLabelText(/subject/i);
+    const claimInput = getByLabelText(/claim/i);
+    const submitButton = getByText(/submit/i);
 
-//     fireEvent.change(screen.getByLabelText('Subject'), { target: { value: 'John Doe' } });
-//     fireEvent.change(screen.getByLabelText('Claim'), { target: { value: 'rated' } });
-//     fireEvent.change(screen.getByLabelText('Object'), { target: { value: 'The restaurant' } });
-//     fireEvent.change(screen.getByLabelText('Statement'), { target: { value: 'The food was excellent.' } });
-//     fireEvent.change(screen.getByLabelText('Aspect'), { target: { value: 'quality:taste' } });
-//     fireEvent.change(screen.getByLabelText('How Known'), { target: { value: 'website' } });
-//     fireEvent.change(screen.getByLabelText('Source URI'), { target: { value: 'https://example.com' } });
-//     fireEvent.change(screen.getByLabelText('Effective Date'), { target: { value: '2022-03-27' } });
-//     fireEvent.change(screen.getByLabelText('Confidence'), { target: { value: '0.5' } });
-//     fireEvent.change(screen.getByLabelText('Stars'), { target: { value: '4' } });
+    fireEvent.change(subjectInput, { target: { value: 'Test subject' } });
+    fireEvent.change(claimInput, { target: { value: 'Test claim' } });
+    fireEvent.click(submitButton);
 
-//     fireEvent.click(screen.getByText('Submit'));
+    // Assert that the loading state is set to true
+    expect(mockSetLoading).toHaveBeenCalledWith(true);
 
-//     // Wait for the form submission to complete
-//     await screen.findByText('Claim submitted successfully!');
+    // Assert that the API call is made with the correct data
+    expect(mockAxios.post).toHaveBeenCalledWith(
+      '/api/claim',
+      expect.objectContaining({
+      subject: "test subject",
+      claim: "test claim",
+      object: "",
+      statement: "",
+      aspect: "",
+      howKnown: "",
+      sourceURI: "",
+      effectiveDate: expect.any(String),
+      confidence: 0,
+      stars: 0,
+      })
+    );
 
-//     expect(screen.getByLabelText('Subject')).toHaveValue('');
-//     expect(screen.getByLabelText('Subject Name')).toHaveValue('');
-//     expect(screen.getByLabelText('Claim')).toHaveValue('');
-//     expect(screen.getByLabelText('Aspect')).toHaveValue('');
-//     expect(screen.getByLabelText('How Known')).toHaveValue('');
-//     expect(screen.getByLabelText('Object')).toHaveValue('');
-//     expect(screen.getByLabelText('Statement')).toHaveValue('');
-//     expect(screen.getByLabelText('Source URI')).toHaveValue('');
-//     expect(screen.getByLabelText('Confidence')).toHaveValue('1');
-//     expect(screen.getByLabelText('Stars')).toHaveValue('0');
-//     expect(screen.getByLabelText('Effective Date')).toHaveValue('');
-//   });
+    // Assert that the snackbar is shown with the correct message
+    expect(mockToggleSnackbar).toHaveBeenCalledWith(true);
+    expect(mockSetSnackbarMessage).toHaveBeenCalledWith('Claim submitted successfully!');
 
-//   test('displays an error message if required fields are missing', async () => {
-//     await act(async () => {
-//       render(<Form />);
-//     });
+    // Assert that the form fields are reset
+    expect(subjectInput).toHaveValue('');
+    expect(claimInput).toHaveValue('');
+  });
 
-//     fireEvent.click(screen.getByText('Submit'));
+  test('submission without subject or claim', async () => {
+    const { getByText } = render(
+      <Form
+        toggleSnackbar={mockToggleSnackbar}
+        setSnackbarMessage={mockSetSnackbarMessage}
+        setLoading={mockSetLoading}
+      />
+    );
 
-//     await screen.findByText('Subject and Claims are required fields.');
+    const submitButton = getByText(/submit/i);
 
-//     expect(screen.queryByText('Claim submitted successfully!')).not.toBeInTheDocument();
-//   });
-// });
+    fireEvent.click(submitButton);
+
+    // Assert that the loading state is not set
+    expect(mockSetLoading).not.toHaveBeenCalled();
+
+    // Assert that the snackbar is shown with the correct message
+    expect(mockToggleSnackbar).toHaveBeenCalledWith(true);
+    expect(mockSetSnackbarMessage).toHaveBeenCalledWith('Subject and Claims are required fields.');
+  });
+});
 
 
+   
+  
+  
+  
+  
+  

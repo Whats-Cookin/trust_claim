@@ -1,37 +1,78 @@
-// import React from 'react';
-// import { render, fireEvent, screen } from '@testing-library/react';
-// import { expect, describe, it, afterEach,test } from 'vitest';
-// import Login from './index';
+import { render, fireEvent, waitFor, screen ,act} from "@testing-library/react";
+import axios from "axios";
+import MockAdapter from "axios-mock-adapter";
+import  Login  from "./index";
+import { describe, test, expect, beforeAll,afterAll,beforeEach,it, afterEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { createMemoryHistory } from "history";
+import { Router } from "react-router-dom";
 
-// describe('Login component', () => {
-//   test('renders email and password fields', () => {
-//     render(<Login />);
-//     const emailInput = screen.getByLabelText('Email');
-//     const passwordInput = screen.getByLabelText('Password');
-//     expect(emailInput).toBeInTheDocument();
-//     expect(passwordInput).toBeInTheDocument();
-//   });
 
-//   test('clicking login button with empty fields shows error message', () => {
-//     render(<Login />);
-//     const loginButton = screen.getByRole('button', { name: /log in/i });
-//     fireEvent.click(loginButton);
-//     const errorMessage = screen.getByText(/both email and password are required fields/i);
-//     expect(errorMessage).toBeInTheDocument();
-//   });
+describe("Login component", () => {
+    let mockAdapter = new MockAdapter(axios);
+    // let mockAxios: MockAdapter;
 
-//   test('clicking Metamask login button shows Metamask popup', async () => {
-//     window.ethereum = { request: jest.fn(() => Promise.resolve(['0x1234'])) };
-//     render(<Login />);
-//     const metamaskButton = screen.getByRole('button', { name: /log in with metamask/i });
-//     fireEvent.click(metamaskButton);
-//     expect(window.ethereum.request).toHaveBeenCalled();
-//   });
+  beforeEach(() => {
+    mockAdapter = new MockAdapter(axios);
 
-//   test('clicking Ethereum login link redirects to Metamask install page', () => {
-//     render(<Login />);
-//     const ethereumLoginLink = screen.getByText(/install metamask/i);
-//     fireEvent.click(ethereumLoginLink);
-//     expect(window.location.href).toBe('https://metamask.io/');
-//   });
-// });
+  });
+
+  afterEach(() => {
+    mockAdapter.reset();
+
+  });
+
+  afterAll(() => {
+    mockAdapter.restore();
+
+  });
+
+  it("should render the login form correctly", () => {
+    const { getByLabelText, getByText } = render(<MemoryRouter><Login toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined} /></MemoryRouter>);
+    expect(getByLabelText("Email")).toBeInTheDocument();
+    expect(getByLabelText("Password")).toBeInTheDocument();
+    expect(getByText("Login")).toBeInTheDocument();
+  });
+  it("should display an error message if login fails", async () => {
+    mockAdapter.onPost("/login").reply(401, { error: "Invalid credentials" });
+    const { getByLabelText, getByText ,queryByText } = render(<MemoryRouter><Login toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined} /></MemoryRouter>);
+    const emailInput = getByLabelText("Email") as HTMLInputElement;
+    const passwordInput = getByLabelText("Password") as HTMLInputElement;
+    const loginButton = getByText("Login");
+
+    fireEvent.change(emailInput, { target: { value: "user@example.com" } });
+    fireEvent.change(passwordInput, { target: { value: "password" } });
+    fireEvent.submit(loginButton);
+
+    await act(async () => {
+        await waitFor(() => {
+          const errorMessage = queryByText("Invalid credentials");
+          expect(errorMessage).toBe(null);
+        });
+      });
+      
+  });
+  
+
+  it("should navigate to the home page after successful login", async () => {
+    mockAdapter.onPost("/login").reply(200, {
+      accessToken: "valid-access-token",
+      refreshToken: "valid-refresh-token",
+    });
+  
+    const { getByLabelText, getByText } = render(<MemoryRouter><Login toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined} /></MemoryRouter>);
+  
+    const emailInput = getByLabelText("Email") as HTMLInputElement;
+    const passwordInput = getByLabelText("Password") as HTMLInputElement;
+    const loginButton = getByText("Login");
+  
+    fireEvent.change(emailInput, { target: { value: "user@example.com" } });
+    fireEvent.change(passwordInput, { target: { value: "password" } });
+    fireEvent.submit(loginButton);
+  
+    expect(window.location.href).toEqual("http://localhost:3000/");
+
+ 
+});
+  });

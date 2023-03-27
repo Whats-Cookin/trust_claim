@@ -19,6 +19,7 @@ const Register = ({
   const [emailRegister, setEmailRegister] = useState("");
   const [passwordRegister, setPasswordRegister] = useState("");
 
+
   const navigate = useNavigate();
 
   const handleRegister = async () => {
