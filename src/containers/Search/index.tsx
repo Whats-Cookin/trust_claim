@@ -13,6 +13,7 @@ import IHomeProps from "./types";
 import { parseClaims } from "./graph.utils";
 import styles from "./styles";
 import { Typography } from "@mui/material";
+import { BACKEND_BASE_URL } from "../../utils/settings";
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search;
@@ -50,9 +51,17 @@ const Search = (homeProps: IHomeProps) => {
       const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
         params: { search: query },
       });
-
+  
       if (res.data.claims.length > 0) {
         updateClaims(search, res.data.claims);
+        cy.layout({
+          name: "circle",
+          directed: true,
+          padding: 30,
+          animate: true,
+          animationDuration: 1000,
+        }).run();
+        cy.center();
       } else {
         setSnackbarMessage("No results found");
         toggleSnackbar(true);
@@ -62,16 +71,10 @@ const Search = (homeProps: IHomeProps) => {
       setSnackbarMessage(err.message);
     } finally {
       setLoading(false);
-      cy.layout({
-        name: "circle",
-        directed: true,
-        padding: 30,
-        animate: true,
-        animationDuration: 1000,
-      }).run();
-      cy.center();
     }
   };
+  
+
 
   const openClaimsList = () => {
     window.localStorage.setItem("claims", JSON.stringify(tempClaims));
@@ -90,6 +93,8 @@ const Search = (homeProps: IHomeProps) => {
     }
   };
 
+
+  
   const handleSearchKeypress = async (event: any) => {
     if (event.key === "Enter") {
       handleSearch();
@@ -161,14 +166,16 @@ const Search = (homeProps: IHomeProps) => {
     if (cy && query) handleSearch();
   }, [cy]);
 
-  useEffect(() => {
-    if (!cy) {
-      setCy(Cytoscape(cyConfig(ref.current)));
-    }
-  }, []);
 
+  useEffect(() => {
+    if (!cy || !ref.current) return;
+  
+    setCy(Cytoscape(cyConfig(ref.current)));
+  }, [cyConfig, cy, ref]);
+  
   return (
     <Container sx={styles.container} maxWidth={false}>
+      
       <Modal
         open={openModal}
         setOpen={setOpenModal}
@@ -176,9 +183,12 @@ const Search = (homeProps: IHomeProps) => {
       />
       <Box sx={styles.searchFieldContainer}>
         <TextField
-          label="Search"
+           id="search-input"
+           type="text"
+           data-testid="search-input"
+           placeholder="Search..."
+           value={searchVal}
           variant="outlined"
-          value={searchVal}
           onChange={(e) => setSearchVal(e.target.value)}
           onKeyUp={handleSearchKeypress}
           sx={{
@@ -189,6 +199,7 @@ const Search = (homeProps: IHomeProps) => {
         />
         <Button
           variant="contained"
+          data-testid="search-button"
           onClick={handleSearch}
           sx={{
             backgroundColor: "#333333",
