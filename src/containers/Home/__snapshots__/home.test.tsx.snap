@@ -492,13 +492,13 @@ exports[`Home component > should render correctly 1`] = `
               id=":r7:"
               placeholder="mm/dd/yyyy"
               type="tel"
-              value="03/27/2023"
+              value="03/28/2023"
             />
             <div
               class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-filled MuiInputAdornment-sizeMedium css-jv61v3-MuiInputAdornment-root"
             >
               <button
-                aria-label="Choose date, selected date is Mar 27, 2023"
+                aria-label="Choose date, selected date is Mar 28, 2023"
                 class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1yq5fb3-MuiButtonBase-root-MuiIconButton-root"
                 tabindex="0"
                 type="button"
