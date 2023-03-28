@@ -51,9 +51,7 @@ describe("search component", () => {
   it("should render the Search component", async () => {
     const { getByTestId } = render(
       <MemoryRouter>
-        <Dropdown label={""} value={""} setter={function (value: string): void {
-          throw new Error("Function not implemented.");
-        } } options={[]} />
+        <Search toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined}  />
       </MemoryRouter>
     );
 
