@@ -1,8 +1,24 @@
-const getLabel = (uri: any) => {
-  if (uri.hostname === "trustclaims.whatscookin.us") {
-    return decodeURIComponent(uri.pathname.split("/").pop());
+const isValidUrl = (urlString: string) => {
+  var inputElement = document.createElement("input");
+  inputElement.type = "url";
+  inputElement.value = urlString;
+
+  if (!inputElement.checkValidity()) {
+    return false;
+  } else {
+    return true;
   }
-  return `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`;
+};
+
+const getLabel = (uri: any) => {
+  if (isValidUrl(uri)) {
+    if (uri.hostname === "trustclaims.whatscookin.us") {
+      return decodeURIComponent(uri.pathname.split("/").pop());
+    }
+    return `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`;
+  } else {
+    return uri;
+  }
 };
 
 const parseClaims = (claims: any) => {
@@ -11,7 +27,10 @@ const parseClaims = (claims: any) => {
   claims.forEach((claim: any) => {
     // adding subject node
     if (claim.subject) {
-      const uri = new URL(claim.subject);
+      let uri: any;
+      if (isValidUrl(claim.subject)) uri = new URL(claim.subject);
+      else uri = claim.subject;
+
       const label = getLabel(uri);
 
       elements.push({
@@ -22,10 +41,12 @@ const parseClaims = (claims: any) => {
       });
     }
 
-
     // adding object node
     if (claim.object) {
-      const uri = new URL(claim.object);
+      let uri: any;
+      if (isValidUrl(claim.object)) uri = new URL(claim.object);
+      else uri = claim.object;
+
       const label = getLabel(uri);
 
       elements.push({

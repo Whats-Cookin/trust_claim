@@ -106,6 +106,7 @@ const Search = (homeProps: IHomeProps) => {
 
   useMemo(() => {
     if (cy) {
+      // when edges is clicked
       cy.on("tap", "edge", (event: any) => {
         event.preventDefault();
         const claim = event.target;
