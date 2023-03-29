@@ -16,7 +16,7 @@ const SearchWrapper = ({
       onChange={onChange}
       value={value}
     />
-    <SearchIconWrapper onClick={onSearchIconClick}>
+    <SearchIconWrapper onClick={onSearchIconClick} data-testid="search-icon">
       <SearchIcon />
     </SearchIconWrapper>
   </Search>

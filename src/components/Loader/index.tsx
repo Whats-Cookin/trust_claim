@@ -10,7 +10,7 @@ const Loader = ({ open }: ILoaderTypes) => {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
       >
-        <CircularProgress color="inherit" />
+        <CircularProgress color="inherit" data-testid="loader" />
       </Backdrop>
     </div>
   );
