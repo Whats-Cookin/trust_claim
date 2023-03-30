@@ -7,7 +7,6 @@ import Button from "@mui/material/Button";
 import ProfileDropdown from "../profileDropDown/index";
 
 const Navbar = ({ isAuth }: any) => {
-  console.log(isAuth);
   const navigate = useNavigate();
 
   const handleLogout = () => {
