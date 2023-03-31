@@ -4,8 +4,13 @@ const styles = {
     flexDirection: "column",
     rowGap: 2,
     width: "100%",
-    maxWidth: "350px",
+    padding:'2rem',
+    maxWidth: "430px",
     marginTop: 2,
+    background: "#FFFFFF",
+    boxShadow: "0px 1px 20px rgba(0, 0, 0, 0.25)",
+    zIndex:20,
+    borderRadius: "10px",
   },
   inputField: {
     backgroundColor: "white",
@@ -24,17 +29,34 @@ const styles = {
     padding: "1rem",
   },
   submitButton: {
-    backgroundColor: "white",
+    backgroundColor: "#80B8BD",
     color: "black",
+    width:'100%',
 
     "&:hover": {
       backgroundColor: "grey.300",
     },
   },
-  authLinkButton: {
+  ETHButton:{
     textDecoration: "none",
     backgroundColor: "white",
     color: "black",
+    margin:'auto',
+    width:'70%',
+    borderRadius:'7px',
+    border:'2px solid #80B8BD',
+    padding: "0.5rem",
+    fontSize: "16px",
+    display: "flex",
+  },
+  authLinkButton: {
+    textDecoration: "none",
+    margin:'auto',
+    backgroundColor: "white",
+    color: "black",
+    width:'60%',
+    borderRadius:'7px',
+    border:'2px solid #80B8BD',
 
     "&:hover": {
       backgroundColor: "grey.300",

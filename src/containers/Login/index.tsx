@@ -10,6 +10,9 @@ import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import metaicon from "./metamask-icon.svg";
+import polygon1 from '../../assets/circle.png';
+import polygon2 from '../../assets/Polygon 2.png';
+import polygon3 from '../../assets/Polygon 3.png'
 
 import styles from "./styles";
 import ILoginProps from "./types";
@@ -87,36 +90,6 @@ const Login = ({
       // User address is not found, navigate to login page
       navigate("/login");
     }
-
-    // const localStorageKey = "walletAuth";
-    // const localStorageData = localStorage.getItem(localStorageKey);
-
-    // if (localStorageData) {
-    //   const { address, timestamp } = JSON.parse(localStorageData);
-    //   const currentTime = new Date().getTime();
-    //   const expirationTime = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-
-    //   if (currentTime - timestamp < expirationTime) {
-    //     setEthAccountId(address);
-    //     navigate("/");
-    //     return;
-    //   }
-    // }
-
-    // if (window.ethereum && window.ethereum.selectedAddress) {
-    //   setEthAccountId(window.ethereum.selectedAddress);
-    //   // Store the selected address and timestamp in locale storage
-    //   const currentTime = new Date().getTime();
-    //   const data = {
-    //     address: window.ethereum.selectedAddress,
-    //     timestamp: currentTime,
-    //   };
-    //   localStorage.setItem(localStorageKey, JSON.stringify(data));
-    //   // Navigate to a different page after successful authentication
-    //   navigate("/");
-    // } else {
-    //   navigate("/login"); // Navigate to login page if the user is not authenticated
-    // }
   };
 
   const handleLogin = async () => {
@@ -172,13 +145,17 @@ const Login = ({
   }
 
   return (
-    <Box sx={styles.authContainer}>
+    <>
+    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
+    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
+    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
+      <Box sx={styles.authContainer}>
       <Box>
         <MuiLink href={githubUrl} sx={styles.authLinkButton}>
           Login with Github <GitHubIcon sx={styles.authIcon} />
         </MuiLink>
       </Box>
-      <Box>{ethLoginOpt}</Box>
+      <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
       <Typography component="div">Or, Login with email and password</Typography>
       <TextField
         value={emailLogin}
@@ -209,11 +186,12 @@ const Login = ({
         </Button>
       </Box>
       <Link to="/register" style={{ textDecoration: "none" }}>
-        <Typography variant="body1" color="white">
+        <Typography variant="body1" color="black">
           Click here to register
         </Typography>
       </Link>
     </Box>
+  </>
   );
 };
 export default Login;

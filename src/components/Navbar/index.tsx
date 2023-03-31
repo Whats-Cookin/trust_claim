@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ProfileDropdown from "../profileDropDown/index";
 
+
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate();
 
@@ -16,10 +17,12 @@ const Navbar = ({ isAuth }: any) => {
   };
 
   return (
+    <>
+    
     <Box sx={{ flexGrow: 1, width: "100%", overflow: "hidden" }}>
       <AppBar
-        position="static"
-        sx={{ backgroundColor: "#eeeeee", color: "#280606" }}
+        position="fixed"
+        sx={{ backgroundColor: "#eeeeee", color: "#280606",top:0, width:'100%' }}
       >
         <Toolbar>
           <Typography
@@ -51,6 +54,7 @@ const Navbar = ({ isAuth }: any) => {
         </Toolbar>
       </AppBar>
     </Box>
+    </>
   );
 };
 

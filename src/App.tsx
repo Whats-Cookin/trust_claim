@@ -46,7 +46,7 @@ const App = () => {
   return (
     <>
       <Navbar isAuth={checkAuth()} />
-      <div className="container">
+      <div className="app">
         <Snackbar
           snackbarMessage={snackbarMessage}
           isSnackbarOpen={isSnackbarOpen}
