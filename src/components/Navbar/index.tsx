@@ -10,11 +10,11 @@ import ProfileDropdown from "../profileDropDown/index";
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("refreshToken");
+  //   navigate("/login");
+  // };
 
   return (
     <>
