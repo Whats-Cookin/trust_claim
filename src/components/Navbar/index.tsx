@@ -35,6 +35,9 @@ const Navbar = ({ isAuth }: any) => {
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
             {isAuth ? (
               <>
+             <Button color="inherit" onClick={() => navigate("/search")}>
+                  Search
+                </Button>
                 <ProfileDropdown />
               </>
             ) : (
