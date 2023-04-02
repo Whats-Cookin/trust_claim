@@ -44,9 +44,10 @@ const App = () => {
   };
   const isLoginPage = window.location.pathname === '/login';
   const isRegisterPage = window.location.pathname === '/register';
+
   return (
-  
     <>
+    {/* Render the navigation component only if the user is not on the login or register page */}
     {!isLoginPage && !isRegisterPage &&  <Navbar isAuth={checkAuth()} />}
      
       <div className="app">
@@ -58,8 +59,8 @@ const App = () => {
         <Loader open={loading} />
         <Routes>
           <Route path="/" element={<Form {...commonProps} />} />
-          <Route path="/login" element={<Login {...commonProps} />} />
-          <Route path="/register" element={<Register {...commonProps} />} />
+          <Route path="login" element={<Login {...commonProps} />} />
+          <Route path="register" element={<Register {...commonProps} />} />
           <Route path="search" element={<Search {...commonProps} />} />
           <Route path="claims" element={<Claims {...commonProps} />} />
         </Routes>
