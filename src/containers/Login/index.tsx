@@ -127,10 +127,11 @@ const Login = ({
         onClick={handleWalletAuth}
         style={styles.authbtn}
       >
-         Metamask{" "}
-        <span>
+         <span>
           <img src={metaicon} alt="" style={{ width: "30px" }} />
         </span>
+         Metamask{" "}
+       
       </button>
     );
   } else {
@@ -187,7 +188,7 @@ const Login = ({
       </div>
       <Box>
         <MuiLink href={githubUrl} sx={styles.authLinkButton}>
-        Github <GitHubIcon sx={styles.authIcon} />
+        <GitHubIcon sx={styles.authIcon} />Github 
         </MuiLink>
       </Box>
       <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>

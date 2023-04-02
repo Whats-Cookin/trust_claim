@@ -1,13 +1,20 @@
 const styles = {
   formContainer: {
-    mt: 5,
+    mt: 10,
     mb: 10,
-    height: "73.5vh",
+    height: "auto",
+    background: "#FFFFFF",
+    boxShadow: "0px 1px 20px rgba(0, 0, 0, 0.25)",
+    zIndex: 20,
+    borderRadius: "10px",
+    padding:'1rem 0.5rem'
   },
   formHeading: {
     mb: 3,
     textAlign: "center",
-    fontSize: "16px",
+    fontSize: "20px",
+    color:'#80B8BD',
+    textTransform:'uppercase',
     fontWeight: "bold",
   },
   inputFieldWrap: {

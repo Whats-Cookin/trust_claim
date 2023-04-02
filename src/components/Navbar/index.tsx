@@ -15,7 +15,7 @@ const Navbar = ({ isAuth }: any) => {
   //   localStorage.removeItem("refreshToken");
   //   navigate("/login");
   // };
-
+  const isSearch = window.location.pathname === "/search";
   return (
     <>
     
@@ -35,6 +35,9 @@ const Navbar = ({ isAuth }: any) => {
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
             {isAuth ? (
               <>
+            {!isSearch &&  <Button color="inherit" onClick={() => navigate("/search")}>
+                  Search
+                </Button>}
                 <ProfileDropdown />
               </>
             ) : (
