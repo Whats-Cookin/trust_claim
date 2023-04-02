@@ -42,10 +42,13 @@ const App = () => {
     setLoading,
     setMetaNav,
   };
-
+  const isLoginPage = window.location.pathname === '/login';
+  const isRegisterPage = window.location.pathname === '/register';
   return (
+  
     <>
-      <Navbar isAuth={checkAuth()} />
+    {!isLoginPage && !isRegisterPage &&  <Navbar isAuth={checkAuth()} />}
+     
       <div className="app">
         <Snackbar
           snackbarMessage={snackbarMessage}
@@ -55,8 +58,8 @@ const App = () => {
         <Loader open={loading} />
         <Routes>
           <Route path="/" element={<Form {...commonProps} />} />
-          <Route path="login" element={<Login {...commonProps} />} />
-          <Route path="register" element={<Register {...commonProps} />} />
+          <Route path="/login" element={<Login {...commonProps} />} />
+          <Route path="/register" element={<Register {...commonProps} />} />
           <Route path="search" element={<Search {...commonProps} />} />
           <Route path="claims" element={<Claims {...commonProps} />} />
         </Routes>
