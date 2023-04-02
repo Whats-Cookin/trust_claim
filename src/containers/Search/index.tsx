@@ -12,6 +12,7 @@ import cyConfig from "./cyConfig";
 import IHomeProps from "./types";
 import { parseClaims } from "./graph.utils";
 import styles from "./styles";
+import SearchIcon from '@mui/icons-material/Search';
 import { Typography } from "@mui/material";
 
 const Search = (homeProps: IHomeProps) => {
@@ -175,8 +176,57 @@ const Search = (homeProps: IHomeProps) => {
         setOpen={setOpenModal}
         selectedClaim={selectedClaim}
       />
+     <section className="absolute top-[90px] left-[2%] z-20">
+     <div className=" rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]">
+       <input type="search" value={searchVal} onChange={(e) => setSearchVal(e.target.value)}
+          onKeyUp={handleSearchKeypress}
+          className='w-full  p-[0.5rem] rounded-lg border-none outline-none'
+          />
+          <button className="bg-[#333] font-bold text-white h-full w-[60px]" onClick={handleSearch}>
+          <SearchIcon />
+          </button>
+        
+           {/* <Button
+          variant="contained"
+          onClick={handleSearch}
+          sx={{
+            backgroundColor: "#333333",
+            fontWeight: "bold",
+            height:'100%',
+            "&:hover": {
+              backgroundColor: "#333333",
+              color: "#fff",
+            },
+          }}
+          disableElevation
+        >
+         
+        </Button> */}
+         
+       </div>
+       <Button
+          variant="outlined"
+          onClick={reset}
+          sx={{
+            backgroundColor: "#fff",
+            color: "#333333",
+            marginTop:'1rem',
+            fontWeight: "bold",
+            border: "2px solid #333333",
+            "&:hover": {
+              backgroundColor: "#fff",
+              border: "2px solid #333333",
+              color: "#333333",
+            },
+          }}
+          disableElevation
+        >
+          Reset
+        </Button>
+     </section>
       <Box sx={styles.searchFieldContainer}>
-        <TextField
+       
+        {/* <TextField
           label="Search"
           variant="outlined"
           value={searchVal}
@@ -187,23 +237,9 @@ const Search = (homeProps: IHomeProps) => {
               borderColor: "#000",
             },
           }}
-        />
-        <Button
-          variant="contained"
-          onClick={handleSearch}
-          sx={{
-            backgroundColor: "#333333",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "#333333",
-              color: "#fff",
-            },
-          }}
-          disableElevation
-        >
-          Search
-        </Button>
-        <Button
+        /> */}
+       
+        {/* <Button
           variant="outlined"
           onClick={reset}
           sx={{
@@ -220,7 +256,7 @@ const Search = (homeProps: IHomeProps) => {
           disableElevation
         >
           Reset
-        </Button>
+        </Button> */}
       </Box>
       {tempClaims.length > 0 && (
         <Button

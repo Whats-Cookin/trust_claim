@@ -3,6 +3,7 @@ import { Button } from "@mui/material"
 
 const Nav2 = () => {
     const navigate = useNavigate()
+    const isSearch = window.location.pathname === '/search';
   return (
     <div className="flex items-center justify-between p-[2rem] z-10 fixed w-full ">
         <p className="text-[#fff] font-bold text-4xl">TrustClaim</p>
