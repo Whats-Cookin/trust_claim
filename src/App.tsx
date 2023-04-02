@@ -42,11 +42,15 @@ const App = () => {
     setLoading,
     setMetaNav,
   };
+  const isLoginPage = window.location.pathname === '/login';
+  const isRegisterPage = window.location.pathname === '/register';
 
   return (
     <>
-      <Navbar isAuth={checkAuth()} />
-      <div className="container">
+    {/* Render the navigation component only if the user is not on the login or register page */}
+    {!isLoginPage && !isRegisterPage &&  <Navbar isAuth={checkAuth()} />}
+     
+      <div className="app">
         <Snackbar
           snackbarMessage={snackbarMessage}
           isSnackbarOpen={isSnackbarOpen}
