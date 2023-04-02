@@ -127,7 +127,7 @@ const Login = ({
         onClick={handleWalletAuth}
         style={styles.authbtn}
       >
-        Log in with Metamask{" "}
+         Metamask{" "}
         <span>
           <img src={metaicon} alt="" style={{ width: "30px" }} />
         </span>
@@ -150,13 +150,9 @@ const Login = ({
     <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
     <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
       <Box sx={styles.authContainer}>
-      <Box>
-        <MuiLink href={githubUrl} sx={styles.authLinkButton}>
-          Login with Github <GitHubIcon sx={styles.authIcon} />
-        </MuiLink>
-      </Box>
-      <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
-      <Typography component="div">Or, Login with email and password</Typography>
+      <p className='text-center text-[#80B8BD] font-bold text-2xl'>
+        Login
+       </p>
       <TextField
         value={emailLogin}
         fullWidth
@@ -185,7 +181,18 @@ const Login = ({
           Login
         </Button>
       </Box>
-      <Link to="/register" style={{ textDecoration: "none" }}>
+      <div className="flex items-center justify-center gap-2">
+      <span className="h-[1px] w-[100px] bg-[black]"></span><Typography component="div">Or, Login with </Typography> <span className="h-[1px] w-[100px] bg-[black]"></span>
+    
+      </div>
+      <Box>
+        <MuiLink href={githubUrl} sx={styles.authLinkButton}>
+        Github <GitHubIcon sx={styles.authIcon} />
+        </MuiLink>
+      </Box>
+      <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
+     
+       <Link to="/register" style={{ textDecoration: "none" }}>
         <Typography variant="body1" color="black">
           Click here to register
         </Typography>

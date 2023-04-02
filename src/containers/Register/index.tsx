@@ -86,7 +86,7 @@ const Register = ({
         </Button>
       </Box>
       <Link to="/login" style={{ textDecoration: "none" }}>
-        <Typography variant="body1" color="white">
+        <Typography variant="body1" color="black">
           Click here to Login
         </Typography>
       </Link>
