@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ProfileDropdown from "../profileDropDown/index";
+import Nav2 from "./Nav2";
 
 
 const Navbar = ({ isAuth }: any) => {
@@ -35,24 +36,16 @@ const Navbar = ({ isAuth }: any) => {
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
             {isAuth ? (
               <>
-            {!isSearch &&  <Button color="inherit" onClick={() => navigate("/search")}>
-                  Search
-                </Button>}
+            
                 <ProfileDropdown />
               </>
-            ) : (
+            ) 
+            : (
               <>
-                <Button color="inherit" onClick={() => navigate("/search")}>
-                  Search
-                </Button>
-                <Button color="inherit" onClick={() => navigate("/login")}>
-                  Login
-                </Button>
-                <Button color="inherit" onClick={() => navigate("/register")}>
-                  Register
-                </Button>
+                <Nav2 />
               </>
-            )}
+            )
+            }
           </Box>
         </Toolbar>
       </AppBar>
