@@ -5,22 +5,25 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import ProfileDropdown from "../profileDropDown/index";
+import Nav2 from "./Nav2";
+
 
 const Navbar = ({ isAuth }: any) => {
-  console.log(isAuth);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/login");
-  };
-
+  // const handleLogout = () => {
+  //   localStorage.removeItem("accessToken");
+  //   localStorage.removeItem("refreshToken");
+  //   navigate("/login");
+  // };
+  const isSearch = window.location.pathname === "/search";
   return (
+    <>
+    
     <Box sx={{ flexGrow: 1, width: "100%", overflow: "hidden" }}>
       <AppBar
-        position="static"
-        sx={{ backgroundColor: "#eeeeee", color: "#280606" }}
+        position="fixed"
+        sx={{ backgroundColor: "#eeeeee", color: "#280606",top:0, width:'100%' }}
       >
         <Toolbar>
           <Typography
@@ -33,25 +36,21 @@ const Navbar = ({ isAuth }: any) => {
           <Box sx={{ display: "flex", justifyContent: "center", columnGap: 3 }}>
             {isAuth ? (
               <>
+            
                 <ProfileDropdown />
               </>
-            ) : (
+            ) 
+            : (
               <>
-                <Button color="inherit" onClick={() => navigate("/search")}>
-                  Search
-                </Button>
-                <Button color="inherit" onClick={() => navigate("/login")}>
-                  Login
-                </Button>
-                <Button color="inherit" onClick={() => navigate("/register")}>
-                  Register
-                </Button>
+                <Nav2 />
               </>
-            )}
+            )
+            }
           </Box>
         </Toolbar>
       </AppBar>
     </Box>
+    </>
   );
 };
 

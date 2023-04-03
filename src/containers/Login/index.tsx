@@ -1,9 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { DIDSession } from "did-session";
-import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
-import { ComposeClient } from "@composedb/client";
+import { getAccountId } from "@didtools/pkh-ethereum";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -12,9 +10,13 @@ import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import metaicon from "./metamask-icon.svg";
+import polygon1 from '../../assets/circle.png';
+import polygon2 from '../../assets/Polygon 2.png';
+import polygon3 from '../../assets/Polygon 3.png'
 
 import styles from "./styles";
 import ILoginProps from "./types";
+import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from "../../hooks";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
@@ -74,43 +76,20 @@ const Login = ({
     const accountId = await getAccountId(ethProvider, addresses[0]);
 
     if (accountId) {
-      // User address is found, navigate to home page
-
+      // User address is found, store and navigate to home page
+      localStorage.setItem("ethAddress", accountId.address)
+      try {
+          const clients = useCeramicContext()
+          const { ceramic, composeClient } = clients
+          await authenticateCeramic(ceramic, composeClient)
+      } catch(e) {
+          console.log(`Error trying to authenticate ceramic: ${e}`)
+      }
       navigate("/");
     } else {
       // User address is not found, navigate to login page
       navigate("/login");
     }
-
-    // const localStorageKey = "walletAuth";
-    // const localStorageData = localStorage.getItem(localStorageKey);
-
-    // if (localStorageData) {
-    //   const { address, timestamp } = JSON.parse(localStorageData);
-    //   const currentTime = new Date().getTime();
-    //   const expirationTime = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
-
-    //   if (currentTime - timestamp < expirationTime) {
-    //     setEthAccountId(address);
-    //     navigate("/");
-    //     return;
-    //   }
-    // }
-
-    // if (window.ethereum && window.ethereum.selectedAddress) {
-    //   setEthAccountId(window.ethereum.selectedAddress);
-    //   // Store the selected address and timestamp in locale storage
-    //   const currentTime = new Date().getTime();
-    //   const data = {
-    //     address: window.ethereum.selectedAddress,
-    //     timestamp: currentTime,
-    //   };
-    //   localStorage.setItem(localStorageKey, JSON.stringify(data));
-    //   // Navigate to a different page after successful authentication
-    //   navigate("/");
-    // } else {
-    //   navigate("/login"); // Navigate to login page if the user is not authenticated
-    // }
   };
 
   const handleLogin = async () => {
@@ -148,10 +127,11 @@ const Login = ({
         onClick={handleWalletAuth}
         style={styles.authbtn}
       >
-        Log in with Metamask{" "}
-        <span>
+         <span>
           <img src={metaicon} alt="" style={{ width: "30px" }} />
         </span>
+         Metamask{" "}
+       
       </button>
     );
   } else {
@@ -166,14 +146,14 @@ const Login = ({
   }
 
   return (
-    <Box sx={styles.authContainer}>
-      <Box>
-        <MuiLink href={githubUrl} sx={styles.authLinkButton}>
-          Login with Github <GitHubIcon sx={styles.authIcon} />
-        </MuiLink>
-      </Box>
-      <Box>{ethLoginOpt}</Box>
-      <Typography component="div">Or, Login with email and password</Typography>
+    <>
+    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
+    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
+    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
+      <Box sx={styles.authContainer}>
+      <p className='text-center text-[#80B8BD] font-bold text-2xl'>
+        Login
+       </p>
       <TextField
         value={emailLogin}
         fullWidth
@@ -202,12 +182,24 @@ const Login = ({
           Login
         </Button>
       </Box>
-      <Link to="/register" style={{ textDecoration: "none" }}>
-        <Typography variant="body1" color="white">
+      <div className="flex items-center justify-center gap-2">
+      <span className="h-[1px] w-[100px] bg-[black]"></span><Typography component="div">Or, Login with </Typography> <span className="h-[1px] w-[100px] bg-[black]"></span>
+    
+      </div>
+      <Box>
+        <MuiLink href={githubUrl} sx={styles.authLinkButton}>
+        <GitHubIcon sx={styles.authIcon} />Github 
+        </MuiLink>
+      </Box>
+      <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
+     
+       <Link to="/register" style={{ textDecoration: "none" }}>
+        <Typography variant="body1" color="black">
           Click here to register
         </Typography>
       </Link>
     </Box>
+  </>
   );
 };
 export default Login;

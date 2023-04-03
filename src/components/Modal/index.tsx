@@ -1,3 +1,4 @@
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MUIModal from "@mui/material/Modal";
@@ -27,7 +28,6 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
       return url;
     }
   };
-
   const isValidHttpUrl = (string: string) => {
     let url;
     return true;
@@ -42,7 +42,7 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 
   return (
     <MUIModal open={open} onClose={handleClose}>
-      <Box sx={styles.container}>
+      <Box sx={{ ...styles.container, overflowY: 'auto', maxHeight: '80vh' }}>
         <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
           Claim
         </Typography>
