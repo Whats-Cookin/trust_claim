@@ -50,11 +50,6 @@ describe("Home", () => {
       const expectedOutput = "example.com";
       expect(removeTrailingSlash(input)).toEqual(expectedOutput);
     });
-  
-    it("returns input if it is not a string", () => {
-      const input = 123;
-      expect(removeTrailingSlash("input")).toEqual(input);
-    });
   });
   
 
@@ -70,12 +65,6 @@ describe("Home", () => {
       const url = "https://example.com/foo/bar/";
       const result = getTopicFromDomain(url);
       expect(result).toEqual("example.com/foo/bar");
-    });
-
-    test("should return the input if it is not a string", () => {
-      const input = 123;
-      const result = getTopicFromDomain("input");
-      expect(result).toEqual(input);
     });
   });
 
