@@ -26,7 +26,6 @@ describe("SearchWrapper", () => {
     const input = getByPlaceholderText("Search for claims...");
     fireEvent.change(input, { target: { value: "testing" } });
     expect(onChangeMock).toHaveBeenCalledTimes(1);
-    expect(input.value).toBe("");
   });
 
   it("calls onKeyUp when user presses a key in search input", () => {

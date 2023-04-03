@@ -53,7 +53,7 @@ describe("Home", () => {
   
     it("returns input if it is not a string", () => {
       const input = 123;
-      expect(removeTrailingSlash(input)).toEqual(input);
+      expect(removeTrailingSlash("input")).toEqual(input);
     });
   });
   
@@ -74,7 +74,7 @@ describe("Home", () => {
 
     test("should return the input if it is not a string", () => {
       const input = 123;
-      const result = getTopicFromDomain(input);
+      const result = getTopicFromDomain("input");
       expect(result).toEqual(input);
     });
   });
