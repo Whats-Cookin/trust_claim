@@ -1,18 +1,53 @@
-import { useNavigate } from "react-router-dom"
-import { Button } from "@mui/material"
+import {useNavigate} from "react-router-dom"
+import {Button, Typography} from "@mui/material"
+import {Box} from "@mui/system";
 
 const Nav2 = () => {
     const navigate = useNavigate()
     const isSearch = window.location.pathname === '/search';
-  return (
-    <div className="flex items-center justify-between p-[2rem] z-10 fixed w-full ">
-        <p className="text-[#fff] font-bold text-4xl">TrustClaim</p>
-        
-        <Button color="inherit" style={{background:'#80B8BD', padding: ' 0.5rem 1rem'}} onClick={() => navigate("/search")}>
-                  Search
-        </Button>
-    </div>
-  )
+    return (
+        <Box sx={
+            {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '2rem',
+                zIndex: 10,
+                position: 'fixed',
+                width: '100%'
+            }
+        }>
+            <Typography variant="h5" component="div"
+                sx={
+                    {
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        fontSize: '30px'
+                    }
+            }>
+                Trust Claims
+            </Typography>
+            <Box sx={
+                {
+                    display: "flex",
+                    columnGap: 3
+                }
+            }>
+                <Button color="inherit"
+                    onClick={
+                        () => navigate("/login")
+                }>
+                    Login
+                </Button>
+                <Button color="inherit"
+                    onClick={
+                        () => navigate("/register")
+                }>
+                    Register
+                </Button>
+            </Box>
+        </Box>
+    )
 }
 
-export default Nav2
+export default Nav2;
