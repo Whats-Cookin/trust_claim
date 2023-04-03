@@ -38,8 +38,8 @@ const parseClaims = (claims: any) => {
           id: claim.subject,
           label: label,
         },
-      }
-    },
+      });
+    }
 
     // adding object node
     if (claim.object) {
