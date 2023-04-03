@@ -11,8 +11,8 @@ const parseClaims = (claims: any) => {
   claims.forEach((claim: any) => {
     // adding subject node
     if (claim.subject) {
-      const uri = new URL(claim.subject);
-      const label = getLabel(uri);
+      const uri = claim.subject; //new URL(claim.subject);
+      const label = uri; //getLabel(uri);
 
       elements.push({
         data: {
@@ -25,8 +25,8 @@ const parseClaims = (claims: any) => {
 
     // adding object node
     if (claim.object) {
-      const uri = new URL(claim.object);
-      const label = getLabel(uri);
+      const uri = claim.object; // new URL(claim.object);
+      const label = uri; // getLabel(uri);
 
       elements.push({
         data: {

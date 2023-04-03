@@ -30,7 +30,7 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 
   const isValidHttpUrl = (string: string) => {
     let url;
-
+    return true;
     try {
       url = new URL(string);
     } catch (_) {
