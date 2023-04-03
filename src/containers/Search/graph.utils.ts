@@ -39,7 +39,7 @@ const parseClaims = (claims: any) => {
           label: label,
         },
       }
-    }
+    },
 
     // adding object node
     if (claim.object) {
