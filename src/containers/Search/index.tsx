@@ -44,7 +44,7 @@ const Search = (homeProps: IHomeProps) => {
       setTempClaims([...tempClaims, ...newClaims]);
     }
   };
-
+  
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true);
     try {
@@ -105,59 +105,76 @@ const Search = (homeProps: IHomeProps) => {
     setTempClaims([]);
   };
 
-  useMemo(() => {
-    if (cy) {
-      // when edges is clicked
-      cy.on("tap", "edge", (event: any) => {
-        event.preventDefault();
-        const claim = event.target;
-        //getting the claim data for selected node
-        const currentClaim = claims.find(
-          (c: any) => String(c.id) === claim.id()
-        );
-
-        if (currentClaim) {
-          setSelectedClaim(currentClaim);
-          setOpenModal(true);
-        }
+  // handle node click to fetch further connected nodes
+  const handleNodeClick = async (event: any) => {
+    event.preventDefault();
+    const claim = event.target;
+    const foundIndex = claimsPageMemo.findIndex((item) => item.id == claim.id());
+    if (foundIndex === -1) {
+      claimsPageMemo.push({ id: claim.id(), page: 1 });
+      await fetchClaims(claim.id(), false, 1);
+      console.log("first")
+    } else {
+      claimsPageMemo[foundIndex].page++;
+      claimsPageMemo.push({
+        id: claim.id(),
+        page: claimsPageMemo[foundIndex].page,
       });
-
-      // handle node click to fetch further connected nodes
-      cy.on("tap", "node", async (event: any) => {
-        event.preventDefault();
-        const claim = event.target;
-        const foundIndex = claimsPageMemo.findIndex(
-          (item) => item.id == claim.id()
-        );
-        if (foundIndex === -1) {
-          claimsPageMemo.push({ id: claim.id(), page: 1 });
-          await fetchClaims(claim.id(), false, 1);
-        } else {
-          claimsPageMemo[foundIndex].page++;
-          claimsPageMemo.push({
-            id: claim.id(),
-            page: claimsPageMemo[foundIndex].page,
-          });
-          await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
-        }
-      });
-
-      // add hover state pointer cursor on node
-      cy.on("mouseover", "edge,node", (event: any) => {
-        const container = event?.cy?.container();
-        if (container) {
-          container.style.cursor = "pointer";
-        }
-      });
-
-      cy.on("mouseout", "edge,node", (event: any) => {
-        const container = event?.cy?.container();
-        if (container) {
-          container.style.cursor = "default";
-        }
-      });
+      await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
+      console.log("second")
     }
-  }, [cy, claims]);
+  };
+
+  const addCyEventHandlers = (cy: any) => {
+    cy.on("tap", "node", handleNodeClick);
+
+
+    // when edges is clicked
+    cy.on("tap", "edge", (event: any) => {
+      event.preventDefault();
+      const claim = event.target;
+
+      //getting the claim data for selected node
+      const currentClaim = claims.find((c: any) => String(c.id) === claim.id());
+      if (currentClaim) {
+        setSelectedClaim(currentClaim);
+        setOpenModal(true);
+      }
+    });
+
+    // add hover state pointer cursor on node
+    cy.on("mouseover", "edge,node", (event: any) => {
+      const container = event?.cy?.container();
+      if (container) {
+        container.style.cursor = "pointer";
+      }
+    });
+  
+    cy.on("mouseout", "edge,node", (event: any) => {
+      const container = event?.cy?.container();
+      if (container) {
+        container.style.cursor = "default";
+      }
+    });
+  };
+  
+  const removeCyEventHandlers = (cy: any) => {
+    cy.off("tap", "node", handleNodeClick);
+    cy.off("tap", "edge");
+    cy.off("mouseover", "edge,node");
+    cy.off("mouseout", "edge,node");
+  };
+  
+  useEffect(() => {
+    if (cy) {
+      addCyEventHandlers(cy);
+      return () => {
+        removeCyEventHandlers(cy);
+      };
+    }
+  }, [cy]);
+  
+  
 
   useMemo(() => {
     if (cy && query) handleSearch();
