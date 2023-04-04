@@ -28,7 +28,7 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
       return url;
     }
   };
-console.log()
+
   const isValidHttpUrl = (string: string) => {
     let url;
 
@@ -82,3 +82,6 @@ console.log()
 };
 
 export default Modal;
+
+
+
