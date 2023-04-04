@@ -1,0 +1,76 @@
+type LinkedClaim @createModel( 
+     accountRelation: LIST, 
+     description: "Claim or attestation, possibly from 3rd party sources" ) 
+{ 
+    subjectID: String! @string(minLength: 1, maxLength: 1024)
+    subjectType: SubjectType
+    subjectName: String @string(minLength: 1, maxLength: 256)
+    claim: String! @string(minLength: 1, maxLength: 256)     
+    effectiveDate: Date 
+    statement: String @string(minLength: 1, maxLength: 16384) 
+    object: String @string(minLength: 1, maxLength: 1024) 
+    source: ClaimSource
+    rating: NormalizedRating
+    amt: Measure
+    confidence: Float
+    sharing: Sharing
+}
+
+enum SubjectType {
+    PERSON
+    ORGANIZATION
+    PRODUCT
+    EVENT
+    PLACE
+    ENTITY
+    ACTION
+    DOCUMENT
+    CLAIM
+    IDEA
+    THING
+    OTHER
+} 
+
+type Measure 
+{
+    value: Float!
+    unit: String @string(minLength: 1, maxLength: 16)
+    howMeasured: String @string(minLength: 1, maxLength: 1024)
+}
+
+type ClaimSource 
+{
+    howKnown: HowKnown!
+    dateObserved: Date
+    sourceID: String @string(minLength: 1, maxLength: 1024)
+    digestMultibase: String @string(minLength: 1, maxLength: 256)
+    author: String @string(minLength: 1, maxLength: 1024)
+    curator: String @string(minLength: 1, maxLength: 1024)
+}
+
+enum HowKnown {
+    FIRST_HAND
+    SECOND_HAND
+    WEB_DOCUMENT
+    VERIFIED_LOGIN
+    BLOCKCHAIN
+    SIGNED_DOCUMENT 
+    PHYSICAL_DOCUMENT
+    INTEGRATION
+    RESEARCH
+    OPINION
+    OTHER
+}
+
+type NormalizedRating
+{
+    aspect: String @string(minLength: 1, maxLength: 256)
+    score: Float! @float(min: -1, max: 1)
+    stars: Int @int(min: 0, max: 5)
+}
+
+type Sharing
+{
+    intendedAudience: String @string(minLength: 1, maxLength: 256)
+    respondAt: String! @string(minLength: 1, maxLength: 1024)
+} 

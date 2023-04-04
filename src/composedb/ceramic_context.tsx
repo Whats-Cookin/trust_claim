@@ -4,7 +4,9 @@ import { ComposeClient } from "@composedb/client";
 import { RuntimeCompositeDefinition } from "@composedb/types";
 
 import { CERAMIC_URL } from "../utils/settings.js";
-import { definition } from "./__generated__/trustclaims.js";
+
+// @ts-ignore
+import { definition } from "./__generated__/sample-trustclaims.js";
 
 /**
  * Configure ceramic Client & create context.

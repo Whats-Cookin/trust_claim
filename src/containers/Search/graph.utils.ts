@@ -34,7 +34,7 @@ const parseClaims = (claims: any) => {
           label: label,
         },
       });
-    }
+    }  
     // adding edge between subject and object
     if (claim.subject && claim.object)
       elements.push({

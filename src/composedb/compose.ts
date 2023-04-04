@@ -1,10 +1,6 @@
-import { gql } from 'graphql-tag';
 import { useCeramicContext} from "./ceramic_context.js";
 
-// @ts-ignore
-import { definition } from './__generated__/trustclaims.js'
-
-const CREATE_LINKED_CLAIM_MUTATION = gql`
+const CREATE_LINKED_CLAIM_MUTATION = `
   mutation (
     $claim: String!
     $object: String
@@ -117,7 +113,7 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
     subjectType: null,
     effectiveDate,
   };
-  const response = await composeClient.execute(CREATE_LINKED_CLAIM_MUTATION, variables);
+  const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables);
 
   if (response.errors) {
     console.error(response.errors);
