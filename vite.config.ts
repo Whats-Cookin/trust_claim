@@ -18,9 +18,9 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
   },
   build: {
-    sourcemap: true,
+    sourcemap: false,
   },
   server: {
-    sourcemap: true,
+    sourcemap: false,
   },
 });
