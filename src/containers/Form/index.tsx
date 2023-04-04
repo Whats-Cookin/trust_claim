@@ -13,6 +13,7 @@ import styles from "./styles";
 import polygon1 from '../../assets/circle.png';
 import polygon2 from '../../assets/Polygon 2.png';
 import polygon3 from '../../assets/Polygon 3.png'
+import { PublishClaim } from "../../composedb/compose";
 
 const Form = ({
   toggleSnackbar,
@@ -45,6 +46,7 @@ const Form = ({
 
         const payload = {
           subject,
+          subjectName,
           claim,
           object,
           statement,
@@ -57,7 +59,17 @@ const Form = ({
         };
 
         setLoading(true);
-        const res = await axios.post(`/api/claim`, payload);
+
+        // TODO better way of checking the login method
+        const did = localStorage.getItem('did')
+
+        let res
+        if (did) {
+           res = await PublishClaim(payload)
+        } else {    
+           res = await axios.post(`/api/claim`, payload);
+        }
+
         if (res.status === 201) {
           setLoading(false);
           toggleSnackbar(true);
