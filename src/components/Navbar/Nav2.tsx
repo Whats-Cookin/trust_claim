@@ -45,6 +45,9 @@ const Nav2 = () => {
                 }>
                     Register
                 </Button>
+                <Button color="inherit" style={{background:'#80B8BD', padding: ' 0.5rem 1rem'}} onClick={() => navigate("/search")} >
+                  Search 
+              </Button>
             </Box>
         </Box>
     )

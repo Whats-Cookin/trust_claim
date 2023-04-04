@@ -44,11 +44,13 @@ const App = () => {
   };
   const isLoginPage = window.location.pathname === '/login';
   const isRegisterPage = window.location.pathname === '/register';
+  const isSearch = window.location.pathname === '/search';
 
   return (
     <>
     {/* Render the navigation component only if the user is not on the login or register page */}
-    {!isLoginPage && !isRegisterPage &&  <Navbar isAuth={checkAuth()} />}
+    {!isLoginPage && !isRegisterPage && !isSearch && <Navbar isAuth={checkAuth()} />}
+    {isSearch && <Navbar />}
     {isLoginPage &&  <Nav2 />}
     {isRegisterPage &&  <Nav2 />}
       <div className="app">
