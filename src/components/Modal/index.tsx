@@ -1,4 +1,3 @@
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MUIModal from "@mui/material/Modal";
@@ -42,7 +41,7 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 
   return (
     <MUIModal open={open} onClose={handleClose}>
-      <Box sx={{ ...styles.container, overflowY: 'auto', maxHeight: '80vh' }}>
+      <Box sx={{ ...styles.container, maxHeight: '80vh' }}>
         <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
           Claim
         </Typography>
@@ -81,3 +80,6 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 };
 
 export default Modal;
+
+
+
