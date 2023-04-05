@@ -10,19 +10,26 @@ import {
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
+
 const ProfileDropdown = ({ isAuth }: any) => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate("/login");
-  };
-
   const [disableTooltip, setDisableTooltip] = useState(false);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
+
+  const handleNavigate = (path: string) => {
+    setOpen(false);
+    setAnchorEl(null);
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    handleNavigate("/login");
+  };
+
   useEffect(() => {
     setDisableTooltip(openMenu);
   }, [openMenu, setDisableTooltip]);
@@ -88,14 +95,14 @@ const ProfileDropdown = ({ isAuth }: any) => {
               boxShadow: "none",
               border: "none",
             }}
-            onClick={() => navigate("/search")}
+            onClick={() => handleNavigate("/search")}
           >
             Search
           </Button>
           <Button
             disableRipple={true}
             color="inherit"
-            onClick={() => navigate("/")}
+            onClick={() => handleNavigate("/")}
             sx={{
               width: "85%",
               marginBottom: "1em",
