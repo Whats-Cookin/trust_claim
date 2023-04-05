@@ -35,3 +35,7 @@ Then run
 `npm run dev`
 
 and connect to localhost:3000
+
+ `npm test`
+ we use vitest ,axios-mock-adapter and @testing-library/react to test our app , 
+so you should install them @testing-library/react , vitest , @testing-library/user-event,axios-mock-adapter ,and then use this tool to test function of the file 
