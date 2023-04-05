@@ -3,17 +3,14 @@ import Cytoscape from "cytoscape";
 import { useLocation, useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import axios from "../../axiosInstance";
 import Modal from "../../components/Modal";
 import cyConfig from "./cyConfig";
 import IHomeProps from "./types";
-import { parseClaims } from "./graph.utils";
 import styles from "./styles";
 import SearchIcon from '@mui/icons-material/Search';
-import { Typography } from "@mui/material";
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search;
@@ -21,7 +18,6 @@ const Search = (homeProps: IHomeProps) => {
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
   const ref = useRef<any>(null);
-  let claims: any[] = [];
   const query = new URLSearchParams(search).get("query");
   const [tempClaims, setTempClaims] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -30,18 +26,14 @@ const Search = (homeProps: IHomeProps) => {
   const [searchVal, setSearchVal] = useState<string>(query || "");
   const claimsPageMemo: any[] = [];
 
-  const updateClaims = (search: boolean, newClaims: any) => {
+  const updateClaims = (search: boolean, newClaims: any, parsedClaims: any) => {
     if (search) {
-      const parsedClaims = parseClaims(newClaims);
       cy.elements().remove();
       cy.add(parsedClaims);
-      claims = newClaims;
       setTempClaims(newClaims);
     } else {
-      const parsedClaims = parseClaims(newClaims);
       cy.add(parsedClaims);
-      claims = [...claims, ...newClaims];
-      setTempClaims([...tempClaims, ...newClaims]);
+      setTempClaims((tempClaims) => ([...tempClaims, ...newClaims]));
     }
   };
   
@@ -51,9 +43,13 @@ const Search = (homeProps: IHomeProps) => {
       const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
         params: { search: query },
       });
+      
+      const res2 = await axios.get(`/api/claim-nodes?page=${page}&limit=5`, {
+        params: { search: query },
+      });
 
       if (res.data.claims.length > 0) {
-        updateClaims(search, res.data.claims);
+        updateClaims(search, res.data.claims,res2.data.claims);
       } else {
         setSnackbarMessage("No results found");
         toggleSnackbar(true);
@@ -101,7 +97,6 @@ const Search = (homeProps: IHomeProps) => {
     navigate("/search");
     setSearchVal("");
     cy.elements().remove();
-    claims = [];
     setTempClaims([]);
   };
 
@@ -135,7 +130,7 @@ const Search = (homeProps: IHomeProps) => {
       const claim = event.target;
 
       //getting the claim data for selected node
-      const currentClaim = claims.find((c: any) => String(c.id) === claim.id());
+      const currentClaim = claim.data("raw");
       if (currentClaim) {
         setSelectedClaim(currentClaim);
         setOpenModal(true);
