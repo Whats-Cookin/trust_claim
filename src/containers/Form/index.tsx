@@ -10,6 +10,9 @@ import axios from "../../axiosInstance";
 import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
+import polygon1 from '../../assets/circle.png';
+import polygon2 from '../../assets/Polygon 2.png';
+import polygon3 from '../../assets/Polygon 3.png'
 import { PublishClaim } from "../../composedb/compose";
 
 const Form = ({
@@ -18,7 +21,6 @@ const Form = ({
   setLoading,
 }: IHomeProps) => {
   const [subject, setSubject] = useState("");
-  const [subjectName, setSubjectName] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
   const [statement, setStatement] = useState("");
@@ -43,7 +45,6 @@ const Form = ({
 
         const payload = {
           subject,
-          subjectName,
           claim,
           object,
           statement,
@@ -77,7 +78,6 @@ const Form = ({
           setSnackbarMessage("Claim submitted successfully!");
 
           setSubject("");
-          setSubjectName("");
           setClaim("");
           setObject("");
           setStatement("");
@@ -110,13 +110,6 @@ const Form = ({
       label: "Subject",
       value: subject,
       setter: setSubject,
-      type: "text",
-      fieldType: "inputField",
-    },
-    {
-      label: "Subject Name",
-      value: subjectName,
-      setter: setSubjectName,
       type: "text",
       fieldType: "inputField",
     },
@@ -225,7 +218,12 @@ const Form = ({
   ];
 
   return (
-    <form className="Form">
+    <>
+    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
+    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
+    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
+  
+    <form className="Form z-20">
       <Container sx={styles.formContainer}>
         <Typography variant="h4" sx={styles.formHeading}>
           Enter a Claim
@@ -299,7 +297,7 @@ const Form = ({
               renderInput={(params: any) => (
                 <TextField
                   {...params}
-                  sx={{ ml: 1, mr: 1, width: "22ch" }}
+                  sx={{ ml: 1, mr: 1, width: "100%" }}
                   variant="filled"
                 />
               )}
@@ -314,10 +312,10 @@ const Form = ({
             sx={{
               ml: 1,
               mr: 1,
-              width: "22ch",
-              backgroundColor: "#eeeeee",
+              width: "100%",
+              backgroundColor: "#80B8BD",
               "&:hover": {
-                backgroundColor: "rgb(37, 3, 3)",
+                backgroundColor: "#80B8BD",
               },
             }}
           >
@@ -326,6 +324,7 @@ const Form = ({
         </Box>
       </Container>
     </form>
+    </>
   );
 };
 

@@ -10,6 +10,9 @@ import Button from "@mui/material/Button";
 import IRegisterProps from "./types";
 import styles from "./styles";
 import { BACKEND_BASE_URL } from "../../utils/settings";
+import polygon1 from '../../assets/circle.png';
+import polygon2 from '../../assets/Polygon 2.png';
+import polygon3 from '../../assets/Polygon 3.png'
 
 const Register = ({
   toggleSnackbar,
@@ -43,9 +46,16 @@ const Register = ({
   };
 
   return (
+    <>
+    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
+    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
+    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
     <Box sx={styles.authContainer}>
-      <Typography component="div" variant="h5">
+      <Typography component="div" variant="h5" color='#80B8BD' >
+       <p className='text-center'>
         Register
+       </p>
+      
       </Typography>
       <TextField
         value={emailRegister}
@@ -76,11 +86,12 @@ const Register = ({
         </Button>
       </Box>
       <Link to="/login" style={{ textDecoration: "none" }}>
-        <Typography variant="body1" color="white">
+        <Typography variant="body1" color="black">
           Click here to Login
         </Typography>
       </Link>
     </Box>
+    </>
   );
 };
 export default Register;

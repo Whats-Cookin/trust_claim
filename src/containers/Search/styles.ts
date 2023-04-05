@@ -15,9 +15,11 @@ const styles = {
 
   searchFieldContainer: {
     position: "absolute",
-    top: "30px",
-    left: "20px",
-    zIndex: 10,
+    top: "80px",
+    margin:'2rem',
+
+    width:'100%',
+    zIndex: 20,
     display: "flex",
     columnGap: "5px",
     backgroundColor: "white",

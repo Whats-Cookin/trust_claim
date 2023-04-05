@@ -1,6 +1,7 @@
 import { useCeramicContext} from "./ceramic_context.js";
 
 const CREATE_LINKED_CLAIM_MUTATION = `
+
   mutation (
     $claim: String!
     $object: String
@@ -11,7 +12,6 @@ const CREATE_LINKED_CLAIM_MUTATION = `
     $subjectID: String!
     $confidence: Float
     $subjectType: LinkedClaimSubjectType
-    $subjectName: String
     $effectiveDate: Date
   ) {
     createLinkedClaim(
@@ -26,7 +26,6 @@ const CREATE_LINKED_CLAIM_MUTATION = `
           subjectID: $subjectID
           confidence: $confidence
           subjectType: $subjectType
-          subjectName: $subjectName
           effectiveDate: $effectiveDate
         }
       }
@@ -42,7 +41,6 @@ const CREATE_LINKED_CLAIM_MUTATION = `
         statement
         subjectID
         confidence
-        subjectName
         subjectType
         effectiveDate
       }
@@ -52,7 +50,6 @@ const CREATE_LINKED_CLAIM_MUTATION = `
 
 type LinkedClaimPayload = {
   subject: string;
-  subjectName: string;
   claim: string;
   object: string;
   statement: string;
@@ -75,7 +72,6 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
 
   const {
     subject,
-    subjectName,
     claim,
     object,
     statement,
@@ -109,7 +105,6 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
     statement,
     subjectID: subject,
     confidence,
-    subjectName,
     subjectType: null,
     effectiveDate,
   };

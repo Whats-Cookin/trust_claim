@@ -12,6 +12,7 @@ import cyConfig from "./cyConfig";
 import IHomeProps from "./types";
 import { parseClaims } from "./graph.utils";
 import styles from "./styles";
+import SearchIcon from '@mui/icons-material/Search';
 import { Typography } from "@mui/material";
 
 const Search = (homeProps: IHomeProps) => {
@@ -43,7 +44,7 @@ const Search = (homeProps: IHomeProps) => {
       setTempClaims([...tempClaims, ...newClaims]);
     }
   };
-
+  
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true);
     try {
@@ -104,58 +105,76 @@ const Search = (homeProps: IHomeProps) => {
     setTempClaims([]);
   };
 
-  useMemo(() => {
-    if (cy) {
-      cy.on("tap", "edge", (event: any) => {
-        event.preventDefault();
-        const claim = event.target;
-        //getting the claim data for selected node
-        const currentClaim = claims.find(
-          (c: any) => String(c.id) === claim.id()
-        );
-
-        if (currentClaim) {
-          setSelectedClaim(currentClaim);
-          setOpenModal(true);
-        }
+  // handle node click to fetch further connected nodes
+  const handleNodeClick = async (event: any) => {
+    event.preventDefault();
+    const claim = event.target;
+    const foundIndex = claimsPageMemo.findIndex((item) => item.id == claim.id());
+    if (foundIndex === -1) {
+      claimsPageMemo.push({ id: claim.id(), page: 1 });
+      await fetchClaims(claim.id(), false, 1);
+      console.log("first")
+    } else {
+      claimsPageMemo[foundIndex].page++;
+      claimsPageMemo.push({
+        id: claim.id(),
+        page: claimsPageMemo[foundIndex].page,
       });
-
-      // handle node click to fetch further connected nodes
-      cy.on("tap", "node", async (event: any) => {
-        event.preventDefault();
-        const claim = event.target;
-        const foundIndex = claimsPageMemo.findIndex(
-          (item) => item.id == claim.id()
-        );
-        if (foundIndex === -1) {
-          claimsPageMemo.push({ id: claim.id(), page: 1 });
-          await fetchClaims(claim.id(), false, 1);
-        } else {
-          claimsPageMemo[foundIndex].page++;
-          claimsPageMemo.push({
-            id: claim.id(),
-            page: claimsPageMemo[foundIndex].page,
-          });
-          await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
-        }
-      });
-
-      // add hover state pointer cursor on node
-      cy.on("mouseover", "edge,node", (event: any) => {
-        const container = event?.cy?.container();
-        if (container) {
-          container.style.cursor = "pointer";
-        }
-      });
-
-      cy.on("mouseout", "edge,node", (event: any) => {
-        const container = event?.cy?.container();
-        if (container) {
-          container.style.cursor = "default";
-        }
-      });
+      await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
+      console.log("second")
     }
-  }, [cy, claims]);
+  };
+
+  const addCyEventHandlers = (cy: any) => {
+    cy.on("tap", "node", handleNodeClick);
+
+
+    // when edges is clicked
+    cy.on("tap", "edge", (event: any) => {
+      event.preventDefault();
+      const claim = event.target;
+
+      //getting the claim data for selected node
+      const currentClaim = claims.find((c: any) => String(c.id) === claim.id());
+      if (currentClaim) {
+        setSelectedClaim(currentClaim);
+        setOpenModal(true);
+      }
+    });
+
+    // add hover state pointer cursor on node
+    cy.on("mouseover", "edge,node", (event: any) => {
+      const container = event?.cy?.container();
+      if (container) {
+        container.style.cursor = "pointer";
+      }
+    });
+  
+    cy.on("mouseout", "edge,node", (event: any) => {
+      const container = event?.cy?.container();
+      if (container) {
+        container.style.cursor = "default";
+      }
+    });
+  };
+  
+  const removeCyEventHandlers = (cy: any) => {
+    cy.off("tap", "node", handleNodeClick);
+    cy.off("tap", "edge");
+    cy.off("mouseover", "edge,node");
+    cy.off("mouseout", "edge,node");
+  };
+  
+  useEffect(() => {
+    if (cy) {
+      addCyEventHandlers(cy);
+      return () => {
+        removeCyEventHandlers(cy);
+      };
+    }
+  }, [cy]);
+  
+  
 
   useMemo(() => {
     if (cy && query) handleSearch();
@@ -174,8 +193,57 @@ const Search = (homeProps: IHomeProps) => {
         setOpen={setOpenModal}
         selectedClaim={selectedClaim}
       />
+     <section className="absolute top-[90px] left-[2%] z-20">
+     <div className=" rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]">
+       <input type="search" value={searchVal} onChange={(e) => setSearchVal(e.target.value)}
+          onKeyUp={handleSearchKeypress}
+          className='w-full  p-[0.5rem] rounded-lg border-none outline-none'
+          />
+          <button className="bg-[#333] font-bold text-white h-full w-[60px]" onClick={handleSearch}>
+          <SearchIcon />
+          </button>
+        
+           {/* <Button
+          variant="contained"
+          onClick={handleSearch}
+          sx={{
+            backgroundColor: "#333333",
+            fontWeight: "bold",
+            height:'100%',
+            "&:hover": {
+              backgroundColor: "#333333",
+              color: "#fff",
+            },
+          }}
+          disableElevation
+        >
+         
+        </Button> */}
+         
+       </div>
+       <Button
+          variant="outlined"
+          onClick={reset}
+          sx={{
+            backgroundColor: "#fff",
+            color: "#333333",
+            marginTop:'1rem',
+            fontWeight: "bold",
+            border: "2px solid #333333",
+            "&:hover": {
+              backgroundColor: "#fff",
+              border: "2px solid #333333",
+              color: "#333333",
+            },
+          }}
+          disableElevation
+        >
+          Reset
+        </Button>
+     </section>
       <Box sx={styles.searchFieldContainer}>
-        <TextField
+       
+        {/* <TextField
           label="Search"
           variant="outlined"
           value={searchVal}
@@ -186,23 +254,9 @@ const Search = (homeProps: IHomeProps) => {
               borderColor: "#000",
             },
           }}
-        />
-        <Button
-          variant="contained"
-          onClick={handleSearch}
-          sx={{
-            backgroundColor: "#333333",
-            fontWeight: "bold",
-            "&:hover": {
-              backgroundColor: "#333333",
-              color: "#fff",
-            },
-          }}
-          disableElevation
-        >
-          Search
-        </Button>
-        <Button
+        /> */}
+       
+        {/* <Button
           variant="outlined"
           onClick={reset}
           sx={{
@@ -219,7 +273,7 @@ const Search = (homeProps: IHomeProps) => {
           disableElevation
         >
           Reset
-        </Button>
+        </Button> */}
       </Box>
       {tempClaims.length > 0 && (
         <Button

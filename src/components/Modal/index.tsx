@@ -27,10 +27,9 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
       return url;
     }
   };
-
   const isValidHttpUrl = (string: string) => {
     let url;
-
+    return true;
     try {
       url = new URL(string);
     } catch (_) {
@@ -42,7 +41,7 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 
   return (
     <MUIModal open={open} onClose={handleClose}>
-      <Box sx={styles.container}>
+      <Box sx={{ ...styles.container, maxHeight: '80vh' }}>
         <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
           Claim
         </Typography>
@@ -81,3 +80,6 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 };
 
 export default Modal;
+
+
+
