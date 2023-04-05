@@ -74,7 +74,6 @@ const Form = ({
           setSnackbarMessage("Claim submitted successfully!");
 
           setSubject("");
-          setSubjectName("");
           setClaim("");
           setObject("");
           setStatement("");
