@@ -101,19 +101,7 @@ const Home = (homeProps: IHomeProps) => {
                   {claim.source}
                 </a>
               </Typography>
-              <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
-                <strong> Subject Name:</strong>{" "}
-                <a
-                  href={`/search?query=${getTopicFromDomain(claim.subject)}`}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {claim.subject}
-                </a>
-
-                
-              </Typography>
-              
+             
 
               <Typography
                 variant="body1"
@@ -138,8 +126,6 @@ const Home = (homeProps: IHomeProps) => {
                 <strong>Source:</strong>{" "}
                 <a href={claim.source}>{claim.source}</a>
 
-                {/* <strong>subject Name:</strong>{" "}
-                <a href={claim.subjectName}>{claim.subjectName}</a> */}
 
               </Typography>
             </Card>
