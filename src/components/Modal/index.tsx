@@ -20,28 +20,9 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
     "effectiveDate",
   ];
 
-  const getTopicFromDomain = (url: string) => {
-    if (url.includes("trustclaims.whatscookin.us")) {
-      return url.split("/").at(-1);
-    } else {
-      return url;
-    }
-  };
-  const isValidHttpUrl = (string: string) => {
-    let url;
-    return true;
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
-  };
-
   return (
     <MUIModal open={open} onClose={handleClose}>
-      <Box sx={{ ...styles.container, maxHeight: '80vh' }}>
+      <Box sx={{ ...styles.container, maxHeight: "80vh" }}>
         <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
           Claim
         </Typography>
@@ -49,28 +30,12 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
           Object.keys(selectedClaim).map((key: string) =>
             excludedFields.includes(key) ? null : (
               <Box sx={styles.detailField} key={key}>
-                <Typography component="h2">
+                <Typography component="h2" sx={{ fontWeight: "bold" }}>
                   {camelCaseToSimpleString(key)}
                 </Typography>
-                {isValidHttpUrl(selectedClaim[key]) ? (
-                  <a
-                    href={
-                      key === "source"
-                        ? selectedClaim[key]
-                        : `/search?query=${getTopicFromDomain(
-                            selectedClaim[key]
-                          )}`
-                    }
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    {selectedClaim[key]}
-                  </a>
-                ) : (
-                  <Typography component="p" sx={styles.fieldContent}>
-                    {selectedClaim[key]}
-                  </Typography>
-                )}
+                <Typography component="p" sx={styles.fieldContent}>
+                  {selectedClaim[key]}
+                </Typography>
               </Box>
             )
           )}
@@ -80,6 +45,3 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
 };
 
 export default Modal;
-
-
-
