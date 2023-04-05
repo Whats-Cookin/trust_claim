@@ -21,7 +21,6 @@ const Form = ({
   setLoading,
 }: IHomeProps) => {
   const [subject, setSubject] = useState("");
-  const [subjectName, setSubjectName] = useState("");
   const [claim, setClaim] = useState("");
   const [object, setObject] = useState("");
   const [statement, setStatement] = useState("");
@@ -46,7 +45,6 @@ const Form = ({
 
         const payload = {
           subject,
-          subjectName,
           claim,
           object,
           statement,
@@ -109,13 +107,6 @@ const Form = ({
       label: "Subject",
       value: subject,
       setter: setSubject,
-      type: "text",
-      fieldType: "inputField",
-    },
-    {
-      label: "Subject Name",
-      value: subjectName,
-      setter: setSubjectName,
       type: "text",
       fieldType: "inputField",
     },
