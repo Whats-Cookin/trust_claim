@@ -64,6 +64,7 @@ export const definition = {
       statement: { type: "string", required: false },
       subjectID: { type: "string", required: true },
       confidence: { type: "float", required: false },
+      subjectName: { type: "string", required: false },
       subjectType: {
         type: "reference",
         refType: "enum",
