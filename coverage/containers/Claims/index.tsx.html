@@ -468,10 +468,7 @@ const Home = (homeProps: IHomeProps) =&gt; {
                   target="_blank"
                 &gt;
                   {claim.source}
-                &lt;/a&gt;
-              &lt;/Typography&gt;
-              &lt;Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}&gt;
-                &lt;strong&gt; Subject Name:&lt;/strong&gt;{" "}
+               
                 &lt;a
                   href={`/search?query=${getTopicFromDomain(claim.subject)}`}
                   rel="noreferrer"
@@ -506,10 +503,7 @@ const Home = (homeProps: IHomeProps) =&gt; {
               &gt;
                 &lt;strong&gt;Source:&lt;/strong&gt;{" "}
                 &lt;a href={claim.source}&gt;{claim.source}&lt;/a&gt;
-&nbsp;
-                {/* &lt;strong&gt;subject Name:&lt;/strong&gt;{" "}
-                &lt;a href={claim.subjectName}&gt;{claim.subjectName}&lt;/a&gt; */}
-&nbsp;
+
               &lt;/Typography&gt;
             &lt;/Card&gt;
           ))}
