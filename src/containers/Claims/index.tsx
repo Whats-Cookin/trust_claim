@@ -101,20 +101,6 @@ const Home = (homeProps: IHomeProps) => {
                   {claim.source}
                 </a>
               </Typography>
-              <Typography variant="body1" sx={{ fontSize: 16, px: 3, py: 0.5 }}>
-                <strong> Subject Name:</strong>{" "}
-                <a
-                  href={`/search?query=${getTopicFromDomain(claim.subject)}`}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {claim.subject}
-                </a>
-
-                
-              </Typography>
-              
-
               <Typography
                 variant="body1"
                 sx={{
