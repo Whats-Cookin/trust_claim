@@ -59,13 +59,17 @@ const Form = ({
         setLoading(true);
 
         // TODO better way of checking the login method
-        const did = localStorage.getItem('did')
+
+        // check if the user is authenticated with metamask and has did
+        const did = localStorage.getItem('did');
+        const ethAddress = localStorage.getItem('ethAddress');
 
         let res
-        if (did) {
-           res = await PublishClaim(payload)
+        if (did && ethAddress) {
+          res = await PublishClaim(payload);
         } else {    
-           res = await axios.post(`/api/claim`, payload);
+          // if user is not auththicatesd with Metamask and/or do not have a did
+          res = await axios.post(`/api/claim`, payload);
         }
 
         if (res.status === 201) {
