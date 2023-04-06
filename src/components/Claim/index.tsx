@@ -22,7 +22,7 @@ export default function Claim(claim: { [key: string]: string | number }) {
                   <TableCell component="th" scope="row">
                     {fieldName}
                   </TableCell>
-                  <TableCell align="left">{claim[fieldName]} my god</TableCell>
+                  <TableCell align="left">{claim[fieldName]} </TableCell>
                 </TableRow>
               );
             }

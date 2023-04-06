@@ -6,18 +6,18 @@ interface comment {
   comment:Array<comment>
 }
 const dummyComments: Array<comment> = [
-  {
-    body: "this is comment1",
-    comment:[]
-  },
-  {
-    body: "this is comment2",
-    comment:[]
-  },
-  {
-    body: "this is comment3",
-    comment:[]
-  },
+  //{
+//     body: "this is comment1",
+//     comment:[]
+//   },
+//   {
+//     body: "this is comment2",
+//     comment:[]
+//   },
+//   {
+//     body: "this is comment3",
+//     comment:[]
+//   },
 ];
 
 export default function ClaimComment() {

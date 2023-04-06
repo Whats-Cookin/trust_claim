@@ -40,13 +40,8 @@ const Register = ({
     } catch (err: any) {
       setLoading(false);
       toggleSnackbar(true);
-      if (err.response && err.response.status === 400 && err.response.data && err.response.data.message) {
-        setSnackbarMessage(err.response.data.message);
-        console.error("Error: ", err.response.data.message);
-      } else {
-        setSnackbarMessage("Oops! Something went wrong. Please try again later.");
-        console.error("Error: ", err);
-      }
+      setSnackbarMessage(err.response.data.message);
+      console.error("Error: ", err.response.data.message);
     }
   };
   
