@@ -14,6 +14,7 @@ import { parseClaims } from "./graph.utils";
 import styles from "./styles";
 import SearchIcon from '@mui/icons-material/Search';
 import { Typography } from "@mui/material";
+import NewClaim from '../ClaimNode/index';
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search;
@@ -25,6 +26,8 @@ const Search = (homeProps: IHomeProps) => {
   const query = new URLSearchParams(search).get("query");
   const [tempClaims, setTempClaims] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openNewClaim, setOpenNewClaim] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [cy, setCy] = useState<any>(null);
   const [searchVal, setSearchVal] = useState<string>(query || "");
@@ -125,6 +128,11 @@ const Search = (homeProps: IHomeProps) => {
     }
   };
 
+  const handleGraphClick = () => {
+    setShowPopup((prevShowPopup) => !prevShowPopup);
+    setOpenNewClaim(true);
+  };
+  
   const addCyEventHandlers = (cy: any) => {
     cy.on("tap", "node", handleNodeClick);
 
@@ -157,7 +165,9 @@ const Search = (homeProps: IHomeProps) => {
       }
     });
   };
-  
+  cy.on("tap", "node", (event) => {
+    setSelectedNode(event.target.data());
+  });
   const removeCyEventHandlers = (cy: any) => {
     cy.off("tap", "node", handleNodeClick);
     cy.off("tap", "edge");
@@ -174,6 +184,13 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy]);
   
+  useEffect(() => {
+    if (!showPopup) {
+      setOpenNewClaim(false);
+    }
+  }, [showPopup]);
+  
+  
   
 
   useMemo(() => {
@@ -188,6 +205,7 @@ const Search = (homeProps: IHomeProps) => {
 
   return (
     <Container sx={styles.container} maxWidth={false}>
+      <NewClaim open={openNewClaim} handleClose={() => setOpenNewClaim(false)} />
       <Modal
         open={openModal}
         setOpen={setOpenModal}
@@ -202,24 +220,6 @@ const Search = (homeProps: IHomeProps) => {
           <button className="bg-[#333] font-bold text-white h-full w-[60px]" onClick={handleSearch}>
           <SearchIcon />
           </button>
-        
-           {/* <Button
-          variant="contained"
-          onClick={handleSearch}
-          sx={{
-            backgroundColor: "#333333",
-            fontWeight: "bold",
-            height:'100%',
-            "&:hover": {
-              backgroundColor: "#333333",
-              color: "#fff",
-            },
-          }}
-          disableElevation
-        >
-         
-        </Button> */}
-         
        </div>
        <Button
           variant="outlined"
@@ -242,38 +242,6 @@ const Search = (homeProps: IHomeProps) => {
         </Button>
      </section>
       <Box sx={styles.searchFieldContainer}>
-       
-        {/* <TextField
-          label="Search"
-          variant="outlined"
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          onKeyUp={handleSearchKeypress}
-          sx={{
-            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#000",
-            },
-          }}
-        /> */}
-       
-        {/* <Button
-          variant="outlined"
-          onClick={reset}
-          sx={{
-            backgroundColor: "#fff",
-            color: "#333333",
-            fontWeight: "bold",
-            border: "2px solid #333333",
-            "&:hover": {
-              backgroundColor: "#fff",
-              border: "2px solid #333333",
-              color: "#333333",
-            },
-          }}
-          disableElevation
-        >
-          Reset
-        </Button> */}
       </Box>
       {tempClaims.length > 0 && (
         <Button
