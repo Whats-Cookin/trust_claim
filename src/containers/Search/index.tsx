@@ -128,14 +128,10 @@ const Search = (homeProps: IHomeProps) => {
     }
   };
 
-  // const handleGraphClick = () => {
-  //   setShowPopup((prevShowPopup) => !prevShowPopup);
-  //   setOpenNewClaim(true);
-  // };
   const addCyEventHandlers = (cy: any) => {
     cy.on("tap", "node", handleNodeClick);
-  //when click on node and edge
-  cy.on("tap", "node,edge",(event: any) => {
+  //when rightclick on any part of gragh
+  cy.on("cxttap",(event: any) => {
     event.preventDefault();
     const target = event.target;
     const currentClaim = claims.find((c: any) => String(c.id) === target.id());
@@ -145,19 +141,20 @@ const Search = (homeProps: IHomeProps) => {
       setOpenNewClaim(true);
     }
   });
+  
 
     // when edges is clicked
-    // cy.on("tap", "edge", (event: any) => {
-    //   event.preventDefault();
-    //   const claim = event.target;
+    cy.on("tap", "edge", (event: any) => {
+      event.preventDefault();
+      const claim = event.target;
 
-    //   //getting the claim data for selected node
-    //   const currentClaim = claims.find((c: any) => String(c.id) === claim.id());
-    //   if (currentClaim) {
-    //     setSelectedClaim(currentClaim);
-    //     setOpenModal(true);
-    //   }
-    // });
+      //getting the claim data for selected node
+      const currentClaim = claims.find((c: any) => String(c.id) === claim.id());
+      if (currentClaim) {
+        setSelectedClaim(currentClaim);
+        setOpenModal(true);
+      }
+    });
      
     // add hover state pointer cursor on node
     cy.on("mouseover", "edge,node", (event: any) => {
@@ -181,7 +178,14 @@ const Search = (homeProps: IHomeProps) => {
     cy.off("mouseover", "edge,node");
     cy.off("mouseout", "edge,node");
   };
-  
+  //remove contextmenu as defult of rightclick
+  useEffect(() => {
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    return () => {
+      document.removeEventListener('contextmenu', event => event.preventDefault());
+    };
+  }, []);
+
   useEffect(() => {
     if (cy) {
       addCyEventHandlers(cy);
@@ -245,30 +249,6 @@ const Search = (homeProps: IHomeProps) => {
      </section>
       <Box sx={styles.searchFieldContainer}>
       </Box>
-      {/* {tempClaims.length > 0 && (
-        <Button
-          variant="outlined"
-          onClick={openClaimsList}
-          sx={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            zIndex: 100,
-            backgroundColor: "#fff",
-            color: "#333333",
-            fontWeight: "bold",
-            border: "2px solid #333333",
-            "&:hover": {
-              backgroundColor: "#fff",
-              border: "2px solid #333333",
-              color: "#333333",
-            },
-          }}
-          disableElevation
-        >
-          View Claims in List
-        </Button>
-      )} */}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   );

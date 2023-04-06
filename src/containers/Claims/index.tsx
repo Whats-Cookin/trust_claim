@@ -56,7 +56,7 @@ const Home = (homeProps: IHomeProps) => {
           margin: "30px auto",
         }}
       >
-        {/* {fetchedClaims.length > 0 &&
+        {fetchedClaims.length > 0 &&
           fetchedClaims.map((claim) => (
             <Card
               key={claim.id}
@@ -129,7 +129,7 @@ const Home = (homeProps: IHomeProps) => {
 
               </Typography>
             </Card>
-          ))} */}
+          ))}
       </Box>
     </Box>
   );
