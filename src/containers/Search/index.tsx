@@ -45,9 +45,12 @@ const Search = (homeProps: IHomeProps) => {
         params: { search: query },
       });
       
-      const res2 = await axios.get(`/api/claim-nodes?page=${page}&limit=5`, {
+      const res2 = await axios.get(`/api/nodes?page=${page}&limit=5`, {
         params: { search: query },
       });
+
+      console.log("res2.data",res2.data);
+      
 
       if (res.data.claims.length > 0) {
         updateClaims(search, res.data.claims,res2.data.claims);
