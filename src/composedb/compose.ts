@@ -1,10 +1,7 @@
-
 import { useCeramicContext} from "./ceramic_context.js";
 
-// @ts-ignore
-import { definition } from './__generated__/trustclaims.js'
+const CREATE_LINKED_CLAIM_MUTATION = `
 
-const CREATE_LINKED_CLAIM_MUTATION =`
   mutation (
     $claim: String!
     $object: String
@@ -15,7 +12,6 @@ const CREATE_LINKED_CLAIM_MUTATION =`
     $subjectID: String!
     $confidence: Float
     $subjectType: LinkedClaimSubjectType
-    $subjectName: String
     $effectiveDate: Date
   ) {
     createLinkedClaim(
@@ -76,7 +72,6 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
 
   const {
     subject,
-
     claim,
     object,
     statement,

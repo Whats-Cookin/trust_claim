@@ -2,6 +2,9 @@ import { DIDSession } from "did-session";
 import { EthereumWebAuth, getAccountId } from "@didtools/pkh-ethereum";
 import type { CeramicApi } from "@ceramicnetwork/common"
 import type { ComposeClient } from "@composedb/client";
+import { CERAMIC_URL } from "../utils/settings";
+// import KeyDidResolver from 'key-did-resolver'
+// import ThreeIdResolver from '@ceramicnetwork/3id-did-resolver'
 
 /*
 // If you are relying on an injected provider this must be here otherwise you will have a type error. 
@@ -45,13 +48,26 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
      *        This is not done here to allow you to add more datamodels to your application.
      */
     // TODO: update resources to only provide access to our composities
-    session = await DIDSession.authorize(authMethod, {resources: ["ceramic://*"]})
+    session = await DIDSession.authorize(authMethod, {resources: ["ceramic://*?model=kjzl6hvfrbw6c67xldj1g11xswtzfww6llsmxhkw5vyky1vhzrrpgt7p7lu4k4i"]})
     // Set the session in localStorage.
     localStorage.setItem('did', session.serialize());
   }
 
+  // const resolver = {
+  //   ...KeyDidResolver.getResolver(),
+  //   ...ThreeIdResolver.getResolver(ceramic),
+  // }
+
   // Set our Ceramic DID to be our session DID.
   compose.setDID(session.did)
   ceramic.did = session.did
-  return
+  
+
+  return session
+
+
 }
+
+
+
+

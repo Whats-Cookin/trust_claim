@@ -124,13 +124,14 @@ const Home = (homeProps: IHomeProps) => {
                 }}
               >
                 <strong>Source:</strong>{" "}
-                <a href={claim.source}>{claim.source}</a>
+                <a href={claim.source}>{claim.source} </a>
 
 
               </Typography>
             </Card>
           ))}
       </Box>
+      
     </Box>
   );
 };
