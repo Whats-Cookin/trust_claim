@@ -22,11 +22,12 @@ const Search = (homeProps: IHomeProps) => {
   const [tempClaims, setTempClaims] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
-  const [cy, setCy] = useState<any>(null);
+  const [cy, setCy] = useState<Cytoscape.Core>();
   const [searchVal, setSearchVal] = useState<string>(query || "");
   const claimsPageMemo: any[] = [];
 
   const updateClaims = (search: boolean, newClaims: any, parsedClaims: any) => {
+    if(!cy) return;
     if (search) {
       cy.elements().remove();
       cy.add(parsedClaims);
@@ -59,6 +60,7 @@ const Search = (homeProps: IHomeProps) => {
       setSnackbarMessage(err.message);
     } finally {
       setLoading(false);
+      if(!cy) return;
       cy.layout({
         name: "circle",
         directed: true,
@@ -96,8 +98,9 @@ const Search = (homeProps: IHomeProps) => {
   const reset = () => {
     navigate("/search");
     setSearchVal("");
-    cy.elements().remove();
     setTempClaims([]);
+    if(!cy) return;
+    cy.elements().remove();
   };
 
   // handle node click to fetch further connected nodes
@@ -108,7 +111,6 @@ const Search = (homeProps: IHomeProps) => {
     if (foundIndex === -1) {
       claimsPageMemo.push({ id: claim.id(), page: 1 });
       await fetchClaims(claim.id(), false, 1);
-      console.log("first")
     } else {
       claimsPageMemo[foundIndex].page++;
       claimsPageMemo.push({
@@ -116,26 +118,22 @@ const Search = (homeProps: IHomeProps) => {
         page: claimsPageMemo[foundIndex].page,
       });
       await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
-      console.log("second")
+    }
+  };
+
+  const handleEdgeClick = (event: any) => {
+    event.preventDefault();
+    const claim = event.target;
+    const currentClaim = claim.data("raw");
+    if (currentClaim) {
+      setSelectedClaim(currentClaim);
+      setOpenModal(true);
     }
   };
 
   const addCyEventHandlers = (cy: any) => {
     cy.on("tap", "node", handleNodeClick);
-
-
-    // when edges is clicked
-    cy.on("tap", "edge", (event: any) => {
-      event.preventDefault();
-      const claim = event.target;
-
-      //getting the claim data for selected node
-      const currentClaim = claim.data("raw");
-      if (currentClaim) {
-        setSelectedClaim(currentClaim);
-        setOpenModal(true);
-      }
-    });
+    cy.on("tap", "edge", handleEdgeClick);
 
     // add hover state pointer cursor on node
     cy.on("mouseover", "edge,node", (event: any) => {
@@ -155,7 +153,7 @@ const Search = (homeProps: IHomeProps) => {
   
   const removeCyEventHandlers = (cy: any) => {
     cy.off("tap", "node", handleNodeClick);
-    cy.off("tap", "edge");
+    cy.off("tap", "edge",handleEdgeClick);
     cy.off("mouseover", "edge,node");
     cy.off("mouseout", "edge,node");
   };
