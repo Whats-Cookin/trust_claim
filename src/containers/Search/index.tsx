@@ -171,14 +171,6 @@ const Search = (homeProps: IHomeProps) => {
     cy.off('mouseout', 'edge,node')
   }
 
-  //remove contextmenu as defult of rightclick
-  useEffect(() => {
-    document.addEventListener('contextmenu', event => event.preventDefault())
-    return () => {
-      document.removeEventListener('contextmenu', event => event.preventDefault())
-    }
-  }, [])
-
   useEffect(() => {
     if (cy) {
       addCyEventHandlers(cy)
