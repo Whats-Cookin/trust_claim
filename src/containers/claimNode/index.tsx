@@ -5,7 +5,7 @@ import { PublishClaim } from '../../composedb/compose'
 import { useTheme } from '@mui/material/styles'
 import MUIModal from '@mui/material/Modal'
 
-const NewClaim=({ open, setOpen }: any) => {
+const NewClaim = ({ open, setOpen }: any) => {
   const handleClose = () => setOpen(false)
   const [subject, setSubject] = useState('')
   const [claim, setClaim] = useState('')
@@ -106,4 +106,4 @@ const NewClaim=({ open, setOpen }: any) => {
   )
 }
 
-export default NewClaim;
+export default NewClaim
