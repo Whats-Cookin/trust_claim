@@ -22,7 +22,10 @@ jobs:
           node-version: "16"
 
       - name: install
-        run: npm i
+        run: yarn
 
       - name: Run JS linter
-        run: npm run lint
+        run: yarn lint
+
+      - name: build
+        run: yarn build
