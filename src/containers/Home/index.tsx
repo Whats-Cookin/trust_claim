@@ -1,53 +1,49 @@
-import { useState } from "react";
-import axios from "../../axiosInstance";
-import SearchWrapper from "../../components/SearchWrapper";
-import Claim from "../../components/Claim";
-import Form from "../Form";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
+import { useState } from 'react'
+import axios from '../../axiosInstance'
+import SearchWrapper from '../../components/SearchWrapper'
+import Claim from '../../components/Claim'
+import Form from '../Form'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 
-import IHomeProps from "./types";
-import { ClaimWrapper } from "./styles";
+import IHomeProps from './types'
+import { ClaimWrapper } from './styles'
 
 const Home = (homeProps: IHomeProps) => {
-  const [searchVal, setSearchVal] = useState("");
-  const [fetchedClaims, setFetchedClaims] = useState<null | any[]>(null);
-  const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps;
+  const [searchVal, setSearchVal] = useState('')
+  const [fetchedClaims, setFetchedClaims] = useState<null | any[]>(null)
+  const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
 
   const fetchClaims = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       const res = await axios.get(`/api/claim`, {
-        params: { search: searchVal },
-      });
-      setFetchedClaims(res.data);
+        params: { search: searchVal }
+      })
+      setFetchedClaims(res.data)
     } catch (err: any) {
-      toggleSnackbar(true);
-      setSnackbarMessage(err.message);
+      toggleSnackbar(true)
+      setSnackbarMessage(err.message)
     } finally {
-      setSearchVal("");
-      setLoading(false);
+      setSearchVal('')
+      setLoading(false)
     }
-  };
+  }
 
-  const handleSearchKeypress = async (
-    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    if (event.key === "Enter") {
+  const handleSearchKeypress = async (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
       // const searchVal = event.currentTarget.value;
-      await fetchClaims();
+      await fetchClaims()
     }
-  };
+  }
 
   const handleSearchIconClick = async () => {
-    await fetchClaims();
-  };
+    await fetchClaims()
+  }
 
-  const handleSearchValChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
-    setSearchVal(event.currentTarget.value);
-  };
+  const handleSearchValChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    setSearchVal(event.currentTarget.value)
+  }
 
   return (
     <>
@@ -60,16 +56,11 @@ const Home = (homeProps: IHomeProps) => {
       />
       {fetchedClaims && (
         <>
-          <Button
-            onClick={() => setFetchedClaims(null)}
-            variant="text"
-            size="medium"
-            sx={{ marginTop: "20px" }}
-          >
+          <Button onClick={() => setFetchedClaims(null)} variant='text' size='medium' sx={{ marginTop: '20px' }}>
             Clear results
           </Button>
           <ClaimWrapper>
-            {fetchedClaims.map((claim) => (
+            {fetchedClaims.map(claim => (
               <Claim {...claim} />
             ))}
           </ClaimWrapper>
@@ -77,7 +68,7 @@ const Home = (homeProps: IHomeProps) => {
       )}
       {!fetchedClaims && <Form {...homeProps} />}
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

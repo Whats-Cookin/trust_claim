@@ -1,1 +1,1 @@
-export { useQueryParams } from "./useQuery";
+export { useQueryParams } from './useQuery'
