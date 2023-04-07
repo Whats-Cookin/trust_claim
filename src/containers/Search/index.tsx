@@ -11,6 +11,7 @@ import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import SearchIcon from '@mui/icons-material/Search'
+import { parseNodes } from './graph.utils'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -18,42 +19,33 @@ const Search = (homeProps: IHomeProps) => {
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
   const ref = useRef<any>(null)
-  let claims: any[] = []
   const query = new URLSearchParams(search).get('query')
-  const [tempClaims, setTempClaims] = useState<any[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
 
-  const updateClaims = (search: boolean, newClaims: any, parsedClaims: any) => {
+  const updateClaims = (search: boolean, newClaims: any) => {
     if (!cy) return
+    const parsedClaims = parseNodes(newClaims)
     if (search) {
       cy.elements().remove()
       cy.add(parsedClaims)
-      setTempClaims(newClaims)
     } else {
       cy.add(parsedClaims)
-      setTempClaims(tempClaims => [...tempClaims, ...newClaims])
     }
   }
 
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
+      const res = await axios.get(`/api/nodes?page=${page}&limit=5`, {
         params: { search: query }
       })
-
-      const res2 = await axios.get(`/api/nodes?page=${page}&limit=5`, {
-        params: { search: query }
-      })
-
-      console.log('res2.data', res2.data)
 
       if (res.data.claims.length > 0) {
-        updateClaims(search, res.data.claims, res2.data.claims)
+        updateClaims(search, res.data.claims)
       } else {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
@@ -73,11 +65,6 @@ const Search = (homeProps: IHomeProps) => {
       }).run()
       cy.center()
     }
-  }
-
-  const openClaimsList = () => {
-    window.localStorage.setItem('claims', JSON.stringify(tempClaims))
-    navigate('/claims')
   }
 
   const handleSearch = async () => {
@@ -101,7 +88,6 @@ const Search = (homeProps: IHomeProps) => {
   const reset = () => {
     navigate('/search')
     setSearchVal('')
-    setTempClaims([])
     if (!cy) return
     cy.elements().remove()
   }
@@ -195,23 +181,6 @@ const Search = (homeProps: IHomeProps) => {
           <button className='bg-[#333] font-bold text-white h-full w-[60px]' onClick={handleSearch}>
             <SearchIcon />
           </button>
-
-          {/* <Button
-          variant="contained"
-          onClick={handleSearch}
-          sx={{
-            backgroundColor: "#333333",
-            fontWeight: "bold",
-            height:'100%',
-            "&:hover": {
-              backgroundColor: "#333333",
-              color: "#fff",
-            },
-          }}
-          disableElevation
-        >
-         
-        </Button> */}
         </div>
         <Button
           variant='outlined'
@@ -234,62 +203,7 @@ const Search = (homeProps: IHomeProps) => {
         </Button>
       </section>
       <Box sx={styles.searchFieldContainer}>
-        {/* <TextField
-          label="Search"
-          variant="outlined"
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          onKeyUp={handleSearchKeypress}
-          sx={{
-            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#000",
-            },
-          }}
-        /> */}
-
-        {/* <Button
-          variant="outlined"
-          onClick={reset}
-          sx={{
-            backgroundColor: "#fff",
-            color: "#333333",
-            fontWeight: "bold",
-            border: "2px solid #333333",
-            "&:hover": {
-              backgroundColor: "#fff",
-              border: "2px solid #333333",
-              color: "#333333",
-            },
-          }}
-          disableElevation
-        >
-          Reset
-        </Button> */}
       </Box>
-      {tempClaims.length > 0 && (
-        <Button
-          variant='outlined'
-          onClick={openClaimsList}
-          sx={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            zIndex: 100,
-            backgroundColor: '#fff',
-            color: '#333333',
-            fontWeight: 'bold',
-            border: '2px solid #333333',
-            '&:hover': {
-              backgroundColor: '#fff',
-              border: '2px solid #333333',
-              color: '#333333'
-            }
-          }}
-          disableElevation
-        >
-          View Claims in List
-        </Button>
-      )}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )
