@@ -10,9 +10,9 @@ import axios from "../../axiosInstance";
 import Dropdown from "../../components/Dropdown";
 import IHomeProps from "./types";
 import styles from "./styles";
-import polygon1 from '../../assets/circle.png';
-import polygon2 from '../../assets/Polygon 2.png';
-import polygon3 from '../../assets/Polygon 3.png'
+import polygon1 from "../../assets/circle.png";
+import polygon2 from "../../assets/Polygon 2.png";
+import polygon3 from "../../assets/Polygon 3.png";
 import { PublishClaim } from "../../composedb/compose";
 
 const Form = ({
@@ -61,13 +61,13 @@ const Form = ({
         // TODO better way of checking the login method
 
         // check if the user is authenticated with metamask and has did
-        const did = localStorage.getItem('did');
-        const ethAddress = localStorage.getItem('ethAddress');
+        const did = localStorage.getItem("did");
+        const ethAddress = localStorage.getItem("ethAddress");
 
-        let res
+        let res;
         if (did && ethAddress) {
           res = await PublishClaim(payload);
-        } else {    
+        } else {
           // if user is not auththicatesd with Metamask and/or do not have a did
           res = await axios.post(`/api/claim`, payload);
         }
@@ -93,10 +93,14 @@ const Form = ({
           setSnackbarMessage("Something went wrong!");
         }
       } catch (err: any) {
-        setLoading(false);
-        toggleSnackbar(true);
-        setSnackbarMessage(err.response.data.message);
-        console.error("err", err.response.data.message);
+        if (err.status === 500) {
+          console.error("Internal Server Error: ", err);
+        } else {
+          setLoading(false);
+          toggleSnackbar(true);
+          setSnackbarMessage(err.response.data.message);
+          console.error("err", err.response.data.message);
+        }
       }
     } else {
       setLoading(false);
@@ -219,111 +223,121 @@ const Form = ({
 
   return (
     <>
-    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
-    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
-    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
-  
-    <form className="Form z-20">
-      <Container sx={styles.formContainer}>
-        <Typography variant="h4" sx={styles.formHeading}>
-          Enter a Claim
-        </Typography>
-        <Box sx={styles.inputFieldWrap}>
-          {inputFieldLabelArr.map(
-            (
-              { label, value, setter, options, type, fieldType, ...rest }: any,
-              i
-            ) =>
-              fieldType === "inputField" ? (
-                <TextField
-                  value={value}
-                  sx={{ ml: 1, mr: 1, width: "22ch" }}
-                  margin="dense"
-                  variant="outlined"
-                  fullWidth
-                  label={label}
-                  key={i}
-                  onChange={(event: any) => setter(event.currentTarget.value)}
-                  type={type}
-                  inputProps={{ ...rest }}
-                />
-              ) : (
-                <Dropdown
-                  key={i}
-                  label={label}
-                  value={value}
-                  setter={setter}
-                  options={options}
-                  variant="outlined"
-                  sx={{ ml: 1, mr: 1, mb: 0.5, mt: 1, width: "22ch" }}
-                />
-              )
-          )}
-          {claim === "rated" && aspect.includes("quality:") ? (
-            <Box sx={styles.sliderField}>
-              <Box display="flex" flexDirection="column">
-                <Typography variant="body2">Review Rating "Stars"</Typography>
-                <Slider
-                  getAriaLabel={() => "Review rating (stars)"}
-                  value={stars}
-                  onChange={(_: Event, stars: number | number[]): void =>
-                    setStars(Number(stars))
-                  }
-                  min={0}
-                  max={5}
-                  valueLabelDisplay="auto"
-                />
+      <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]" />
+      <img src={polygon2} alt="" className="absolute top-[50%] right-[20%]" />
+      <img
+        src={polygon3}
+        alt=""
+        className="absolute right-[20%] top-[5%] w-[200px]"
+      />
+
+      <form className="Form z-20">
+        <Container sx={styles.formContainer}>
+          <Typography variant="h4" sx={styles.formHeading}>
+            Enter a Claim
+          </Typography>
+          <Box sx={styles.inputFieldWrap}>
+            {inputFieldLabelArr.map(
+              (
+                {
+                  label,
+                  value,
+                  setter,
+                  options,
+                  type,
+                  fieldType,
+                  ...rest
+                }: any,
+                i
+              ) =>
+                fieldType === "inputField" ? (
+                  <TextField
+                    value={value}
+                    sx={{ ml: 1, mr: 1, width: "22ch" }}
+                    margin="dense"
+                    variant="outlined"
+                    fullWidth
+                    label={label}
+                    key={i}
+                    onChange={(event: any) => setter(event.currentTarget.value)}
+                    type={type}
+                    inputProps={{ ...rest }}
+                  />
+                ) : (
+                  <Dropdown
+                    key={i}
+                    label={label}
+                    value={value}
+                    setter={setter}
+                    options={options}
+                    variant="outlined"
+                    sx={{ ml: 1, mr: 1, mb: 0.5, mt: 1, width: "22ch" }}
+                  />
+                )
+            )}
+            {claim === "rated" && aspect.includes("quality:") ? (
+              <Box sx={styles.sliderField}>
+                <Box display="flex" flexDirection="column">
+                  <Typography variant="body2">Review Rating "Stars"</Typography>
+                  <Slider
+                    getAriaLabel={() => "Review rating (stars)"}
+                    value={stars}
+                    onChange={(_: Event, stars: number | number[]): void =>
+                      setStars(Number(stars))
+                    }
+                    min={0}
+                    max={5}
+                    valueLabelDisplay="auto"
+                  />
+                </Box>
+                <Typography variant="body2">{stars}</Typography>
               </Box>
-              <Typography variant="body2">{stars}</Typography>
-            </Box>
-          ) : (
-            <TextField
-              value={stars}
-              fullWidth
-              label="Review Rating (stars)"
-              variant="filled"
-              sx={{ ml: 1, mr: 1, width: "22ch" }}
-              onChange={(event: any) =>
-                setStars(event.currentTarget.value)
-              }
-              type="number"
-            />
-          )}
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Effective Date"
-              value={effectiveDate}
-              onChange={(newValue: any) => setEffectiveDate(newValue)}
-              renderInput={(params: any) => (
-                <TextField
-                  {...params}
-                  sx={{ ml: 1, mr: 1, width: "100%" }}
-                  variant="filled"
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Box>
-        <Box sx={styles.submitButtonWrap}>
-          <Button
-            onClick={async (event: any) => await handleSubmission(event)}
-            variant="contained"
-            size="large"
-            sx={{
-              ml: 1,
-              mr: 1,
-              width: "100%",
-              backgroundColor: "#80B8BD",
-              "&:hover": {
+            ) : (
+              <TextField
+                value={stars}
+                fullWidth
+                label="Review Rating (stars)"
+                variant="filled"
+                sx={{ ml: 1, mr: 1, width: "22ch" }}
+                onChange={(event: any) => setStars(event.currentTarget.value)}
+                type="number"
+              />
+            )}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Effective Date"
+                value={effectiveDate}
+                onChange={(newValue: any) => setEffectiveDate(newValue)}
+                renderInput={(params: any) => (
+                  <TextField
+                    {...params}
+                    sx={{ ml: 1, mr: 1, width: "100%" }}
+                    variant="filled"
+                  />
+                )}
+              />
+            </LocalizationProvider>
+          </Box>
+          <Box sx={styles.submitButtonWrap}>
+            <Button
+              onClick={async (event: any) => await handleSubmission(event)}
+              variant="contained"
+              size="large"
+              sx={{
+                ml: 1,
+                mr: 1,
+                width: "100%",
                 backgroundColor: "#80B8BD",
-              },
-            }}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Container>
-    </form>
+                "&:hover": {
+                  backgroundColor: "#80B8BD",
+                },
+              }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Container>
+      </form>
     </>
   );
 };

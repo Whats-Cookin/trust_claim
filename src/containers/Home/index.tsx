@@ -22,8 +22,12 @@ const Home = (homeProps: IHomeProps) => {
       });
       setFetchedClaims(res.data);
     } catch (err: any) {
-      toggleSnackbar(true);
-      setSnackbarMessage(err.message);
+      if (err.status === 500) {
+        console.error("Internal Server Error: ", err);
+      } else {
+        toggleSnackbar(true);
+        setSnackbarMessage(err.message);
+      }
     } finally {
       setSearchVal("");
       setLoading(false);

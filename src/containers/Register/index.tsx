@@ -10,9 +10,9 @@ import Button from "@mui/material/Button";
 import IRegisterProps from "./types";
 import styles from "./styles";
 import { BACKEND_BASE_URL } from "../../utils/settings";
-import polygon1 from '../../assets/circle.png';
-import polygon2 from '../../assets/Polygon 2.png';
-import polygon3 from '../../assets/Polygon 3.png'
+import polygon1 from "../../assets/circle.png";
+import polygon2 from "../../assets/Polygon 2.png";
+import polygon3 from "../../assets/Polygon 3.png";
 
 const Register = ({
   toggleSnackbar,
@@ -38,59 +38,64 @@ const Register = ({
         navigate("/login");
       }
     } catch (err: any) {
-      setLoading(false);
-      toggleSnackbar(true);
-      setSnackbarMessage(err.response.data.message);
-      console.error("Error: ", err.response.data.message);
+      if (err.status === 500) {
+        console.error("Internal Server Error: ", err);
+      } else {
+        setLoading(false);
+        toggleSnackbar(true);
+        setSnackbarMessage(err.response.data.message);
+        console.error("Error: ", err.response.data.message);
+      }
     }
   };
 
   return (
     <>
-    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
-    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
-    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
-    <Box sx={styles.authContainer}>
-      <Typography component="div" variant="h5" color='#80B8BD' >
-       <p className='text-center'>
-        Register
-       </p>
-      
-      </Typography>
-      <TextField
-        value={emailRegister}
-        fullWidth
-        label="Email"
-        sx={styles.inputField}
-        variant="filled"
-        onChange={(e: any) => setEmailRegister(e.currentTarget.value)}
-        type="email"
+      <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]" />
+      <img src={polygon2} alt="" className="absolute top-[50%] right-[20%]" />
+      <img
+        src={polygon3}
+        alt=""
+        className="absolute right-[20%] top-[5%] w-[200px]"
       />
-      <TextField
-        value={passwordRegister}
-        fullWidth
-        label="Password"
-        sx={styles.inputField}
-        variant="filled"
-        onChange={(e: any) => setPasswordRegister(e.currentTarget.value)}
-        type="password"
-      />
-      <Box sx={styles.submitButtonWrap}>
-        <Button
-          onClick={handleRegister}
-          variant="contained"
-          size="medium"
-          sx={styles.submitButton}
-        >
-          Register
-        </Button>
-      </Box>
-      <Link to="/login" style={{ textDecoration: "none" }}>
-        <Typography variant="body1" color="black">
-          Click here to Login
+      <Box sx={styles.authContainer}>
+        <Typography component="div" variant="h5" color="#80B8BD">
+          <p className="text-center">Register</p>
         </Typography>
-      </Link>
-    </Box>
+        <TextField
+          value={emailRegister}
+          fullWidth
+          label="Email"
+          sx={styles.inputField}
+          variant="filled"
+          onChange={(e: any) => setEmailRegister(e.currentTarget.value)}
+          type="email"
+        />
+        <TextField
+          value={passwordRegister}
+          fullWidth
+          label="Password"
+          sx={styles.inputField}
+          variant="filled"
+          onChange={(e: any) => setPasswordRegister(e.currentTarget.value)}
+          type="password"
+        />
+        <Box sx={styles.submitButtonWrap}>
+          <Button
+            onClick={handleRegister}
+            variant="contained"
+            size="medium"
+            sx={styles.submitButton}
+          >
+            Register
+          </Button>
+        </Box>
+        <Link to="/login" style={{ textDecoration: "none" }}>
+          <Typography variant="body1" color="black">
+            Click here to Login
+          </Typography>
+        </Link>
+      </Box>
     </>
   );
 };

@@ -88,8 +88,13 @@ const Search = (homeProps: IHomeProps) => {
         toggleSnackbar(true);
       }
     } catch (err: any) {
-      toggleSnackbar(true);
-      setSnackbarMessage(err.message);
+      if (err.status === 500) {
+        console.error("Internal Server Error: ", err);
+      } else {
+        toggleSnackbar(true);
+        setSnackbarMessage(err.message);
+        console.error(err);
+      }
     } finally {
       setLoading(false);
       cy.layout({

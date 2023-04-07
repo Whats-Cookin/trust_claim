@@ -10,13 +10,13 @@ import Button from "@mui/material/Button";
 import MuiLink from "@mui/material/Link";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import metaicon from "./metamask-icon.svg";
-import polygon1 from '../../assets/circle.png';
-import polygon2 from '../../assets/Polygon 2.png';
-import polygon3 from '../../assets/Polygon 3.png'
+import polygon1 from "../../assets/circle.png";
+import polygon2 from "../../assets/Polygon 2.png";
+import polygon3 from "../../assets/Polygon 3.png";
 
 import styles from "./styles";
 import ILoginProps from "./types";
-import { useCeramicContext, authenticateCeramic } from '../../composedb'
+import { useCeramicContext, authenticateCeramic } from "../../composedb";
 import { useQueryParams } from "../../hooks";
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from "../../utils/settings";
 
@@ -77,13 +77,17 @@ const Login = ({
 
     if (accountId) {
       // User address is found, store and navigate to home page
-      localStorage.setItem("ethAddress", accountId.address)
+      localStorage.setItem("ethAddress", accountId.address);
       try {
-          const clients = useCeramicContext()
-          const { ceramic, composeClient } = clients
-          await authenticateCeramic(ceramic, composeClient)
-      } catch(e) {
-          console.log(`Error trying to authenticate ceramic: ${e}`)
+        const clients = useCeramicContext();
+        const { ceramic, composeClient } = clients;
+        await authenticateCeramic(ceramic, composeClient);
+      } catch (e: any) {
+        if (e.status === 500) {
+          console.error("Internal Server Error: ", e);
+        } else {
+          console.log(`Error trying to authenticate ceramic: ${e}`);
+        }
       }
       navigate("/");
     } else {
@@ -111,10 +115,14 @@ const Login = ({
         handleAuth(accessToken, refreshToken);
       }
     } catch (err: any) {
-      setLoading(false);
-      toggleSnackbar(true);
-      setSnackbarMessage("User not Found!");
-      console.error("Error: ", err?.message);
+      if (err.status === 500) {
+        console.error("Internal Server Error: ", err);
+      } else {
+        setLoading(false);
+        toggleSnackbar(true);
+        setSnackbarMessage("User not Found!");
+        console.error("Error: ", err?.message);
+      }
     }
   };
 
@@ -127,11 +135,10 @@ const Login = ({
         onClick={handleWalletAuth}
         style={styles.authbtn}
       >
-         <span>
+        <span>
           <img src={metaicon} alt="" style={{ width: "30px" }} />
         </span>
-         Metamask{" "}
-       
+        Metamask{" "}
       </button>
     );
   } else {
@@ -147,59 +154,63 @@ const Login = ({
 
   return (
     <>
-    <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]"/>
-    <img src={polygon2}alt="" className="absolute top-[50%] right-[20%]"/>
-    <img src={polygon3}alt="" className="absolute right-[20%] top-[5%] w-[200px]"/>
+      <img src={polygon1} alt="" className="absolute top-[3%] left-[-10%]" />
+      <img src={polygon2} alt="" className="absolute top-[50%] right-[20%]" />
+      <img
+        src={polygon3}
+        alt=""
+        className="absolute right-[20%] top-[5%] w-[200px]"
+      />
       <Box sx={styles.authContainer}>
-      <p className='text-center text-[#80B8BD] font-bold text-2xl'>
-        Login
-       </p>
-      <TextField
-        value={emailLogin}
-        fullWidth
-        label="Email"
-        sx={styles.inputField}
-        variant="filled"
-        onChange={(e: any) => setEmailLogin(e.currentTarget.value)}
-        type="email"
-      />
-      <TextField
-        value={passwordLogin}
-        fullWidth
-        label="Password"
-        sx={styles.inputField}
-        variant="filled"
-        onChange={(e: any) => setPasswordLogin(e.currentTarget.value)}
-        type="password"
-      />
-      <Box sx={styles.submitButtonWrap}>
-        <Button
-          onClick={handleLogin}
-          variant="contained"
-          size="medium"
-          sx={styles.submitButton}
-        >
-          Login
-        </Button>
+        <p className="text-center text-[#80B8BD] font-bold text-2xl">Login</p>
+        <TextField
+          value={emailLogin}
+          fullWidth
+          label="Email"
+          sx={styles.inputField}
+          variant="filled"
+          onChange={(e: any) => setEmailLogin(e.currentTarget.value)}
+          type="email"
+        />
+        <TextField
+          value={passwordLogin}
+          fullWidth
+          label="Password"
+          sx={styles.inputField}
+          variant="filled"
+          onChange={(e: any) => setPasswordLogin(e.currentTarget.value)}
+          type="password"
+        />
+        <Box sx={styles.submitButtonWrap}>
+          <Button
+            onClick={handleLogin}
+            variant="contained"
+            size="medium"
+            sx={styles.submitButton}
+          >
+            Login
+          </Button>
+        </Box>
+        <div className="flex items-center justify-center gap-2">
+          <span className="h-[1px] w-[100px] bg-[black]"></span>
+          <Typography component="div">Or, Login with </Typography>{" "}
+          <span className="h-[1px] w-[100px] bg-[black]"></span>
+        </div>
+        <Box>
+          <MuiLink href={githubUrl} sx={styles.authLinkButton}>
+            <GitHubIcon sx={styles.authIcon} />
+            Github
+          </MuiLink>
+        </Box>
+        <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
+
+        <Link to="/register" style={{ textDecoration: "none" }}>
+          <Typography variant="body1" color="black">
+            Click here to register
+          </Typography>
+        </Link>
       </Box>
-      <div className="flex items-center justify-center gap-2">
-      <span className="h-[1px] w-[100px] bg-[black]"></span><Typography component="div">Or, Login with </Typography> <span className="h-[1px] w-[100px] bg-[black]"></span>
-    
-      </div>
-      <Box>
-        <MuiLink href={githubUrl} sx={styles.authLinkButton}>
-        <GitHubIcon sx={styles.authIcon} />Github 
-        </MuiLink>
-      </Box>
-      <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
-     
-       <Link to="/register" style={{ textDecoration: "none" }}>
-        <Typography variant="body1" color="black">
-          Click here to register
-        </Typography>
-      </Link>
-    </Box>
-  </>
+    </>
   );
 };
 export default Login;
