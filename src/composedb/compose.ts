@@ -1,4 +1,4 @@
-import { useCeramicContext} from "./ceramic_context.js";
+import { useCeramicContext } from './ceramic_context.js'
 
 const CREATE_LINKED_CLAIM_MUTATION = `
 
@@ -46,55 +46,43 @@ const CREATE_LINKED_CLAIM_MUTATION = `
       }
     }
   }
-`;
+`
 
 type LinkedClaimPayload = {
-  subject: string;
-  claim: string;
-  object: string;
-  statement: string;
-  aspect: string;
-  howKnown: string;
-  sourceURI: string;
-  effectiveDate: string;
-  confidence: number;
-  stars: number;
-};
+  subject: string
+  claim: string
+  object: string
+  statement: string
+  aspect: string
+  howKnown: string
+  sourceURI: string
+  effectiveDate: string
+  confidence: number
+  stars: number
+}
 
 const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
+  const { ceramic, composeClient } = useCeramicContext()
 
-  const {ceramic, composeClient} = useCeramicContext();
-
-  if (! composeClient) {
-     console.log("Compose client connection unavailable");
-     return {'status':500};
+  if (!composeClient) {
+    console.log('Compose client connection unavailable')
+    return { status: 500 }
   }
 
-  const {
-    subject,
-    claim,
-    object,
-    statement,
-    aspect,
-    howKnown,
-    sourceURI,
-    effectiveDate,
-    confidence,
-    stars,
-  } = payload;
+  const { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
 
   const rating = {
-    stars,
-  };
+    stars
+  }
 
   const claimSource = {
-    sourceID: sourceURI,
-  };
+    sourceID: sourceURI
+  }
 
   const sharing = {
     respondAt: null,
-    intendedAudience: null,
-  };
+    intendedAudience: null
+  }
 
   const variables = {
     claim,
@@ -106,19 +94,16 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
     subjectID: subject,
     confidence,
     subjectType: null,
-    effectiveDate,
-  };
-  const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables);
+    effectiveDate
+  }
+  const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 
   if (response.errors) {
-    console.error(response.errors);
-    return {'status': 500};
+    console.error(response.errors)
+    return { status: 500 }
   }
 
-  return {'status':201};
+  return { status: 201 }
+}
 
-};
-
-
-
-export { PublishClaim };
+export { PublishClaim }

@@ -1,7 +1,7 @@
 interface IHomeProps {
-  toggleSnackbar: any;
-  setSnackbarMessage: any;
-  setLoading: any;
+  toggleSnackbar: any
+  setSnackbarMessage: any
+  setLoading: any
 }
 
-export default IHomeProps;
+export default IHomeProps
