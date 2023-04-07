@@ -5,7 +5,7 @@ import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-
+import NewClaim from '../../containers/claimNode'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
@@ -25,6 +25,7 @@ const Search = (homeProps: IHomeProps) => {
   const query = new URLSearchParams(search).get('query')
   const [tempClaims, setTempClaims] = useState<any[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<any>(null)
   const [searchVal, setSearchVal] = useState<string>(query || '')
@@ -72,11 +73,6 @@ const Search = (homeProps: IHomeProps) => {
       }).run()
       cy.center()
     }
-  }
-
-  const openClaimsList = () => {
-    window.localStorage.setItem('claims', JSON.stringify(tempClaims))
-    navigate('/claims')
   }
 
   const handleSearch = async () => {
@@ -127,6 +123,17 @@ const Search = (homeProps: IHomeProps) => {
 
   const addCyEventHandlers = (cy: any) => {
     cy.on('tap', 'node', handleNodeClick)
+    //when rightclick on any part of gragh
+    cy.on('cxttap', 'node,edge', (event: any) => {
+      event.preventDefault()
+      const target = event.target
+      const currentClaim = claims.find((c: any) => String(c.id) === target.id())
+
+      if (currentClaim) {
+        setSelectedClaim(currentClaim)
+        setOpenNewClaim(true)
+      }
+    })
 
     // when edges is clicked
     cy.on('tap', 'edge', (event: any) => {
@@ -186,6 +193,7 @@ const Search = (homeProps: IHomeProps) => {
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
+      <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
       <section className='absolute top-[90px] left-[2%] z-20'>
         <div className=' rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]'>
           <input
@@ -198,23 +206,6 @@ const Search = (homeProps: IHomeProps) => {
           <button className='bg-[#333] font-bold text-white h-full w-[60px]' onClick={handleSearch}>
             <SearchIcon />
           </button>
-
-          {/* <Button
-          variant="contained"
-          onClick={handleSearch}
-          sx={{
-            backgroundColor: "#333333",
-            fontWeight: "bold",
-            height:'100%',
-            "&:hover": {
-              backgroundColor: "#333333",
-              color: "#fff",
-            },
-          }}
-          disableElevation
-        >
-         
-        </Button> */}
         </div>
         <Button
           variant='outlined'
@@ -236,63 +227,6 @@ const Search = (homeProps: IHomeProps) => {
           Reset
         </Button>
       </section>
-      <Box sx={styles.searchFieldContainer}>
-        {/* <TextField
-          label="Search"
-          variant="outlined"
-          value={searchVal}
-          onChange={(e) => setSearchVal(e.target.value)}
-          onKeyUp={handleSearchKeypress}
-          sx={{
-            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#000",
-            },
-          }}
-        /> */}
-
-        {/* <Button
-          variant="outlined"
-          onClick={reset}
-          sx={{
-            backgroundColor: "#fff",
-            color: "#333333",
-            fontWeight: "bold",
-            border: "2px solid #333333",
-            "&:hover": {
-              backgroundColor: "#fff",
-              border: "2px solid #333333",
-              color: "#333333",
-            },
-          }}
-          disableElevation
-        >
-          Reset
-        </Button> */}
-      </Box>
-      {tempClaims.length > 0 && (
-        <Button
-          variant='outlined'
-          onClick={openClaimsList}
-          sx={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            zIndex: 100,
-            backgroundColor: '#fff',
-            color: '#333333',
-            fontWeight: 'bold',
-            border: '2px solid #333333',
-            '&:hover': {
-              backgroundColor: '#fff',
-              border: '2px solid #333333',
-              color: '#333333'
-            }
-          }}
-          disableElevation
-        >
-          View Claims in List
-        </Button>
-      )}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )
