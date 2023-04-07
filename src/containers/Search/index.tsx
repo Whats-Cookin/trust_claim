@@ -12,7 +12,7 @@ import cyConfig from "./cyConfig";
 import IHomeProps from "./types";
 import { parseClaims } from "./graph.utils";
 import styles from "./styles";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import { Typography } from "@mui/material";
 
 const Search = (homeProps: IHomeProps) => {
@@ -44,7 +44,7 @@ const Search = (homeProps: IHomeProps) => {
       setTempClaims([...tempClaims, ...newClaims]);
     }
   };
-  
+
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true);
     try {
@@ -55,7 +55,36 @@ const Search = (homeProps: IHomeProps) => {
       if (res.data.claims.length > 0) {
         updateClaims(search, res.data.claims);
       } else {
-        setSnackbarMessage("No results found");
+        setSnackbarMessage("No results found of claim search");
+        toggleSnackbar(true);
+      }
+    } catch (err: any) {
+      toggleSnackbar(true);
+      setSnackbarMessage(err.message);
+    } finally {
+      setLoading(false);
+      cy.layout({
+        name: "circle",
+        directed: true,
+        padding: 30,
+        animate: true,
+        animationDuration: 1000,
+      }).run();
+      cy.center();
+    }
+  };
+  const fetchNodes = async (query: string, search: boolean, page: number) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
+        params: { search: query },
+      });
+      console.log("res.node", res.data);
+      if (res.data.node.length > 0) {
+        updateClaims(search, res.data.nodes);
+        updateClaims(search, res.data.nodes);
+      } else {
+        setSnackbarMessage("No results found of node");
         toggleSnackbar(true);
       }
     } catch (err: any) {
@@ -109,11 +138,13 @@ const Search = (homeProps: IHomeProps) => {
   const handleNodeClick = async (event: any) => {
     event.preventDefault();
     const claim = event.target;
-    const foundIndex = claimsPageMemo.findIndex((item) => item.id == claim.id());
+    const foundIndex = claimsPageMemo.findIndex(
+      (item) => item.id == claim.id()
+    );
     if (foundIndex === -1) {
       claimsPageMemo.push({ id: claim.id(), page: 1 });
       await fetchClaims(claim.id(), false, 1);
-      console.log("first")
+      console.log("first");
     } else {
       claimsPageMemo[foundIndex].page++;
       claimsPageMemo.push({
@@ -121,13 +152,12 @@ const Search = (homeProps: IHomeProps) => {
         page: claimsPageMemo[foundIndex].page,
       });
       await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page);
-      console.log("second")
+      console.log("second");
     }
   };
 
   const addCyEventHandlers = (cy: any) => {
     cy.on("tap", "node", handleNodeClick);
-
 
     // when edges is clicked
     cy.on("tap", "edge", (event: any) => {
@@ -149,7 +179,7 @@ const Search = (homeProps: IHomeProps) => {
         container.style.cursor = "pointer";
       }
     });
-  
+
     cy.on("mouseout", "edge,node", (event: any) => {
       const container = event?.cy?.container();
       if (container) {
@@ -157,14 +187,14 @@ const Search = (homeProps: IHomeProps) => {
       }
     });
   };
-  
+
   const removeCyEventHandlers = (cy: any) => {
     cy.off("tap", "node", handleNodeClick);
     cy.off("tap", "edge");
     cy.off("mouseover", "edge,node");
     cy.off("mouseout", "edge,node");
   };
-  
+
   useEffect(() => {
     if (cy) {
       addCyEventHandlers(cy);
@@ -173,8 +203,6 @@ const Search = (homeProps: IHomeProps) => {
       };
     }
   }, [cy]);
-  
-  
 
   useMemo(() => {
     if (cy && query) handleSearch();
@@ -193,17 +221,23 @@ const Search = (homeProps: IHomeProps) => {
         setOpen={setOpenModal}
         selectedClaim={selectedClaim}
       />
-     <section className="absolute top-[90px] left-[2%] z-20">
-     <div className=" rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]">
-       <input type="search" value={searchVal} onChange={(e) => setSearchVal(e.target.value)}
-          onKeyUp={handleSearchKeypress}
-          className='w-full  p-[0.5rem] rounded-lg border-none outline-none'
+      <section className="absolute top-[90px] left-[2%] z-20">
+        <div className=" rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]">
+          <input
+            type="search"
+            value={searchVal}
+            onChange={(e) => setSearchVal(e.target.value)}
+            onKeyUp={handleSearchKeypress}
+            className="w-full  p-[0.5rem] rounded-lg border-none outline-none"
           />
-          <button className="bg-[#333] font-bold text-white h-full w-[60px]" onClick={handleSearch}>
-          <SearchIcon />
+          <button
+            className="bg-[#333] font-bold text-white h-full w-[60px]"
+            onClick={handleSearch}
+          >
+            <SearchIcon />
           </button>
-        
-           {/* <Button
+
+          {/* <Button
           variant="contained"
           onClick={handleSearch}
           sx={{
@@ -219,15 +253,14 @@ const Search = (homeProps: IHomeProps) => {
         >
          
         </Button> */}
-         
-       </div>
-       <Button
+        </div>
+        <Button
           variant="outlined"
           onClick={reset}
           sx={{
             backgroundColor: "#fff",
             color: "#333333",
-            marginTop:'1rem',
+            marginTop: "1rem",
             fontWeight: "bold",
             border: "2px solid #333333",
             "&:hover": {
@@ -240,9 +273,8 @@ const Search = (homeProps: IHomeProps) => {
         >
           Reset
         </Button>
-     </section>
+      </section>
       <Box sx={styles.searchFieldContainer}>
-       
         {/* <TextField
           label="Search"
           variant="outlined"
@@ -255,7 +287,7 @@ const Search = (homeProps: IHomeProps) => {
             },
           }}
         /> */}
-       
+
         {/* <Button
           variant="outlined"
           onClick={reset}
