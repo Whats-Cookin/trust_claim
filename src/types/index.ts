@@ -1,12 +1,12 @@
 declare global {
   interface Window {
-    ethereum?: any;
+    ethereum?: any
   }
 
   interface BackEndModel {
-    aliases: any;
-    schemaCeramicId: string;
+    aliases: any
+    schemaCeramicId: string
   }
 }
 
-export {};
+export {}
