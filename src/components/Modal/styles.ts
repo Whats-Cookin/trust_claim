@@ -7,7 +7,7 @@ const styles = {
     transform: "translate(-50%, -50%)",
     maxWidth: "800px",
     width: "100%",
-    height: "100%",
+    height: "80%",
     maxHeight: "450px",
     bgcolor: "background.paper",
     border: "2px solid #004",
