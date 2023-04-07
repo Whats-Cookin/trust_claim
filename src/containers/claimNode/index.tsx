@@ -5,7 +5,7 @@ import { PublishClaim } from '../../composedb/compose'
 import { useTheme } from '@mui/material/styles'
 import MUIModal from '@mui/material/Modal'
 
-const NewClaimPopup: React.FC<Props> = ({ open, setOpen }) => {
+const NewClaim=({ open, setOpen }: any) => {
   const handleClose = () => setOpen(false)
   const [subject, setSubject] = useState('')
   const [claim, setClaim] = useState('')
@@ -25,10 +25,6 @@ const NewClaimPopup: React.FC<Props> = ({ open, setOpen }) => {
           object,
           statement,
           sourceURI
-        }
-        const res = await PublishClaim(payload)
-        if (res.status === 201) {
-          handleClose()
         }
       } catch (err: any) {
         console.error('err', err.response.data.message)
@@ -110,4 +106,4 @@ const NewClaimPopup: React.FC<Props> = ({ open, setOpen }) => {
   )
 }
 
-export default NewClaimPopup
+export default NewClaim;
