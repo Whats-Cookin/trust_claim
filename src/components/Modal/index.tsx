@@ -1,10 +1,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MUIModal from "@mui/material/Modal";
+// import { useState } from ß"react";
 
 import { camelCaseToSimpleString } from "../../utils/string.utils";
 
 import styles from "./styles";
+import Comment from "../comment/Comment";
 
 const Modal = ({ open, setOpen, selectedClaim }: any) => {
   const handleClose = () => setOpen(false);
@@ -19,10 +21,12 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
     "lastUpdatedAt",
     "effectiveDate",
   ];
-
+//const [commentData, setCommentData] = useState(comments)
   return (
+   
     <MUIModal open={open} onClose={handleClose}>
-      <Box sx={{ ...styles.container, maxHeight: "80vh" }}>
+       <div className="h-[80vh] absolute left-[50%] top-[50%] w-full" style={{transform: 'translate(-50%, -50%)',maxWidth:'800px'}}>
+      <Box sx={{ ...styles.container }}>
         <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
           Claim
         </Typography>
@@ -39,8 +43,13 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
               </Box>
             )
           )}
+      
       </Box>
+      <Comment />
+      </div>
+
     </MUIModal>
+   
   );
 };
 

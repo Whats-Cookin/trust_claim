@@ -44,6 +44,7 @@ const Register = ({
       console.error("Error: ", err.response.data.message);
     }
   };
+  
 
   return (
     <>
