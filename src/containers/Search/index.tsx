@@ -28,7 +28,6 @@ const Search = (homeProps: IHomeProps) => {
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false);
   const [selectedClaim, setSelectedClaim] = useState<any>(null);
   const [cy, setCy] = useState<any>(null);
-  // const [showPopup, setShowPopup] = useState(false);
   const [searchVal, setSearchVal] = useState<string>(query || "");
   const claimsPageMemo: any[] = [];
 
@@ -76,10 +75,7 @@ const Search = (homeProps: IHomeProps) => {
     }
   };
 
-  // const openClaimsList = () => {
-  //   window.localStorage.setItem("claims", JSON.stringify(tempClaims));
-  //   navigate("/claims");
-  // };
+
 
   const handleSearch = async () => {
     window.localStorage.removeItem("claims");
@@ -128,10 +124,13 @@ const Search = (homeProps: IHomeProps) => {
     }
   };
 
+  
   const addCyEventHandlers = (cy: any) => {
     cy.on("tap", "node", handleNodeClick);
+
+
   //when rightclick on any part of gragh
-  cy.on("cxttap",(event: any) => {
+  cy.on("cxttap","node,edge",(event: any) => {
     event.preventDefault();
     const target = event.target;
     const currentClaim = claims.find((c: any) => String(c.id) === target.id());
