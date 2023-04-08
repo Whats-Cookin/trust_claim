@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-
+import NewClaim from '../../containers/claimNode'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
@@ -21,6 +21,7 @@ const Search = (homeProps: IHomeProps) => {
   const ref = useRef<any>(null)
   const query = new URLSearchParams(search).get('query')
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const [searchVal, setSearchVal] = useState<string>(query || '')
@@ -122,7 +123,30 @@ const Search = (homeProps: IHomeProps) => {
 
   const addCyEventHandlers = (cy: any) => {
     cy.on('tap', 'node', handleNodeClick)
-    cy.on('tap', 'edge', handleEdgeClick)
+    //when rightclick on any part of gragh
+    cy.on('cxttap', 'node,edge', (event: any) => {
+      event.preventDefault()
+      const claim = event.target
+      const currentClaim = claim.data('raw')
+
+      if (currentClaim) {
+        setSelectedClaim(currentClaim)
+        setOpenNewClaim(true)
+      }
+    })
+
+    // when edges is clicked
+    cy.on('tap', 'edge', (event: any) => {
+      event.preventDefault()
+      const claim = event.target
+
+      //getting the claim data for selected node
+      const currentClaim = claim.data('raw')
+      if (currentClaim) {
+        setSelectedClaim(currentClaim)
+        setOpenModal(true)
+      }
+    })
 
     // add hover state pointer cursor on node
     cy.on('mouseover', 'edge,node', (event: any) => {
@@ -169,19 +193,42 @@ const Search = (homeProps: IHomeProps) => {
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
-      <section className='absolute top-[90px] left-[2%] z-20'>
-        <div className=' rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]'>
+      <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
+      <Box sx={{ position: 'absolute', top: '90px', left: '2%', zIndex: 20 }}>
+        <Box
+          component='div'
+          sx={{
+            borderRadius: '0.3em',
+            width: '500px',
+            display: 'flex',
+            alignItems: 'center',
+            borderColor: 'black',
+            borderWidth: '2px',
+            height: '50px'
+          }}
+        >
           <input
             type='search'
             value={searchVal}
             onChange={e => setSearchVal(e.target.value)}
             onKeyUp={handleSearchKeypress}
-            className='w-full  p-[0.5rem] rounded-lg border-none outline-none'
+            style={{ width: '100%', padding: '0.5rem', borderRadius: 'lg', border: 'none', outline: 'none' }}
           />
-          <button className='bg-[#333] font-bold text-white h-full w-[60px]' onClick={handleSearch}>
+          <Button
+            style={{
+              backgroundColor: '#333',
+              fontWeight: 'bold',
+              color: 'white',
+              height: '100%',
+              width: '60px',
+              borderTopRightRadius: '0.1em',
+              borderBottomRightRadius: '0.1em'
+            }}
+            onClick={handleSearch}
+          >
             <SearchIcon />
-          </button>
-        </div>
+          </Button>
+        </Box>
         <Button
           variant='outlined'
           onClick={reset}
@@ -201,8 +248,6 @@ const Search = (homeProps: IHomeProps) => {
         >
           Reset
         </Button>
-      </section>
-      <Box sx={styles.searchFieldContainer}>
       </Box>
       <Box ref={ref} sx={styles.cy} />
     </Container>
