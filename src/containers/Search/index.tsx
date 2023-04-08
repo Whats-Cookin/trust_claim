@@ -41,12 +41,12 @@ const Search = (homeProps: IHomeProps) => {
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/nodes?page=${page}&limit=5`, {
+      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
         params: { search: query }
       })
 
-      if (res.data.claims.length > 0) {
-        updateClaims(search, res.data.claims)
+      if (res.data.nodes.length > 0) {
+        updateClaims(search, res.data.nodes)
       } else {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
