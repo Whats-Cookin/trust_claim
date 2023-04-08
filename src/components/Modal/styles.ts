@@ -1,19 +1,5 @@
 const styles = {
   container: {
-<<<<<<< HEAD
-    color: "#000000",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    maxWidth: "800px",
-    width: "100%",
-    height: "80%",
-    maxHeight: "450px",
-    bgcolor: "background.paper",
-    border: "2px solid #004",
-    borderRadius: "4px",
-=======
     color: '#000000',
     position: 'absolute',
     top: '50%',
@@ -21,12 +7,11 @@ const styles = {
     transform: 'translate(-50%, -50%)',
     maxWidth: '800px',
     width: '100%',
-    height: '60%',
+    height: '80%',
     maxHeight: '450px',
     bgcolor: 'background.paper',
     border: '2px solid #004',
     borderRadius: '4px',
->>>>>>> d09d6d12cea0bca64f2c3f69550cbb95be45dac7
     boxShadow: 20,
     p: 4,
     overflow: 'hidden',

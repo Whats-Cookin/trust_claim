@@ -1,10 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MUIModal from "@mui/material/Modal";
+import { useState } from "react";
 
 import { camelCaseToSimpleString } from '../../utils/string.utils'
 
-import styles from './styles'
+import styles from "./styles";
 import Comment from "../comment/CommentInput";
 import CommentList from "../comment/CommentList";
 export interface comment {
@@ -14,6 +15,12 @@ export interface comment {
 }
 
 const Modal = ({ open, setOpen, selectedClaim }: any) => {
+  const [comments, setComments] = useState<comment[]>([]);
+  const handleSubmit = (text: string) => {
+    const newComment = { id: Date.now(), text, editable: false };
+    setComments([ ...comments, newComment ]);
+  };
+
   const handleClose = () => setOpen(false);
   if (!selectedClaim) return null;
 
@@ -23,24 +30,31 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
   //const [commentData, setCommentData] = useState(comments)
   return (
     <MUIModal open={open} onClose={handleClose}>
-      <Box sx={{ ...styles.container, maxHeight: "80vh" }}>
-        <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
-          Claim
-        </Typography>
-        {selectedClaim &&
-          Object.keys(selectedClaim).map((key: string) =>
-            excludedFields.includes(key) ? null : (
-              <Box sx={styles.detailField} key={key}>
-                <Typography component="h2" sx={{ fontWeight: "bold" }}>
-                  {camelCaseToSimpleString(key)}
-                </Typography>
-                <Typography component="p" sx={styles.fieldContent}>
-                  {selectedClaim[key]}
-                </Typography>
-              </Box>
-            )
-          )}
-      </Box>
+      <div
+        className="h-[80vh] absolute left-[50%] top-[50%] w-full border-none"
+        style={{ transform: "translate(-50%, -50%)", maxWidth: "800px" }}
+      >
+        <Box sx={{ ...styles.container }}>
+          <Typography variant="h4" component="h2" sx={{ marginBottom: 4 }}>
+            Claim
+          </Typography>
+          {selectedClaim &&
+            Object.keys(selectedClaim).map((key: string) =>
+              excludedFields.includes(key) ? null : (
+                <Box sx={styles.detailField} key={key}>
+                  <Typography component="h2" sx={{ fontWeight: "bold" }}>
+                    {camelCaseToSimpleString(key)}
+                  </Typography>
+                  <Typography component="p" sx={styles.fieldContent}>
+                    {selectedClaim[key]}
+                  </Typography>
+                </Box>
+              )
+            )}
+        </Box>
+        <CommentList  comments={comments} setComments={setComments}/>
+        <Comment onSubmit={handleSubmit} />
+      </div>
     </MUIModal>
   )
 }
