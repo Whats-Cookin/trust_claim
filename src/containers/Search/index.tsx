@@ -194,19 +194,41 @@ const Search = (homeProps: IHomeProps) => {
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
       <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
-      <section className='absolute top-[90px] left-[2%] z-20'>
-        <div className=' rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]'>
+      <Box sx={{ position: 'absolute', top: '90px', left: '2%', zIndex: 20 }}>
+        <Box
+          component='div'
+          sx={{
+            borderRadius: '0.3em',
+            width: '500px',
+            display: 'flex',
+            alignItems: 'center',
+            borderColor: 'black',
+            borderWidth: '2px',
+            height: '50px'
+          }}
+        >
           <input
             type='search'
             value={searchVal}
             onChange={e => setSearchVal(e.target.value)}
             onKeyUp={handleSearchKeypress}
-            className='w-full  p-[0.5rem] rounded-lg border-none outline-none'
+            style={{ width: '100%', padding: '0.5rem', borderRadius: 'lg', border: 'none', outline: 'none' }}
           />
-          <button className='bg-[#333] font-bold text-white h-full w-[60px]' onClick={handleSearch}>
+          <Button
+            style={{
+              backgroundColor: '#333',
+              fontWeight: 'bold',
+              color: 'white',
+              height: '100%',
+              width: '60px',
+              borderTopRightRadius: '0.1em',
+              borderBottomRightRadius: '0.1em'
+            }}
+            onClick={handleSearch}
+          >
             <SearchIcon />
-          </button>
-        </div>
+          </Button>
+        </Box>
         <Button
           variant='outlined'
           onClick={reset}
@@ -226,7 +248,7 @@ const Search = (homeProps: IHomeProps) => {
         >
           Reset
         </Button>
-      </section>
+      </Box>
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )
