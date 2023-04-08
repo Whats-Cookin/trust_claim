@@ -195,7 +195,18 @@ const Search = (homeProps: IHomeProps) => {
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
       <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
       <Box sx={{ position: 'absolute', top: '90px', left: '2%', zIndex: 20 }}>
-        <Box component="div" sx={{ borderRadius: '0.3em', width: '500px', display: 'flex', alignItems: 'center', borderColor: 'black', borderWidth: '2px', height: '50px' }}>
+        <Box
+          component='div'
+          sx={{
+            borderRadius: '0.3em',
+            width: '500px',
+            display: 'flex',
+            alignItems: 'center',
+            borderColor: 'black',
+            borderWidth: '2px',
+            height: '50px'
+          }}
+        >
           <input
             type='search'
             value={searchVal}
@@ -203,7 +214,18 @@ const Search = (homeProps: IHomeProps) => {
             onKeyUp={handleSearchKeypress}
             style={{ width: '100%', padding: '0.5rem', borderRadius: 'lg', border: 'none', outline: 'none' }}
           />
-          <Button style={{ backgroundColor: '#333', fontWeight: 'bold', color: 'white', height: '100%', width: '60px',borderTopRightRadius: '0.1em', borderBottomRightRadius: '0.1em' }} onClick={handleSearch}>
+          <Button
+            style={{
+              backgroundColor: '#333',
+              fontWeight: 'bold',
+              color: 'white',
+              height: '100%',
+              width: '60px',
+              borderTopRightRadius: '0.1em',
+              borderBottomRightRadius: '0.1em'
+            }}
+            onClick={handleSearch}
+          >
             <SearchIcon />
           </Button>
         </Box>
