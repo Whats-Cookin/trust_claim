@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from 'react'
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
-
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
@@ -132,11 +131,17 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   return (
     <>
-      <img src={polygon1} alt='' className='absolute top-[3%] left-[-10%]' />
-      <img src={polygon2} alt='' className='absolute top-[50%] right-[20%]' />
-      <img src={polygon3} alt='' className='absolute right-[20%] top-[5%] w-[200px]' />
+      <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
+      <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
+      <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
       <Box sx={styles.authContainer}>
-        <p className='text-center text-[#80B8BD] font-bold text-2xl'>Login</p>
+        <Typography   
+        style={{
+            textAlign: "center",
+            color: "#80B8BD",
+            fontWeight: "bold",
+            fontSize: "2.5rem",
+          }}>Login</Typography>
         <TextField
           value={emailLogin}
           fullWidth
@@ -160,11 +165,12 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             Login
           </Button>
         </Box>
-        <div className='flex items-center justify-center gap-2'>
-          <span className='h-[1px] w-[100px] bg-[black]'></span>
-          <Typography component='div'>Or, Login with </Typography>{' '}
-          <span className='h-[1px] w-[100px] bg-[black]'></span>
-        </div>
+        <Box display="flex" justifyContent="center" alignItems="center" gap={2} 
+       >
+          <span  style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+          <Typography>Or, Login with </Typography>
+          <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+        </Box>
         <Box>
           <MuiLink href={githubUrl} sx={styles.authLinkButton}>
             <GitHubIcon sx={styles.authIcon} />
