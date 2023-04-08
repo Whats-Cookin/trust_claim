@@ -204,11 +204,29 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
 
   return (
     <>
-      <img src={polygon1} alt='' className='absolute top-[3%] left-[-10%]' />
-      <img src={polygon2} alt='' className='absolute top-[50%] right-[20%]' />
-      <img src={polygon3} alt='' className='absolute right-[20%] top-[5%] w-[200px]' />
+      <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
+      <img
+        src={polygon2}
+        alt=''
+        style={{
+          position: 'absolute',
+          top: '50%',
+          right: '20%',
+          transform: 'translateY(-50%)'
+        }}
+      />
+      <img
+        src={polygon3}
+        alt=''
+        style={{
+          position: 'absolute',
+          right: '20%',
+          top: '5%',
+          width: '200px'
+        }}
+      />
 
-      <form className='Form z-20'>
+      <form style={{ zIndex: 20 }}>
         <Container sx={styles.formContainer}>
           <Typography variant='h4' sx={styles.formHeading}>
             Enter a Claim
