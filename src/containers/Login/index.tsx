@@ -135,13 +135,16 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
       <Box sx={styles.authContainer}>
-        <Typography   
-        style={{
-            textAlign: "center",
-            color: "#80B8BD",
-            fontWeight: "bold",
-            fontSize: "2.5rem",
-          }}>Login</Typography>
+        <Typography
+          style={{
+            textAlign: 'center',
+            color: '#80B8BD',
+            fontWeight: 'bold',
+            fontSize: '2.5rem'
+          }}
+        >
+          Login
+        </Typography>
         <TextField
           value={emailLogin}
           fullWidth
@@ -165,9 +168,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             Login
           </Button>
         </Box>
-        <Box display="flex" justifyContent="center" alignItems="center" gap={2} 
-       >
-          <span  style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+        <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
+          <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
           <Typography>Or, Login with </Typography>
           <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
         </Box>
