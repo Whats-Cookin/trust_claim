@@ -70,14 +70,13 @@ const parseClaims = (claims: any) => {
   return elements
 }
 
-const parseNodes = (claims: any) => {
+const parseNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
 
-  console.log("claims",claims);
-  
+  console.log('data', data)
 
-  claims.forEach((claim: any) => {
+  data.forEach((claim: any) => {
     // adding subject node
     if (claim.name && claim.nodeUri) {
       let uri: any
@@ -96,18 +95,19 @@ const parseNodes = (claims: any) => {
 
     // adding edge between subject and object
     if (claim.edgesFrom)
-      edges.push(claim.edgesFrom.map((e: any) =>({
-        data: {
-          id: e.id,
-          source: e.startNodeId,
-          target: e.endNodeId,
-          relation: e.label,
-          claimId:e.claimId
-        }
-      })))
-
+      edges.push(
+        claim.edgesFrom.map((e: any) => ({
+          data: {
+            id: e.id,
+            source: e.startNodeId,
+            target: e.endNodeId,
+            relation: e.label,
+            claimId: e.claimId
+          }
+        }))
+      )
   })
-  return {nodes,edges}
+  return { nodes, edges }
 }
 
 export { parseClaims, parseNodes }
