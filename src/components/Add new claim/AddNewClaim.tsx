@@ -29,7 +29,9 @@ const FormDialog = ({ open, setOpen, toggleSnackbar, setSnackbarMessage, setLoad
   const [stars, setStars] = useState(0)
   const [expanded, setExpanded] = useState(false)
   const handleClose = () => {
-    setOpen(false)
+    if (setOpen) {
+      setOpen(false)
+    }
     setExpanded(false)
   }
   const navigate = useNavigate()
