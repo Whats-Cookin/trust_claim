@@ -8,7 +8,6 @@ import Login from "./containers/Login";
 import Register from "./containers/Register";
 import Form from "./containers/Form";
 import Search from "./containers/Search";
-import Claims from "./containers/Claims";
 
 import "./App.css";
 
@@ -58,7 +57,6 @@ const App = () => {
           <Route path="login" element={<Login {...commonProps} />} />
           <Route path="register" element={<Register {...commonProps} />} />
           <Route path="search" element={<Search {...commonProps} />} />
-          <Route path="claims" element={<Claims {...commonProps} />} />
         </Routes>
       </div>
     </>
