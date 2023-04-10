@@ -120,7 +120,6 @@ const Home = (homeProps: IHomeProps) => {
             </Card>
           ))}
       </Box>
-      
     </Box>
   )
 }
