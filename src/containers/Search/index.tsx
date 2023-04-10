@@ -3,17 +3,15 @@ import Cytoscape from 'cytoscape'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import NewClaim from '../../containers/claimNode'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
 import IHomeProps from './types'
-import { parseClaims } from './graph.utils'
 import styles from './styles'
 import SearchIcon from '@mui/icons-material/Search'
-import { Typography } from '@mui/material'
+import { parseNodes } from './graph.utils'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -21,40 +19,34 @@ const Search = (homeProps: IHomeProps) => {
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
   const ref = useRef<any>(null)
-  let claims: any[] = []
   const query = new URLSearchParams(search).get('query')
-  const [tempClaims, setTempClaims] = useState<any[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
-  const [cy, setCy] = useState<any>(null)
+  const [cy, setCy] = useState<Cytoscape.Core>()
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
 
   const updateClaims = (search: boolean, newClaims: any) => {
+    if (!cy) return
+    const parsedClaims = parseNodes(newClaims)
     if (search) {
-      const parsedClaims = parseClaims(newClaims)
       cy.elements().remove()
       cy.add(parsedClaims)
-      claims = newClaims
-      setTempClaims(newClaims)
     } else {
-      const parsedClaims = parseClaims(newClaims)
       cy.add(parsedClaims)
-      claims = [...claims, ...newClaims]
-      setTempClaims([...tempClaims, ...newClaims])
     }
   }
 
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/claim?page=${page}&limit=5`, {
+      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
         params: { search: query }
       })
 
-      if (res.data.claims.length > 0) {
-        updateClaims(search, res.data.claims)
+      if (res.data.nodes.length > 0) {
+        updateClaims(search, res.data.nodes)
       } else {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
@@ -64,6 +56,7 @@ const Search = (homeProps: IHomeProps) => {
       setSnackbarMessage(err.message)
     } finally {
       setLoading(false)
+      if (!cy) return
       cy.layout({
         name: 'circle',
         directed: true,
@@ -96,9 +89,8 @@ const Search = (homeProps: IHomeProps) => {
   const reset = () => {
     navigate('/search')
     setSearchVal('')
+    if (!cy) return
     cy.elements().remove()
-    claims = []
-    setTempClaims([])
   }
 
   // handle node click to fetch further connected nodes
@@ -109,7 +101,6 @@ const Search = (homeProps: IHomeProps) => {
     if (foundIndex === -1) {
       claimsPageMemo.push({ id: claim.id(), page: 1 })
       await fetchClaims(claim.id(), false, 1)
-      console.log('first')
     } else {
       claimsPageMemo[foundIndex].page++
       claimsPageMemo.push({
@@ -117,7 +108,16 @@ const Search = (homeProps: IHomeProps) => {
         page: claimsPageMemo[foundIndex].page
       })
       await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page)
-      console.log('second')
+    }
+  }
+
+  const handleEdgeClick = (event: any) => {
+    event.preventDefault()
+    const claim = event.target
+    const currentClaim = claim.data('raw')
+    if (currentClaim) {
+      setSelectedClaim(currentClaim)
+      setOpenModal(true)
     }
   }
 
@@ -126,8 +126,8 @@ const Search = (homeProps: IHomeProps) => {
     //when rightclick on any part of gragh
     cy.on('cxttap', 'node,edge', (event: any) => {
       event.preventDefault()
-      const target = event.target
-      const currentClaim = claims.find((c: any) => String(c.id) === target.id())
+      const claim = event.target
+      const currentClaim = claim.data('raw')
 
       if (currentClaim) {
         setSelectedClaim(currentClaim)
@@ -141,7 +141,7 @@ const Search = (homeProps: IHomeProps) => {
       const claim = event.target
 
       //getting the claim data for selected node
-      const currentClaim = claims.find((c: any) => String(c.id) === claim.id())
+      const currentClaim = claim.data('raw')
       if (currentClaim) {
         setSelectedClaim(currentClaim)
         setOpenModal(true)
@@ -166,7 +166,7 @@ const Search = (homeProps: IHomeProps) => {
 
   const removeCyEventHandlers = (cy: any) => {
     cy.off('tap', 'node', handleNodeClick)
-    cy.off('tap', 'edge')
+    cy.off('tap', 'edge', handleEdgeClick)
     cy.off('mouseover', 'edge,node')
     cy.off('mouseout', 'edge,node')
   }
@@ -194,19 +194,41 @@ const Search = (homeProps: IHomeProps) => {
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
       <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
-      <section className='absolute top-[90px] left-[2%] z-20'>
-        <div className=' rounded-lg w-[500px]  flex items-center border-[black] border-[2px] h-[50px]'>
+      <Box sx={{ position: 'absolute', top: '90px', left: '2%', zIndex: 20 }}>
+        <Box
+          component='div'
+          sx={{
+            borderRadius: '0.3em',
+            width: '500px',
+            display: 'flex',
+            alignItems: 'center',
+            borderColor: 'black',
+            borderWidth: '2px',
+            height: '50px'
+          }}
+        >
           <input
             type='search'
             value={searchVal}
             onChange={e => setSearchVal(e.target.value)}
             onKeyUp={handleSearchKeypress}
-            className='w-full  p-[0.5rem] rounded-lg border-none outline-none'
+            style={{ width: '100%', padding: '0.5rem', borderRadius: 'lg', border: 'none', outline: 'none' }}
           />
-          <button className='bg-[#333] font-bold text-white h-full w-[60px]' onClick={handleSearch}>
+          <Button
+            style={{
+              backgroundColor: '#333',
+              fontWeight: 'bold',
+              color: 'white',
+              height: '100%',
+              width: '60px',
+              borderTopRightRadius: '0.1em',
+              borderBottomRightRadius: '0.1em'
+            }}
+            onClick={handleSearch}
+          >
             <SearchIcon />
-          </button>
-        </div>
+          </Button>
+        </Box>
         <Button
           variant='outlined'
           onClick={reset}
@@ -226,7 +248,7 @@ const Search = (homeProps: IHomeProps) => {
         >
           Reset
         </Button>
-      </section>
+      </Box>
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )
