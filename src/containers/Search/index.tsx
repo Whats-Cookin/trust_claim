@@ -110,7 +110,6 @@ const Search = (homeProps: IHomeProps) => {
     cy.elements().remove()
   }
 
-  // handle node click to fetch further connected nodes
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
     await fetchClaims(event.target.data('id'), false, page.current)
