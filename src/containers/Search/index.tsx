@@ -113,69 +113,53 @@ const Search = (homeProps: IHomeProps) => {
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-    const claim = event.target
-    const currentClaim = claim.data('raw')
+    const currentClaim = event?.target?.data('raw')?.claim
+
     if (currentClaim) {
       setSelectedClaim(currentClaim)
       setOpenModal(true)
     }
   }
 
-  const addCyEventHandlers = (cy: any) => {
-    cy.on('tap', 'node', handleNodeClick)
-    //when rightclick on any part of gragh
-    cy.on('cxttap', 'node,edge', (event: any) => {
-      event.preventDefault()
-      const claim = event.target
-      const currentClaim = claim.data('raw')
-
-      if (currentClaim) {
-        setSelectedClaim(currentClaim)
-        setOpenNewClaim(true)
-      }
-    })
-
-    // when edges is clicked
-    cy.on('tap', 'edge', (event: any) => {
-      event.preventDefault()
-      const claim = event.target
-
-      //getting the claim data for selected node
-      const currentClaim = claim.data('raw')
-      if (currentClaim) {
-        setSelectedClaim(currentClaim)
-        setOpenModal(true)
-      }
-    })
-
-    // add hover state pointer cursor on node
-    cy.on('mouseover', 'edge,node', (event: any) => {
-      const container = event?.cy?.container()
-      if (container) {
-        container.style.cursor = 'pointer'
-      }
-    })
-
-    cy.on('mouseout', 'edge,node', (event: any) => {
-      const container = event?.cy?.container()
-      if (container) {
-        container.style.cursor = 'default'
-      }
-    })
+  const handleMouseOver = (event: any) => {
+    const container = event?.cy?.container()
+    if (container) {
+      container.style.cursor = 'pointer'
+    }
   }
 
-  const removeCyEventHandlers = (cy: any) => {
-    cy.off('tap', 'node', handleNodeClick)
-    cy.off('tap', 'edge', handleEdgeClick)
-    cy.off('mouseover', 'edge,node')
-    cy.off('mouseout', 'edge,node')
+  const handleMouseOut = (event: any) => {
+    const container = event?.cy?.container()
+    if (container) {
+      container.style.cursor = 'default'
+    }
+  }
+
+  const handleMouseRightClick = (event: any) => {
+    event.preventDefault()
+    const claim = event.target
+    const currentClaim = claim.data('raw')
+
+    if (currentClaim) {
+      setSelectedClaim(currentClaim)
+      setOpenNewClaim(true)
+    }
   }
 
   useEffect(() => {
     if (cy) {
-      addCyEventHandlers(cy)
+      cy.on('tap', 'node', handleNodeClick)
+      cy.on('tap', 'edge', handleEdgeClick)
+      cy.on('cxttap', 'node,edge', handleMouseRightClick)
+      cy.on('mouseover', 'edge,node', handleMouseOver)
+      cy.on('mouseout', 'edge,node', handleMouseOut)
       return () => {
-        removeCyEventHandlers(cy)
+        if (!cy) return
+        cy.off('tap', 'node', handleNodeClick)
+        cy.off('tap', 'edge', handleEdgeClick)
+        cy.off('cxttap', 'node,edge', handleMouseRightClick)
+        cy.off('mouseover', 'edge,node', handleMouseOver)
+        cy.off('mouseout', 'edge,node', handleMouseOut)
       }
     }
   }, [cy])
