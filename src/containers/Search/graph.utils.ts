@@ -74,58 +74,93 @@ const parseNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
 
-  console.log('data', data)
-
   data.forEach((node: any) => {
     // adding subject node
-    if (node.name && node.nodeUri) {
-      let uri: any
-      if (isValidUrl(node.nodeUri)) uri = new URL(node.nodeUri)
-      else uri = node.nodeUri
-
-      const label = getLabel(uri)
-
-      nodes.push({
-        data: {
-          id: node.id,
-          label,
-          raw: node
-        }
-      })
-    }
-
-    // adding edge between subject and object
-    if (node.edgesFrom) {
-      node.edgesFrom.map((e: any) => {
-        if (nodes.indexOf((n: any) => n.id === e.endNode.id.toString()) > -1) return
-        let uri: any
-        if (isValidUrl(e.endNode.nodeUri)) uri = new URL(e.endNode.nodeUri)
-        else uri = e.endNode.nodeUri
-
-        const label = getLabel(uri)
-        nodes.push({
-          data: {
-            id: e.endNode.id.toString(),
-            label,
-            raw: e.endNode
-          }
-        })
-      })
-
-      edges.push(
-        ...node.edgesFrom.map((e: any) => ({
-          data: {
-            id: e.id,
-            source: e.startNodeId,
-            target: e.endNodeId,
-            relation: e.label,
-            raw: e
-          }
-        }))
-      )
-    }
+    parseNode(nodes, edges, node)
   })
   return { nodes, edges }
 }
 
-export { parseClaims, parseNodes }
+const parseNode = (nodes: {}[], edges: {}[], node: any) => {
+  // adding subject node
+  if (node.name && node.nodeUri) {
+    let uri: any
+    if (isValidUrl(node.nodeUri)) uri = new URL(node.nodeUri)
+    else uri = node.nodeUri
+
+    const label = getLabel(uri)
+
+    nodes.push({
+      data: {
+        id: node.id,
+        label,
+        raw: node
+      }
+    })
+  }
+
+  // adding edge between subject and object
+  if (node.edgesFrom) {
+    node.edgesFrom.map((e: any) => {
+      if (nodes.indexOf((n: any) => n.id === e.endNode.id.toString()) > -1) return
+      let uri: any
+      if (isValidUrl(e.endNode.nodeUri)) uri = new URL(e.endNode.nodeUri)
+      else uri = e.endNode.nodeUri
+
+      const label = getLabel(uri)
+      nodes.push({
+        data: {
+          id: e.endNode.id.toString(),
+          label,
+          raw: e.endNode
+        }
+      })
+    })
+
+    edges.push(
+      ...node.edgesFrom.map((e: any) => ({
+        data: {
+          id: e.id,
+          source: e.startNodeId,
+          target: e.endNodeId,
+          relation: e.label,
+          raw: e
+        }
+      }))
+    )
+  }
+
+  if (node.edgesTo) {
+    node.edgesTo.map((e: any) => {
+      if (nodes.indexOf((n: any) => n.id === e.startNode.id.toString()) > -1) return
+      let uri: any
+      if (isValidUrl(e.startNode.nodeUri)) uri = new URL(e.startNode.nodeUri)
+      else uri = e.startNode.nodeUri
+
+      const label = getLabel(uri)
+      nodes.push({
+        data: {
+          id: e.startNode.id.toString(),
+          label,
+          raw: e.startNode
+        }
+      })
+    })
+
+    edges.push(
+      ...node.edgesTo.map((e: any) => ({
+        data: {
+          id: e.id,
+          source: e.endNodeId,
+          target: e.startNodeId,
+          relation: e.label,
+          raw: e
+        }
+      }))
+    )
+  }
+
+  return { nodes, edges }
+}
+
+export { parseClaims, parseNodes, parseNode }

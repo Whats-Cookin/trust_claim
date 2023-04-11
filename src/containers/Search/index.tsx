@@ -11,7 +11,7 @@ import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import SearchIcon from '@mui/icons-material/Search'
-import { parseNodes } from './graph.utils'
+import { parseNode, parseNodes } from './graph.utils'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -24,6 +24,7 @@ const Search = (homeProps: IHomeProps) => {
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
+  const page = useRef(1)
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
 
@@ -41,15 +42,30 @@ const Search = (homeProps: IHomeProps) => {
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
-        params: { search: query }
-      })
+      if (search) {
+        const res = await axios.get(`/api/node?page=${page}&limit=5`, {
+          params: { search: query }
+        })
 
-      if (res.data.nodes.length > 0) {
-        updateClaims(search, res.data.nodes)
+        if (res.data.nodes.length > 0) {
+          updateClaims(search, res.data.nodes)
+        } else {
+          setSnackbarMessage('No results found')
+          toggleSnackbar(true)
+        }
       } else {
-        setSnackbarMessage('No results found')
-        toggleSnackbar(true)
+        const res = await axios.get(`/api/node/${query}?page=${page}&limit=5`)
+
+        if (res.data) {
+          let newNodes: any[] = []
+          let newEdges: any[] = []
+          parseNode(newNodes, newEdges, res.data)
+          if (!cy) return
+          cy.add({ nodes: newNodes, edges: newEdges } as any)
+        } else {
+          setSnackbarMessage('No results found')
+          toggleSnackbar(true)
+        }
       }
     } catch (err: any) {
       toggleSnackbar(true)
@@ -76,7 +92,8 @@ const Search = (homeProps: IHomeProps) => {
         search: `?query=${searchVal}`
       })
 
-      await fetchClaims(encodeURIComponent(searchVal), true, 1)
+      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
+      page.current = 2
     }
   }
 
@@ -96,19 +113,8 @@ const Search = (homeProps: IHomeProps) => {
   // handle node click to fetch further connected nodes
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
-    const claim = event.target
-    const foundIndex = claimsPageMemo.findIndex(item => item.id == claim.id())
-    if (foundIndex === -1) {
-      claimsPageMemo.push({ id: claim.id(), page: 1 })
-      await fetchClaims(claim.id(), false, 1)
-    } else {
-      claimsPageMemo[foundIndex].page++
-      claimsPageMemo.push({
-        id: claim.id(),
-        page: claimsPageMemo[foundIndex].page
-      })
-      await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page)
-    }
+    await fetchClaims(event.target.data('id'), false, page.current)
+    page.current = page.current + 1
   }
 
   const handleEdgeClick = (event: any) => {
