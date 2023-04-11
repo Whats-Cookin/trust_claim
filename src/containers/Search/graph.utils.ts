@@ -73,9 +73,6 @@ const parseClaims = (claims: any) => {
 const parseNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
-
-  console.log('data', data)
-
   data.forEach((node: any) => {
     // adding subject node
     if (node.name && node.nodeUri) {
