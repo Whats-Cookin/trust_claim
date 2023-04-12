@@ -5,7 +5,7 @@ import Snackbar from './components/Snackbar'
 import Navbar from './components/Navbar'
 import Login from './containers/Login'
 import Register from './containers/Register'
-import Form from './containers/Form'
+import Form1 from './containers/Form'
 import Search from './containers/Search'
 import Nav2 from './components/Navbar/Nav2'
 import './App.css'
@@ -53,7 +53,7 @@ const App = () => {
         <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
         <Loader open={loading} />
         <Routes>
-          <Route path='/' element={<Form {...commonProps} />} />
+          <Route path='/' element={<Form1 {...commonProps} />} />
           <Route path='login' element={<Login {...commonProps} />} />
           <Route path='register' element={<Register {...commonProps} />} />
           <Route path='search' element={<Search {...commonProps} />} />

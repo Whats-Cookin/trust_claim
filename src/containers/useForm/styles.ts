@@ -66,9 +66,17 @@ const styles = {
   },
   submitButtonWrap: {
     display: 'flex',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     width: '100%',
-    columnGap: 3
+    columnGap: 3,
+    ml: 1,
+    mr: 1,
+    padding: '8px',
+    backgroundColor: '#80B8BD',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#80B8BD'
+    }
   }
 }
 
