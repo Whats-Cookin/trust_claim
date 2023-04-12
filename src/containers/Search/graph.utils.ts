@@ -82,7 +82,7 @@ const parseNodes = (data: any) => {
 }
 
 
-const getNodeLabel = (node: any ) => {
+const getNodeData = (node: any ) => {
   let uri = node.nodeUri
   // could do this - if we used a trustclaims uri separate the path part
   // not important - just here for reference from before
@@ -92,12 +92,35 @@ const getNodeLabel = (node: any ) => {
       let decodedUri = decodeURIComponent(uri.pathname.split('/').pop())
       uri = decodedUri.pathname
     }
+  }*/
+ 
+  interface NodeData {
+    data: {
+      id: string;
+      label: string;
+      raw: any;
+    }
+    style?: {
+      [key: string]: any;
+    }
   }
-  */
-  // WANT THIS or something like it: 
-  // `<b>{node.name}</b><br/><i><small>{uri}</small></i><br/>`
-  // + thumbnail if available
-  return node.name || node.nodeUri
+
+  const nodeData: NodeData = {
+    data: {
+      id: node.id.toString(),
+      label: node.name || uri,
+      raw: node
+    }
+  }
+
+  if (node.thumbnail) {
+    nodeData.style = {
+       "background-image":[node.thumbnail],
+       "background-fit": "cover cover",
+       "background-image-opacity": 0.2
+    }
+  }
+  return nodeData
 }
 
 
@@ -105,15 +128,9 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   // adding subject node
   if (node.name && node.nodeUri) {
 
-    const label = getNodeLabel(node)
+    const nodeData = getNodeData(node)
 
-    nodes.push({
-      data: {
-        id: node.id,
-        label,
-        raw: node
-      }
-    })
+    nodes.push(nodeData)
   }
 
   // adding edge between subject and object
@@ -121,14 +138,8 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
     node.edgesFrom.map((e: any) => {
       if (nodes.indexOf((n: any) => n.id === e.endNode.id.toString()) > -1) return
 
-      const label = getNodeLabel(e.endNode)
-      nodes.push({
-        data: {
-          id: e.endNode.id.toString(),
-          label,
-          raw: e.endNode
-        }
-      })
+      const nodeData = getNodeData(e.endNode)
+      nodes.push(nodeData)
     })
 
     edges.push(
@@ -148,14 +159,8 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
     node.edgesTo.map((e: any) => {
       if (nodes.indexOf((n: any) => n.id === e.startNode.id.toString()) > -1) return
 
-      const label = getNodeLabel(e.startNode)
-      nodes.push({
-        data: {
-          id: e.startNode.id.toString(),
-          label,
-          raw: e.startNode
-        }
-      })
+      const nodeData = getNodeData(e.startNode)
+      nodes.push(nodeData)
     })
 
     edges.push(
