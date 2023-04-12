@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import NewClaim from '../../components/Add new claim/AddNewClaim'
+import NewClaim from '../../components/NewClaim/AddNewClaim'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
@@ -103,7 +103,7 @@ const Search = (homeProps: IHomeProps) => {
       })
 
       await fetchClaims(encodeURIComponent(searchVal), true, page.current)
-      page.current = 2
+      //page.current = 2
     }
   }
 
@@ -126,7 +126,7 @@ const Search = (homeProps: IHomeProps) => {
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
     await fetchClaims(event.target.data('id'), false, page.current)
-    page.current = page.current + 1
+    //page.current = page.current + 1
   }
 
   const handleEdgeClick = (event: any) => {
