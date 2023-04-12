@@ -105,6 +105,8 @@ const getNodeData = (node: any ) => {
     }
   }
 
+  
+
   const nodeData: NodeData = {
     data: {
       id: node.id.toString(),
@@ -117,7 +119,7 @@ const getNodeData = (node: any ) => {
     nodeData.style = {
        "background-image":[node.thumbnail.replace(/\?.+$/,'')],
        "background-fit": "cover cover",
-       "background-image-opacity": 0.2
+       "background-image-opacity": 0.4
     }
   }
   return nodeData
