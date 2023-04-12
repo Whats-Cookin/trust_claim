@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import NewClaim from '../../containers/claimNode'
+import NewClaim from '../../components/Add new claim/AddNewClaim'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
@@ -195,7 +195,13 @@ const Search = (homeProps: IHomeProps) => {
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
-      <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
+      <NewClaim
+        open={openNewClaim}
+        setOpen={setOpenNewClaim}
+        setLoading={setLoading}
+        setSnackbarMessage={setSnackbarMessage}
+        toggleSnackbar={toggleSnackbar}
+      />
       <Box sx={{ position: 'absolute', top: '90px', left: '2%', zIndex: 20 }}>
         <Box
           component='div'
