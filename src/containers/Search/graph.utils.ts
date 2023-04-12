@@ -81,14 +81,31 @@ const parseNodes = (data: any) => {
   return { nodes, edges }
 }
 
+
+const getNodeLabel = (node: any ) => {
+  let uri = node.nodeUri
+  // could do this - if we used a trustclaims uri separate the path part
+  // not important - just here for reference from before
+  /*if (isValidUrl(uri)) {
+    let uriObj = new URL(node.nodeUri)
+    if (uriObj.hostname === 'trustclaims.whatscookin.us') {
+      let decodedUri = decodeURIComponent(uri.pathname.split('/').pop())
+      uri = decodedUri.pathname
+    }
+  }
+  */
+  // WANT THIS or something like it: 
+  // `<b>{node.name}</b><br/><i><small>{uri}</small></i><br/>`
+  // + thumbnail if available
+  return node.name || node.nodeUri
+}
+
+
 const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   // adding subject node
   if (node.name && node.nodeUri) {
-    let uri: any
-    if (isValidUrl(node.nodeUri)) uri = new URL(node.nodeUri)
-    else uri = node.nodeUri
 
-    const label = getLabel(uri)
+    const label = getNodeLabel(node)
 
     nodes.push({
       data: {
@@ -103,11 +120,8 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   if (node.edgesFrom) {
     node.edgesFrom.map((e: any) => {
       if (nodes.indexOf((n: any) => n.id === e.endNode.id.toString()) > -1) return
-      let uri: any
-      if (isValidUrl(e.endNode.nodeUri)) uri = new URL(e.endNode.nodeUri)
-      else uri = e.endNode.nodeUri
 
-      const label = getLabel(uri)
+      const label = getNodeLabel(e.endNode)
       nodes.push({
         data: {
           id: e.endNode.id.toString(),
@@ -133,11 +147,8 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   if (node.edgesTo) {
     node.edgesTo.map((e: any) => {
       if (nodes.indexOf((n: any) => n.id === e.startNode.id.toString()) > -1) return
-      let uri: any
-      if (isValidUrl(e.startNode.nodeUri)) uri = new URL(e.startNode.nodeUri)
-      else uri = e.startNode.nodeUri
 
-      const label = getLabel(uri)
+      const label = getNodeLabel(e.startNode)
       nodes.push({
         data: {
           id: e.startNode.id.toString(),
