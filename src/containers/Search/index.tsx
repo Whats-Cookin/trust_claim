@@ -106,6 +106,9 @@ const Search = (homeProps: IHomeProps) => {
   const reset = () => {
     navigate('/search')
     setSearchVal('')
+    const ref = useRef<any>(null)
+    const page = useRef(1)
+    page.current = 1 
     if (!cy) return
     cy.elements().remove()
   }
