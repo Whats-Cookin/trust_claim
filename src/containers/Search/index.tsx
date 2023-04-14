@@ -4,14 +4,14 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import NewClaim from '../../containers/claimNode'
+import NewClaim from '../../components/NewClaim/AddNewClaim'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import SearchIcon from '@mui/icons-material/Search'
-import { parseNodes } from './graph.utils'
+import { parseNode, parseNodes } from './graph.utils'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -24,6 +24,7 @@ const Search = (homeProps: IHomeProps) => {
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
+  const page = useRef(1)
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
 
@@ -41,15 +42,40 @@ const Search = (homeProps: IHomeProps) => {
   const fetchClaims = async (query: string, search: boolean, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
-        params: { search: query }
-      })
+      if (search) {
+        const res = await axios.get(`/api/node?page=${page}&limit=5`, {
+          params: { search: query }
+        })
 
-      if (res.data.nodes.length > 0) {
-        updateClaims(search, res.data.nodes)
+        if (res.data.nodes.length > 0) {
+          updateClaims(search, res.data.nodes)
+        } else {
+          setSnackbarMessage('No results found')
+          toggleSnackbar(true)
+        }
       } else {
-        setSnackbarMessage('No results found')
-        toggleSnackbar(true)
+        const res = await axios.get(`/api/node/${query}?page=${page}&limit=5`)
+
+        if (res.data) {
+          let newNodes: any[] = []
+          let newEdges: any[] = []
+          parseNode(newNodes, newEdges, res.data)
+          if (!cy) return
+          cy.add({ nodes: newNodes, edges: newEdges } as any)
+// this was supposed to add thumbnail images but it doesn't work
+/*
+          cy.nodes().forEach(function(node) {
+             var thumbnailUrl = node.data('raw').thumbnail;
+             if (thumbnailUrl) {
+                var imageHtml = '<img src="' + thumbnailUrl + '" width="50" height="50">';
+                node.style('content', imageHtml);
+             }
+          });
+*/
+        } else {
+          setSnackbarMessage('No results found')
+          toggleSnackbar(true)
+        }
       }
     } catch (err: any) {
       toggleSnackbar(true)
@@ -76,7 +102,8 @@ const Search = (homeProps: IHomeProps) => {
         search: `?query=${searchVal}`
       })
 
-      await fetchClaims(encodeURIComponent(searchVal), true, 1)
+      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
+      //page.current = 2
     }
   }
 
@@ -89,93 +116,68 @@ const Search = (homeProps: IHomeProps) => {
   const reset = () => {
     navigate('/search')
     setSearchVal('')
+    const ref = useRef<any>(null)
+    const page = useRef(1)
+    page.current = 1 
     if (!cy) return
     cy.elements().remove()
   }
 
-  // handle node click to fetch further connected nodes
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
-    const claim = event.target
-    const foundIndex = claimsPageMemo.findIndex(item => item.id == claim.id())
-    if (foundIndex === -1) {
-      claimsPageMemo.push({ id: claim.id(), page: 1 })
-      await fetchClaims(claim.id(), false, 1)
-    } else {
-      claimsPageMemo[foundIndex].page++
-      claimsPageMemo.push({
-        id: claim.id(),
-        page: claimsPageMemo[foundIndex].page
-      })
-      await fetchClaims(claim.id(), false, claimsPageMemo[foundIndex].page)
-    }
+    await fetchClaims(event.target.data('id'), false, page.current)
+    //page.current = page.current + 1
   }
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-    const claim = event.target
-    const currentClaim = claim.data('raw')
+    const currentClaim = event?.target?.data('raw')?.claim
+
     if (currentClaim) {
       setSelectedClaim(currentClaim)
       setOpenModal(true)
     }
   }
 
-  const addCyEventHandlers = (cy: any) => {
-    cy.on('tap', 'node', handleNodeClick)
-    //when rightclick on any part of gragh
-    cy.on('cxttap', 'node,edge', (event: any) => {
-      event.preventDefault()
-      const claim = event.target
-      const currentClaim = claim.data('raw')
-
-      if (currentClaim) {
-        setSelectedClaim(currentClaim)
-        setOpenNewClaim(true)
-      }
-    })
-
-    // when edges is clicked
-    cy.on('tap', 'edge', (event: any) => {
-      event.preventDefault()
-      const claim = event.target
-
-      //getting the claim data for selected node
-      const currentClaim = claim.data('raw')
-      if (currentClaim) {
-        setSelectedClaim(currentClaim)
-        setOpenModal(true)
-      }
-    })
-
-    // add hover state pointer cursor on node
-    cy.on('mouseover', 'edge,node', (event: any) => {
-      const container = event?.cy?.container()
-      if (container) {
-        container.style.cursor = 'pointer'
-      }
-    })
-
-    cy.on('mouseout', 'edge,node', (event: any) => {
-      const container = event?.cy?.container()
-      if (container) {
-        container.style.cursor = 'default'
-      }
-    })
+  const handleMouseOver = (event: any) => {
+    const container = event?.cy?.container()
+    if (container) {
+      container.style.cursor = 'pointer'
+    }
   }
 
-  const removeCyEventHandlers = (cy: any) => {
-    cy.off('tap', 'node', handleNodeClick)
-    cy.off('tap', 'edge', handleEdgeClick)
-    cy.off('mouseover', 'edge,node')
-    cy.off('mouseout', 'edge,node')
+  const handleMouseOut = (event: any) => {
+    const container = event?.cy?.container()
+    if (container) {
+      container.style.cursor = 'default'
+    }
+  }
+
+  const handleMouseRightClick = (event: any) => {
+    event.preventDefault()
+    const claim = event.target
+    const currentClaim = claim.data('raw')
+
+    if (currentClaim) {
+      setSelectedClaim(currentClaim)
+      setOpenNewClaim(true)
+    }
   }
 
   useEffect(() => {
     if (cy) {
-      addCyEventHandlers(cy)
+      cy.on('tap', 'node', handleNodeClick)
+      cy.on('tap', 'edge', handleEdgeClick)
+      cy.on('cxttap', 'node,edge', handleMouseRightClick)
+      cy.on('mouseover', 'edge,node', handleMouseOver)
+      cy.on('mouseout', 'edge,node', handleMouseOut)
       return () => {
-        removeCyEventHandlers(cy)
+        if (!cy) return
+        cy.off('tap', 'node', handleNodeClick)
+        cy.off('tap', 'edge', handleEdgeClick)
+        cy.off('cxttap', 'node,edge', handleMouseRightClick)
+        cy.off('mouseover', 'edge,node', handleMouseOver)
+        cy.off('mouseout', 'edge,node', handleMouseOut)
       }
     }
   }, [cy])
@@ -193,7 +195,13 @@ const Search = (homeProps: IHomeProps) => {
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
-      <NewClaim open={openNewClaim} setOpen={setOpenNewClaim} />
+      <NewClaim
+        open={openNewClaim}
+        setOpen={setOpenNewClaim}
+        setLoading={setLoading}
+        setSnackbarMessage={setSnackbarMessage}
+        toggleSnackbar={toggleSnackbar}
+      />
       <Box sx={{ position: 'absolute', top: '90px', left: '2%', zIndex: 20 }}>
         <Box
           component='div'

@@ -12,13 +12,29 @@ const CommentInput: React.FC<commentInputProps> = ({ onSubmit }) => {
     setText('')
   }
   return (
-    <form action='' onSubmit={handleSubmit} className='fixed bottom-0 gap-4  flex w-full'>
+    <form
+      action=''
+      onSubmit={handleSubmit}
+      style={{ position: 'fixed', bottom: 0, gap: '4%', display: 'flex', width: '100%' }}
+    >
       <textarea
         value={text}
         onChange={e => setText(e.target.value)}
-        className='w-3/5 border-zinc-400 outline-none px-[0.5rem] rounded-md'
+        style={{ width: '60%', border: '1px solid zinc', outline: 'none', padding:'0 0.5rem', borderRadius: '10px' }}
       />
-      <button className='bg-[#80B8BD] text-white font-bold px-[1rem] rounded-md border-none'> comment</button>
+      <button
+        style={{
+          background: '#80B8BD',
+          color: 'white',
+          fontWeight: 'bold',
+          padding: '0 1rem',
+          borderRadius: '10px',
+          border: 'none'
+        }}
+      >
+        {' '}
+        comment
+      </button>
     </form>
   )
 }
