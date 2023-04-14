@@ -20,7 +20,7 @@ const CommentInput: React.FC<commentInputProps> = ({ onSubmit }) => {
       <textarea
         value={text}
         onChange={e => setText(e.target.value)}
-        style={{ width: '60%', border: '1px solid zinc', outline: 'none', padding:'0 0.5rem', borderRadius: '10px' }}
+        style={{ width: '60%', border: '1px solid zinc', outline: 'none', padding: '0 0.5rem', borderRadius: '10px' }}
       />
       <button
         style={{

@@ -35,18 +35,23 @@ const CommentList: React.FC<CommentListProps> = ({ comments, setComments }) => {
     setComments(comments.filter(comment => comment.id !== commentId))
   }
   return (
-    <div 
-    style={{position:'fixed', right:'-38%', borderRadius:'10px', padding:'0.5rem', width:'300px'}}
-    >
+    <div style={{ position: 'fixed', right: '-38%', borderRadius: '10px', padding: '0.5rem', width: '300px' }}>
       {comments.map(comment => (
         <div key={comment.id}>
           {comment.editable ? (
-            <div 
-            style={{border:'2px solid zinc', display:'flex',flexDirection:'column',borderRadius:'10px',margin:'2rem 0', padding:'0 2rem', background:'white'}}
+            <div
+              style={{
+                border: '2px solid zinc',
+                display: 'flex',
+                flexDirection: 'column',
+                borderRadius: '10px',
+                margin: '2rem 0',
+                padding: '0 2rem',
+                background: 'white'
+              }}
             >
               <textarea
-            
-                style={{width:"100%",outline:'none'}}
+                style={{ width: '100%', outline: 'none' }}
                 autoFocus
                 value={comment.text}
                 onChange={e =>
@@ -55,23 +60,34 @@ const CommentList: React.FC<CommentListProps> = ({ comments, setComments }) => {
               />
               <div>
                 <button onClick={() => handleSave(comment.id, comment.text)}>
-                  <SaveIcon style={{fontSize:'25px'}} />
+                  <SaveIcon style={{ fontSize: '25px' }} />
                 </button>
                 <button onClick={() => handleDelete(comment.id)}>
-                  <DeleteIcon style={{fontSize:'25px'}}/>
+                  <DeleteIcon style={{ fontSize: '25px' }} />
                 </button>
               </div>
             </div>
           ) : (
             <>
-              <div className=' my-2 px-2 rounded-md bg-white' style={{border:'2px solid zinc', display:'flex', flexDirection:'column', borderRadius:'10px', background:'white',margin:"0 1rem",padding:"0 1rem"}}>
+              <div
+                className=' my-2 px-2 rounded-md bg-white'
+                style={{
+                  border: '2px solid zinc',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderRadius: '10px',
+                  background: 'white',
+                  margin: '0 1rem',
+                  padding: '0 1rem'
+                }}
+              >
                 {comment.text}
-                <div style={{display:'flex', gap:"4%"}}>
+                <div style={{ display: 'flex', gap: '4%' }}>
                   <button onClick={() => handleEdit(comment.id)}>
-                    <EditIcon  style={{fontSize:'25px'}} />
+                    <EditIcon style={{ fontSize: '25px' }} />
                   </button>
                   <button onClick={() => handleDelete(comment.id)}>
-                    <DeleteIcon style={{fontSize:'25px'}}/>
+                    <DeleteIcon style={{ fontSize: '25px' }} />
                   </button>
                 </div>
               </div>
