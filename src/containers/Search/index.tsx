@@ -62,8 +62,8 @@ const Search = (homeProps: IHomeProps) => {
           parseNode(newNodes, newEdges, res.data)
           if (!cy) return
           cy.add({ nodes: newNodes, edges: newEdges } as any)
-// this was supposed to add thumbnail images but it doesn't work
-/*
+          // this was supposed to add thumbnail images but it doesn't work
+          /*
           cy.nodes().forEach(function(node) {
              var thumbnailUrl = node.data('raw').thumbnail;
              if (thumbnailUrl) {
@@ -118,7 +118,7 @@ const Search = (homeProps: IHomeProps) => {
     setSearchVal('')
     const ref = useRef<any>(null)
     const page = useRef(1)
-    page.current = 1 
+    page.current = 1
     if (!cy) return
     cy.elements().remove()
   }
