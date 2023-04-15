@@ -63,7 +63,7 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IFormProps) =>
   })
 
   const handleSubmission = async (data: IFormData) => {
-    if (data.subject && data.claim) {
+    if (subject && claim) {
       try {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)

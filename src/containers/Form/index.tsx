@@ -1,21 +1,14 @@
+import axios from 'axios'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { PublishClaim } from '../../composedb/compose'
 import Form, { IFormData, IFormProps } from '../useForm'
 
-const Form1 = ({ isAuth }: any) => {
+const Form1 = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IFormProps) => {
   return (
     <>
-      <form>
-        <Form
-          toggleSnackbar={function (toggle: boolean): void {
-            throw new Error('Function not implemented.')
-          }}
-          setSnackbarMessage={function (message: string): void {
-            throw new Error('Function not implemented.')
-          }}
-          setLoading={function (isLoading: boolean): void {
-            throw new Error('Function not implemented.')
-          }}
-        />
-      </form>
+      <Form toggleSnackbar={toggleSnackbar} setSnackbarMessage={setSnackbarMessage} setLoading={setLoading} />
     </>
   )
 }
