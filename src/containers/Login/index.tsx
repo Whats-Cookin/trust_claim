@@ -29,6 +29,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const loginButton = document.getElementById('loginButton')
   const metamaskLink = document.getElementById('metamaskLink')
 
+  // this statement must be at the top level in the function
+  const ceramicClients = useCeramicContext()
+
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
     localStorage.setItem('accessToken', accessToken)
     localStorage.setItem('refreshToken', refreshToken)
@@ -71,8 +74,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       // User address is found, store and navigate to home page
       localStorage.setItem('ethAddress', accountId.address)
       try {
-        const clients = useCeramicContext()
-        const { ceramic, composeClient } = clients
+        const { ceramic, composeClient } = ceramicClients
         await authenticateCeramic(ceramic, composeClient)
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)

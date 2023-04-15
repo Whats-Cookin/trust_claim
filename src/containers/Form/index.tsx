@@ -63,7 +63,11 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
           res = await PublishClaim(payload)
         } else {
           // if user is not auththicatesd with Metamask and/or do not have a did
-          res = await axios.post(`/api/claim`, payload)
+          // TODO Can we please wrap this in a configured thing
+          // and also can we please decouple all this logic from the Form component?
+          // where do we configure the backend???
+          // do NOT merge this into master with this ugly hardcoding please
+          res = await axios.post(`http://localhost:9000/api/claim`, payload)
         }
 
         if (res.status === 201) {
