@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
-import { TextField, Grid, Button, Slider } from '@mui/material'
+import { TextField, Button, Slider, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import axios from '../../axiosInstance'
-import Dropdown from '../../components/Dropdown'
 import IHomeProps from './types'
 import styles from './styles'
 import polygon1 from '../../assets/circle.png'
@@ -15,112 +13,115 @@ import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
 import { PublishClaim } from '../../composedb/compose'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import { useForm } from 'react-hook-form'
 
 const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
-  const [subject, setSubject] = useState('')
-  const [claim, setClaim] = useState('')
-  const [object, setObject] = useState('')
-  const [statement, setStatement] = useState('')
-  const [aspect, setAspect] = useState('')
-  const [howKnown, setHowKnow] = useState('')
-  const [sourceURI, setSourceURI] = useState('')
-  const [effectiveDate, setEffectiveDate] = useState(new Date())
-  const [confidence, setConfidence] = useState(0.0)
-  const [stars, setStars] = useState(0)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+    setValue
+  } = useForm({
+    defaultValues: {
+      subject: '',
+      claim: '',
+      object: '',
+      statement: '',
+      aspect: '',
+      howKnown: '',
+      sourceURI: '',
+      effectiveDate: new Date(),
+      confidence: 0.0,
+      stars: 0
+    }
+  })
+  const onSubmit = handleSubmit(
+    async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
+      if (subject && claim) {
+        try {
+          const effectiveDateAsString = effectiveDate.toISOString()
+          const confidenceAsNumber = Number(confidence)
+          const starsAsNumber = Number(stars)
 
-  const navigate = useNavigate()
+          const payload = {
+            subject,
+            claim,
+            object,
+            statement,
+            aspect,
+            howKnown,
+            sourceURI,
+            effectiveDate: effectiveDateAsString,
+            confidence: confidenceAsNumber,
+            stars: starsAsNumber
+          }
 
-  const handleSubmission = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    if (subject && claim) {
-      try {
-        const effectiveDateAsString = effectiveDate.toISOString()
-        const confidenceAsNumber = Number(confidence)
-        const starsAsNumber = Number(stars)
+          setLoading(true)
 
-        const payload = {
-          subject,
-          claim,
-          object,
-          statement,
-          aspect,
-          howKnown,
-          sourceURI,
-          effectiveDate: effectiveDateAsString,
-          confidence: confidenceAsNumber,
-          stars: starsAsNumber
-        }
+          // TODO better way of checking the login method
 
-        setLoading(true)
+          // check if the user is authenticated with metamask and has did
+          const did = localStorage.getItem('did')
+          const ethAddress = localStorage.getItem('ethAddress')
 
-        // TODO better way of checking the login method
+          let res
+          if (did && ethAddress) {
+            res = await PublishClaim(payload)
+          } else {
+            // if user is not auththicatesd with Metamask and/or do not have a did
+            res = await axios.post(`${BACKEND_BASE_URL}/api/claim`, payload)
+          }
 
-        // check if the user is authenticated with metamask and has did
-        const did = localStorage.getItem('did')
-        const ethAddress = localStorage.getItem('ethAddress')
+          if (res.status === 201) {
+            setLoading(false)
+            toggleSnackbar(true)
+            setSnackbarMessage('Claim submitted successfully!')
 
-        let res
-        if (did && ethAddress) {
-          res = await PublishClaim(payload)
-        } else {
-          // if user is not auththicatesd with Metamask and/or do not have a did
-          res = await axios.post(`${BACKEND_BASE_URL}/api/claim`, payload)
-        }
-
-        if (res.status === 201) {
+            reset()
+          } else {
+            setLoading(false)
+            toggleSnackbar(true)
+            setSnackbarMessage('Something went wrong!')
+          }
+        } catch (err: any) {
           setLoading(false)
           toggleSnackbar(true)
-          setSnackbarMessage('Claim submitted successfully!')
-
-          setSubject('')
-          setClaim('')
-          setObject('')
-          setStatement('')
-          setAspect('')
-          setHowKnow('')
-          setSourceURI('')
-          setEffectiveDate(new Date())
-          setConfidence(1)
-          setStars(0)
-        } else {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage('Something went wrong!')
+          setSnackbarMessage(err.response.data.message)
+          console.error('err', err.response.data.message)
         }
-      } catch (err: any) {
+      } else {
         setLoading(false)
         toggleSnackbar(true)
-        setSnackbarMessage(err.response.data.message)
-        console.error('err', err.response.data.message)
+        setSnackbarMessage('Subject and Claims are required fields.')
       }
-    } else {
-      setLoading(false)
-      toggleSnackbar(true)
-      setSnackbarMessage('Subject and Claims are required fields.')
     }
-  }
+  )
+
+  const watchClaim = watch('claim')
+  const watchAspect = watch('aspect')
+  const watchEffectiveDate = watch('effectiveDate')
+  const watchStars = watch('stars')
 
   const inputFieldLabelArr = [
     {
       label: 'Subject',
-      value: subject,
-      setter: setSubject,
+      name: 'subject',
       type: 'text',
       fieldType: 'inputField'
     },
 
     {
       label: 'Claim',
-      value: claim,
-      setter: setClaim,
+      name: 'claim',
       type: 'text',
       fieldType: 'dropdown',
       options: ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to']
     },
     {
       label: 'Aspect',
-      value: aspect,
-      setter: setAspect,
+      name: 'aspect',
       type: 'text',
       fieldType: 'dropdown',
       options: [
@@ -154,8 +155,7 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
     },
     {
       label: 'How Known',
-      value: howKnown,
-      setter: setHowKnow,
+      name: 'howKnown',
       type: 'text',
       fieldType: 'dropdown',
       options: [
@@ -172,29 +172,25 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
     },
     {
       label: 'Object',
-      value: object,
-      setter: setObject,
+      name: 'object',
       type: 'text',
       fieldType: 'inputField'
     },
     {
       label: 'Statement',
-      value: statement,
-      setter: setStatement,
+      name: 'statement',
       type: 'text',
       fieldType: 'inputField'
     },
     {
       label: 'Source URI',
-      value: sourceURI,
-      setter: setSourceURI,
+      name: 'sourceURI',
       type: 'text',
       fieldType: 'inputField'
     },
     {
       label: 'Confidence',
-      value: confidence,
-      setter: setConfidence,
+      name: 'confidence',
       type: 'number',
       min: 0.0,
       max: 1.0,
@@ -227,69 +223,69 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         }}
       />
 
-      <form style={{ zIndex: 20 }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 20 }}>
         <Container sx={styles.formContainer}>
           <Typography variant='h4' sx={styles.formHeading}>
             Enter a Claim
           </Typography>
           <Box sx={styles.inputFieldWrap}>
-            {inputFieldLabelArr.map(({ label, value, setter, options, type, fieldType, ...rest }: any, i) =>
+            {inputFieldLabelArr.map(({ label, name, setter, options, type, fieldType, ...rest }: any, i) =>
               fieldType === 'inputField' ? (
                 <TextField
-                  value={value}
+                  {...register(name)}
                   sx={{ ml: 1, mr: 1, width: '22ch' }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
                   label={label}
-                  key={i}
-                  onChange={(event: any) => setter(event.currentTarget.value)}
+                  key={name}
                   type={type}
                   inputProps={{ ...rest }}
                 />
               ) : (
-                <Dropdown
-                  key={i}
-                  label={label}
-                  value={value}
-                  setter={setter}
-                  options={options}
-                  variant='outlined'
-                  sx={{ ml: 1, mr: 1, mb: 0.5, mt: 1, width: '22ch' }}
-                />
+                <Box sx={{ ml: 1, mr: 1, mb: 0.5, mt: 1, width: '22ch' }}>
+                  <FormControl fullWidth>
+                    <InputLabel sx={{ ml: 2, mr: 2 }}>{label}</InputLabel>
+                    <Select {...register(name)} label={label} variant='outlined'>
+                      {options.map((option: string) => (
+                        <MenuItem value={option} key={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
               )
             )}
-            {claim === 'rated' && aspect.includes('quality:') ? (
+            {watchClaim === 'rated' && watchAspect.includes('quality:') ? (
               <Box sx={styles.sliderField}>
                 <Box display='flex' flexDirection='column'>
                   <Typography variant='body2'>Review Rating "Stars"</Typography>
                   <Slider
+                    {...register('stars')}
                     getAriaLabel={() => 'Review rating (stars)'}
-                    value={stars}
-                    onChange={(_: Event, stars: number | number[]): void => setStars(Number(stars))}
                     min={0}
                     max={5}
                     valueLabelDisplay='auto'
                   />
                 </Box>
-                <Typography variant='body2'>{stars}</Typography>
+                <Typography variant='body2'>{watchStars}</Typography>
               </Box>
             ) : (
               <TextField
-                value={stars}
+                {...register('stars')}
                 fullWidth
                 label='Review Rating (stars)'
                 variant='filled'
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
-                onChange={(event: any) => setStars(event.currentTarget.value)}
                 type='number'
               />
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label='Effective Date'
-                value={effectiveDate}
-                onChange={(newValue: any) => setEffectiveDate(newValue)}
+                value={watchEffectiveDate}
+                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
                 renderInput={(params: any) => (
                   <TextField {...params} sx={{ ml: 1, mr: 1, width: '100%' }} variant='filled' />
                 )}
@@ -298,7 +294,7 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
           </Box>
           <Box sx={styles.submitButtonWrap}>
             <Button
-              onClick={async (event: any) => await handleSubmission(event)}
+              type='submit'
               variant='contained'
               size='large'
               sx={{
