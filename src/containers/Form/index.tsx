@@ -5,15 +5,13 @@ import Typography from '@mui/material/Typography'
 import { TextField, Button, Slider, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import axios from '../../axiosInstance'
 import IHomeProps from './types'
 import styles from './styles'
 import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
-import { PublishClaim } from '../../composedb/compose'
-import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
+import { useCreateClaim } from '../../hooks/useCreateClaim'
 
 const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const {
@@ -37,59 +35,38 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       stars: 0
     }
   })
+
+  const { createClaim } = useCreateClaim()
+
   const onSubmit = handleSubmit(
     async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
       if (subject && claim) {
-        try {
-          const effectiveDateAsString = effectiveDate.toISOString()
-          const confidenceAsNumber = Number(confidence)
-          const starsAsNumber = Number(stars)
+        const effectiveDateAsString = effectiveDate.toISOString()
+        const confidenceAsNumber = Number(confidence)
+        const starsAsNumber = Number(stars)
 
-          const payload = {
-            subject,
-            claim,
-            object,
-            statement,
-            aspect,
-            howKnown,
-            sourceURI,
-            effectiveDate: effectiveDateAsString,
-            confidence: confidenceAsNumber,
-            stars: starsAsNumber
-          }
+        const payload = {
+          subject,
+          claim,
+          object,
+          statement,
+          aspect,
+          howKnown,
+          sourceURI,
+          effectiveDate: effectiveDateAsString,
+          confidence: confidenceAsNumber,
+          stars: starsAsNumber
+        }
 
-          setLoading(true)
+        setLoading(true)
 
-          // TODO better way of checking the login method
+        const { message, isSuccess } = await createClaim(payload)
 
-          // check if the user is authenticated with metamask and has did
-          const did = localStorage.getItem('did')
-          const ethAddress = localStorage.getItem('ethAddress')
-
-          let res
-          if (did && ethAddress) {
-            res = await PublishClaim(payload)
-          } else {
-            // if user is not auththicatesd with Metamask and/or do not have a did
-            res = await axios.post(`${BACKEND_BASE_URL}/api/claim`, payload)
-          }
-
-          if (res.status === 201) {
-            setLoading(false)
-            toggleSnackbar(true)
-            setSnackbarMessage('Claim submitted successfully!')
-
-            reset()
-          } else {
-            setLoading(false)
-            toggleSnackbar(true)
-            setSnackbarMessage('Something went wrong!')
-          }
-        } catch (err: any) {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage(err.response.data.message)
-          console.error('err', err.response.data.message)
+        setLoading(false)
+        toggleSnackbar(true)
+        setSnackbarMessage(message)
+        if (isSuccess) {
+          reset()
         }
       } else {
         setLoading(false)
