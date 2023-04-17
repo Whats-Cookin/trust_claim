@@ -81,8 +81,7 @@ const parseNodes = (data: any) => {
   return { nodes, edges }
 }
 
-
-const getNodeData = (node: any ) => {
+const getNodeData = (node: any) => {
   let uri = node.nodeUri
   // could do this - if we used a trustclaims uri separate the path part
   // not important - just here for reference from before
@@ -93,19 +92,17 @@ const getNodeData = (node: any ) => {
       uri = decodedUri.pathname
     }
   }*/
- 
+
   interface NodeData {
     data: {
-      id: string;
-      label: string;
-      raw: any;
+      id: string
+      label: string
+      raw: any
     }
     style?: {
-      [key: string]: any;
+      [key: string]: any
     }
   }
-
-  
 
   const nodeData: NodeData = {
     data: {
@@ -117,19 +114,17 @@ const getNodeData = (node: any ) => {
 
   if (node.thumbnail) {
     nodeData.style = {
-       "background-image":[node.thumbnail.replace(/\?.+$/,'')],
-       "background-fit": "cover cover",
-       "background-image-opacity": 0.4
+      'background-image': [node.thumbnail.replace(/\?.+$/, '')],
+      'background-fit': 'cover cover',
+      'background-image-opacity': 0.4
     }
   }
   return nodeData
 }
 
-
 const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   // adding subject node
   if (node.name && node.nodeUri) {
-
     const nodeData = getNodeData(node)
 
     nodes.push(nodeData)
