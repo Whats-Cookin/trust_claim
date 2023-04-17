@@ -14,6 +14,7 @@ import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
 import { PublishClaim } from '../../composedb/compose'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const [subject, setSubject] = useState('')
@@ -63,7 +64,7 @@ const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
           res = await PublishClaim(payload)
         } else {
           // if user is not auththicatesd with Metamask and/or do not have a did
-          res = await axios.post(`/api/claim`, payload)
+          res = await axios.post(`${BACKEND_BASE_URL}/api/claim`, payload)
         }
 
         if (res.status === 201) {
