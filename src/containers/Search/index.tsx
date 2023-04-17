@@ -12,6 +12,7 @@ import IHomeProps from './types'
 import styles from './styles'
 import SearchIcon from '@mui/icons-material/Search'
 import { parseNode, parseNodes } from './graph.utils'
+import { TextField } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -215,12 +216,12 @@ const Search = (homeProps: IHomeProps) => {
             height: '50px'
           }}
         >
-          <input
+          <TextField
             type='search'
             value={searchVal}
             onChange={e => setSearchVal(e.target.value)}
             onKeyUp={handleSearchKeypress}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: 'lg', border: 'none', outline: 'none' }}
+            sx={{ width: '100%' }}
           />
           <Button
             style={{
@@ -229,8 +230,8 @@ const Search = (homeProps: IHomeProps) => {
               color: 'white',
               height: '100%',
               width: '60px',
-              borderTopRightRadius: '0.1em',
-              borderBottomRightRadius: '0.1em'
+              borderTopLeftRadius: '0.1em',
+              borderBottomLeftRadius: '0.1em'
             }}
             onClick={handleSearch}
           >
