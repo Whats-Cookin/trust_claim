@@ -52,13 +52,19 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
           </Typography>
           <TextField
             {...register('email', {
-              required: true
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              } 
             })}
             fullWidth
             label='Email'
             sx={styles.inputField}
             variant='filled'
             type='email'
+            helperText={errors.email?.message as string || ''}
+            error={!!errors.email}
           />
           <TextField
             {...register('password', {
