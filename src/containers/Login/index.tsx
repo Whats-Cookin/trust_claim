@@ -12,19 +12,21 @@ import metaicon from './metamask-icon.svg'
 import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
-
 import styles from './styles'
 import ILoginProps from './types'
 import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from '../../utils/settings'
+import { useForm } from 'react-hook-form'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
-  const [emailLogin, setEmailLogin] = useState('')
-  const [passwordLogin, setPasswordLogin] = useState('')
-  const [ethAccountId, setEthAccountId] = useState('')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm()
 
   const loginButton = document.getElementById('loginButton')
   const metamaskLink = document.getElementById('metamaskLink')
@@ -85,15 +87,15 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     }
   }
 
-  const handleLogin = async () => {
+  const onSubmit = handleSubmit(async ({ email, password, ethAccountId }) => {
     try {
-      if (!emailLogin || !passwordLogin) {
+      if (!email || !password) {
         toggleSnackbar(true)
         setSnackbarMessage('Both email and password are required fields.')
       } else {
         setLoading(true)
         const loginUrl = `${BACKEND_BASE_URL}/auth/login`
-        const data = { email: emailLogin, password: passwordLogin }
+        const data = { email, password }
         const {
           data: { accessToken, refreshToken }
         } = await axios.post<{ accessToken: string; refreshToken: string }>(loginUrl, data)
@@ -106,7 +108,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       setSnackbarMessage('User not Found!')
       console.error('Error: ', err?.message)
     }
-  }
+  })
 
   // Check if Metamask is installed
   let ethLoginOpt
@@ -136,57 +138,69 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
       <Box sx={styles.authContainer}>
-        <Typography
-          style={{
-            textAlign: 'center',
-            color: '#80B8BD',
-            fontWeight: 'bold',
-            fontSize: '2.5rem'
-          }}
-        >
-          Login
-        </Typography>
-        <TextField
-          value={emailLogin}
-          fullWidth
-          label='Email'
-          sx={styles.inputField}
-          variant='filled'
-          onChange={(e: any) => setEmailLogin(e.currentTarget.value)}
-          type='email'
-        />
-        <TextField
-          value={passwordLogin}
-          fullWidth
-          label='Password'
-          sx={styles.inputField}
-          variant='filled'
-          onChange={(e: any) => setPasswordLogin(e.currentTarget.value)}
-          type='password'
-        />
-        <Box sx={styles.submitButtonWrap}>
-          <Button onClick={handleLogin} variant='contained' size='medium' sx={styles.submitButton}>
+        <form onSubmit={onSubmit}>
+          <Typography
+            style={{
+              textAlign: 'center',
+              color: '#80B8BD',
+              fontWeight: 'bold',
+              fontSize: '2.5rem'
+            }}
+          >
             Login
-          </Button>
-        </Box>
-        <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
-          <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-          <Typography>Or, Login with </Typography>
-          <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-        </Box>
-        <Box>
-          <MuiLink href={githubUrl} sx={styles.authLinkButton}>
-            <GitHubIcon sx={styles.authIcon} />
-            Github
-          </MuiLink>
-        </Box>
-        <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
-
-        <Link to='/register' style={{ textDecoration: 'none' }}>
-          <Typography variant='body1' color='black'>
-            Click here to register
           </Typography>
-        </Link>
+          <TextField
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              }
+            })}
+            fullWidth
+            label='Email'
+            sx={styles.inputField}
+            variant='filled'
+            type='email'
+            helperText={(errors.email?.message as string) || ''}
+            error={!!errors.email}
+          />
+          <TextField
+            {...register('password', {
+              required: 'Password is required'
+            })}
+            fullWidth
+            label='Password'
+            sx={styles.inputField}
+            variant='filled'
+            type='password'
+            helperText={(errors.password?.message as string) || ''}
+            error={!!errors.password}
+          />
+          <Box sx={styles.submitButtonWrap}>
+            <Button type='submit' variant='contained' size='medium' sx={styles.submitButton}>
+              Login
+            </Button>
+          </Box>
+          <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
+            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+            <Typography>Or, Login with </Typography>
+            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+          </Box>
+          <Box>
+            <MuiLink href={githubUrl} sx={styles.authLinkButton}>
+              <GitHubIcon sx={styles.authIcon} />
+              Github
+            </MuiLink>
+          </Box>
+          <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
+
+          <Link to='/register' style={{ textDecoration: 'none' }}>
+            <Typography variant='body1' color='black'>
+              Click here to register
+            </Typography>
+          </Link>
+        </form>
       </Box>
     </>
   )
