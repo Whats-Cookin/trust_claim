@@ -193,6 +193,14 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
+  //remove contextmenu
+  useEffect(() => {
+    document.addEventListener('contextmenu', event => event.preventDefault())
+    return () => {
+      document.removeEventListener('contextmenu', event => event.preventDefault())
+    }
+  }, [])
+
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
