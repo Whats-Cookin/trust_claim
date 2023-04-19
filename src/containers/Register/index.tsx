@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useNavigate, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
 import styles from './styles'
-import { BACKEND_BASE_URL } from '../../utils/settings'
 import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
@@ -27,7 +26,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
         toggleSnackbar(true)
         setSnackbarMessage('Both email and password are required fields.')
       } else {
-        const signupUrl = `${BACKEND_BASE_URL}/auth/signup`
+        const signupUrl = '/auth/signup'
         const data = { email, password }
         await axios.post(signupUrl, data)
         setLoading(false)
@@ -68,7 +67,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
           />
           <TextField
             {...register('password', {
-              required: true
+              required: 'Password is required'
             })}
             fullWidth
             label='Password'

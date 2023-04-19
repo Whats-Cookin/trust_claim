@@ -12,10 +12,9 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import Dropdown from '../Dropdown'
 import { PublishClaim } from '../../composedb/compose'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useNavigate } from 'react-router-dom'
 import IHomeProps from '../../containers/Form/types'
-import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const FormDialog = ({ open, setOpen, toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const [subject, setSubject] = useState('')
@@ -69,7 +68,7 @@ const FormDialog = ({ open, setOpen, toggleSnackbar, setSnackbarMessage, setLoad
           res = await PublishClaim(payload)
         } else {
           // if user is not auththicatesd with Metamask and/or do not have a did
-          res = await axios.post(`${BACKEND_BASE_URL}/api/claim`, payload)
+          res = await axios.post('/api/claim', payload)
         }
 
         if (res.status === 201) {
