@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import { useNavigate, Link } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
@@ -16,7 +16,7 @@ import styles from './styles'
 import ILoginProps from './types'
 import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from '../../hooks'
-import { BACKEND_BASE_URL, GITHUB_CLIENT_ID } from '../../utils/settings'
+import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -46,7 +46,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   useEffect(() => {
     if (githubAuthCode) {
-      const githubAuthUrl = `${BACKEND_BASE_URL}/auth/github`
+      const githubAuthUrl = '/auth/github'
       axios
         .post<{ accessToken: string; refreshToken: string }>(githubAuthUrl, {
           githubAuthCode
@@ -94,7 +94,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
         setSnackbarMessage('Both email and password are required fields.')
       } else {
         setLoading(true)
-        const loginUrl = `${BACKEND_BASE_URL}/auth/login`
+        const loginUrl = '/auth/login'
         const data = { email, password }
         const {
           data: { accessToken, refreshToken }

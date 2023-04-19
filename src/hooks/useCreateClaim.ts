@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import axios from '../axiosInstance'
 import { PublishClaim } from '../composedb/compose'
-import { BACKEND_BASE_URL } from '../utils/settings'
 
 export function useCreateClaim() {
   const createClaim = useCallback(async (payload: any) => {
@@ -19,7 +18,7 @@ export function useCreateClaim() {
         res = await PublishClaim(payload)
       } else {
         // if user is not auththicatesd with Metamask and/or do not have a did
-        res = await axios.post(`${BACKEND_BASE_URL}/api/claim`, payload)
+        res = await axios.post('/api/claim', payload)
       }
 
       if (res.status === 201) {
