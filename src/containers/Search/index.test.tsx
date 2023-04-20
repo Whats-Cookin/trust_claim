@@ -3,13 +3,17 @@ import React from 'react'
 import { render, fireEvent, waitFor } from '@testing-library/react'
 import Search from './index'
 import { vi } from 'vitest'
+import { MemoryRouter } from 'react-router-dom'
 
 describe('Search component', () => {
   it('should render without crashing', () => {
-    render(<Search toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined} />)
+    render(
+      <MemoryRouter>
+        <Search toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined} />
+      </MemoryRouter>
+    )
   })
 })
-
 
 describe('Search component', () => {
   it('should search for claims when the search button is clicked', async () => {
@@ -20,13 +24,17 @@ describe('Search component', () => {
     const homeProps = { setLoading, setSnackbarMessage, toggleSnackbar }
 
     // Render the component
-    // const { getByTestId } = render(<Search homeProps={homeProps} />)
-    // const searchInput = getByTestId('search-input')
-    // const searchButton = getByTestId('search-button')
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <Search {...homeProps} />
+      </MemoryRouter>
+    )
+    const searchInput = getByTestId('search-input')
+    const searchButton = getByTestId('search-button')
 
     // Enter a search query and click the search button
-    // fireEvent.change(searchInput, { target: { value: 'test' } })
-    // fireEvent.click(searchButton)
+    fireEvent.change(searchInput, { target: { value: 'test' } })
+    fireEvent.click(searchButton)
 
     // Wait for the claims to be fetched
     await waitFor(() => expect(setLoading).toHaveBeenCalledTimes(2))
@@ -46,11 +54,15 @@ describe('Search component', () => {
     const homeProps = { setLoading, setSnackbarMessage, toggleSnackbar }
 
     // Render the component
-    // const { getByTestId } = render(<Search homeProps={homeProps} />)
-    // const node = getByTestId('node')
+    const { getByTestId } = render(
+      <MemoryRouter>
+        <Search {...homeProps} />
+      </MemoryRouter>
+    )
+    const search = getByTestId('search-button')
 
-    // Click the node
-    // fireEvent.click(Node)
+    // Click the search
+    fireEvent.click(search)
 
     // Wait for the claims to be fetched
     await waitFor(() => expect(setLoading).toHaveBeenCalledTimes(2))
@@ -70,6 +82,6 @@ describe('Search component', () => {
 
     // Render the component
     // const { getByTestId, getByText } = render(<Search homeProps={homeProps} />)
-    // const edge = getByTestId('edge' 
+    // const edge = getByTestId('edge'
   })
-  })
+})

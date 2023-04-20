@@ -226,12 +226,14 @@ const Search = (homeProps: IHomeProps) => {
         >
           <TextField
             type='search'
+            data-testid='search-input'
             value={searchVal}
             onChange={e => setSearchVal(e.target.value)}
             onKeyUp={handleSearchKeypress}
             sx={{ width: '100%' }}
           />
           <Button
+            data-testid='search-button'
             style={{
               backgroundColor: '#333',
               fontWeight: 'bold',

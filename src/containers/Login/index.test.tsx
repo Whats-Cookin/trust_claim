@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor, getByLabelText, getByRole } from '@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { MemoryRouter } from 'react-router-dom'
-import  { describe,vi} from 'vitest'
+import { describe } from 'vitest'
 
 import Login from './index'
 
@@ -30,14 +30,11 @@ describe('Login component', () => {
   })
 
   it('should display error message when login form is submitted with empty fields', async () => {
- 
-
     render(
-        <MemoryRouter>
-          <Login toggleSnackbar={toggleSnackbar} setSnackbarMessage={toggleSnackbar} setLoading={setLoading} />
-        </MemoryRouter>
-      )
-      
+      <MemoryRouter>
+        <Login toggleSnackbar={toggleSnackbar} setSnackbarMessage={toggleSnackbar} setLoading={setLoading} />
+      </MemoryRouter>
+    )
   })
 
   it('should display error message when login form is submitted with invalid credentials', async () => {
@@ -57,9 +54,9 @@ describe('Login component', () => {
     fireEvent.change(passwordField, { target: { value: 'password' } })
     fireEvent.click(loginButton)
 
-  //   await waitFor(() => {
-  //     expect(screen.getByText('User not Found!')).toBeInTheDocument()
-  //   })
+    //   await waitFor(() => {
+    //     expect(screen.getByText('User not Found!')).toBeInTheDocument()
+    //   })
   })
 
   // it('should redirect to home page when login form is submitted with valid credentials', async () => {
@@ -70,15 +67,11 @@ describe('Login component', () => {
 
   //   const navigateSpy = vi.fn()
 
-    
-
   //   render(
   //       <MemoryRouter>
   //         <Login toggleSnackbar={toggleSnackbar} setSnackbarMessage={toggleSnackbar} setLoading={setLoading}/>
   //       </MemoryRouter>
   //     )
-      
-    
 
   //   const emailField = screen.getByLabelText('Email')
   //   const passwordField = screen.getByLabelText('Password')
@@ -94,23 +87,16 @@ describe('Login component', () => {
   //     expect(localStorage.setItem).toHaveBeenNthCalledWith(2, 'refreshToken', refreshToken)
   //   })
   //  })
-
-  
 })
 
 function setSnackbarMessage(arg0: string) {
-    // throw new Error('Function not implemented.')
+  // throw new Error('Function not implemented.')
 }
 
 function toggleSnackbar(arg0: boolean) {
-    // throw new Error('Function not implemented.')
+  // throw new Error('Function not implemented.')
 }
 
 function setLoading(arg0: boolean) {
-    // throw new Error('Function not implemented.')
+  // throw new Error('Function not implemented.')
 }
-
-
-  
-  
-

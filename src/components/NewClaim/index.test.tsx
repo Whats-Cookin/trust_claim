@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 // import NewClaim from './index'
 import { MemoryRouter } from 'react-router-dom'
-import {test,vi} from 'vitest'
+import { test, vi } from 'vitest'
 import FormDialog from './AddNewClaim'
 
 test('FormDialog submits claim successfully', async () => {
@@ -25,8 +25,6 @@ test('FormDialog submits claim successfully', async () => {
   const subjectInput = screen.getByLabelText(/subject/i)
   fireEvent.input(subjectInput, { target: { value: 'Test subject' } })
 
-
-
   const claimInput = screen.getByLabelText(/claim/i)
   // fireEvent.change(claimInput, { target: { value: 'rated' } })
   fireEvent.input(claimInput, { target: { value: 'rated' } })
@@ -41,7 +39,7 @@ test('FormDialog submits claim successfully', async () => {
   const submitButton = screen.getByRole('button', { name: /submit/i })
   fireEvent.click(submitButton)
 
-//   Assert that the loading indicator is shown
+  //   Assert that the loading indicator is shown
   expect(screen.getByTestId('loading-indicator')).toBeInTheDocument()
 
   // Wait for the claim to be submitted
@@ -60,7 +58,6 @@ test('FormDialog submits claim successfully', async () => {
   expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument()
 })
 
-
 // import { render, screen, fireEvent } from '@testing-library/react'
 // import {test,vi} from 'vitest'
 // import { MemoryRouter } from 'react-router-dom'
@@ -77,11 +74,11 @@ test('FormDialog submits claim successfully', async () => {
 //   }
 
 //   // Render the component with a MemoryRouter
-  // render(
-  //   <MemoryRouter>
-  //     <FormDialog {...props} />
-  //   </MemoryRouter>
-  // )
+// render(
+//   <MemoryRouter>
+//     <FormDialog {...props} />
+//   </MemoryRouter>
+// )
 
 //   // Fill out the form fields
 //   const subjectInput = screen.getByLabelText(/subject/i)
