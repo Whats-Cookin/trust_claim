@@ -54,12 +54,11 @@ const App = () => {
         <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
         <Loader open={loading} />
         <Routes>
-          <Route path='/' element={<UserNodes {...commonProps}/>} />
+          <Route path='/' element={<UserNodes {...commonProps} />} />
           <Route path='login' element={<Login {...commonProps} />} />
           <Route path='register' element={<Register {...commonProps} />} />
           <Route path='form' element={<Form {...commonProps} />} />
           <Route path='search' element={<Search {...commonProps} />} />
-         
         </Routes>
       </div>
     </>

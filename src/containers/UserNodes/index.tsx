@@ -10,8 +10,6 @@ import IUserNodesProps from './types'
 import styles from './styles'
 import { parseNode, parseNodes } from '../Search/graph.utils'
 
-
-
 const UserNodes = (userProps: IUserNodesProps) => {
   const search = useLocation().search
   const navigate = useNavigate()
@@ -136,7 +134,7 @@ const UserNodes = (userProps: IUserNodesProps) => {
   return (
     <Container maxWidth={false}>
       <h1>My Nodes</h1>
-   
+
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
       <NewClaim
         open={openNewClaim}
@@ -145,10 +143,8 @@ const UserNodes = (userProps: IUserNodesProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-     
     </Container>
   )
 }
 
 export default UserNodes
-
