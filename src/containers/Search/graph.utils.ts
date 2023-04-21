@@ -83,7 +83,7 @@ const parseNodes = (data: any) => {
 
 
 const getNodeData = (node: any ) => {
-  let uri = node.nodeUri
+  let uri = node?.nodeUri
   // could do this - if we used a trustclaims uri separate the path part
   // not important - just here for reference from before
   /*if (isValidUrl(uri)) {
@@ -109,15 +109,15 @@ const getNodeData = (node: any ) => {
 
   const nodeData: NodeData = {
     data: {
-      id: node.id.toString(),
-      label: node.name || uri,
+      id: node?.id.toString(),
+      label: node?.name || uri,
       raw: node
     }
   }
 
-  if (node.thumbnail) {
+  if (node?.thumbnail) {
     nodeData.style = {
-       "background-image":[node.thumbnail.replace(/\?.+$/,'')],
+       "background-image":[node?.thumbnail.replace(/\?.+$/,'')],
        "background-fit": "cover cover",
        "background-image-opacity": 0.4
     }
