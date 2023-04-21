@@ -177,8 +177,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             helperText={(errors.password?.message as string) || ''}
             error={!!errors.password}
           />
-          <Box sx={styles.submitButtonWrap}>
-            <Button type='submit' variant='contained' size='medium' sx={styles.submitButton}>
+          <Box>
+            <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
               Login
             </Button>
           </Box>

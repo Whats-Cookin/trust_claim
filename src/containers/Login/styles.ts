@@ -15,11 +15,6 @@ const styles = {
   inputField: {
     backgroundColor: 'white'
   },
-  submitButtonWrap: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '100%'
-  },
   authbtn: {
     display: 'flex',
     cursor: 'pointer',
@@ -30,15 +25,6 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center'
     // padding: "1rem",
-  },
-  submitButton: {
-    backgroundColor: '#80B8BD',
-    color: 'black',
-    width: '100%',
-
-    '&:hover': {
-      backgroundColor: 'grey.300'
-    }
   },
   ETHButton: {
     textDecoration: 'none',

@@ -10,6 +10,8 @@ import Search from './containers/Search'
 import Nav2 from './components/Navbar/Nav2'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import teal from '@mui/material/colors/teal'
+import { orange } from '@mui/material/colors'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -44,7 +46,12 @@ const App = () => {
   const isLoginPage = window.location.pathname === '/login'
   const isRegisterPage = window.location.pathname === '/register'
 
-  const theme = createTheme()
+  const theme = createTheme({
+    palette: {
+      primary: teal,
+      secondary: orange
+    }
+  })
 
   return (
     <>
