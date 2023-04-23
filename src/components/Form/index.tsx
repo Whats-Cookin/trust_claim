@@ -99,17 +99,10 @@ export const Form = ({
 
   const inputFieldLabelArr = [
     {
-      label: 'Subject',
-      name: 'subject'
-    },
-
-    {
-      label: 'Claim',
       name: 'claim',
       options: ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to']
     },
     {
-      label: 'Aspect',
       name: 'aspect',
       options: [
         'impact:social',
@@ -141,7 +134,6 @@ export const Form = ({
       ]
     },
     {
-      label: 'How Known',
       name: 'howKnown',
       options: [
         'first_hand',
@@ -154,22 +146,6 @@ export const Form = ({
         'physical_document',
         'integration'
       ]
-    },
-    {
-      label: 'Object',
-      name: 'object'
-    },
-    {
-      label: 'Statement',
-      name: 'statement'
-    },
-    {
-      label: 'Source URI',
-      name: 'sourceURI'
-    },
-    {
-      label: 'Confidence',
-      name: 'confidence'
     }
   ]
 
