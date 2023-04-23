@@ -100,8 +100,7 @@ export const Form = ({
   const inputFieldLabelArr = [
     {
       label: 'Subject',
-      name: 'subject',
-      fieldType: 'inputField'
+      name: 'subject'
     },
 
     {
@@ -144,7 +143,6 @@ export const Form = ({
     {
       label: 'How Known',
       name: 'howKnown',
-      type: 'text',
       options: [
         'first_hand',
         'second_hand',
@@ -159,9 +157,7 @@ export const Form = ({
     },
     {
       label: 'Object',
-      name: 'object',
-      type: 'text',
-      fieldType: 'inputField'
+      name: 'object'
     },
     {
       label: 'Statement',
