@@ -99,24 +99,11 @@ export const Form = ({
 
   const inputFieldLabelArr = [
     {
-      label: 'Subject',
-      name: 'subject',
-      type: 'text',
-      fieldType: 'inputField'
-    },
-
-    {
-      label: 'Claim',
       name: 'claim',
-      type: 'text',
-      fieldType: 'dropdown',
       options: ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to']
     },
     {
-      label: 'Aspect',
       name: 'aspect',
-      type: 'text',
-      fieldType: 'dropdown',
       options: [
         'impact:social',
         'impact:climate',
@@ -147,10 +134,7 @@ export const Form = ({
       ]
     },
     {
-      label: 'How Known',
       name: 'howKnown',
-      type: 'text',
-      fieldType: 'dropdown',
       options: [
         'first_hand',
         'second_hand',
@@ -162,33 +146,6 @@ export const Form = ({
         'physical_document',
         'integration'
       ]
-    },
-    {
-      label: 'Object',
-      name: 'object',
-      type: 'text',
-      fieldType: 'inputField'
-    },
-    {
-      label: 'Statement',
-      name: 'statement',
-      type: 'text',
-      fieldType: 'inputField'
-    },
-    {
-      label: 'Source URI',
-      name: 'sourceURI',
-      type: 'text',
-      fieldType: 'inputField'
-    },
-    {
-      label: 'Confidence',
-      name: 'confidence',
-      type: 'number',
-      min: 0.0,
-      max: 1.0,
-      fieldType: 'inputField',
-      step: 0.01
     }
   ]
 
@@ -214,36 +171,123 @@ export const Form = ({
       <DialogContent>
         <form onSubmit={onSubmit}>
           <Box sx={styles.inputFieldWrap}>
-            {inputFieldLabelArr
-              .filter(input => (isSimple ? simpleList.includes(input.name) : true))
-              .map(({ label, name, setter, options, type, fieldType, ...rest }: any, i) =>
-                fieldType === 'inputField' ? (
-                  <TextField
-                    {...register(name)}
-                    sx={{ ml: 1, mr: 1, width: '22ch' }}
-                    margin='dense'
-                    variant='outlined'
-                    fullWidth
-                    label={label}
-                    key={name}
-                    type={type}
-                    inputProps={{ ...rest }}
-                  />
-                ) : (
-                  <Box sx={{ ml: 1, mr: 1, mb: 0.5, mt: 1, width: '22ch' }}>
-                    <FormControl fullWidth>
-                      <InputLabel sx={{ ml: 2, mr: 2 }}>{label}</InputLabel>
-                      <Select {...register(name)} label={label} variant='outlined'>
-                        {options.map((option: string) => (
-                          <MenuItem value={option} key={option}>
-                            {option}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                )
-              )}
+            <TextField
+              {...register('subject', { required: { value: true, message: 'subject is required' } })}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+              label='Subject'
+              key='subject'
+              type='text'
+              error={Boolean(errors.subject)}
+              helperText={errors.subject?.message}
+            />
+            <TextField
+              select
+              label='Claim'
+              {...register('claim', { required: { value: true, message: 'claim is required' } })}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+              error={Boolean(errors.claim)}
+              helperText={errors.claim?.message}
+            >
+              {inputFieldLabelArr
+                .filter(input => input.name === 'claim')
+                .map(option =>
+                  option.options?.map((i: string) => (
+                    <MenuItem value={i} key={i}>
+                      {i}
+                    </MenuItem>
+                  ))
+                )}
+            </TextField>
+            <TextField
+              select
+              label='Aspect'
+              {...register('aspect')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+            >
+              {inputFieldLabelArr
+                .filter(input => input.name === 'aspect')
+                .map(option =>
+                  option.options?.map((i: string) => (
+                    <MenuItem value={i} key={i}>
+                      {i}
+                    </MenuItem>
+                  ))
+                )}
+            </TextField>
+            <TextField
+              select
+              label='How Known'
+              {...register('howKnown')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+            >
+              {inputFieldLabelArr
+                .filter(input => input.name === 'howKnown')
+                .map(option =>
+                  option.options?.map((i: string) => (
+                    <MenuItem value={i} key={i}>
+                      {i}
+                    </MenuItem>
+                  ))
+                )}
+            </TextField>
+            <TextField
+              {...register('object')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+              label='Object'
+              key='object'
+              type='text'
+            />
+            <TextField
+              {...register('statement')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+              label='Statement'
+              key='statement'
+              type='text'
+            />
+            <TextField
+              {...register('sourceURI')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+              label='Source URI'
+              key='sourceURI'
+              type='text'
+            />
+            <TextField
+              {...register('confidence')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+              label='Confidence'
+              key='confidence'
+              type='number'
+              inputProps={{
+                min: 0.0,
+                max: 1.0,
+                step: 0.1
+              }}
+            />
+
             {watchClaim === 'rated' && watchAspect.includes('quality:') ? (
               <Box sx={styles.sliderField}>
                 <Box display='flex' flexDirection='column'>
