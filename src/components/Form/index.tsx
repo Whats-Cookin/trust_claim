@@ -97,57 +97,48 @@ export const Form = ({
   const watchEffectiveDate = watch('effectiveDate')
   const watchStars = watch('stars')
 
-  const inputFieldLabelArr = [
-    {
-      name: 'claim',
-      options: ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to']
-    },
-    {
-      name: 'aspect',
-      options: [
-        'impact:social',
-        'impact:climate',
-        'impact:work',
-        'impact:financial',
-        'impact:educational',
-        'quality:technical',
-        'quality:asthetic',
-        'quality:taste',
-        'quality:journalistic',
-        'quality:academic',
-        'quality:fun',
-        'quality:usefulness',
-        'quality:literary',
-        'quality:relevance',
-        'quality:self-improvment',
-        'quality:historical',
-        'quality:theological',
-        'quality:adventure',
-        'quality:biographical',
-        'quality:scientific',
-        'risk:scam',
-        'risk:justice',
-        'risk:safety',
-        'risk:reliability',
-        'relationship:works-for',
-        'relationship:same-as'
-      ]
-    },
-    {
-      name: 'howKnown',
-      options: [
-        'first_hand',
-        'second_hand',
-        'website',
-        'verified_website',
-        'verified_login',
-        'signed_claim',
-        'blockchain',
-        'physical_document',
-        'integration'
-      ]
-    }
-  ]
+  const inputOptions = {
+    claim: ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
+    aspect: [
+      'impact:social',
+      'impact:climate',
+      'impact:work',
+      'impact:financial',
+      'impact:educational',
+      'quality:technical',
+      'quality:asthetic',
+      'quality:taste',
+      'quality:journalistic',
+      'quality:academic',
+      'quality:fun',
+      'quality:usefulness',
+      'quality:literary',
+      'quality:relevance',
+      'quality:self-improvment',
+      'quality:historical',
+      'quality:theological',
+      'quality:adventure',
+      'quality:biographical',
+      'quality:scientific',
+      'risk:scam',
+      'risk:justice',
+      'risk:safety',
+      'risk:reliability',
+      'relationship:works-for',
+      'relationship:same-as'
+    ],
+    howKnown: [
+      'first_hand',
+      'second_hand',
+      'website',
+      'verified_website',
+      'verified_login',
+      'signed_claim',
+      'blockchain',
+      'physical_document',
+      'integration'
+    ]
+  }
 
   const simpleList = ['subject', 'claim', 'object', 'sourceURI']
 
@@ -194,15 +185,11 @@ export const Form = ({
               error={Boolean(errors.claim)}
               helperText={errors.claim?.message}
             >
-              {inputFieldLabelArr
-                .filter(input => input.name === 'claim')
-                .map(option =>
-                  option.options?.map((i: string) => (
-                    <MenuItem value={i} key={i}>
-                      {i}
-                    </MenuItem>
-                  ))
-                )}
+              {inputOptions.claim.map((i: string) => (
+                <MenuItem value={i} key={i}>
+                  {i}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
               select
@@ -213,15 +200,11 @@ export const Form = ({
               variant='outlined'
               fullWidth
             >
-              {inputFieldLabelArr
-                .filter(input => input.name === 'aspect')
-                .map(option =>
-                  option.options?.map((i: string) => (
-                    <MenuItem value={i} key={i}>
-                      {i}
-                    </MenuItem>
-                  ))
-                )}
+              {inputOptions.aspect.map((i: string) => (
+                <MenuItem value={i} key={i}>
+                  {i}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
               select
@@ -232,15 +215,11 @@ export const Form = ({
               variant='outlined'
               fullWidth
             >
-              {inputFieldLabelArr
-                .filter(input => input.name === 'howKnown')
-                .map(option =>
-                  option.options?.map((i: string) => (
-                    <MenuItem value={i} key={i}>
-                      {i}
-                    </MenuItem>
-                  ))
-                )}
+              {inputOptions.howKnown.map((i: string) => (
+                <MenuItem value={i} key={i}>
+                  {i}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
               {...register('object')}
