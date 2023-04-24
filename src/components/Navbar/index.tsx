@@ -8,7 +8,7 @@ import ProfileDropdown from '../profileDropDown/index'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
-  
+
   return (
     <>
       <Box sx={{ flexGrow: 1, width: '100%', overflow: 'hidden' }}>
@@ -35,8 +35,6 @@ const Navbar = ({ isAuth }: any) => {
                     Register
                   </Button>
                 </>
-             
-   
               )}
             </Box>
           </Toolbar>

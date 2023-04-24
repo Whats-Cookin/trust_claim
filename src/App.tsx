@@ -58,7 +58,7 @@ const App = () => {
         <CssBaseline />
         {/* Render the navigation component only if the user is not on the login or register page */}
         <Navbar isAuth={checkAuth()} />
-       
+
         <div className='app'>
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
