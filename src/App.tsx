@@ -7,7 +7,6 @@ import Login from './containers/Login'
 import Register from './containers/Register'
 import Form from './containers/Form'
 import Search from './containers/Search'
-import Nav2 from './components/Navbar/Nav2'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import teal from '@mui/material/colors/teal'
@@ -58,9 +57,8 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {/* Render the navigation component only if the user is not on the login or register page */}
-        {!isLoginPage && !isRegisterPage && <Navbar isAuth={checkAuth()} />}
-        {isLoginPage && <Nav2 />}
-        {isRegisterPage && <Nav2 />}
+        <Navbar isAuth={checkAuth()} />
+       
         <div className='app'>
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
