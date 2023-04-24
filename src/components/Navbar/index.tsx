@@ -5,17 +5,10 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfileDropdown from '../profileDropDown/index'
-import Nav2 from './Nav2'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("accessToken");
-  //   localStorage.removeItem("refreshToken");
-  //   navigate("/login");
-  // };
-  const isSearch = window.location.pathname === '/search'
   return (
     <>
       <Box sx={{ flexGrow: 1, width: '100%', overflow: 'hidden' }}>
@@ -31,7 +24,16 @@ const Navbar = ({ isAuth }: any) => {
                 </>
               ) : (
                 <>
-                  <Nav2 />
+                  <Button color='inherit' onClick={() => navigate('/search')}>
+                    {' '}
+                    Search{' '}
+                  </Button>
+                  <Button color='inherit' onClick={() => navigate('/login')}>
+                    Login
+                  </Button>
+                  <Button color='inherit' onClick={() => navigate('/register')}>
+                    Register
+                  </Button>
                 </>
               )}
             </Box>
