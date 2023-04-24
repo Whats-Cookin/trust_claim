@@ -8,8 +8,9 @@ const FormDialog = ({
   setOpen,
   toggleSnackbar,
   setSnackbarMessage,
+  selectedClaim,
   setLoading
-}: IHomeProps & { open: boolean; setOpen: (open: boolean) => void }) => {
+}: IHomeProps & { open: boolean; setOpen: (open: boolean) => void; selectedClaim: any }) => {
   const handleClose = () => {
     setOpen(false)
   }
@@ -21,7 +22,7 @@ const FormDialog = ({
           toggleSnackbar={toggleSnackbar}
           setSnackbarMessage={setSnackbarMessage}
           setLoading={setLoading}
-          simple={true}
+          selectedClaim={selectedClaim}
           onCancel={handleClose}
         />
       </Dialog>

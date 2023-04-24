@@ -207,6 +207,7 @@ const Search = (homeProps: IHomeProps) => {
       <NewClaim
         open={openNewClaim}
         setOpen={setOpenNewClaim}
+        selectedClaim={selectedClaim}
         setLoading={setLoading}
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}

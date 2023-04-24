@@ -1,58 +1,55 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import {
   TextField,
   Button,
-  Slider,
   FormControl,
-  InputLabel,
-  Select,
   MenuItem,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  Rating,
+  FormHelperText
 } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import IHomeProps from '../../containers/Form/types'
 import styles from '../../containers/Form/styles'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 
 export const Form = ({
   toggleSnackbar,
   setSnackbarMessage,
   setLoading,
-  simple,
+  selectedClaim,
   onCancel
-}: IHomeProps & { simple: boolean; onCancel?: () => void }) => {
+}: IHomeProps & { onCancel?: () => void; selectedClaim?: any }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
     reset,
-    setValue
+    setValue,
+    control
   } = useForm({
     defaultValues: {
-      subject: '',
-      claim: '',
-      object: '',
-      statement: '',
-      aspect: '',
-      howKnown: '',
-      sourceURI: '',
+      subject: (selectedClaim?.nodeUri as string) || null,
+      claim: 'rated',
+      object: null as string | null,
+      statement: null as string | null,
+      aspect: null as string | null,
+      howKnown: null as string | null,
+      sourceURI: null as string | null,
       effectiveDate: new Date(),
-      confidence: 0.0,
-      stars: 0
+      confidence: null as number | null,
+      stars: null as number | null
     }
   })
 
   const { createClaim } = useCreateClaim()
-
-  const [isSimple, setIsSimple] = React.useState(simple)
 
   const onSubmit = handleSubmit(
     async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
@@ -93,12 +90,22 @@ export const Form = ({
   )
 
   const watchClaim = watch('claim')
-  const watchAspect = watch('aspect')
   const watchEffectiveDate = watch('effectiveDate')
-  const watchStars = watch('stars')
+
+  useEffect(() => {
+    if (watchClaim === 'rated') {
+      setValue('object', null)
+    } else {
+      setValue('stars', null)
+      setValue('aspect', null)
+    }
+  }, [watchClaim, setValue])
 
   const inputOptions = {
-    claim: ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
+    claim:
+      selectedClaim?.entType === 'CLAIM'
+        ? ['agree', 'disagree']
+        : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
     aspect: [
       'impact:social',
       'impact:climate',
@@ -140,8 +147,6 @@ export const Form = ({
     ]
   }
 
-  const simpleList = ['subject', 'claim', 'object', 'sourceURI']
-
   return (
     <>
       <DialogTitle>
@@ -156,8 +161,13 @@ export const Form = ({
             fontWeight: 'bold'
           }}
         >
-          Enter a Claim
+          {selectedClaim
+            ? selectedClaim?.entType === 'CLAIM'
+              ? 'do you want to validate ?'
+              : 'what do you have to say about'
+            : 'Enter a Claim'}
         </Typography>
+        {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
       </DialogTitle>
       <DialogContent>
         <form onSubmit={onSubmit}>
@@ -170,6 +180,7 @@ export const Form = ({
               fullWidth
               label='Subject'
               key='subject'
+              disabled={!!selectedClaim?.nodeUri}
               type='text'
               error={Boolean(errors.subject)}
               helperText={errors.subject?.message}
@@ -193,21 +204,6 @@ export const Form = ({
             </TextField>
             <TextField
               select
-              label='Aspect'
-              {...register('aspect')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-            >
-              {inputOptions.aspect.map((i: string) => (
-                <MenuItem value={i} key={i}>
-                  {i}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              select
               label='How Known'
               {...register('howKnown')}
               sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -221,16 +217,6 @@ export const Form = ({
                 </MenuItem>
               ))}
             </TextField>
-            <TextField
-              {...register('object')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              label='Object'
-              key='object'
-              type='text'
-            />
             <TextField
               {...register('statement')}
               sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -266,30 +252,57 @@ export const Form = ({
                 step: 0.1
               }}
             />
-
-            {watchClaim === 'rated' && watchAspect.includes('quality:') ? (
-              <Box sx={styles.sliderField}>
-                <Box display='flex' flexDirection='column'>
-                  <Typography variant='body2'>Review Rating "Stars"</Typography>
-                  <Slider
-                    {...register('stars')}
-                    getAriaLabel={() => 'Review rating (stars)'}
-                    min={0}
-                    max={5}
-                    valueLabelDisplay='auto'
+            {!(selectedClaim?.entType === 'CLAIM') && (
+              <>
+                {watchClaim === 'rated' ? (
+                  <>
+                    <TextField
+                      select
+                      label='Aspect'
+                      {...register('aspect')}
+                      sx={{ ml: 1, mr: 1, width: '22ch' }}
+                      margin='dense'
+                      variant='outlined'
+                      fullWidth
+                    >
+                      {inputOptions.aspect.map((i: string) => (
+                        <MenuItem value={i} key={i}>
+                          {i}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <Controller
+                      name='stars'
+                      control={control}
+                      rules={{ required: { value: true, message: 'rating is required' } }}
+                      render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                          <Typography>Review Rating</Typography>
+                          <Rating
+                            name='stars'
+                            value={value}
+                            onChange={(e, newValue) => onChange(newValue)}
+                            precision={1}
+                            size='large'
+                          />
+                          <FormHelperText>{error?.message}</FormHelperText>
+                        </FormControl>
+                      )}
+                    />
+                  </>
+                ) : (
+                  <TextField
+                    {...register('object')}
+                    sx={{ ml: 1, mr: 1, width: '22ch' }}
+                    margin='dense'
+                    variant='outlined'
+                    fullWidth
+                    label='Object'
+                    key='object'
+                    type='text'
                   />
-                </Box>
-                <Typography variant='body2'>{watchStars}</Typography>
-              </Box>
-            ) : (
-              <TextField
-                {...register('stars')}
-                fullWidth
-                label='Review Rating (stars)'
-                variant='filled'
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                type='number'
-              />
+                )}
+              </>
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
@@ -302,11 +315,6 @@ export const Form = ({
               />
             </LocalizationProvider>
           </Box>
-          {isSimple && (
-            <Box display='flex' justifyContent='center'>
-              <Button onClick={() => setIsSimple(false)}>Advanced</Button>
-            </Box>
-          )}
         </form>
       </DialogContent>
       <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', columnGap: 3 }}>
@@ -317,11 +325,7 @@ export const Form = ({
           sx={{
             ml: 1,
             mr: 1,
-            width: '50%',
-            backgroundColor: '#80B8BD',
-            '&:hover': {
-              backgroundColor: '#80B8BD'
-            }
+            width: '50%'
           }}
         >
           Submit

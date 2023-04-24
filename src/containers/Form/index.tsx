@@ -31,12 +31,7 @@ const FormPage = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
         }}
       />
       <Paper sx={{ zIndex: 20, my: 10 }}>
-        <Form
-          toggleSnackbar={toggleSnackbar}
-          setSnackbarMessage={setSnackbarMessage}
-          setLoading={setLoading}
-          simple={false}
-        />
+        <Form toggleSnackbar={toggleSnackbar} setSnackbarMessage={setSnackbarMessage} setLoading={setLoading} />
       </Paper>
     </>
   )
