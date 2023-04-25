@@ -112,7 +112,7 @@ const getNodeData = (node: any) => {
     },
 
     style: {
-      shape: node.name === 'foo' ? 'roundrectangle' : 'ellipse' // set different shape based on node label
+      shape: 'star' // set different shape based on node label
     }
   }
 
