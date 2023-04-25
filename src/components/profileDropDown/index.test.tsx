@@ -11,13 +11,13 @@ import { describe, vi, it } from 'vitest'
 //   });
 
   
-  // test('opens the menu when clicked', () => {
-  //   render(<ProfileDropdown isAuth={true} />, { wrapper: MemoryRouter });
-  //   const buttonElement = screen.getByRole('button', { name: 'menu' });
-  //   fireEvent.click(buttonElement);
-  //   const searchButtonElement = screen.getByRole('button', { name: 'Search' });
-  //   expect(searchButtonElement).toBeInTheDocument();
-  // });
+  test('opens the menu when clicked', () => {
+    render(<ProfileDropdown isAuth={true} />, { wrapper: MemoryRouter });
+    const buttonElement = screen.getByRole('button', { name: 'menu' });
+    fireEvent.click(buttonElement);
+    const searchButtonElement = screen.getByRole('button', { name: 'Search' });
+    expect(searchButtonElement).toBeInTheDocument();
+  });
 
   test('navigates to the search page when search button is clicked', () => {
     const navigateMock = vi.fn();
@@ -28,12 +28,12 @@ import { describe, vi, it } from 'vitest'
    
      
 
-  //   render(<ProfileDropdown isAuth={true} />, { wrapper: MemoryRouter });
-  //   const buttonElement = screen.getByRole('button', { name: 'menu' });
-  //   fireEvent.click(buttonElement);
-  //   const searchButtonElement = screen.getByRole('button', { name: 'Search' });
-  //   fireEvent.click(searchButtonElement);
-  //   expect(navigateMock).toHaveBeenCalledWith('/search');
+    // render(<ProfileDropdown isAuth={true} />, { wrapper: MemoryRouter });
+    // const buttonElement = screen.getByRole('button', { name: 'menu' });
+    // fireEvent.click(buttonElement);
+    // const searchButtonElement = screen.getByRole('button', { name: 'Search' });
+    // fireEvent.click(searchButtonElement);
+    // expect(navigateMock).toHaveBeenCalledWith('/search');
   });
 
   test('logs out when logout button is clicked', () => {
