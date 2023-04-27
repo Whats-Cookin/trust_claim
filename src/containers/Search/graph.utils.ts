@@ -37,7 +37,9 @@ const parseClaims = (claims: any) => {
         data: {
           id: claim.subject,
           label: label
-        }
+        },
+      
+
       })
     }
 
@@ -53,7 +55,9 @@ const parseClaims = (claims: any) => {
         data: {
           id: claim.object,
           label: label
-        }
+        },
+
+       
       })
     }
     // adding edge between subject and object
