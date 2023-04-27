@@ -37,9 +37,7 @@ const parseClaims = (claims: any) => {
         data: {
           id: claim.subject,
           label: label
-        },
-      
-
+        }
       })
     }
 
@@ -55,9 +53,7 @@ const parseClaims = (claims: any) => {
         data: {
           id: claim.object,
           label: label
-        },
-
-       
+        }
       })
     }
     // adding edge between subject and object
@@ -115,11 +111,9 @@ const getNodeData = (node: any) => {
       raw: node
     },
 
-  
     style: {
       shape: node.name === 'foo' ? 'roundrectangle' : 'ellipse' // set different shape based on node label
     }
-
   }
 
   if (node.image) {
@@ -128,8 +122,6 @@ const getNodeData = (node: any) => {
       'background-fit': 'cover cover',
       'background-image-opacity': 1.0
     }
-
-
   } else if (node.thumbnail) {
     nodeData.style = {
       'background-image': [node.thumbnail.replace(/\?.+$/, '')],
@@ -139,8 +131,6 @@ const getNodeData = (node: any) => {
   }
   return nodeData
 }
-
-
 
 const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   // adding subject node
