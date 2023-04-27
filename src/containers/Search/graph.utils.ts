@@ -109,7 +109,13 @@ const getNodeData = (node: any) => {
       id: node.id.toString(),
       label: node.name || uri,
       raw: node
+    },
+
+  
+    style: {
+      shape: node.name === 'foo' ? 'roundrectangle' : 'ellipse' // set different shape based on node label
     }
+
   }
 
   if (node.image) {
@@ -118,6 +124,8 @@ const getNodeData = (node: any) => {
       'background-fit': 'cover cover',
       'background-image-opacity': 1.0
     }
+
+
   } else if (node.thumbnail) {
     nodeData.style = {
       'background-image': [node.thumbnail.replace(/\?.+$/, '')],
@@ -127,6 +135,8 @@ const getNodeData = (node: any) => {
   }
   return nodeData
 }
+
+
 
 const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   // adding subject node
