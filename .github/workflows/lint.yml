@@ -1,0 +1,31 @@
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Run Linter
+    steps:
+      - name: Checkout step
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: install
+        run: yarn
+
+      - name: Run JS linter
+        run: yarn lint
+
+      - name: build
+        run: yarn build
