@@ -13,10 +13,6 @@ import styles from './styles'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import Triangle from '../../components/SVGs/svg'
 
-import polygon1 from '../../assets/circle.png'
-import polygon2 from '../../assets/Polygon 2.png'
-import polygon3 from '../../assets/Polygon 3.png'
-
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
   const theme = useTheme()
   const color = theme.palette.primary.main

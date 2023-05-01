@@ -25,9 +25,11 @@ const ProfileDropdown = ({ isAuth }: any) => {
   useEffect(() => {
     setDisableTooltip(openMenu)
   }, [openMenu, setDisableTooltip])
+
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -112,7 +114,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
               backgroundColor: 'primary.main',
               color: '#fff',
               '&:hover': {
-                // backgroundColor: 'primary.main',
+                backgroundColor: 'primary.main',
                 color: '#fff'
               }
             }}
