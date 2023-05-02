@@ -193,6 +193,13 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (query) {
+      setSearchVal(query)
+      fetchClaims(encodeURIComponent(query), true, page.current)
+    }
+  }, [query])
+
   //remove contextmenu
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
