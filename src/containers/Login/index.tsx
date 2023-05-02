@@ -164,9 +164,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           type='password'
         />
         <Box sx={styles.submitButtonWrap} bgcolor='primary.main'>
-          <Button onClick={handleLogin} variant='contained' size='medium' sx={styles.submitButton}>
+          {/* <Button onClick={handleLogin} variant='contained' size='medium' sx={styles.submitButton}>
             Login
-          </Button>
+          </Button> */}
         </Box>
         <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
           <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
