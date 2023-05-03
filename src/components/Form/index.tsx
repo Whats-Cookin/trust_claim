@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import {
@@ -156,7 +157,7 @@ export const Form = ({
             mb: 3,
             textAlign: 'center',
             fontSize: '20px',
-            color: '#80B8BD',
+            color: 'primary.main',
             textTransform: 'uppercase',
             fontWeight: 'bold'
           }}

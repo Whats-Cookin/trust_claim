@@ -45,7 +45,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <Triangle />
       <Box sx={styles.authContainer}>
         <form onSubmit={onSubmit}>
-          <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }}>
+          <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
           </Typography>
           <TextField
