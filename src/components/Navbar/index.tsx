@@ -25,9 +25,6 @@ const Navbar = ({ isAuth }: any) => {
         pathname: '/search',
         search: `?query=${searchVal}`
       })
-
-      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
-      //page.current = 2
     }
   }
 
@@ -120,6 +117,3 @@ const Navbar = ({ isAuth }: any) => {
 }
 
 export default Navbar
-function fetchClaims(arg0: string, arg1: boolean, current: number) {
-  throw new Error('Function not implemented.')
-}
