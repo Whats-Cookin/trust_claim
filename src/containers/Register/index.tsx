@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import axios from '../../axiosInstance'
+import Triangle from '../../components/SVGs/svg'
 import { useNavigate, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
@@ -41,9 +42,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
   })
   return (
     <>
-      <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
-      <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
-      <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
+      <Triangle />
       <Box sx={styles.authContainer}>
         <form onSubmit={onSubmit}>
           <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }}>
