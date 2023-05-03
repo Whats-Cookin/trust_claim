@@ -188,6 +188,13 @@ const Search = (homeProps: IHomeProps) => {
   }, [cy])
 
   useEffect(() => {
+    if (query) {
+      setSearchVal(query)
+      fetchClaims(encodeURIComponent(query), true, page.current)
+    }
+  }, [query])
+
+  useEffect(() => {
     if (!cy) {
       setCy(Cytoscape(cyConfig(ref.current)))
     }
