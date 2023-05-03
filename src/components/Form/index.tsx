@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import {
@@ -174,11 +175,9 @@ export const Form = ({
           <Box sx={styles.inputFieldWrap}>
             <TextField
               {...register('subject', { required: { value: true, message: 'subject is required' } })}
-              sx={{ ml: 1, mr: 1, width: '30ch' }}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
               margin='dense'
               variant='outlined'
-              multiline
-              rows={2}
               fullWidth
               label='Subject'
               key='subject'
@@ -191,7 +190,7 @@ export const Form = ({
               select
               label='Claim'
               {...register('claim', { required: { value: true, message: 'claim is required' } })}
-              sx={{ ml: 1, mr: 1, width: '30ch' }}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
               margin='dense'
               variant='outlined'
               fullWidth
@@ -208,7 +207,7 @@ export const Form = ({
               select
               label='How Known'
               {...register('howKnown')}
-              sx={{ ml: 1, mr: 1, width: '30ch' }}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
               margin='dense'
               variant='outlined'
               fullWidth
@@ -219,25 +218,24 @@ export const Form = ({
                 </MenuItem>
               ))}
             </TextField>
+
             <TextField
               {...register('statement')}
-              sx={{ ml: 1, mr: 1, width: '30ch' }}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
               margin='dense'
               variant='outlined'
-              multiline
-              rows={2}
               fullWidth
               label='Statement'
               key='statement'
               type='text'
+              multiline={true}
+              maxRows={4}
             />
             <TextField
               {...register('sourceURI')}
-              sx={{ ml: 1, mr: 1, width: '30ch' }}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
               margin='dense'
               variant='outlined'
-              multiline
-              rows={2}
               fullWidth
               label='Source URI'
               key='sourceURI'
@@ -245,11 +243,9 @@ export const Form = ({
             />
             <TextField
               {...register('confidence')}
-              sx={{ ml: 1, mr: 1, width: '30ch' }}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
               margin='dense'
               variant='outlined'
-              multiline
-              rows={2}
               fullWidth
               label='Confidence'
               key='confidence'
@@ -268,7 +264,7 @@ export const Form = ({
                       select
                       label='Aspect'
                       {...register('aspect')}
-                      sx={{ ml: 1, mr: 1, width: '30ch' }}
+                      sx={{ ml: 1, mr: 1, width: '22ch' }}
                       margin='dense'
                       variant='outlined'
                       fullWidth
@@ -301,11 +297,9 @@ export const Form = ({
                 ) : (
                   <TextField
                     {...register('object')}
-                    sx={{ ml: 1, mr: 1, width: '30ch' }}
+                    sx={{ ml: 1, mr: 1, width: '22ch' }}
                     margin='dense'
                     variant='outlined'
-                    multiline
-                    rows={2}
                     fullWidth
                     label='Object'
                     key='object'
@@ -344,4 +338,7 @@ export const Form = ({
       </DialogActions>
     </>
   )
+}
+function AutoSizeTextField(props: any) {
+  throw new Error('Function not implemented.')
 }
