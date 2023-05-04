@@ -199,6 +199,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             <Typography variant='body1' color='black'>
               Click here to register
             </Typography>
+            <Typography variant='body1' color='black'>
+              Click here to register
+            </Typography>
           </Link>
         </form>
       </Box>
