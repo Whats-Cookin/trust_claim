@@ -190,7 +190,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             </MuiLink>
           </Box>
           <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
-
           <Link to='/register' style={{ textDecoration: 'none' }}>
             <Typography variant='body1' color='black'>
               Click here to register
