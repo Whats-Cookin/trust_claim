@@ -5,6 +5,10 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfileDropdown from '../profileDropDown/index'
+import Paper from '@mui/material/Paper'
+import InputBase from '@mui/material/InputBase'
+import IconButton from '@mui/material/IconButton'
+import SearchIcon from '@mui/icons-material/Search'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -24,10 +28,18 @@ const Navbar = ({ isAuth }: any) => {
                 </>
               ) : (
                 <>
-                  <Button color='inherit' onClick={() => navigate('/search')}>
-                    {' '}
-                    Search{' '}
-                  </Button>
+                  <Paper component='form' sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
+                    <IconButton sx={{ p: '10px' }} aria-label='menu'></IconButton>
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder='Search Claim'
+                      inputProps={{ 'aria-label': 'search claim ' }}
+                    />
+                    <IconButton type='button' sx={{ p: '10px' }} aria-label='search'>
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+
                   <Button color='inherit' onClick={() => navigate('/login')}>
                     Login
                   </Button>
