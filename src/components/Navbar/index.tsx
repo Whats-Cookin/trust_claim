@@ -14,7 +14,7 @@ const Navbar = ({ isAuth }: any) => {
       <Box sx={{ flexGrow: 1, width: '100%', overflow: 'hidden' }}>
         <AppBar position='fixed' sx={{ backgroundColor: '#eeeeee', color: '#280606', top: 0, width: '100%' }}>
           <Toolbar>
-            <Typography variant='h5' component='div' sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+            <Typography variant='h5' component='div' sx={{ flexGrow: 1, fontWeight: 'bold', color: 'primary.main' }}>
               Trust Claims
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', columnGap: 3 }}>

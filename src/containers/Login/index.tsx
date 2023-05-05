@@ -18,10 +18,12 @@ import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
+import { useTheme } from '@mui/material'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
+  const theme = useTheme()
   const {
     register,
     handleSubmit,
@@ -140,9 +142,10 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       <Box sx={styles.authContainer}>
         <form onSubmit={onSubmit}>
           <Typography
+            sx={{ color: 'primary.main' }}
             style={{
               textAlign: 'center',
-              color: '#80B8BD',
+              color: 'primary.main',
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}
@@ -188,12 +191,18 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
           </Box>
           <Box>
-            <MuiLink href={githubUrl} sx={styles.authLinkButton}>
+            <MuiLink
+              href={githubUrl}
+              sx={styles.authLinkButton}
+              style={{ border: `1px solid ${theme.palette.primary.main}` }}
+            >
               <GitHubIcon sx={styles.authIcon} />
               Github
             </MuiLink>
           </Box>
-          <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
+          <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
+            {ethLoginOpt}
+          </Box>
 
           <Link to='/register' style={{ textDecoration: 'none' }}>
             <Typography variant='body1' color='black'>

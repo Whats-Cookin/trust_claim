@@ -46,7 +46,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
       <Box sx={styles.authContainer}>
         <form onSubmit={onSubmit}>
-          <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }}>
+          <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
           </Typography>
           <TextField

@@ -9,8 +9,6 @@ import Form from './containers/Form'
 import Search from './containers/Search'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import teal from '@mui/material/colors/teal'
-import { orange } from '@mui/material/colors'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -47,8 +45,12 @@ const App = () => {
 
   const theme = createTheme({
     palette: {
-      primary: teal,
-      secondary: orange
+      primary: {
+        main: '#009688'
+      },
+      secondary: {
+        main: '#FFFFFF'
+      }
     }
   })
 
