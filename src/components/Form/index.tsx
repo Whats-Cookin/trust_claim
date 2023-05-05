@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import {
@@ -217,6 +218,7 @@ export const Form = ({
                 </MenuItem>
               ))}
             </TextField>
+
             <TextField
               {...register('statement')}
               sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -226,6 +228,8 @@ export const Form = ({
               label='Statement'
               key='statement'
               type='text'
+              multiline={true}
+              maxRows={4}
             />
             <TextField
               {...register('sourceURI')}
