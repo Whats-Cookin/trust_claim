@@ -15,17 +15,18 @@ const cyConfig = (containerRef: any) => {
           borderWidth: '10px',
           borderOpacity: 0.5,
           backgroundColor: '#699e69',
-          color: '#fff',
-          fontWeight: 'semi-bold',
-          fontSize: 20,
+          color: 'rgba(255, 255, 255, 0)',
+          fontWeight: 'bold',
+          fontSize: 25,
           textHalign: 'center',
           textValign: 'center',
           textWrap: 'wrap',
           textMaxWidth: 100,
-          textOverflowWrap: 'breakWord',
+          textOverflowWrap: 'break-word',
           content: 'data(label)'
         }
       },
+
       {
         selector: 'edge',
         style: {
@@ -37,7 +38,6 @@ const cyConfig = (containerRef: any) => {
           curveStyle: 'bezier',
           lineStyle: 'unbundled-bezier',
           controlPointDistances: ' 20px 30px 40px',
-          controlPointWeights: '0.5 0.2 0.8',
           textRotation: 'autorotate',
           textMarginX: 30,
           textBackgroundColor: '#0074d9',
