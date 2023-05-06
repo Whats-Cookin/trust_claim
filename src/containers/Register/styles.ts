@@ -21,7 +21,7 @@ const styles = {
     width: '100%'
   },
   submitButton: {
-    backgroundColor: '#80B8BD',
+    backgroundColor: 'primary.main',
     color: 'black',
     width: '100%',
 
