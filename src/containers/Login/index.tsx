@@ -195,11 +195,15 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           </Box>
           <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
 
-          <Link to='/register' style={{ textDecoration: 'none' }}>
-            <Typography variant='body1' color='black'>
-              Click here to register
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/register')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Register
             </Typography>
-          </Link>
+          </Typography>
         </form>
       </Box>
     </>

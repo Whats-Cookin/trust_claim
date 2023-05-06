@@ -82,11 +82,15 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               Register
             </Button>
           </Box>
-          <Link to='/login' style={{ textDecoration: 'none' }}>
-            <Typography variant='body1' style={{ color: 'black' }}>
-              Click here to Login
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/login')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Login
             </Typography>
-          </Link>
+          </Typography>
         </form>
       </Box>
     </>
