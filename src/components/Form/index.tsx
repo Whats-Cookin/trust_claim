@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import Box from '@mui/material/Box'
+import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
   TextField,
@@ -50,6 +51,7 @@ export const Form = ({
   })
 
   const { createClaim } = useCreateClaim()
+  const navigate = useNavigate()
 
   const onSubmit = handleSubmit(
     async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
@@ -79,6 +81,7 @@ export const Form = ({
         toggleSnackbar(true)
         setSnackbarMessage(message)
         if (isSuccess) {
+          navigate('search')
           reset()
         }
       } else {
