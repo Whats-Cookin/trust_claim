@@ -88,6 +88,7 @@ const Navbar = ({ isAuth }: any) => {
                     <InputBase
                       type='search'
                       value={searchVal}
+                      placeholder='Search a Claim'
                       onChange={e => setSearchVal(e.target.value)}
                       onKeyUp={handleSearchKeypress}
                       sx={{
