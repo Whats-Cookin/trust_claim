@@ -46,7 +46,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
       <Box sx={styles.authContainer}>
         <form onSubmit={onSubmit}>
-          <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }}>
+          <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
           </Typography>
           <TextField
@@ -82,11 +82,15 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               Register
             </Button>
           </Box>
-          <Link to='/login' style={{ textDecoration: 'none' }}>
-            <Typography variant='body1' style={{ color: 'black' }}>
-              Click here to Login
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/login')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Login
             </Typography>
-          </Link>
+          </Typography>
         </form>
       </Box>
     </>
