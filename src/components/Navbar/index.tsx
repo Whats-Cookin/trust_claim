@@ -43,8 +43,8 @@ const Navbar = ({ isAuth }: any) => {
           overflow: 'hidden'
         }}
       >
-        <AppBar   
-          style={{position:'sticky'}}
+        <AppBar
+          style={{ position: 'sticky' }}
           sx={{
             backgroundColor: '#eeeeee',
             color: '#280606',
