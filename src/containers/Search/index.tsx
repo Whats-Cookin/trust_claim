@@ -243,7 +243,7 @@ const Search = (homeProps: IHomeProps) => {
         >
           <Box
             sx={{
-              borderRadius: '3%',
+              borderRadius: '2%',
               width: '990',
               height: '45%',
               bgcolor: 'white',
