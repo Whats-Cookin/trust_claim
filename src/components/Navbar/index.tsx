@@ -72,6 +72,31 @@ const Navbar = ({ isAuth }: any) => {
             >
               {isAuth ? (
                 <>
+                  <Paper
+                    component='div'
+                    sx={{
+                      p: '2px 4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      width: 400
+                    }}
+                  >
+                    <InputBase
+                      type='search'
+                      value={searchVal}
+                      placeholder='Search a Claim'
+                      onChange={e => setSearchVal(e.target.value)}
+                      onKeyUp={handleSearchKeypress}
+                      sx={{
+                        ml: 1,
+                        flex: 1
+                      }}
+                    />
+                    <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+
                   <ProfileDropdown />
                 </>
               ) : (
