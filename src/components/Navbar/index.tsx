@@ -70,70 +70,44 @@ const Navbar = ({ isAuth }: any) => {
                 columnGap: 3
               }}
             >
-              {isAuth ? (
-                <>
-                  <Paper
-                    component='div'
+              <>
+                <Paper
+                  component='div'
+                  sx={{
+                    p: '2px 4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: 400
+                  }}
+                >
+                  <InputBase
+                    type='search'
+                    value={searchVal}
+                    placeholder='Search a Claim'
+                    onChange={e => setSearchVal(e.target.value)}
+                    onKeyUp={handleSearchKeypress}
                     sx={{
-                      p: '2px 4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: 400
+                      ml: 1,
+                      flex: 1
                     }}
-                  >
-                    <InputBase
-                      type='search'
-                      value={searchVal}
-                      placeholder='Search a Claim'
-                      onChange={e => setSearchVal(e.target.value)}
-                      onKeyUp={handleSearchKeypress}
-                      sx={{
-                        ml: 1,
-                        flex: 1
-                      }}
-                    />
-                    <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
+                  />
+                  <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                </Paper>
 
-                  <ProfileDropdown />
-                </>
-              ) : (
-                <>
-                  <Paper
-                    component='div'
-                    sx={{
-                      p: '2px 4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: 400
-                    }}
-                  >
-                    <InputBase
-                      type='search'
-                      value={searchVal}
-                      placeholder='Search a Claim'
-                      onChange={e => setSearchVal(e.target.value)}
-                      onKeyUp={handleSearchKeypress}
-                      sx={{
-                        ml: 1,
-                        flex: 1
-                      }}
-                    />
-                    <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-                      <SearchIcon />
-                    </IconButton>
-                  </Paper>
-
-                  <Button color='inherit' onClick={() => navigate('/login')}>
-                    Login
-                  </Button>
-                  <Button color='inherit' onClick={() => navigate('/register')}>
-                    Register
-                  </Button>
-                </>
-              )}{' '}
+                {isAuth && <ProfileDropdown />}
+                {!isAuth && (
+                  <>
+                    <Button color='inherit' onClick={() => navigate('/login')}>
+                      Login
+                    </Button>
+                    <Button color='inherit' onClick={() => navigate('/register')}>
+                      Register
+                    </Button>
+                  </>
+                )}
+              </>
             </Box>
           </Toolbar>
         </AppBar>
