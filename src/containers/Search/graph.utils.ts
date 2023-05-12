@@ -109,6 +109,9 @@ const getNodeData = (node: any) => {
       id: node.id.toString(),
       label: node.name || uri,
       raw: node
+    },
+    style: {
+      shape: 'square'
     }
   }
 
