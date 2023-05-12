@@ -44,53 +44,55 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      <Box component='form' onSubmit={onSubmit} sx={styles.authContainer}>
-        <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }} sx={{ color: 'primary.main' }}>
-          Register
-        </Typography>
-        <TextField
-          {...register('email', {
-            required: 'Email is required',
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Invalid email address'
-            }
-          })}
-          fullWidth
-          label='Email'
-          sx={styles.inputField}
-          variant='filled'
-          type='email'
-          helperText={(errors.email?.message as string) || ''}
-          error={!!errors.email}
-        />
-        <TextField
-          {...register('password', {
-            required: 'Password is required'
-          })}
-          fullWidth
-          label='Password'
-          sx={styles.inputField}
-          variant='filled'
-          type='password'
-          helperText={(errors.password?.message as string) || ''}
-          error={!!errors.password}
-        />
-        <Box sx={styles.submitButtonWrap}>
-          <Button type='submit' variant='contained' size='medium' sx={styles.submitButton}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
+        <Box sx={styles.authContainer}>
+          <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
-          </Button>
-        </Box>
-        <Typography variant='body1' style={{ color: 'black' }}>
-          Click here to{' '}
-          <Typography
-            onClick={() => navigate('/login')}
-            sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
-          >
-            Login
           </Typography>
-        </Typography>
-      </Box>
+          <TextField
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              }
+            })}
+            fullWidth
+            label='Email'
+            sx={styles.inputField}
+            variant='filled'
+            type='email'
+            helperText={(errors.email?.message as string) || ''}
+            error={!!errors.email}
+          />
+          <TextField
+            {...register('password', {
+              required: 'Password is required'
+            })}
+            fullWidth
+            label='Password'
+            sx={styles.inputField}
+            variant='filled'
+            type='password'
+            helperText={(errors.password?.message as string) || ''}
+            error={!!errors.password}
+          />
+          <Box sx={styles.submitButtonWrap}>
+            <Button type='submit' variant='contained' size='medium' sx={styles.submitButton}>
+              Register
+            </Button>
+          </Box>
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/login')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Login
+            </Typography>
+          </Typography>
+        </Box>
+      </form>
     </>
   )
 }
