@@ -109,9 +109,15 @@ const getNodeData = (node: any) => {
       id: node.id.toString(),
       label: node.name || uri,
       raw: node
-    },
-    style: {
+    }
+  }
+  if (node.entType === 'CLAIM') {
+    nodeData.style = {
       shape: 'square'
+    }
+  } else {
+    nodeData.style = {
+      shape: 'circle'
     }
   }
 
