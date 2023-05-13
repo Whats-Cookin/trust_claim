@@ -13,6 +13,7 @@ import styles from './styles'
 import SearchIcon from '@mui/icons-material/Search'
 import { parseNode, parseNodes } from './graph.utils'
 import { TextField } from '@mui/material'
+import FeedClaim from '../../feedCLAIM'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -209,19 +210,22 @@ const Search = (homeProps: IHomeProps) => {
   }, [])
 
   return (
-    <Container sx={styles.container} maxWidth={false}>
-      <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
-      <NewClaim
-        open={openNewClaim}
-        setOpen={setOpenNewClaim}
-        selectedClaim={selectedClaim}
-        setLoading={setLoading}
-        setSnackbarMessage={setSnackbarMessage}
-        toggleSnackbar={toggleSnackbar}
-      />
+    <Box>
+      {search ? null : <FeedClaim />}
+      <Container sx={styles.container} maxWidth={false}>
+        <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
+        <NewClaim
+          open={openNewClaim}
+          setOpen={setOpenNewClaim}
+          selectedClaim={selectedClaim}
+          setLoading={setLoading}
+          setSnackbarMessage={setSnackbarMessage}
+          toggleSnackbar={toggleSnackbar}
+        />
 
-      <Box ref={ref} sx={styles.cy} />
-    </Container>
+        <Box ref={ref} sx={styles.cy} />
+      </Container>
+    </Box>
   )
 }
 
