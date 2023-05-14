@@ -56,21 +56,22 @@ const FeedClaim = () => {
       }}
     >
       <Card sx={{ maxWidth: 'fit', m: '20px', borderRadius: '4px', border: '2px solid #80B8BD' }}>
-        <CardMedia component='img' height='500' sx={{width:350 , position:"center",p:2 , ml:15 , mr:20 }} src={feed} />
-        <CardContent>
-        </CardContent>
+        <CardMedia
+          component='img'
+          height='500'
+          sx={{ width: 350, position: 'center', p: 2, ml: 15, mr: 20 }}
+          src={feed}
+        />
+        <CardContent></CardContent>
         <CardActions disableSpacing>
           <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more'>
             <ExpandMoreIcon />
           </ExpandMore>
         </CardActions>
         <Collapse in={expanded} timeout='auto' unmountOnExit>
-          <CardContent>
-            
-          </CardContent>
+          <CardContent></CardContent>
         </Collapse>
       </Card>
-
     </Box>
   )
 }
