@@ -18,7 +18,7 @@ import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme } from '@mui/material'
+import { CardMedia, useTheme } from '@mui/material'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
@@ -136,9 +136,24 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   return (
     <>
-      <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
-      <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
-      <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
+      <CardMedia
+        component='img'
+        image={polygon1}
+        style={{ position: 'absolute', top: '3%', left: '-10%' }}
+        sx={{ width: { xs: '50%', md: '700px' } }}
+      />
+      <CardMedia
+        component='img'
+        image={polygon2}
+        style={{ position: 'absolute', top: '50%', right: '20%' }}
+        sx={{ width: { xs: '50%', md: '381px' } }}
+      />
+      <CardMedia
+        component='img'
+        image={polygon3}
+        style={{ position: 'absolute', right: '20%', top: '5%' }}
+        sx={{ width: { xs: '50%', md: '200px' } }}
+      />
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
         <Box sx={styles.authContainer}>
           <Typography
