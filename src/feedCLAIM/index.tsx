@@ -15,7 +15,7 @@ import ShareIcon from '@mui/icons-material/Share'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { Box } from '@mui/system'
-import polygon3 from '../assets/Polygon 3.png'
+import feed from '../assets/feed.jpg'
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
@@ -56,15 +56,8 @@ const FeedClaim = () => {
       }}
     >
       <Card sx={{ maxWidth: 'fit', m: '20px', borderRadius: '4px', border: '2px solid #80B8BD' }}>
-        <CardMedia component='img' height='194' src={polygon3} />
+        <CardMedia component='img' height='500' sx={{width:350 , position:"center",p:2 , ml:15 , mr:20 }} src={feed} />
         <CardContent>
-          <Typography sx={{ top: '10px', padding: '10px 0 0 10px' }}>
-            subject: 'https://www.bcorporation.net/',
-          </Typography>
-          <Typography sx={{ padding: '10px 0 0 10px' }}>claim: 'rated',</Typography>
-          <Typography sx={{ padding: '10px 0 0 10px' }}>
-            object: 'http://trustclaims.whatscookin.us/local/company/VEJA',
-          </Typography>
         </CardContent>
         <CardActions disableSpacing>
           <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more'>
@@ -73,57 +66,11 @@ const FeedClaim = () => {
         </CardActions>
         <Collapse in={expanded} timeout='auto' unmountOnExit>
           <CardContent>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>
-              Statement: 'The VEJA project creates a positive chain. Sneakers are made differently using organic,
-              agroecological and fairtrade cotton to make the sneakers canvas, wild rubber from the Amazonian Forest for
-              its soles and innovative materials such as recycled plastic bottles to create a new mesh. VEJA is about
-              minimalism and innovation. Their logistics and shipping run by Ateliers Sans Frontières, a rehabilitation
-              association. Made in Brazil.', ,
-            </Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>Aspect: 'social:impact'</Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>
-              SourceURI: 'https://data.world/blab/b-corp-impact-data'
-            </Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>EffectiveDate: null</Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}> Confidence: 0.8 </Typography>
+            
           </CardContent>
         </Collapse>
       </Card>
 
-      <Card sx={{ maxWidth: 'fit', m: '20px', borderRadius: '4px', border: '2px solid #80B8BD' }}>
-        <CardMedia component='img' height='194' src={polygon3} />
-        <CardContent>
-          <Typography sx={{ top: '10px', padding: '10px 0 0 10px' }}>
-            subject: 'https://www.bcorporation.net/',
-          </Typography>
-          <Typography sx={{ padding: '10px 0 0 10px' }}>claim: 'rated',</Typography>
-          <Typography sx={{ padding: '10px 0 0 10px' }}>
-            object: 'http://trustclaims.whatscookin.us/local/company/VEJA',
-          </Typography>
-        </CardContent>
-        <CardActions disableSpacing>
-          <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more'>
-            <ExpandMoreIcon />
-          </ExpandMore>
-        </CardActions>
-        <Collapse in={expanded} timeout='auto' unmountOnExit>
-          <CardContent>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>
-              Statement: 'The VEJA project creates a positive chain. Sneakers are made differently using organic,
-              agroecological and fairtrade cotton to make the sneakers canvas, wild rubber from the Amazonian Forest for
-              its soles and innovative materials such as recycled plastic bottles to create a new mesh. VEJA is about
-              minimalism and innovation. Their logistics and shipping run by Ateliers Sans Frontières, a rehabilitation
-              association. Made in Brazil.', ,
-            </Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>Aspect: 'social:impact'</Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>
-              SourceURI: 'https://data.world/blab/b-corp-impact-data'
-            </Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}>EffectiveDate: null</Typography>
-            <Typography sx={{ padding: '10px 0 0 10px' }}> Confidence: 0.8 </Typography>
-          </CardContent>
-        </Collapse>
-      </Card>
     </Box>
   )
 }
