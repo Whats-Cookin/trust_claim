@@ -9,7 +9,7 @@ const cyConfig = (containerRef: any) => {
         style: {
           height: 300,
           width: 300,
-          shape: 'round-rectangle',
+          shape: 'round',
           borderRadius: '10%',
           borderColor: '#006400',
           borderWidth: '10px',
@@ -31,7 +31,7 @@ const cyConfig = (containerRef: any) => {
         style: {
           width: 6,
           fontSize: 20,
-          targetArrowShape: 'triangle',
+          targetArrowShape: 'round-rectangle',
           lineColor: '#006400',
           targetArrowColor: '#006400',
           curveStyle: 'bezier',
