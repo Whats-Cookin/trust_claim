@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -15,20 +14,44 @@ import polygon3 from '../../assets/Polygon 3.png'
 import styles from './styles'
 import ILoginProps from './types'
 import { useCeramicContext, authenticateCeramic } from '../../composedb'
+import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme } from '@mui/material'
+import { IconButton, useTheme } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
+import { InputBase, Paper, TextField } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
   const theme = useTheme()
+  const search = useLocation().search
+  const query = new URLSearchParams(search).get('query')
+  const [searchVal, setSearchVal] = useState<string>(query || '')
+
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
+
+  const handleSearch = async () => {
+    window.localStorage.removeItem('claims')
+    if (searchVal.trim() !== '') {
+      navigate({
+        pathname: '/search',
+        search: `?query=${searchVal}`
+      })
+    }
+  }
+
+  const handleSearchKeypress = async (event: any) => {
+    if (event.key === 'Enter') {
+      handleSearch()
+    }
+  }
 
   const loginButton = document.getElementById('loginButton')
   const metamaskLink = document.getElementById('metamaskLink')
@@ -134,11 +157,51 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
+  const isSmallScreen = useMediaQuery('(max-width:1024px)')
+  var windowWidth = window.innerWidth
+  const elementWidth = `calc(${windowWidth}px - 55%)`
+
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
+      {isSmallScreen ? (
+        <>
+          {' '}
+          <Paper
+            component='div'
+            sx={{
+              zIndex: 1,
+              mt: '80px',
+              p: '2px 4px',
+              display: 'flex',
+              alignItems: 'center',
+              width: elementWidth
+            }}
+          >
+            <InputBase
+              type='search'
+              value={searchVal}
+              placeholder='Search a Claim'
+              onChange={e => setSearchVal(e.target.value)}
+              onKeyUp={handleSearchKeypress}
+              sx={{
+                ml: 1,
+                flex: 1
+              }}
+            />
+            <IconButton
+              type='button'
+              sx={{ p: '10px', color: 'primary.main' }}
+              aria-label='search'
+              onClick={handleSearch}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </>
+      ) : null}
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
         <Box sx={styles.authContainer}>
           <Typography

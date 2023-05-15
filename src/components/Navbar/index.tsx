@@ -10,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useState, useRef, useMemo, useEffect } from 'react'
 import Search from '../../containers/Search'
+import Responsive from './Responsive'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -36,6 +37,9 @@ const Navbar = ({ isAuth }: any) => {
   }
 
   const isSmallScreen = useMediaQuery('(max-width:1100px)')
+  const windowWidth = window.innerWidth
+  const screenHeight = window.innerHeight
+  const marginValue = Math.min(windowWidth, screenHeight) * 0.04
 
   return (
     <>
@@ -53,42 +57,18 @@ const Navbar = ({ isAuth }: any) => {
             >
               Trust Claims
             </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: { xs: 'center', md: 'flex-end' },
-                alignItems: 'center',
-                columnGap: 3,
-                flexGrow: { xs: 1, md: 0 }
-              }}
-            >
-              {isSmallScreen ? (
-                <Paper
-                  component='div'
-                  sx={{
-                    p: '2px 4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    width: '100%',
-                    marginRight: '10px'
-                  }}
-                >
-                  <InputBase
-                    type='search'
-                    value={searchVal}
-                    placeholder='Search a Claim'
-                    onChange={e => setSearchVal(e.target.value)}
-                    onKeyUp={handleSearchKeypress}
-                    sx={{
-                      ml: 1,
-                      flex: 1
-                    }}
-                  />
-                  <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-                    <SearchIcon />
-                  </IconButton>
-                </Paper>
-              ) : (
+            {isSmallScreen ? (
+              <Responsive />
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: { xs: 'center', md: 'flex-end' },
+                  alignItems: 'center',
+                  columnGap: 3,
+                  flexGrow: { xs: 1, md: 0 }
+                }}
+              >
                 <Paper
                   component='div'
                   sx={{
@@ -96,7 +76,7 @@ const Navbar = ({ isAuth }: any) => {
                     display: 'flex',
                     alignItems: 'center',
                     width: '430px',
-                    marginRight: '400px'
+                    marginRight: marginValue
                   }}
                 >
                   <InputBase
@@ -114,20 +94,20 @@ const Navbar = ({ isAuth }: any) => {
                     <SearchIcon />
                   </IconButton>
                 </Paper>
-              )}
 
-              {isAuth && <ProfileDropdown />}
-              {!isAuth && (
-                <>
-                  <Button color='inherit' onClick={() => navigate('/login')}>
-                    Login
-                  </Button>
-                  <Button color='inherit' onClick={() => navigate('/register')}>
-                    Register
-                  </Button>
-                </>
-              )}
-            </Box>
+                {isAuth && <ProfileDropdown />}
+                {!isAuth && (
+                  <>
+                    <Button color='inherit' onClick={() => navigate('/login')}>
+                      Login
+                    </Button>
+                    <Button color='inherit' onClick={() => navigate('/register')}>
+                      Register
+                    </Button>
+                  </>
+                )}
+              </Box>
+            )}
           </Toolbar>
         </AppBar>
       </Box>
