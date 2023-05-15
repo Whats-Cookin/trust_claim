@@ -77,8 +77,8 @@ const Navbar = ({ isAuth }: any) => {
                     p: '2px 4px',
                     display: 'flex',
                     alignItems: 'center',
-                    width: 400,
-                    marginRight:'340px'
+                    width: 430,
+                    marginRight: isAuth? '525px': '410px'
                   }}
                 >
                   <InputBase
