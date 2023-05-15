@@ -139,8 +139,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      <Box sx={styles.authContainer}>
-        <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
+        <Box sx={styles.authContainer}>
           <Typography
             sx={{ color: 'primary.main' }}
             style={{
@@ -213,8 +213,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               Register
             </Typography>
           </Typography>
-        </form>
-      </Box>
+        </Box>
+      </form>
     </>
   )
 }

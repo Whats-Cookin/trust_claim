@@ -30,7 +30,7 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/login')
+      navigate('/search')
     }
   }, [])
 
@@ -65,10 +65,10 @@ const App = () => {
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
           <Routes>
+            <Route path='search' element={<Search {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
-            <Route path='search' element={<Search {...commonProps} />} />
           </Routes>
         </div>
       </ThemeProvider>
