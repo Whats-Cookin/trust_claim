@@ -111,6 +111,15 @@ const getNodeData = (node: any) => {
       raw: node
     }
   }
+  if (node.entType === 'CLAIM') {
+    nodeData.style = {
+      shape: 'square'
+    }
+  } else {
+    nodeData.style = {
+      shape: 'circle'
+    }
+  }
 
   if (node.image) {
     nodeData.style = {
