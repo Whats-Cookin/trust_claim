@@ -211,7 +211,7 @@ const Search = (homeProps: IHomeProps) => {
 
   return (
     <Box>
-      {search ? null : <FeedClaim />}
+      {!search && <FeedClaim />}
       <Container sx={styles.container} maxWidth={false}>
         <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
         <NewClaim
