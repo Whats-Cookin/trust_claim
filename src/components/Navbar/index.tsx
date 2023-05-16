@@ -37,20 +37,16 @@ const Navbar = ({ isAuth }: any) => {
   }
 
   const isSmallScreen = useMediaQuery('(max-width:1099px)')
-  const windowWidth = window.innerWidth
-  const screenHeight = window.innerHeight
-  const marginValue = Math.min(windowWidth, screenHeight) * 0.04
 
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position='fixed' sx={{ backgroundColor: '#eeeeee', color: '#280606' }}>
-          <Toolbar>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography
               variant='h5'
               component='div'
               sx={{
-                flexGrow: 1,
                 fontWeight: 'bold',
                 textAlign: { xs: 'left', md: 'left' }
               }}
@@ -64,23 +60,15 @@ const Navbar = ({ isAuth }: any) => {
                 <Responsive />
               )
             ) : (
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: { xs: 'center', md: 'flex-end' },
-                  alignItems: 'center',
-                  columnGap: 3,
-                  flexGrow: { xs: 1, md: 0 }
-                }}
-              >
+              <>
                 <Paper
                   component='div'
                   sx={{
                     p: '2px 4px',
                     display: 'flex',
                     alignItems: 'center',
-                    width: '430px',
-                    marginRight: marginValue
+                    width: '360px',
+                    ml: '10px'
                   }}
                 >
                   <InputBase
@@ -101,16 +89,16 @@ const Navbar = ({ isAuth }: any) => {
 
                 {isAuth && <ProfileDropdown />}
                 {!isAuth && (
-                  <>
-                    <Button color='inherit' onClick={() => navigate('/login')}>
+                  <Box>
+                    <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/login')}>
                       Login
                     </Button>
-                    <Button color='inherit' onClick={() => navigate('/register')}>
+                    <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/register')}>
                       Register
                     </Button>
-                  </>
+                  </Box>
                 )}
-              </Box>
+              </>
             )}
           </Toolbar>
         </AppBar>
