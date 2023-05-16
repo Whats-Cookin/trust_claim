@@ -36,7 +36,7 @@ const Navbar = ({ isAuth }: any) => {
     }
   }
 
-  const isSmallScreen = useMediaQuery('(max-width:1100px)')
+  const isSmallScreen = useMediaQuery('(max-width:1099px)')
   const windowWidth = window.innerWidth
   const screenHeight = window.innerHeight
   const marginValue = Math.min(windowWidth, screenHeight) * 0.04
@@ -58,7 +58,11 @@ const Navbar = ({ isAuth }: any) => {
               Trust Claims
             </Typography>
             {isSmallScreen ? (
-              <Responsive />
+              isAuth ? (
+                <ProfileDropdown />
+              ) : (
+                <Responsive />
+              )
             ) : (
               <Box
                 sx={{

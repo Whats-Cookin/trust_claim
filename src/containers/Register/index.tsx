@@ -63,9 +63,9 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       console.error('err', err.response.data.message)
     }
   })
-  const isSmallScreen = useMediaQuery('(max-width:1024px)')
+  const isSmallScreen = useMediaQuery('(max-width:1099px)')
   var windowWidth = window.innerWidth
-  const elementWidth = `calc(${windowWidth}px - 55%)`
+  const elementWidth = `calc(${windowWidth}px - 50%)`
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />

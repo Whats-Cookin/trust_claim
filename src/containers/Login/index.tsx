@@ -157,9 +157,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
-  const isSmallScreen = useMediaQuery('(max-width:1024px)')
+  const isSmallScreen = useMediaQuery('(max-width:1099px)')
   var windowWidth = window.innerWidth
-  const elementWidth = `calc(${windowWidth}px - 55%)`
+  const elementWidth = `calc(${windowWidth}px - 50%)`
 
   return (
     <>
