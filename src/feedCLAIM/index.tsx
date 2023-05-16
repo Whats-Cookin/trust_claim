@@ -59,7 +59,7 @@ const FeedClaim = () => {
         <CardMedia
           component='img'
           height='500'
-          sx={{ width: 350, position: 'center', p: 2, ml: 15, mr: 20 }}
+          sx={{ width: 350, position: 'center', p: 2, pl: 5, pr: 5, ml: 15, mr: 20 }}
           src={feed}
         />
         <CardContent></CardContent>
