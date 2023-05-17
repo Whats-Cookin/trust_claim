@@ -30,23 +30,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     formState: { errors }
   } = useForm()
 
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth)
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-
-  const loginButton = document.getElementById('loginButton')
-  const metamaskLink = document.getElementById('metamaskLink')
-
   const ceramicClients = useCeramicContext()
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
@@ -152,52 +135,28 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     <>
       <Box
         sx={{
-          display: 'grid',
-          placeItems: 'center',
-          minHeight: '100vh',
-          padding: '20px'
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          maxWidth: '600px',
+          margin: '0 auto',
+          padding: '40px'
         }}
       >
-        <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%', width: '40%' }} />
-        <img
-          src={polygon2}
-          alt=''
-          style={{
-            position: 'absolute',
-            top: '50%',
-            right: '20%',
-            width: '40%',
-            transform: `translateY(-50%)`
-          }}
-        />
-        <img
-          src={polygon3}
-          alt=''
-          style={{
-            position: 'absolute',
-            right: '20%',
-            top: '5%',
-            width: '200px',
-            transform: `scale(${screenWidth > 600 ? 1 : 0.5})`
-          }}
-        />
+        <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
+        <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
+        <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
         <form onSubmit={onSubmit} style={{ zIndex: 1, width: '100%' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '20px',
-              width: '100%'
-            }}
-          >
+          <Box sx={styles.authContainer} style={{ backgroundColor: theme.palette.background.paper }}>
             <Typography
               sx={{ color: 'primary.main' }}
-              variant='h2'
               style={{
                 textAlign: 'center',
                 color: 'primary.main',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                fontSize: '2.5rem'
               }}
             >
               Login
@@ -255,28 +214,26 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 }}
               ></span>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%'
-              }}
-            >
+            <Box>
               <MuiLink
                 href={githubUrl}
                 sx={styles.authLinkButton}
-                style={{ border: `1px solid ${theme.palette.primary.main}` }}
+                style={{
+                  border: `1px solid ${theme.palette.primary.main}`,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
               >
                 <GitHubIcon sx={styles.authIcon} />
                 Github
               </MuiLink>
             </Box>
             <Box
-              sx={{
+              sx={styles.ETHButton}
+              style={{
+                border: `1px solid ${theme.palette.primary.main}`,
                 display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
-                border: `1px solid ${theme.palette.primary.main}`
+                alignItems: 'center'
               }}
             >
               {ethLoginOpt}
