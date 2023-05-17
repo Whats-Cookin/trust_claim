@@ -14,7 +14,7 @@ import { parseNode, parseNodes } from './graph.utils'
 import { Paper, TextField } from '@mui/material'
 import { InputBase } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { IconButton} from '@mui/material'
+import { IconButton } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
@@ -213,7 +213,6 @@ const Search = (homeProps: IHomeProps) => {
   const windowWidth = window.innerWidth
   const elementWidth = `calc(${windowWidth}px - 50%)`
   const isSmallScreen = useMediaQuery('(max-width:1099px)')
-
 
   return (
     <Container sx={styles.container} maxWidth={false}>

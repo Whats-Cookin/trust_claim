@@ -40,7 +40,7 @@ const Navbar = ({ isAuth }: any) => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box>
         <AppBar position='fixed' sx={{ backgroundColor: '#eeeeee', color: '#280606' }}>
           <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography

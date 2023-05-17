@@ -6,7 +6,7 @@
   width: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   font-size: calc(3px + 2vmin);
   color: rgb(37, 3, 3);
 }

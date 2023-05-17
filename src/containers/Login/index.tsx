@@ -158,14 +158,17 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   const isSmallScreen = useMediaQuery('(max-width:1099px)')
+  const isSmallHeight = useMediaQuery('(max-height:1369px)')
   var windowWidth = window.innerWidth
+  var windowHeight = window.innerHeight
   const elementWidth = `calc(${windowWidth}px - 50%)`
+  const elementHeight = `calc(${windowHeight}px - 99.9%)`
 
   return (
     <>
-      <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
+      {/* <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
-      <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
+      <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} /> */}
       {isSmallScreen ? (
         <>
           {' '}
@@ -173,7 +176,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             component='div'
             sx={{
               zIndex: 1,
-              mt: '80px',
+              mt: isSmallHeight ? '70px' : '0',
+              mb: '180px',
               p: '2px 4px',
               display: 'flex',
               alignItems: 'center',

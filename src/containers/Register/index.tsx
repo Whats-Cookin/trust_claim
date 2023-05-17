@@ -79,7 +79,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               mt: '80px',
               p: '2px 4px',
               display: 'flex',
-              alignItems: 'center',
+              alignItems: 'center'
             }}
           >
             <InputBase
