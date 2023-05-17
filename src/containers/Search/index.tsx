@@ -10,9 +10,12 @@ import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
-import SearchIcon from '@mui/icons-material/Search'
 import { parseNode, parseNodes } from './graph.utils'
-import { TextField } from '@mui/material'
+import { Paper, TextField } from '@mui/material'
+import { InputBase } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import { IconButton} from '@mui/material'
+import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -207,6 +210,10 @@ const Search = (homeProps: IHomeProps) => {
       document.removeEventListener('contextmenu', event => event.preventDefault())
     }
   }, [])
+  const windowWidth = window.innerWidth
+  const elementWidth = `calc(${windowWidth}px - 50%)`
+  const isSmallScreen = useMediaQuery('(max-width:1099px)')
+
 
   return (
     <Container sx={styles.container} maxWidth={false}>
@@ -219,7 +226,43 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-
+      {isSmallScreen ? (
+        <>
+          {' '}
+          <Paper
+            component='div'
+            sx={{
+              display: 'flex',
+              zIndex: 1,
+              mt: '80px',
+              p: '2px 4px',
+              alignItems: 'center',
+              alignContent: 'center',
+              width: elementWidth
+            }}
+          >
+            <InputBase
+              type='search'
+              value={searchVal}
+              placeholder='Search a Claim'
+              onChange={e => setSearchVal(e.target.value)}
+              onKeyUp={handleSearchKeypress}
+              sx={{
+                ml: 1,
+                flex: 1
+              }}
+            />
+            <IconButton
+              type='button'
+              sx={{ p: '10px', color: 'primary.main' }}
+              aria-label='search'
+              onClick={handleSearch}
+            >
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </>
+      ) : null}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )

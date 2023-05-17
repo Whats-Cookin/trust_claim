@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Menu, IconButton, Button, Box, Fade, Tooltip, Hidden } from '@mui/material'
+import { Menu, IconButton, Button, Box, Fade, Tooltip, Hidden, useMediaQuery } from '@mui/material'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { useNavigate } from 'react-router-dom'
+import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 const ProfileDropdown = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -37,6 +38,8 @@ const ProfileDropdown = ({ isAuth }: any) => {
     }
   }, [disableTooltip])
 
+  const isSmallScreen = useMediaQuery('(max-width:1099px)')
+
   return (
     <Box id='menu'>
       <Tooltip
@@ -67,7 +70,11 @@ const ProfileDropdown = ({ isAuth }: any) => {
           onClick={handleClick}
           size='large'
         >
-          <AccountCircleIcon fontSize='large' sx={{ color: '#2f0101' }} />
+          {isSmallScreen ? (
+            <MenuOpenIcon fontSize='large' sx={{ color: '#2f0101' }} />
+          ) : (
+            <AccountCircleIcon fontSize='large' sx={{ color: '#2f0101' }} />
+          )}
         </IconButton>
       </Tooltip>
 
