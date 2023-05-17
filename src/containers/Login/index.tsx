@@ -18,10 +18,12 @@ import { useCeramicContext, authenticateCeramic } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
+import { useTheme } from '@mui/material'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
+  const theme = useTheme()
   const {
     register,
     handleSubmit,
@@ -137,12 +139,13 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      <Box sx={styles.authContainer}>
-        <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
+        <Box sx={styles.authContainer}>
           <Typography
+            sx={{ color: 'primary.main' }}
             style={{
               textAlign: 'center',
-              color: '#80B8BD',
+              color: 'primary.main',
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}
@@ -188,20 +191,30 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
           </Box>
           <Box>
-            <MuiLink href={githubUrl} sx={styles.authLinkButton}>
+            <MuiLink
+              href={githubUrl}
+              sx={styles.authLinkButton}
+              style={{ border: `1px solid ${theme.palette.primary.main}` }}
+            >
               <GitHubIcon sx={styles.authIcon} />
               Github
             </MuiLink>
           </Box>
-          <Box sx={styles.ETHButton}>{ethLoginOpt}</Box>
+          <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
+            {ethLoginOpt}
+          </Box>
 
-          <Link to='/register' style={{ textDecoration: 'none' }}>
-            <Typography variant='body1' color='black'>
-              Click here to register
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/register')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Register
             </Typography>
-          </Link>
-        </form>
-      </Box>
+          </Typography>
+        </Box>
+      </form>
     </>
   )
 }

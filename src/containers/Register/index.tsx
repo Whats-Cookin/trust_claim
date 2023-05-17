@@ -44,9 +44,9 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      <Box sx={styles.authContainer}>
-        <form onSubmit={onSubmit}>
-          <Typography variant='h5' style={{ color: '#80B8BD', textAlign: 'center' }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
+        <Box sx={styles.authContainer}>
+          <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
           </Typography>
           <TextField
@@ -82,13 +82,17 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               Register
             </Button>
           </Box>
-          <Link to='/login' style={{ textDecoration: 'none' }}>
-            <Typography variant='body1' style={{ color: 'black' }}>
-              Click here to Login
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/login')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Login
             </Typography>
-          </Link>
-        </form>
-      </Box>
+          </Typography>
+        </Box>
+      </form>
     </>
   )
 }

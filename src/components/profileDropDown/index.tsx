@@ -19,7 +19,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
-    handleNavigate('/login')
+    handleNavigate('/search')
   }
 
   useEffect(() => {
@@ -109,7 +109,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
             color='error'
             size='large'
             sx={{
-              backgroundColor: '#333333',
+              backgroundColor: 'primary.main',
               color: '#fff',
               '&:hover': {
                 backgroundColor: '#222222',

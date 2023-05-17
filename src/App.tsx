@@ -9,8 +9,6 @@ import Form from './containers/Form'
 import Search from './containers/Search'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import teal from '@mui/material/colors/teal'
-import { orange } from '@mui/material/colors'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -32,7 +30,7 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/login')
+      navigate('/search')
     }
   }, [])
 
@@ -47,8 +45,12 @@ const App = () => {
 
   const theme = createTheme({
     palette: {
-      primary: teal,
-      secondary: orange
+      primary: {
+        main: '#009688'
+      },
+      secondary: {
+        main: '#FFFFFF'
+      }
     }
   })
 
@@ -63,10 +65,10 @@ const App = () => {
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
           <Routes>
+            <Route path='search' element={<Search {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
-            <Route path='search' element={<Search {...commonProps} />} />
           </Routes>
         </div>
       </ThemeProvider>
