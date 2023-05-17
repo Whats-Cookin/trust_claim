@@ -234,10 +234,9 @@ const Search = (homeProps: IHomeProps) => {
             sx={{
               display: 'flex',
               zIndex: 1,
-              mt: '80px',
+              m: '80px auto 0',
               p: '2px 4px',
               alignItems: 'center',
-              alignContent: 'center',
               width: elementWidth
             }}
           >
