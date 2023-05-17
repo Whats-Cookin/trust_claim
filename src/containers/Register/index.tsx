@@ -8,7 +8,7 @@ import styles from './styles'
 import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
-import { TextField, Box, Button, FormControlLabel, Checkbox } from '@mui/material'
+import { TextField, Box, Button } from '@mui/material'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
   const {
@@ -39,12 +39,13 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       console.error('err', err.response.data.message)
     }
   })
+
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
         <Box sx={styles.authContainer}>
           <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
@@ -96,4 +97,5 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
     </>
   )
 }
+
 export default Register
