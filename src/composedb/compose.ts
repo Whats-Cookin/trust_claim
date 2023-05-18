@@ -1,34 +1,8 @@
 import { ceramic, composeClient } from './ceramic_client.js'
 
 const CREATE_LINKED_CLAIM_MUTATION = `
-  mutation (
-    $claim: String!
-    $object: String
-    $rating: LinkedClaimNormalizedRating
-    $source: LinkedClaimClaimSource
-    $sharing: LinkedClaimSharing
-    $statement: String
-    $subjectID: String!
-    $confidence: Float
-    $subjectType: LinkedClaimSubjectType
-    $effectiveDate: Date
-  ) {
-    createLinkedClaim(
-      input: {
-        content: {
-          claim: $claim
-          object: $object
-          rating: $rating
-          source: $source
-          sharing: $sharing
-          statement: $statement
-          subjectID: $subjectID
-          confidence: $confidence
-          subjectType: $subjectType
-          effectiveDate: $effectiveDate
-        }
-      }
-    ) {
+  mutation CreateNewClaim($i:CreateLinkedClaimInput!) {
+    createLinkedClaim(input: $i) {
       document {
         id
         amt
@@ -69,31 +43,28 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
 
   const { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
 
-  const rating = {
-    stars
-  }
-
-  const claimSource = {
-    sourceID: sourceURI
-  }
-
-  const sharing = {
-    respondAt: null,
-    intendedAudience: null
-  }
-
   const variables = {
-    claim,
-    object,
-    rating,
-    source: claimSource,
-    sharing,
-    statement,
-    subjectID: subject,
-    confidence,
-    subjectType: null,
-    effectiveDate
+    "i": {
+       "content": {
+          "subjectID": subject,
+          "claim": claim,
+          "object": object,
+          "rating": { "stars": stars},
+          "source": { "sourceID": sourceURI},
+          "sharing": {
+            "respondAt": null,
+            "intendedAudience": null
+          }, 
+          "statement": statement,
+          "confidence": confidence,
+          "subjectType": null,
+          "effectiveDate": effectiveDate,
+          "howKnown": howKnown,
+          "aspect": aspect
+        }
+     }
   }
+
   const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 
   if (response.errors) {
