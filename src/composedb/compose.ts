@@ -5,12 +5,8 @@ const CREATE_LINKED_CLAIM_MUTATION = `
     createLinkedClaim(input: $i) {
       document {
         id
-        amt
         claim
         object
-        rating
-        source
-        sharing
         statement
         subjectID
         confidence
@@ -49,16 +45,16 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
           "subjectID": subject,
           "claim": claim,
           "object": object,
-          "rating": { "stars": stars},
+          "rating": { "stars": stars, "score": 0},
           "source": { "sourceID": sourceURI},
           "sharing": {
-            "respondAt": null,
+            "respondAt": '',
             "intendedAudience": null
           }, 
           "statement": statement,
           "confidence": confidence,
           "subjectType": null,
-          "effectiveDate": effectiveDate,
+          "effectiveDate": "2023-05-18",
           "howKnown": howKnown,
           "aspect": aspect
         }
