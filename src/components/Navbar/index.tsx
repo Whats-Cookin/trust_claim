@@ -36,7 +36,7 @@ const Navbar = ({ isAuth }: any) => {
     }
   }
 
-  const isSmallScreen = useMediaQuery('(max-width:1099px)')
+  const isSmallScreen = useMediaQuery('(max-width:819px)')
 
   return (
     <>
@@ -47,8 +47,7 @@ const Navbar = ({ isAuth }: any) => {
               variant='h5'
               component='div'
               sx={{
-                fontWeight: 'bold',
-                textAlign: { xs: 'left', md: 'left' }
+                fontWeight: 'bold'
               }}
             >
               Trust Claims
@@ -66,7 +65,6 @@ const Navbar = ({ isAuth }: any) => {
                   sx={{
                     p: '2px 4px',
                     display: 'flex',
-                    alignItems: 'center',
                     width: '360px',
                     ml: '10px'
                   }}

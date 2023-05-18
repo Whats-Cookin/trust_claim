@@ -212,7 +212,7 @@ const Search = (homeProps: IHomeProps) => {
   }, [])
   const windowWidth = window.innerWidth
   const elementWidth = `calc(${windowWidth}px - 50%)`
-  const isSmallScreen = useMediaQuery('(max-width:1099px)')
+  const isSmallScreen = useMediaQuery('(max-width:819px)')
 
   return (
     <Container sx={styles.container} maxWidth={false}>

@@ -63,7 +63,9 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       console.error('err', err.response.data.message)
     }
   })
-  const isSmallScreen = useMediaQuery('(max-width:1099px)')
+  const isSmallScreen = useMediaQuery('(max-width:819px)')
+  const windowWidth = window.innerWidth
+  const elementWidth = `calc(${windowWidth}px - 50%)`
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
@@ -76,10 +78,12 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             component='div'
             sx={{
               zIndex: 1,
-              mt: '80px',
+              mt: '70px',
+              mb: '150px',
               p: '2px 4px',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              width: elementWidth
             }}
           >
             <InputBase
