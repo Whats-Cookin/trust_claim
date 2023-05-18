@@ -225,7 +225,7 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-      {!isSmallScreen && (
+      {isSmallScreen && (
         <>
           {' '}
           <Paper
