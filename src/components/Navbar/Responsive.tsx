@@ -1,40 +1,19 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { Menu, IconButton, Button, Box, Fade, Tooltip, Hidden } from '@mui/material'
-import { InputBase, Paper } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 const Responsive = () => {
   const navigate = useNavigate()
-  const search = useLocation().search
   const [disableTooltip, setDisableTooltip] = useState(false)
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const query = new URLSearchParams(search).get('query')
-  const [searchVal, setSearchVal] = useState<string>(query || '')
   const openMenu = Boolean(anchorEl)
 
   const handleNavigate = (path: string) => {
     setOpen(false)
     setAnchorEl(null)
     navigate(path)
-  }
-
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/search',
-        search: `?query=${searchVal}`
-      })
-    }
-  }
-
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
   }
 
   useEffect(() => {

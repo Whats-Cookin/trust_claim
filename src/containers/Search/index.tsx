@@ -225,7 +225,7 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-      {isSmallScreen ? (
+      {!isSmallScreen && (
         <>
           {' '}
           <Paper
@@ -260,7 +260,7 @@ const Search = (homeProps: IHomeProps) => {
             </IconButton>
           </Paper>
         </>
-      ) : null}
+      )}
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )

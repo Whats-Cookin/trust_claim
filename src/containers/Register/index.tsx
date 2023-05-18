@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import axios from '../../axiosInstance'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
@@ -8,8 +8,8 @@ import styles from './styles'
 import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
-import { TextField, Box, Button, FormControlLabel, Checkbox } from '@mui/material'
-import { IconButton, useTheme } from '@mui/material'
+import { TextField, Box, Button } from '@mui/material'
+import { IconButton } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
 import { InputBase, Paper } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
@@ -71,7 +71,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      {isSmallScreen ? (
+      {!isSmallScreen && (
         <>
           {' '}
           <Paper
@@ -107,7 +107,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             </IconButton>
           </Paper>
         </>
-      ) : null}
+      )}
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
         <Box sx={styles.authContainer}>
           <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>

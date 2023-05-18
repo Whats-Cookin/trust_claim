@@ -70,11 +70,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
           onClick={handleClick}
           size='large'
         >
-          {isSmallScreen ? (
-            <MenuOpenIcon fontSize='large' sx={{ color: '#2f0101' }} />
-          ) : (
-            <AccountCircleIcon fontSize='large' sx={{ color: '#2f0101' }} />
-          )}
+          <MenuOpenIcon fontSize='large' sx={{ color: '#2f0101' }} />
         </IconButton>
       </Tooltip>
 
