@@ -20,7 +20,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
-    handleNavigate('/search')
+    handleNavigate('/login')
   }
 
   useEffect(() => {

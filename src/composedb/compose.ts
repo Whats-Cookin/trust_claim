@@ -1,7 +1,6 @@
-import { useCeramicContext } from './ceramic_context.js'
+import { ceramic, composeClient } from './ceramic_client.js'
 
 const CREATE_LINKED_CLAIM_MUTATION = `
-
   mutation (
     $claim: String!
     $object: String
@@ -62,7 +61,6 @@ type LinkedClaimPayload = {
 }
 
 const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
-  const { ceramic, composeClient } = useCeramicContext()
 
   if (!composeClient) {
     console.log('Compose client connection unavailable')
