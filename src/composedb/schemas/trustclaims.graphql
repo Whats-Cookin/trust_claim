@@ -73,4 +73,10 @@ type Sharing
 {
     intendedAudience: String @string(minLength: 1, maxLength: 256)
     respondAt: String! @string(minLength: 1, maxLength: 1024)
-} 
+}
+
+input LinkedClaimNormalizedRatingInput {
+    score: Float!
+    stars: Int
+    aspect: String
+  } 
