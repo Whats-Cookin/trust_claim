@@ -5,12 +5,11 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfileDropdown from '../profileDropDown/index'
-import { IconButton, InputBase, Paper, TextField, useMediaQuery } from '@mui/material'
+import { IconButton, InputBase, Paper, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import MenuIcon from '@mui/icons-material/Menu'
-import { useState, useRef, useMemo, useEffect } from 'react'
-import Search from '../../containers/Search'
+import { useState, useRef } from 'react'
 import Responsive from './Responsive'
+import SearchBar from '../../containers/SearchBar'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -60,30 +59,7 @@ const Navbar = ({ isAuth }: any) => {
               )
             ) : (
               <>
-                <Paper
-                  component='div'
-                  sx={{
-                    p: '2px 4px',
-                    display: 'flex',
-                    width: '360px',
-                    ml: '10px'
-                  }}
-                >
-                  <InputBase
-                    type='search'
-                    value={searchVal}
-                    placeholder='Search a Claim'
-                    onChange={e => setSearchVal(e.target.value)}
-                    onKeyUp={handleSearchKeypress}
-                    sx={{
-                      ml: 1,
-                      flex: 1
-                    }}
-                  />
-                  <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-                    <SearchIcon />
-                  </IconButton>
-                </Paper>
+                <SearchBar />
 
                 {isAuth && <ProfileDropdown />}
                 {!isAuth && (

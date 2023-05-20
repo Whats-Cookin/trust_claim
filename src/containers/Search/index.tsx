@@ -210,8 +210,7 @@ const Search = (homeProps: IHomeProps) => {
       document.removeEventListener('contextmenu', event => event.preventDefault())
     }
   }, [])
-  const windowWidth = window.innerWidth
-  const elementWidth = `calc(${windowWidth}px - 50%)`
+
   const isSmallScreen = useMediaQuery('(max-width:819px)')
 
   return (
@@ -236,7 +235,7 @@ const Search = (homeProps: IHomeProps) => {
               m: '80px auto 0',
               p: '2px 4px',
               alignItems: 'center',
-              width: elementWidth
+              width: '340px'
             }}
           >
             <InputBase
