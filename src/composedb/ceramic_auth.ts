@@ -49,7 +49,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
      */
     // TODO: update resources to only provide access to our composities
     session = await DIDSession.authorize(authMethod, {
-      resources: ['ceramic://*?model=kjzl6hvfrbw6c67xldj1g11xswtzfww6llsmxhkw5vyky1vhzrrpgt7p7lu4k4i']
+      resources: ['ceramic://*?model=kjzl6hvfrbw6c7f8zr4bdyzfumj7hv7r9i7dbu57isrzezqjuetkum2885p9agc']
     })
     // Set the session in localStorage.
     localStorage.setItem('did', session.serialize())
