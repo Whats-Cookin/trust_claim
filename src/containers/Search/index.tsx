@@ -226,6 +226,7 @@ const Search = (homeProps: IHomeProps) => {
         toggleSnackbar={toggleSnackbar}
       />
       {isSmallScreen && <SearchBar />}
+
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )

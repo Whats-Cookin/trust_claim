@@ -37,10 +37,10 @@ const SearchBar = () => {
         sx={{
           display: 'flex',
           zIndex: 1,
-          m: '80px auto 0',
+          m: isSmallScreen ? '80px auto 0' : '0',
           p: '2px 4px',
           alignItems: 'center',
-          width: '300px'
+          width: '340px'
         }}
       >
         <InputBase
