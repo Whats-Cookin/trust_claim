@@ -16,6 +16,7 @@ import { InputBase } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { IconButton } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
+import SearchBar from '../SearchBar'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -224,42 +225,8 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-      {isSmallScreen && (
-        <>
-          {' '}
-          <Paper
-            component='div'
-            sx={{
-              display: 'flex',
-              zIndex: 1,
-              m: '80px auto 0',
-              p: '2px 4px',
-              alignItems: 'center',
-              width: '340px'
-            }}
-          >
-            <InputBase
-              type='search'
-              value={searchVal}
-              placeholder='Search a Claim'
-              onChange={e => setSearchVal(e.target.value)}
-              onKeyUp={handleSearchKeypress}
-              sx={{
-                ml: 1,
-                flex: 1
-              }}
-            />
-            <IconButton
-              type='button'
-              sx={{ p: '10px', color: 'primary.main' }}
-              aria-label='search'
-              onClick={handleSearch}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </>
-      )}
+      {isSmallScreen && <SearchBar />}
+
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )
