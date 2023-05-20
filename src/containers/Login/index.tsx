@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import axios from '../../axiosInstance'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -18,40 +18,21 @@ import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { IconButton, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
-import { InputBase, Paper, TextField } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
+import { TextField } from '@mui/material'
+import SearchBar from '../SearchBar'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
   const theme = useTheme()
-  const search = useLocation().search
-  const query = new URLSearchParams(search).get('query')
-  const [searchVal, setSearchVal] = useState<string>(query || '')
 
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
-
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/search',
-        search: `?query=${searchVal}`
-      })
-    }
-  }
-
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
 
   const loginButton = document.getElementById('loginButton')
   const metamaskLink = document.getElementById('metamaskLink')
@@ -155,51 +136,13 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   const isSmallScreen = useMediaQuery('(max-width:819px)')
-  const windowWidth = window.innerWidth
-  const elementWidth = `calc(${windowWidth}px - 50%)`
 
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      {isSmallScreen && (
-        <>
-          {' '}
-          <Paper
-            component='div'
-            sx={{
-              zIndex: 1,
-              mt: '70px',
-              mb: '150px',
-              p: '2px 4px',
-              display: 'flex',
-              alignItems: 'center',
-              width: elementWidth
-            }}
-          >
-            <InputBase
-              type='search'
-              value={searchVal}
-              placeholder='Search a Claim'
-              onChange={e => setSearchVal(e.target.value)}
-              onKeyUp={handleSearchKeypress}
-              sx={{
-                ml: 1,
-                flex: 1
-              }}
-            />
-            <IconButton
-              type='button'
-              sx={{ p: '10px', color: 'primary.main' }}
-              aria-label='search'
-              onClick={handleSearch}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </>
-      )}
+      {isSmallScreen && <SearchBar />}
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
         <Box sx={styles.authContainer}>
           <Typography

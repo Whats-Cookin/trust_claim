@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import axios from '../../axiosInstance'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -9,38 +8,16 @@ import polygon1 from '../../assets/circle.png'
 import polygon2 from '../../assets/Polygon 2.png'
 import polygon3 from '../../assets/Polygon 3.png'
 import { TextField, Box, Button } from '@mui/material'
-import { IconButton } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
-import { InputBase, Paper } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import { useLocation } from 'react-router-dom'
+import SearchBar from '../SearchBar'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
-  const search = useLocation().search
-  const query = new URLSearchParams(search).get('query')
-  const [searchVal, setSearchVal] = useState<string>(query || '')
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors }
   } = useForm()
-
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/search',
-        search: `?query=${searchVal}`
-      })
-    }
-  }
-
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
 
   const navigate = useNavigate()
 
@@ -64,50 +41,12 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
     }
   })
   const isSmallScreen = useMediaQuery('(max-width:819px)')
-  const windowWidth = window.innerWidth
-  const elementWidth = `calc(${windowWidth}px - 50%)`
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
-      {isSmallScreen && (
-        <>
-          {' '}
-          <Paper
-            component='div'
-            sx={{
-              zIndex: 1,
-              mt: '70px',
-              mb: '150px',
-              p: '2px 4px',
-              display: 'flex',
-              alignItems: 'center',
-              width: elementWidth
-            }}
-          >
-            <InputBase
-              type='search'
-              value={searchVal}
-              placeholder='Search a Claim'
-              onChange={e => setSearchVal(e.target.value)}
-              onKeyUp={handleSearchKeypress}
-              sx={{
-                ml: 1,
-                flex: 1
-              }}
-            />
-            <IconButton
-              type='button'
-              sx={{ p: '10px', color: 'primary.main' }}
-              aria-label='search'
-              onClick={handleSearch}
-            >
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </>
-      )}
+      {isSmallScreen && <SearchBar />}
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
         <Box sx={styles.authContainer}>
           <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
