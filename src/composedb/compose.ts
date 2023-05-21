@@ -31,40 +31,39 @@ type LinkedClaimPayload = {
 }
 
 interface Content {
-  subjectID: string;
-  subjectType?: string;
-  subjectName?: string;
-  claim: string;
-  effectiveDate?: string;
-  statement?: string;
-  object?: string;
+  subjectID: string
+  subjectType?: string
+  subjectName?: string
+  claim: string
+  effectiveDate?: string
+  statement?: string
+  object?: string
   rating?: {
-    aspect?: string;
-    stars?: number;
-    score?: number;
-  };
+    aspect?: string
+    stars?: number
+    score?: number
+  }
   source?: {
-    sourceID?: string;
-    howKnown?: string;
-    dateObserved?: string;
-    digestMultibase?: string;
-    author?: string;
-    curator?: string; 
-  };
+    sourceID?: string
+    howKnown?: string
+    dateObserved?: string
+    digestMultibase?: string
+    author?: string
+    curator?: string
+  }
   amt?: {
-    value?: number,
-    unit?: string,
+    value?: number
+    unit?: string
     howMeasured?: string
-  };
-  confidence?: number;
+  }
+  confidence?: number
   sharing?: {
-    intendedAudience?: string;
-    respondAt?: string;
+    intendedAudience?: string
+    respondAt?: string
   }
 }
 
 const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
-
   if (!composeClient) {
     console.log('Compose client connection unavailable')
     return { status: 500 }
@@ -72,9 +71,9 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
 
   const { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
 
-  if (! subject || ! claim) {
-     console.log('Subject and claim are required!')
-     return { status: 422 }
+  if (!subject || !claim) {
+    console.log('Subject and claim are required!')
+    return { status: 422 }
   }
 
   let edate = '2023-05-19'
@@ -83,30 +82,30 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
   }
 
   const variables: { i: { content: Content } } = {
-    "i": {
-       "content": {
-          "subjectID": subject,
-          "claim": claim,
-          "effectiveDate": edate
-       }
+    i: {
+      content: {
+        subjectID: subject,
+        claim: claim,
+        effectiveDate: edate
+      }
     }
   }
-  
+
   if (stars) {
-     variables['i']['content']['rating'] = {
-             "aspect": aspect || 'unknown',
-             "stars": stars || 0, 
-             "score": stars/5.0
-     }
+    variables['i']['content']['rating'] = {
+      aspect: aspect || 'unknown',
+      stars: stars || 0,
+      score: stars / 5.0
+    }
   }
 
   if (sourceURI) {
     variables['i']['content']['source'] = {
-             "sourceID": sourceURI,
-             "howKnown": howKnown || 'OTHER'
-       }
+      sourceID: sourceURI,
+      howKnown: howKnown || 'OTHER'
+    }
   }
-/*          "sharing": {
+  /*          "sharing": {
             "respondAt": 'https://live.linkedtrust.us/',
             "intendedAudience": '' 
           }, 
@@ -118,7 +117,6 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
   if (confidence) {
     variables['i']['content']['confidence'] = confidence
   }
-
 
   const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 

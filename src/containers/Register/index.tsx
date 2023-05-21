@@ -44,7 +44,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <CardMedia
         component='img'
         image={polygon1}
-        sx={{ width: { xs: '50%', md: '700px' }, position: 'absolute', top: '3%', left:{xs: '-5%', md: '-10%'} }}
+        sx={{ width: { xs: '50%', md: '700px' }, position: 'absolute', top: '3%', left: { xs: '-5%', md: '-10%' } }}
       />
       <CardMedia
         component='img'
