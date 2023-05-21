@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import axios from '../../axiosInstance'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -15,15 +14,20 @@ import polygon3 from '../../assets/Polygon 3.png'
 import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
+import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
+import { TextField } from '@mui/material'
+import SearchBar from '../SearchBar'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
   const theme = useTheme()
+
   const {
     register,
     handleSubmit,
@@ -131,18 +135,20 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
+  const isSmallScreen = useMediaQuery('(max-width:819px)')
+
   return (
     <>
       <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
+      {isSmallScreen && <SearchBar />}
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
         <Box sx={styles.authContainer}>
           <Typography
             sx={{ color: 'primary.main' }}
             style={{
               textAlign: 'center',
-              color: 'primary.main',
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}

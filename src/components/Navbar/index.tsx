@@ -5,10 +5,11 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfileDropdown from '../profileDropDown/index'
-import { IconButton, InputBase, Paper, TextField } from '@mui/material'
+import { IconButton, InputBase, Paper, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useState, useRef, useMemo, useEffect } from 'react'
-import Search from '../../containers/Search'
+import { useState, useRef } from 'react'
+import Responsive from './Responsive'
+import SearchBar from '../../containers/SearchBar'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -34,81 +35,45 @@ const Navbar = ({ isAuth }: any) => {
     }
   }
 
+  const isSmallScreen = useMediaQuery('(max-width:819px)')
+
   return (
     <>
-      <Box
-        sx={{
-          flexGrow: 1,
-          width: '100%',
-          overflow: 'hidden'
-        }}
-      >
-        <AppBar
-          position='fixed'
-          sx={{
-            backgroundColor: '#eeeeee',
-            color: '#280606',
-            top: 0,
-            width: '100%'
-          }}
-        >
-          <Toolbar>
+      <Box>
+        <AppBar position='fixed' sx={{ backgroundColor: '#eeeeee', color: '#280606' }}>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography
               variant='h5'
               component='div'
               sx={{
-                flexGrow: 1,
                 fontWeight: 'bold'
               }}
             >
               Trust Claims
             </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                columnGap: 3
-              }}
-            >
+            {isSmallScreen ? (
+              isAuth ? (
+                <ProfileDropdown />
+              ) : (
+                <Responsive />
+              )
+            ) : (
               <>
-                <Paper
-                  component='div'
-                  sx={{
-                    p: '2px 4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    width: 400
-                  }}
-                >
-                  <InputBase
-                    type='search'
-                    value={searchVal}
-                    placeholder='Search a Claim'
-                    onChange={e => setSearchVal(e.target.value)}
-                    onKeyUp={handleSearchKeypress}
-                    sx={{
-                      ml: 1,
-                      flex: 1
-                    }}
-                  />
-                  <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-                    <SearchIcon />
-                  </IconButton>
-                </Paper>
+                <SearchBar />
 
                 {isAuth && <ProfileDropdown />}
                 {!isAuth && (
-                  <>
-                    <Button color='inherit' onClick={() => navigate('/login')}>
+                  <Box>
+                    <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/login')}>
                       Login
                     </Button>
-                    <Button color='inherit' onClick={() => navigate('/register')}>
+                    <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/register')}>
                       Register
                     </Button>
-                  </>
+                  </Box>
                 )}
               </>
-            </Box>
+            )}
           </Toolbar>
         </AppBar>
       </Box>

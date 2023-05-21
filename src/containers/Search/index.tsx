@@ -10,9 +10,13 @@ import Modal from '../../components/Modal'
 import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
-import SearchIcon from '@mui/icons-material/Search'
 import { parseNode, parseNodes } from './graph.utils'
-import { TextField } from '@mui/material'
+import { Paper, TextField } from '@mui/material'
+import { InputBase } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import { IconButton } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
+import SearchBar from '../SearchBar'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -208,6 +212,8 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
+  const isSmallScreen = useMediaQuery('(max-width:819px)')
+
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
@@ -219,6 +225,7 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
+      {isSmallScreen && <SearchBar />}
 
       <Box ref={ref} sx={styles.cy} />
     </Container>

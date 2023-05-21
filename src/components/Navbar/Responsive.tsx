@@ -1,9 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { Menu, IconButton, Button, Box, Fade, Tooltip, Hidden } from '@mui/material'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
-import { useNavigate } from 'react-router-dom'
 
-const ProfileDropdown = ({ isAuth }: any) => {
+const Responsive = () => {
   const navigate = useNavigate()
   const [disableTooltip, setDisableTooltip] = useState(false)
   const [open, setOpen] = useState(false)
@@ -14,12 +14,6 @@ const ProfileDropdown = ({ isAuth }: any) => {
     setOpen(false)
     setAnchorEl(null)
     navigate(path)
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    handleNavigate('/login')
   }
 
   useEffect(() => {
@@ -72,7 +66,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
       </Tooltip>
 
       <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose} TransitionComponent={Fade}>
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ textAlign: 'center', width: '300px' }}>
           <Button
             sx={{
               width: '85%',
@@ -82,14 +76,14 @@ const ProfileDropdown = ({ isAuth }: any) => {
               boxShadow: 'none',
               border: 'none'
             }}
-            onClick={() => handleNavigate('/search')}
+            onClick={() => handleNavigate('/login')}
           >
-            Search
+            login
           </Button>
           <Button
             disableRipple={true}
             color='inherit'
-            onClick={() => handleNavigate('/')}
+            onClick={() => handleNavigate('register')}
             sx={{
               width: '85%',
               marginBottom: '1em',
@@ -99,25 +93,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
               border: 'none'
             }}
           >
-            Create Claim
-          </Button>
-
-          <Button
-            onClick={handleLogout}
-            disableRipple={true}
-            variant='contained'
-            color='error'
-            size='large'
-            sx={{
-              backgroundColor: 'primary.main',
-              color: '#fff',
-              '&:hover': {
-                backgroundColor: '#222222',
-                color: '#fff'
-              }
-            }}
-          >
-            Logout
+            register
           </Button>
         </Box>
       </Menu>
@@ -125,4 +101,4 @@ const ProfileDropdown = ({ isAuth }: any) => {
   )
 }
 
-export default ProfileDropdown
+export default Responsive
