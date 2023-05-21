@@ -19,4 +19,3 @@ export const composeClient = new ComposeClient({
   // cast our definition as a RuntimeCompositeDefinition
   definition: definition as RuntimeCompositeDefinition
 })
-
