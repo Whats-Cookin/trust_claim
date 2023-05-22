@@ -1,43 +1,12 @@
-import { useCeramicContext } from './ceramic_context.js'
+import { ceramic, composeClient } from './ceramic_client.js'
 
 const CREATE_LINKED_CLAIM_MUTATION = `
-
-  mutation (
-    $claim: String!
-    $object: String
-    $rating: LinkedClaimNormalizedRating
-    $source: LinkedClaimClaimSource
-    $sharing: LinkedClaimSharing
-    $statement: String
-    $subjectID: String!
-    $confidence: Float
-    $subjectType: LinkedClaimSubjectType
-    $effectiveDate: Date
-  ) {
-    createLinkedClaim(
-      input: {
-        content: {
-          claim: $claim
-          object: $object
-          rating: $rating
-          source: $source
-          sharing: $sharing
-          statement: $statement
-          subjectID: $subjectID
-          confidence: $confidence
-          subjectType: $subjectType
-          effectiveDate: $effectiveDate
-        }
-      }
-    ) {
+  mutation CreateNewClaim($i:CreateLinkedClaimInput!) {
+    createLinkedClaim(input: $i) {
       document {
         id
-        amt
         claim
         object
-        rating
-        source
-        sharing
         statement
         subjectID
         confidence
@@ -61,9 +30,40 @@ type LinkedClaimPayload = {
   stars: number
 }
 
-const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
-  const { ceramic, composeClient } = useCeramicContext()
+interface Content {
+  subjectID: string
+  subjectType?: string
+  subjectName?: string
+  claim: string
+  effectiveDate?: string
+  statement?: string
+  object?: string
+  rating?: {
+    aspect?: string
+    stars?: number
+    score?: number
+  }
+  source?: {
+    sourceID?: string
+    howKnown?: string
+    dateObserved?: string
+    digestMultibase?: string
+    author?: string
+    curator?: string
+  }
+  amt?: {
+    value?: number
+    unit?: string
+    howMeasured?: string
+  }
+  confidence?: number
+  sharing?: {
+    intendedAudience?: string
+    respondAt?: string
+  }
+}
 
+const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
   if (!composeClient) {
     console.log('Compose client connection unavailable')
     return { status: 500 }
@@ -71,31 +71,53 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
 
   const { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
 
-  const rating = {
-    stars
+  if (!subject || !claim) {
+    console.log('Subject and claim are required!')
+    return { status: 422 }
   }
 
-  const claimSource = {
-    sourceID: sourceURI
+  let edate = '2023-05-19'
+  if (effectiveDate) {
+    edate = effectiveDate.substring(0, 10)
   }
 
-  const sharing = {
-    respondAt: null,
-    intendedAudience: null
+  const variables: { i: { content: Content } } = {
+    i: {
+      content: {
+        subjectID: subject,
+        claim: claim,
+        effectiveDate: edate
+      }
+    }
   }
 
-  const variables = {
-    claim,
-    object,
-    rating,
-    source: claimSource,
-    sharing,
-    statement,
-    subjectID: subject,
-    confidence,
-    subjectType: null,
-    effectiveDate
+  if (stars) {
+    variables['i']['content']['rating'] = {
+      aspect: aspect || 'unknown',
+      stars: stars || 0,
+      score: stars / 5.0
+    }
   }
+
+  if (sourceURI) {
+    variables['i']['content']['source'] = {
+      sourceID: sourceURI,
+      howKnown: howKnown || 'OTHER'
+    }
+  }
+  /*          "sharing": {
+            "respondAt": 'https://live.linkedtrust.us/',
+            "intendedAudience": '' 
+          }, 
+        //"subjectType": 'THING',
+*/
+  if (statement) {
+    variables['i']['content']['statement'] = statement
+  }
+  if (confidence) {
+    variables['i']['content']['confidence'] = confidence
+  }
+
   const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 
   if (response.errors) {

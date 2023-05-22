@@ -18,9 +18,5 @@
     ]
   },
   "aliases": {},
-  "views": {
-    "account": {},
-    "root": {},
-    "models": {}
-  }
+  "views": { "account": {}, "root": {}, "models": {} }
 }

@@ -9,16 +9,14 @@ import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import metaicon from './metamask-icon.svg'
-import polygon1 from '../../assets/circle.png'
-import polygon2 from '../../assets/Polygon 2.png'
-import polygon3 from '../../assets/Polygon 3.png'
 import styles from './styles'
 import ILoginProps from './types'
-import { useCeramicContext, authenticateCeramic } from '../../composedb'
+import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
+import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
@@ -32,8 +30,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   const loginButton = document.getElementById('loginButton')
   const metamaskLink = document.getElementById('metamaskLink')
-
-  const ceramicClients = useCeramicContext()
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
     localStorage.setItem('accessToken', accessToken)
@@ -77,7 +73,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       // User address is found, store and navigate to home page
       localStorage.setItem('ethAddress', accountId.address)
       try {
-        const { ceramic, composeClient } = ceramicClients
         await authenticateCeramic(ceramic, composeClient)
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
@@ -136,9 +131,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   return (
     <>
-      <img src={polygon1} alt='' style={{ position: 'absolute', top: '3%', left: '-10%' }} />
-      <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
-      <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
+      <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
         <Box sx={styles.authContainer}>
           <Typography
