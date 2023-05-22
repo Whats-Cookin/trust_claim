@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import {
@@ -39,11 +38,11 @@ export const Form = ({
     defaultValues: {
       subject: (selectedClaim?.nodeUri as string) || null,
       claim: 'rated',
-      object: null as string | null,
-      statement: null as string | null,
-      aspect: null as string | null,
-      howKnown: null as string | null,
-      sourceURI: null as string | null,
+      object: '' as string,
+      statement: '' as string,
+      aspect: '' as string,
+      howKnown: '' as string,
+      sourceURI: '' as string,
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null
@@ -95,10 +94,10 @@ export const Form = ({
 
   useEffect(() => {
     if (watchClaim === 'rated') {
-      setValue('object', null)
+      setValue('object', '')
     } else {
       setValue('stars', null)
-      setValue('aspect', null)
+      setValue('aspect', '')
     }
   }, [watchClaim, setValue])
 
@@ -258,54 +257,52 @@ export const Form = ({
             />
             {!(selectedClaim?.entType === 'CLAIM') && (
               <>
-                {watchClaim === 'rated' ? (
-                  <>
-                    <TextField
-                      select
-                      label='Aspect'
-                      {...register('aspect')}
-                      sx={{ ml: 1, mr: 1, width: '22ch' }}
-                      margin='dense'
-                      variant='outlined'
-                      fullWidth
-                    >
-                      {inputOptions.aspect.map((i: string) => (
-                        <MenuItem value={i} key={i}>
-                          {i}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <Controller
-                      name='stars'
-                      control={control}
-                      rules={{ required: { value: true, message: 'rating is required' } }}
-                      render={({ field: { onChange, value }, fieldState: { error } }) => (
-                        <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                          <Typography>Review Rating</Typography>
-                          <Rating
-                            name='stars'
-                            value={value}
-                            onChange={(e, newValue) => onChange(newValue)}
-                            precision={1}
-                            size='large'
-                          />
-                          <FormHelperText>{error?.message}</FormHelperText>
-                        </FormControl>
-                      )}
-                    />
-                  </>
-                ) : (
+                <>
                   <TextField
-                    {...register('object')}
+                    select
+                    label='Aspect'
+                    {...register('aspect')}
                     sx={{ ml: 1, mr: 1, width: '22ch' }}
                     margin='dense'
                     variant='outlined'
                     fullWidth
-                    label='Object'
-                    key='object'
-                    type='text'
+                  >
+                    {inputOptions.aspect.map((i: string) => (
+                      <MenuItem value={i} key={i}>
+                        {i}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <Controller
+                    name='stars'
+                    control={control}
+                    rules={{ required: { value: true, message: 'rating is required' } }}
+                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                      <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                        <Typography>Review Rating</Typography>
+                        <Rating
+                          name='stars'
+                          value={value}
+                          onChange={(e, newValue) => onChange(newValue)}
+                          precision={1}
+                          size='large'
+                        />
+                        <FormHelperText>{error?.message}</FormHelperText>
+                      </FormControl>
+                    )}
                   />
-                )}
+                </>
+
+                <TextField
+                  {...register('object')}
+                  sx={{ ml: 1, mr: 1, width: '22ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Object'
+                  key='object'
+                  type='text'
+                />
               </>
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
