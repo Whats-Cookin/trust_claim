@@ -15,7 +15,7 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme } from '@mui/material'
+import { Grid, useTheme } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -133,80 +133,82 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     <>
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
-        <Box sx={styles.authContainer}>
-          <Typography
-            sx={{ color: 'primary.main' }}
-            style={{
-              textAlign: 'center',
-              color: 'primary.main',
-              fontWeight: 'bold',
-              fontSize: '2.5rem'
-            }}
-          >
-            Login
-          </Typography>
-          <TextField
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address'
-              }
-            })}
-            fullWidth
-            label='Email'
-            sx={styles.inputField}
-            variant='filled'
-            type='email'
-            helperText={(errors.email?.message as string) || ''}
-            error={!!errors.email}
-          />
-          <TextField
-            {...register('password', {
-              required: 'Password is required'
-            })}
-            fullWidth
-            label='Password'
-            sx={styles.inputField}
-            variant='filled'
-            type='password'
-            helperText={(errors.password?.message as string) || ''}
-            error={!!errors.password}
-          />
-          <Box>
-            <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
-              Login
-            </Button>
-          </Box>
-          <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
-            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-            <Typography>Or, Login with </Typography>
-            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-          </Box>
-          <Box>
-            <MuiLink
-              href={githubUrl}
-              sx={styles.authLinkButton}
-              style={{ border: `1px solid ${theme.palette.primary.main}` }}
-            >
-              <GitHubIcon sx={styles.authIcon} />
-              Github
-            </MuiLink>
-          </Box>
-          <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
-            {ethLoginOpt}
-          </Box>
-
-          <Typography variant='body1' style={{ color: 'black' }}>
-            Click here to{' '}
+        <Grid container justifyContent='center'>
+          <Box sx={styles.authContainer}>
             <Typography
-              onClick={() => navigate('/register')}
-              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+              sx={{ color: 'primary.main' }}
+              style={{
+                textAlign: 'center',
+                color: 'primary.main',
+                fontWeight: 'bold',
+                fontSize: '2.5rem'
+              }}
             >
-              Register
+              Login
             </Typography>
-          </Typography>
-        </Box>
+            <TextField
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+              fullWidth
+              label='Email'
+              sx={styles.inputField}
+              variant='filled'
+              type='email'
+              helperText={(errors.email?.message as string) || ''}
+              error={!!errors.email}
+            />
+            <TextField
+              {...register('password', {
+                required: 'Password is required'
+              })}
+              fullWidth
+              label='Password'
+              sx={styles.inputField}
+              variant='filled'
+              type='password'
+              helperText={(errors.password?.message as string) || ''}
+              error={!!errors.password}
+            />
+            <Box>
+              <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
+                Login
+              </Button>
+            </Box>
+            <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
+              <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+              <Typography>Or, Login with </Typography>
+              <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+            </Box>
+            <Box>
+              <MuiLink
+                href={githubUrl}
+                sx={styles.authLinkButton}
+                style={{ border: `1px solid ${theme.palette.primary.main}` }}
+              >
+                <GitHubIcon sx={styles.authIcon} />
+                Github
+              </MuiLink>
+            </Box>
+            <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
+              {ethLoginOpt}
+            </Box>
+
+            <Typography variant='body1' style={{ color: 'black' }}>
+              Click here to{' '}
+              <Typography
+                onClick={() => navigate('/register')}
+                sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+              >
+                Register
+              </Typography>
+            </Typography>
+          </Box>
+        </Grid>
       </form>
     </>
   )
