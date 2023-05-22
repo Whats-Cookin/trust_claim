@@ -47,7 +47,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       <img src={polygon2} alt='' style={{ position: 'absolute', top: '50%', right: '20%' }} />
       <img src={polygon3} alt='' style={{ position: 'absolute', right: '20%', top: '5%', width: '200px' }} />
       {isSmallScreen && <SearchBar />}
-      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%' }}>
         <Box sx={styles.authContainer}>
           <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
