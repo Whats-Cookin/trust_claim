@@ -257,52 +257,54 @@ export const Form = ({
             />
             {!(selectedClaim?.entType === 'CLAIM') && (
               <>
-                <>
+                {watchClaim === 'rated' ? (
+                  <>
+                    <TextField
+                      select
+                      label='Aspect'
+                      {...register('aspect')}
+                      sx={{ ml: 1, mr: 1, width: '22ch' }}
+                      margin='dense'
+                      variant='outlined'
+                      fullWidth
+                    >
+                      {inputOptions.aspect.map((i: string) => (
+                        <MenuItem value={i} key={i}>
+                          {i}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <Controller
+                      name='stars'
+                      control={control}
+                      rules={{ required: { value: true, message: 'rating is required' } }}
+                      render={({ field: { onChange, value }, fieldState: { error } }) => (
+                        <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                          <Typography>Review Rating</Typography>
+                          <Rating
+                            name='stars'
+                            value={value}
+                            onChange={(e, newValue) => onChange(newValue)}
+                            precision={1}
+                            size='large'
+                          />
+                          <FormHelperText>{error?.message}</FormHelperText>
+                        </FormControl>
+                      )}
+                    />
+                  </>
+                ) : (
                   <TextField
-                    select
-                    label='Aspect'
-                    {...register('aspect')}
+                    {...register('object')}
                     sx={{ ml: 1, mr: 1, width: '22ch' }}
                     margin='dense'
                     variant='outlined'
                     fullWidth
-                  >
-                    {inputOptions.aspect.map((i: string) => (
-                      <MenuItem value={i} key={i}>
-                        {i}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <Controller
-                    name='stars'
-                    control={control}
-                    rules={{ required: { value: true, message: 'rating is required' } }}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                        <Typography>Review Rating</Typography>
-                        <Rating
-                          name='stars'
-                          value={value}
-                          onChange={(e, newValue) => onChange(newValue)}
-                          precision={1}
-                          size='large'
-                        />
-                        <FormHelperText>{error?.message}</FormHelperText>
-                      </FormControl>
-                    )}
+                    label='Object'
+                    key='object'
+                    type='text'
                   />
-                </>
-
-                <TextField
-                  {...register('object')}
-                  sx={{ ml: 1, mr: 1, width: '22ch' }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  label='Object'
-                  key='object'
-                  type='text'
-                />
+                )}
               </>
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
