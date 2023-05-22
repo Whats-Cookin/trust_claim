@@ -137,8 +137,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   return (
     <>
-
-     
       {isSmallScreen && <SearchBar />}
 
       <BackgroundImages />

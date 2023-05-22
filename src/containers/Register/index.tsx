@@ -4,9 +4,9 @@ import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
 import styles from './styles'
-import { TextField, Box, Button } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
 import SearchBar from '../SearchBar'
+import { TextField, Box, Button } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
@@ -40,10 +40,10 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
   })
   const isSmallScreen = useMediaQuery('(max-width:819px)')
   return (
-    <> 
-      {isSmallScreen && <SearchBar />}
+    <>
       <BackgroundImages />
-      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
+      {isSmallScreen && <SearchBar />}
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%' }}>
         <Box sx={styles.authContainer}>
           <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
