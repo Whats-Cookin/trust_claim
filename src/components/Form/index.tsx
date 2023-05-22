@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import {
@@ -39,11 +38,11 @@ export const Form = ({
     defaultValues: {
       subject: (selectedClaim?.nodeUri as string) || null,
       claim: 'rated',
-      object: null as string | null,
-      statement: null as string | null,
-      aspect: null as string | null,
-      howKnown: null as string | null,
-      sourceURI: null as string | null,
+      object: '' as string,
+      statement: '' as string,
+      aspect: '' as string,
+      howKnown: '' as string,
+      sourceURI: '' as string,
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null
@@ -95,10 +94,10 @@ export const Form = ({
 
   useEffect(() => {
     if (watchClaim === 'rated') {
-      setValue('object', null)
+      setValue('object', '')
     } else {
       setValue('stars', null)
-      setValue('aspect', null)
+      setValue('aspect', '')
     }
   }, [watchClaim, setValue])
 
