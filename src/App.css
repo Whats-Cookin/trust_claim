@@ -8,6 +8,7 @@
   align-items: center;
   font-size: calc(3px + 2vmin);
   color: rgb(37, 3, 3);
+  overflow: hidden;
 }
 
 @media (min-width: 819px) {
