@@ -36,10 +36,11 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       console.error('err', err.response.data.message)
     }
   })
+
   return (
     <>
       <BackgroundImages />
-      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '430px' }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
         <Box sx={styles.authContainer}>
           <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Register
@@ -77,7 +78,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               Register
             </Button>
           </Box>
-          <Typography variant='body1' style={{ color: 'black' }}>
+          <Typography variant='body1' style={{ color: 'black', textAlign: 'center' }}>
             Click here to{' '}
             <Typography
               onClick={() => navigate('/login')}
@@ -91,4 +92,5 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
     </>
   )
 }
+
 export default Register
