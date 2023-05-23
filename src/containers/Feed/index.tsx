@@ -26,17 +26,6 @@ const Feed = (homeProps: IHomeProps) => {
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
 
-  useEffect(() => {
-    // Code to run on load
-    console.log('Container loaded');
-    // Your code here...
-
-    // Clean up the effect (optional)
-    return () => {
-      // Code to clean up any resources if needed
-    };
-  }, []); // Empty dependency array means the effect runs only on mount
-
   const updateClaims = (search: boolean, newClaims: any) => {
     const parsedClaims = parseNodes(newClaims)
     // do something else here to update the feed TODO
