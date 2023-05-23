@@ -15,12 +15,12 @@ import { parseNode, parseNodes } from './graph.utils'
 import { TextField } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
-  const search = useLocation().search
+  const searchquery = useLocation().search
   const navigate = useNavigate()
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
   const ref = useRef<any>(null)
-  const query = new URLSearchParams(search).get('query')
+  const query = new URLSearchParams(searchquery).get('query')
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)

@@ -7,6 +7,7 @@ import Login from './containers/Login'
 import Register from './containers/Register'
 import Form from './containers/Form'
 import Search from './containers/Search'
+import Feed from './containers/Feed'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 
@@ -66,6 +67,7 @@ const App = () => {
           <Loader open={loading} />
           <Routes>
             <Route path='search' element={<Search {...commonProps} />} />
+            <Route path='feed' element={<Feed {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
