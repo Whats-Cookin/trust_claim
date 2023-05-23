@@ -26,6 +26,17 @@ const Feed = (homeProps: IHomeProps) => {
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
 
+  useEffect(() => {
+    // Code to run on load
+    console.log('Container loaded');
+    // Your code here...
+
+    // Clean up the effect (optional)
+    return () => {
+      // Code to clean up any resources if needed
+    };
+  }, []); // Empty dependency array means the effect runs only on mount
+
   const updateClaims = (search: boolean, newClaims: any) => {
     const parsedClaims = parseNodes(newClaims)
     // do something else here to update the feed TODO
@@ -74,23 +85,18 @@ const Feed = (homeProps: IHomeProps) => {
     window.localStorage.removeItem('claims')
     if (searchVal.trim() !== '') {
       navigate({
-        pathname: '/search',
+        pathname: '/feed',
         search: `?query=${searchVal}`
       })
 
-      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
+    await fetchClaims(encodeURIComponent(searchVal), true, page.current)
       //page.current = 2
     }
   }
 
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
 
   const reset = () => {
-    navigate('/search')
+    navigate('/feed')
     setSearchVal('')
     const ref = useRef<any>(null)
     const page = useRef(1)
