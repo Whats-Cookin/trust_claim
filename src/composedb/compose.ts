@@ -61,7 +61,6 @@ type LinkedClaimPayload = {
 }
 
 const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
-
   if (!composeClient) {
     console.log('Compose client connection unavailable')
     return { status: 500 }

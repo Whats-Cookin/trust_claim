@@ -45,8 +45,7 @@ export const Form = ({
       howKnown: null as string | null,
       sourceURI: null as string | null,
       effectiveDate: new Date(),
-      confidence: null as number | null,
-      stars: null as number | null
+     
     }
   })
 
