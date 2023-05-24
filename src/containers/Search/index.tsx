@@ -16,7 +16,7 @@ import { InputBase } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { IconButton } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
-import SearchBar from '../SearchBar'
+import SearchBar from '../../components/SearchBar'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search

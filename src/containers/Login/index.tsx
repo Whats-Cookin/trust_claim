@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
 import { TextField } from '@mui/material'
-import SearchBar from '../SearchBar'
+import SearchBar from '../../components/SearchBar'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`

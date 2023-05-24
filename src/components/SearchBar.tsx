@@ -40,7 +40,7 @@ const SearchBar = () => {
           m: isSmallScreen ? '80px auto 80px' : '0',
           p: '2px 4px',
           alignItems: 'center',
-          width: '300px'
+          width: '395px'
         }}
       >
         <InputBase

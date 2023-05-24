@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
 import styles from './styles'
 import { useMediaQuery } from '@mui/material'
-import SearchBar from '../SearchBar'
+import SearchBar from '../../components/SearchBar'
 import { TextField, Box, Button } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 

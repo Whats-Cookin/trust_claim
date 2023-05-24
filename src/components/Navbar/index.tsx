@@ -8,8 +8,8 @@ import ProfileDropdown from '../profileDropDown/index'
 import { IconButton, InputBase, Paper, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { useState, useRef } from 'react'
-import Responsive from './Responsive'
-import SearchBar from '../../containers/SearchBar'
+import Responsive from './NotAuthDropdown'
+import SearchBar from '../SearchBar'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -51,26 +51,33 @@ const Navbar = ({ isAuth }: any) => {
             >
               Trust Claims
             </Typography>
-            {isSmallScreen ? (
-              isAuth ? (
-                <ProfileDropdown />
-              ) : (
-                <Responsive />
-              )
-            ) : (
+            {isAuth && (
               <>
-                <SearchBar />
+                {isSmallScreen && <ProfileDropdown />}
+                {!isSmallScreen && (
+                  <>
+                    <SearchBar />
+                    <ProfileDropdown />
+                  </>
+                )}
+              </>
+            )}
 
-                {isAuth && <ProfileDropdown />}
-                {!isAuth && (
-                  <Box>
-                    <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/login')}>
-                      Login
-                    </Button>
-                    <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/register')}>
-                      Register
-                    </Button>
-                  </Box>
+            {!isAuth && (
+              <>
+                {isSmallScreen && <Responsive />}
+                {!isSmallScreen && (
+                  <>
+                    <SearchBar />
+                    <Box>
+                      <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/login')}>
+                        Login
+                      </Button>
+                      <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/register')}>
+                        Register
+                      </Button>
+                    </Box>
+                  </>
                 )}
               </>
             )}
