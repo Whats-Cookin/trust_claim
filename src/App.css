@@ -11,11 +11,6 @@
   overflow: hidden;
 }
 
-@media (min-width: 819px) {
-  .app {
-    justify-content: center;
-  }
-}
 .App-link {
   color: #61dafb;
 }
