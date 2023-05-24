@@ -9,6 +9,7 @@ import Form from './containers/Form'
 import Search from './containers/Search'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import Box from '@mui/material/Box'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -51,6 +52,15 @@ const App = () => {
       secondary: {
         main: '#FFFFFF'
       }
+    },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 800,
+        lg: 1280,
+        xl: 1920
+      }
     }
   })
 
@@ -61,7 +71,23 @@ const App = () => {
         {/* Render the navigation component only if the user is not on the login or register page */}
         <Navbar isAuth={checkAuth()} />
 
-        <div className='app'>
+        <Box
+          sx={{
+            position: 'relative',
+            backgroundColor: '#eeeeee',
+            minHeight: '100vh',
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'center',
+            fontSize: 'calc(3px + 2vmin)',
+            color: 'rgb(37, 3, 3)',
+            overflow: 'hidden',
+            [theme.breakpoints.up('md')]: {
+              justifyContent: 'center'
+            }
+          }}
+        >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
           <Routes>
@@ -70,7 +96,7 @@ const App = () => {
             <Route path='login' element={<Login {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
           </Routes>
-        </div>
+        </Box>
       </ThemeProvider>
     </>
   )

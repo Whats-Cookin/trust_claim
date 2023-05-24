@@ -53,7 +53,12 @@ const Navbar = ({ isAuth }: any) => {
             </Typography>
             {isAuth && (
               <>
-                {isSmallScreen && <ProfileDropdown />}
+                {isSmallScreen && (
+                  <>
+                    <SearchBar />
+                    <ProfileDropdown />
+                  </>
+                )}
                 {!isSmallScreen && (
                   <>
                     <SearchBar />
