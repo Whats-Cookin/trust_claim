@@ -121,19 +121,38 @@ const getNodeData = (node: any) => {
     }
   }
 
+  //   if (node.image) {
+  //     nodeData.style = {
+  //       'background-image': [node.image.replace(/\?.+$/, '')],
+  //       'background-fit': 'cover cover',
+  //       'background-image-opacity': 1.0
+  //     }
+  //   } else if (node.thumbnail) {
+  //     nodeData.style = {
+  //       'background-image': [node.thumbnail.replace(/\?.+$/, '')],
+  //       'background-fit': 'cover cover',
+  //       'background-image-opacity': 0.4,
+  //       'background-color': '#009688'
+  //     }
+  //   }
+  //   return nodeData
+  // }
+
   if (node.image) {
     nodeData.style = {
       'background-image': [node.image.replace(/\?.+$/, '')],
       'background-fit': 'cover cover',
-      'background-image-opacity': 1.0
+      'background-image-opacity': 0.9 // Increased opacity for clearer images
     }
   } else if (node.thumbnail) {
     nodeData.style = {
       'background-image': [node.thumbnail.replace(/\?.+$/, '')],
       'background-fit': 'cover cover',
-      'background-image-opacity': 0.4
+      'background-image-opacity': 0.9, // Increased opacity for clearer images
+      'background-color': '#009688'
     }
   }
+
   return nodeData
 }
 
@@ -143,6 +162,10 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
     const nodeData = getNodeData(node)
 
     nodes.push(nodeData)
+    nodeData.style = {
+      shape: 'circle',
+      'background-color': '#009688' // Set the desired color here
+    }
   }
 
   // adding edge between subject and object
