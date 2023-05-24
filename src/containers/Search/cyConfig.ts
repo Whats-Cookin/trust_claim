@@ -14,7 +14,7 @@ const cyConfig = (containerRef: any) => {
           borderColor: '#006400',
           borderWidth: '10px',
           borderOpacity: 0.5,
-          'background-color': '#009688',
+          backgroundColor: '#009688',
           color: '#FFFFFF',
           fontWeight: 'bold',
           fontSize: 26,
