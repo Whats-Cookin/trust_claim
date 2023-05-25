@@ -61,7 +61,7 @@ const Responsive = () => {
           onClick={handleClick}
           size='large'
         >
-          <MenuOpenIcon fontSize='large' sx={{ color: '#2f0101' }} />
+          <MenuOpenIcon fontSize='large' sx={{ color: 'primary.main' }} />
         </IconButton>
       </Tooltip>
 
