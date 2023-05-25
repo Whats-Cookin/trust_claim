@@ -17,10 +17,12 @@ import SearchIcon from '@mui/icons-material/Search'
 import { IconButton } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
 import SearchBar from '../../components/SearchBar'
+import { useTheme } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
   const ref = useRef<any>(null)
@@ -212,7 +214,7 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
-  const isSmallScreen = useMediaQuery('(max-width:819px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <Container sx={styles.container} maxWidth={false}>

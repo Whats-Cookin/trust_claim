@@ -10,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import { useState, useRef } from 'react'
 import Responsive from './NotAuthDropdown'
 import SearchBar from '../SearchBar'
+import { useTheme } from '@mui/material'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -18,6 +19,7 @@ const Navbar = ({ isAuth }: any) => {
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const page = useRef(1)
+  const theme = useTheme()
 
   const handleSearch = async () => {
     window.localStorage.removeItem('claims')
@@ -35,7 +37,7 @@ const Navbar = ({ isAuth }: any) => {
     }
   }
 
-  const isSmallScreen = useMediaQuery('(max-width:819px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <>
@@ -53,13 +55,8 @@ const Navbar = ({ isAuth }: any) => {
             </Typography>
             {isAuth && (
               <>
-                {isSmallScreen && <ProfileDropdown />}
-                {!isSmallScreen && (
-                  <>
-                    <SearchBar />
-                    <ProfileDropdown />
-                  </>
-                )}
+                {!isSmallScreen && <SearchBar />}
+                <ProfileDropdown />
               </>
             )}
 

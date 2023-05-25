@@ -8,6 +8,7 @@ import { useMediaQuery } from '@mui/material'
 import SearchBar from '../../components/SearchBar'
 import { TextField, Box, Button } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
+import { useTheme } from '@mui/material'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
   const {
@@ -18,6 +19,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
   } = useForm()
 
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     try {
@@ -38,7 +40,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       console.error('err', err.response.data.message)
     }
   })
-  const isSmallScreen = useMediaQuery('(max-width:819px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   return (
     <>
       <BackgroundImages />

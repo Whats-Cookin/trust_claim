@@ -133,7 +133,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
-  const isSmallScreen = useMediaQuery('(max-width:819px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <>

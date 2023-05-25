@@ -5,12 +5,14 @@ import { IconButton } from '@mui/material'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material'
 
 const SearchBar = () => {
   const navigate = useNavigate()
   const search = useLocation().search
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query || '')
+  const theme = useTheme()
 
   const handleSearch = async () => {
     window.localStorage.removeItem('claims')
@@ -27,7 +29,7 @@ const SearchBar = () => {
       handleSearch()
     }
   }
-  const isSmallScreen = useMediaQuery('(max-width:819px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <>
