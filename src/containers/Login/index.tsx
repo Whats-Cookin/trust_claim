@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import axios from '../../axiosInstance'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -12,16 +11,21 @@ import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
+import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
+import { TextField } from '@mui/material'
+import SearchBar from '../../components/SearchBar'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
   const theme = useTheme()
+
   const {
     register,
     handleSubmit,
@@ -129,8 +133,12 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+
   return (
     <>
+      {isSmallScreen && <SearchBar />}
+
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
         <Box sx={styles.authContainer}>
@@ -138,7 +146,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             sx={{ color: 'primary.main' }}
             style={{
               textAlign: 'center',
-              color: 'primary.main',
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}
