@@ -71,7 +71,7 @@ const Responsive = () => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: 'primary.main',
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
@@ -87,7 +87,7 @@ const Responsive = () => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: 'primary.main',
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
