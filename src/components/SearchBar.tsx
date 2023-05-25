@@ -40,9 +40,11 @@ const SearchBar = () => {
           display: 'flex',
           zIndex: 1,
           m: isSmallScreen ? '80px auto 80px' : '0',
-          p: '2px 4px',
+          p: '0 4px',
           alignItems: 'center',
-          width: '395px'
+          width: '395px',
+          border: `1px solid ${theme.palette.primary.main}`,
+          borderRadius: '50px'
         }}
       >
         <InputBase
@@ -56,7 +58,7 @@ const SearchBar = () => {
             flex: 1
           }}
         />
-        <IconButton type='button' sx={{ p: '10px', color: 'primary.main' }} aria-label='search' onClick={handleSearch}>
+        <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
           <SearchIcon />
         </IconButton>
       </Paper>

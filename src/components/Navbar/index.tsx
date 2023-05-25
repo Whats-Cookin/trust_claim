@@ -48,6 +48,7 @@ const Navbar = ({ isAuth }: any) => {
               variant='h5'
               component='div'
               sx={{
+                color: 'primary.main',
                 fontWeight: 'bold'
               }}
             >
@@ -67,10 +68,16 @@ const Navbar = ({ isAuth }: any) => {
                   <>
                     <SearchBar />
                     <Box>
-                      <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/login')}>
+                      <Button
+                        sx={{ pr: '30px', color: 'primary.main', fontWeight: 'bold' }}
+                        onClick={() => navigate('/login')}
+                      >
                         Login
                       </Button>
-                      <Button sx={{ pr: '30px' }} color='inherit' onClick={() => navigate('/register')}>
+                      <Button
+                        sx={{ pr: '30px', color: 'primary.main', fontWeight: 'bold' }}
+                        onClick={() => navigate('/register')}
+                      >
                         Register
                       </Button>
                     </Box>

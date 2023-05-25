@@ -61,7 +61,7 @@ const Responsive = () => {
           onClick={handleClick}
           size='large'
         >
-          <MenuOpenIcon fontSize='large' sx={{ color: '#2f0101' }} />
+          <MenuOpenIcon fontSize='large' sx={{ color: 'primary.main' }} />
         </IconButton>
       </Tooltip>
 
@@ -71,7 +71,7 @@ const Responsive = () => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: 'primary.main',
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
@@ -87,7 +87,7 @@ const Responsive = () => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: 'primary.main',
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
