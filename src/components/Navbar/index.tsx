@@ -5,10 +5,12 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfileDropdown from '../profileDropDown/index'
-import { IconButton, InputBase, Paper, TextField } from '@mui/material'
+import { IconButton, InputBase, Paper, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useState, useRef, useMemo, useEffect } from 'react'
-import Search from '../../containers/Search'
+import { useState, useRef } from 'react'
+import Responsive from './NotAuthDropdown'
+import SearchBar from '../SearchBar'
+import { useTheme } from '@mui/material'
 
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -17,6 +19,7 @@ const Navbar = ({ isAuth }: any) => {
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const page = useRef(1)
+  const theme = useTheme()
 
   const handleSearch = async () => {
     window.localStorage.removeItem('claims')
@@ -34,81 +37,54 @@ const Navbar = ({ isAuth }: any) => {
     }
   }
 
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+
   return (
     <>
-      <Box
-        sx={{
-          flexGrow: 1,
-          width: '100%',
-          overflow: 'hidden'
-        }}
-      >
-        <AppBar
-          position='fixed'
-          sx={{
-            backgroundColor: '#eeeeee',
-            color: '#280606',
-            top: 0,
-            width: '100%'
-          }}
-        >
-          <Toolbar>
+      <Box>
+        <AppBar position='fixed' sx={{ backgroundColor: '#eeeeee', color: '#280606' }}>
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography
               variant='h5'
               component='div'
               sx={{
-                flexGrow: 1,
+                color: 'primary.main',
                 fontWeight: 'bold'
               }}
             >
               Trust Claims
             </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                columnGap: 3
-              }}
-            >
+            {isAuth && (
               <>
-                <Paper
-                  component='div'
-                  sx={{
-                    p: '2px 4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    width: 400
-                  }}
-                >
-                  <InputBase
-                    type='search'
-                    value={searchVal}
-                    placeholder='Search a Claim'
-                    onChange={e => setSearchVal(e.target.value)}
-                    onKeyUp={handleSearchKeypress}
-                    sx={{
-                      ml: 1,
-                      flex: 1
-                    }}
-                  />
-                  <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-                    <SearchIcon />
-                  </IconButton>
-                </Paper>
+                {!isSmallScreen && <SearchBar />}
+                <ProfileDropdown />
+              </>
+            )}
 
-                {isAuth && <ProfileDropdown />}
-                {!isAuth && (
+            {!isAuth && (
+              <>
+                {isSmallScreen && <Responsive />}
+                {!isSmallScreen && (
                   <>
-                    <Button color='inherit' onClick={() => navigate('/login')}>
-                      Login
-                    </Button>
-                    <Button color='inherit' onClick={() => navigate('/register')}>
-                      Register
-                    </Button>
+                    <SearchBar />
+                    <Box>
+                      <Button
+                        sx={{ pr: '30px', color: 'primary.main', fontWeight: 'bold' }}
+                        onClick={() => navigate('/login')}
+                      >
+                        Login
+                      </Button>
+                      <Button
+                        sx={{ pr: '30px', color: 'primary.main', fontWeight: 'bold' }}
+                        onClick={() => navigate('/register')}
+                      >
+                        Register
+                      </Button>
+                    </Box>
                   </>
                 )}
               </>
-            </Box>
+            )}
           </Toolbar>
         </AppBar>
       </Box>

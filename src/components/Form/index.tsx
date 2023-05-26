@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-
 import Box from '@mui/material/Box'
+import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
   TextField,
@@ -39,11 +39,11 @@ export const Form = ({
     defaultValues: {
       subject: (selectedClaim?.nodeUri as string) || null,
       claim: 'rated',
-      object: null as string | null,
-      statement: null as string | null,
-      aspect: null as string | null,
-      howKnown: null as string | null,
-      sourceURI: null as string | null,
+      object: '' as string,
+      statement: '' as string,
+      aspect: '' as string,
+      howKnown: '' as string,
+      sourceURI: '' as string,
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null
@@ -51,6 +51,7 @@ export const Form = ({
   })
 
   const { createClaim } = useCreateClaim()
+  const navigate = useNavigate()
 
   const onSubmit = handleSubmit(
     async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
@@ -80,6 +81,7 @@ export const Form = ({
         toggleSnackbar(true)
         setSnackbarMessage(message)
         if (isSuccess) {
+          navigate('search')
           reset()
         }
       } else {
@@ -95,10 +97,10 @@ export const Form = ({
 
   useEffect(() => {
     if (watchClaim === 'rated') {
-      setValue('object', null)
+      setValue('object', '')
     } else {
       setValue('stars', null)
-      setValue('aspect', null)
+      setValue('aspect', '')
     }
   }, [watchClaim, setValue])
 
