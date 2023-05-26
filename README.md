@@ -8,10 +8,10 @@ To deploy latest code, pull directly on server
 
 ```bash
 ssh -l ubuntu -i [key] trustclaims.whatscookin.us
-cd /home/ubuntu/trust_claim
+cd /data/trust_claim
 git pull
 yarn && yarn build
-cd /home/ubuntu/trust_claim/dist
+cd /data/trust_claim/dist
 cp -r ./ /var/www/trust_claim/
 ```
 
