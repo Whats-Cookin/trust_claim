@@ -112,8 +112,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
               backgroundColor: 'primary.main',
               color: '#fff',
               '&:hover': {
-                backgroundColor: '#222222',
-                color: '#fff'
+                backgroundColor: '#00695f'
               }
             }}
           >
