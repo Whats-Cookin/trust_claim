@@ -1,6 +1,5 @@
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
-
 import ILoaderTypes from './types'
 
 const Loader = ({ open }: ILoaderTypes) => {
