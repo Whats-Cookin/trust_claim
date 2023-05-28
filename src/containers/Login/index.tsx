@@ -15,7 +15,9 @@ import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useMediaQuery, Grid, TextField, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
+import { TextField } from '@mui/material'
 import SearchBar from '../../components/SearchBar'
 import BackgroundImages from '../BackgroundImags'
 
@@ -29,6 +31,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     handleSubmit,
     formState: { errors }
   } = useForm()
+
+  const loginButton = document.getElementById('loginButton')
+  const metamaskLink = document.getElementById('metamaskLink')
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
     localStorage.setItem('accessToken', accessToken)
@@ -106,6 +111,28 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     }
   })
 
+  // Check if Metamask is installed
+  let ethLoginOpt
+  if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
+    ethLoginOpt = (
+      <button id='loginButton' onClick={handleWalletAuth} style={styles.authbtn}>
+        <span>
+          <img src={metaicon} alt='' style={{ width: '30px' }} />
+        </span>
+        Metamask{' '}
+      </button>
+    )
+  } else {
+    ethLoginOpt = (
+      <p id='metamaskLink'>
+        To login with Ethereum{' '}
+        <a href='https://metamask.io/' target='_blank'>
+          Install Metamask
+        </a>
+      </p>
+    )
+  }
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
@@ -113,94 +140,75 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       {isSmallScreen && <SearchBar />}
 
       <BackgroundImages />
-      <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
         <Box sx={styles.authContainer}>
-          <Typography
-            sx={{ color: 'primary.main' }}
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: '2.5rem'
-            }}
-          >
+          <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
             Login
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address'
-                  }
-                })}
-                fullWidth
-                label='Email'
-                sx={styles.inputField}
-                variant='filled'
-                type='email'
-                helperText={(errors.email?.message as string) || ''}
-                error={!!errors.email}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                {...register('password', {
-                  required: 'Password is required'
-                })}
-                fullWidth
-                label='Password'
-                sx={styles.inputField}
-                variant='filled'
-                type='password'
-                helperText={(errors.password?.message as string) || ''}
-                error={!!errors.password}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
-                Login
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
-                <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-                <Typography>Or, Login with </Typography>
-                <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display='flex' justifyContent='center'>
-                <MuiLink
-                  href={githubUrl}
-                  sx={styles.authLinkButton}
-                  style={{ border: `1px solid ${theme.palette.primary.main}` }}
-                >
-                  <GitHubIcon sx={styles.authIcon} />
-                  Github
-                </MuiLink>
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}></Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant='body1' style={{ color: 'black' }}>
-                Click here to{' '}
-                <Typography
-                  onClick={() => navigate('/register')}
-                  sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
-                >
-                  Register
-                </Typography>
-              </Typography>
-            </Grid>
-          </Grid>
+          <TextField
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Invalid email address'
+              }
+            })}
+            fullWidth
+            label='Email'
+            sx={styles.inputField}
+            variant='filled'
+            type='email'
+            helperText={(errors.email?.message as string) || ''}
+            error={!!errors.email}
+          />
+          <TextField
+            {...register('password', {
+              required: 'Password is required'
+            })}
+            fullWidth
+            label='Password'
+            sx={styles.inputField}
+            variant='filled'
+            type='password'
+            helperText={(errors.password?.message as string) || ''}
+            error={!!errors.password}
+          />
+          <Box>
+            <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
+              Login
+            </Button>
+          </Box>
+          <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
+            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+            <Typography>Or, Login with </Typography>
+            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
+          </Box>
+          <Box>
+            <MuiLink
+              href={githubUrl}
+              sx={styles.authLinkButton}
+              style={{ border: `1px solid ${theme.palette.primary.main}` }}
+            >
+              <GitHubIcon sx={styles.authIcon} />
+              Github
+            </MuiLink>
+          </Box>
+          <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
+            {ethLoginOpt}
+          </Box>
+
+          <Typography variant='body1' style={{ color: 'black' }}>
+            Click here to{' '}
+            <Typography
+              onClick={() => navigate('/register')}
+              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+            >
+              Register
+            </Typography>
+          </Typography>
         </Box>
       </form>
     </>
   )
 }
-
 export default Login
