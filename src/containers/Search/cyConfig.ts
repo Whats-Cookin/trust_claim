@@ -11,7 +11,7 @@ const cyConfig = (containerRef: any) => {
           width: 300,
           shape: 'round',
           borderRadius: '10%',
-          borderColor: '#009688',
+          borderColor: '#00695f',
           borderWidth: '10px',
           borderOpacity: 0.5,
           backgroundColor: '#009688',
