@@ -142,7 +142,15 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
         <Box sx={styles.authContainer}>
-          <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
+          <Typography
+            variant='h5'
+            style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: '2.5rem'
+            }}
+            sx={{ color: 'primary.main' }}
+          >
             Login
           </Typography>
           <TextField
