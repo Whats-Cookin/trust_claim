@@ -47,9 +47,11 @@ const Navbar = ({ isAuth }: any) => {
             <Typography
               variant='h5'
               component='div'
+              onClick={() => navigate('/search')}
               sx={{
                 color: 'primary.main',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                cursor: 'pointer'
               }}
             >
               Trust Claims
