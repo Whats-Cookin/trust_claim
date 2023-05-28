@@ -29,8 +29,10 @@ const cyConfig = (containerRef: any) => {
         style: {
           width: 6,
           fontSize: 20,
+          targetArrowShape: 'triangle-cross',
           lineColor: '#006400',
           targetArrowColor: '#006400',
+          curveStyle: 'bezier',
           controlPointWeights: '0.5 0.2 0.8',
           textRotation: 'autorotate',
           textMarginX: 30,
