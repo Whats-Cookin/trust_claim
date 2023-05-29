@@ -19,6 +19,7 @@ import IHomeProps from '../../containers/Form/types'
 import styles from '../../containers/Form/styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
+import Tooltip from '@mui/material/Tooltip'
 
 export const Form = ({
   toggleSnackbar,
@@ -149,6 +150,55 @@ export const Form = ({
       'integration'
     ]
   }
+  const tooltips = {
+    claim: [
+      ' Indicates a claim about rating or evaluating a subject based on your confidence level',
+      'Represents a claim that asserts the subject is identical or equivalent to another entity or object',
+      'Refers to a claim stating that the subject has carried out or performed a specific action or task ',
+      ' Denotes a claim indicating that the subject provided assistance, aid, or support to another entity or individual',
+      '  Represents a claim asserting that the subject caused harm, damage, or negative consequences to another entity or individual',
+      ' Indicates a claim suggesting that the subject is involved in fraudulent or deceptive activities.',
+      'Represents a claim asserting ownership or possession of the subject by an individual, organization, or entity',
+      'Represents a claim asserting ownership or possession of the subject by an individual, organization, or entity'
+    ],
+    aspect: [
+      ' Refers to the social impact or influence of the subject.',
+      'Relates to the impact on climate or environmental factors.',
+      ' Relates to the impact on work or employment-related aspects',
+      ' Relates to the impact on financial aspects or economic factors.',
+      'Relates to the impact on education or learning.',
+      'Relates to the technical quality or performance.',
+      ' Relates to the aesthetic or visual quality.',
+      ' Relates to the taste or flavor quality.',
+      'Relates to the journalistic quality or integrity.',
+      'Relates to the academic or educational quality.',
+      'Relates to the fun or entertainment value.',
+      'Relates to the usefulness or practical value.',
+      ' Relates to the literary quality or artistic value.',
+      ' Relates to the relevance or significance.',
+      ' Relates to self-improvement or personal development.',
+      ' Relates to historical significance or relevance.',
+      ' Relates to theological or religious aspects.',
+      ' Relates to adventure or excitement',
+      ' Relates to biographical or personal aspects.',
+      ' Relates to scientific accuracy or validity.',
+      ' Relates to the risk of safety or security concerns.',
+      ' Relates to the risk of reliability or trustworthiness.',
+      ' Indicates a relationship where the subject works for another entity.',
+      'Indicates a relationship where the subject is the same as another entity.'
+    ],
+    howKnown: [
+      'The information is known directly from personal experience or firsthand knowledge.',
+      'The information is known from someone else who has firsthand knowledge or experience',
+      'The information is known from a website as a source',
+      'The information is known from a website that has been verified or authenticated.',
+      'The information is known through a verified login or authentication process.',
+      'The information is known through a signed claim or statement',
+      'The information is known through a blockchain system, providing secure and transparent records',
+      'The information is known from a physical document, such as a paper document or certificate',
+      'The information is known through an integrated system or platform'
+    ]
+  }
 
   return (
     <>
@@ -175,19 +225,27 @@ export const Form = ({
       <DialogContent>
         <form onSubmit={onSubmit}>
           <Box sx={styles.inputFieldWrap}>
-            <TextField
-              {...register('subject', { required: { value: true, message: 'subject is required' } })}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              label='Subject'
-              key='subject'
-              disabled={!!selectedClaim?.nodeUri}
-              type='text'
-              error={Boolean(errors.subject)}
-              helperText={errors.subject?.message}
-            />
+            <Tooltip
+              title='you should put your site or social media '
+              placement='right'
+              arrow
+              sx={{ backgroundColor: '#009688' }}
+            >
+              <TextField
+                {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                margin='dense'
+                variant='outlined'
+                fullWidth
+                label='Subject'
+                key='subject'
+                disabled={!!selectedClaim?.nodeUri}
+                type='text'
+                error={Boolean(errors.subject)}
+                helperText={errors.subject?.message}
+              />
+            </Tooltip>
+
             <TextField
               select
               label='Claim'
@@ -199,9 +257,11 @@ export const Form = ({
               error={Boolean(errors.claim)}
               helperText={errors.claim?.message}
             >
-              {inputOptions.claim.map((i: string) => (
+              {inputOptions.claim.map((i: string, index: number) => (
                 <MenuItem value={i} key={i}>
-                  {i}
+                  <Tooltip key={i} title={tooltips.claim[index]} placement='right' arrow>
+                    <div> {i}</div>
+                  </Tooltip>
                 </MenuItem>
               ))}
             </TextField>
@@ -214,50 +274,61 @@ export const Form = ({
               variant='outlined'
               fullWidth
             >
-              {inputOptions.howKnown.map((i: string) => (
+              {inputOptions.howKnown.map((i: string, index: number) => (
                 <MenuItem value={i} key={i}>
-                  {i}
+                  <Tooltip key={i} title={tooltips.howKnown[index]} placement='right' arrow>
+                    <div> {i}</div>
+                  </Tooltip>
                 </MenuItem>
               ))}
             </TextField>
-
-            <TextField
-              {...register('statement')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              label='Statement'
-              key='statement'
-              type='text'
-              multiline={true}
-              maxRows={4}
-            />
-            <TextField
-              {...register('sourceURI')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              label='Source URI'
-              key='sourceURI'
-              type='text'
-            />
-            <TextField
-              {...register('confidence')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              label='Confidence'
-              key='confidence'
-              type='number'
-              inputProps={{
-                min: 0.0,
-                max: 1.0,
-                step: 0.1
-              }}
-            />
+            <Tooltip title='if you have any more explanation for your claim ' placement='right' arrow>
+              <TextField
+                {...register('statement')}
+                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                margin='dense'
+                variant='outlined'
+                fullWidth
+                label='Statement'
+                key='statement'
+                type='text'
+                multiline={true}
+                maxRows={4}
+              />
+            </Tooltip>
+            <Tooltip title='you should put the another site you made claim for' placement='right' arrow>
+              <TextField
+                {...register('sourceURI')}
+                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                margin='dense'
+                variant='outlined'
+                fullWidth
+                label='Source URI'
+                key='sourceURI'
+                type='text'
+              />
+            </Tooltip>
+            <Tooltip
+              title='option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
+              placement='right'
+              arrow
+            >
+              <TextField
+                {...register('confidence')}
+                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                margin='dense'
+                variant='outlined'
+                fullWidth
+                label='Confidence'
+                key='confidence'
+                type='number'
+                inputProps={{
+                  min: 0.0,
+                  max: 1.0,
+                  step: 0.1
+                }}
+              />
+            </Tooltip>
             {!(selectedClaim?.entType === 'CLAIM') && (
               <>
                 {watchClaim === 'rated' ? (
@@ -271,9 +342,11 @@ export const Form = ({
                       variant='outlined'
                       fullWidth
                     >
-                      {inputOptions.aspect.map((i: string) => (
+                      {inputOptions.aspect.map((i: string, index: number) => (
                         <MenuItem value={i} key={i}>
-                          {i}
+                          <Tooltip key={i} title={tooltips.aspect[index]} placement='right' arrow>
+                            <div> {i}</div>
+                          </Tooltip>
                         </MenuItem>
                       ))}
                     </TextField>
@@ -297,16 +370,18 @@ export const Form = ({
                     />
                   </>
                 ) : (
-                  <TextField
-                    {...register('object')}
-                    sx={{ ml: 1, mr: 1, width: '22ch' }}
-                    margin='dense'
-                    variant='outlined'
-                    fullWidth
-                    label='Object'
-                    key='object'
-                    type='text'
-                  />
+                  <Tooltip title='if you want to add any additional site belongs to you' placement='right' arrow>
+                    <TextField
+                      {...register('object')}
+                      sx={{ ml: 1, mr: 1, width: '22ch' }}
+                      margin='dense'
+                      variant='outlined'
+                      fullWidth
+                      label='Object'
+                      key='object'
+                      type='text'
+                    />
+                  </Tooltip>
                 )}
               </>
             )}
