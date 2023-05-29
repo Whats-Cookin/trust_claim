@@ -140,15 +140,16 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       {isSmallScreen && <SearchBar />}
 
       <BackgroundImages />
-      <form onSubmit={onSubmit} style={{ zIndex: 1 }}>
+      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
         <Box sx={styles.authContainer}>
           <Typography
-            sx={{ color: 'primary.main' }}
+            variant='h5'
             style={{
               textAlign: 'center',
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}
+            sx={{ color: 'primary.main' }}
           >
             Login
           </Typography>
