@@ -18,7 +18,6 @@ import { useMediaQuery } from '@mui/material'
 import SearchBar from '../../components/SearchBar'
 import { useTheme } from '@mui/material'
 
-
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
   const navigate = useNavigate()
