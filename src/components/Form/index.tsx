@@ -220,7 +220,6 @@ export const Form = ({
                 </MenuItem>
               ))}
             </TextField>
-
             <TextField
               {...register('statement')}
               sx={{ ml: 1, mr: 1, width: '22ch' }}

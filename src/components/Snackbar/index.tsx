@@ -1,8 +1,8 @@
-import MUISnackbar from '@mui/material/Snackbar'
+import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 
-const Snackbar = ({ isSnackbarOpen, snackbarMessage, toggleSnackbar }: any) => (
-  <MUISnackbar
+const CustomSnackbar = ({ isSnackbarOpen, snackbarMessage, toggleSnackbar }: any) => (
+  <Snackbar
     open={isSnackbarOpen}
     autoHideDuration={3000}
     onClose={() => toggleSnackbar(false)}
@@ -14,7 +14,7 @@ const Snackbar = ({ isSnackbarOpen, snackbarMessage, toggleSnackbar }: any) => (
     <Alert onClose={() => toggleSnackbar(false)} severity='info' sx={{ width: '100%' }}>
       {snackbarMessage}
     </Alert>
-  </MUISnackbar>
+  </Snackbar>
 )
 
-export default Snackbar
+export default CustomSnackbar

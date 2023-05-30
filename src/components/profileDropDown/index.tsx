@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Menu, IconButton, Button, Box, Fade, Tooltip, Hidden } from '@mui/material'
+import { Menu, IconButton, Button, Box, Fade, Tooltip } from '@mui/material'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import { useNavigate } from 'react-router-dom'
 
@@ -7,7 +7,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   const navigate = useNavigate()
   const [disableTooltip, setDisableTooltip] = useState(false)
   const [open, setOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
   const openMenu = Boolean(anchorEl)
 
   const handleNavigate = (path: string) => {
@@ -24,13 +24,16 @@ const ProfileDropdown = ({ isAuth }: any) => {
 
   useEffect(() => {
     setDisableTooltip(openMenu)
-  }, [openMenu, setDisableTooltip])
+  }, [openMenu])
+
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
+
   useEffect(() => {
     if (disableTooltip) {
       setOpen(false)

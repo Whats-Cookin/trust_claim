@@ -1,11 +1,8 @@
-import { Paper } from '@mui/material'
-import { InputBase } from '@mui/material'
+import { Paper, InputBase, IconButton } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { IconButton } from '@mui/material'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/material'
 
 const SearchBar = () => {
   const navigate = useNavigate()
@@ -29,40 +26,38 @@ const SearchBar = () => {
       handleSearch()
     }
   }
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
-    <>
-      {' '}
-      <Paper
-        component='div'
+    <Paper
+      component='div'
+      sx={{
+        display: 'flex',
+        zIndex: 1,
+        m: isSmallScreen ? '80px auto 80px' : '0',
+        p: '0 4px',
+        alignItems: 'center',
+        width: '395px',
+        border: `1px solid ${theme.palette.primary.main}`,
+        borderRadius: '50px'
+      }}
+    >
+      <InputBase
+        type='search'
+        value={searchVal}
+        placeholder='Search a Claim'
+        onChange={e => setSearchVal(e.target.value)}
+        onKeyUp={handleSearchKeypress}
         sx={{
-          display: 'flex',
-          zIndex: 1,
-          m: isSmallScreen ? '80px auto 80px' : '0',
-          p: '0 4px',
-          alignItems: 'center',
-          width: '395px',
-          border: `1px solid ${theme.palette.primary.main}`,
-          borderRadius: '50px'
+          ml: 1,
+          flex: 1
         }}
-      >
-        <InputBase
-          type='search'
-          value={searchVal}
-          placeholder='Search a Claim'
-          onChange={e => setSearchVal(e.target.value)}
-          onKeyUp={handleSearchKeypress}
-          sx={{
-            ml: 1,
-            flex: 1
-          }}
-        />
-        <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-    </>
+      />
+      <IconButton type='button' sx={{ p: '10px' }} aria-label='search' onClick={handleSearch}>
+        <SearchIcon />
+      </IconButton>
+    </Paper>
   )
 }
 

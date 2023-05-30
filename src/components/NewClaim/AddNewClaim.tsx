@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Dialog from '@mui/material/Dialog'
 import IHomeProps from '../../containers/Form/types'
 import { Form } from '../Form'
@@ -16,17 +16,16 @@ const FormDialog = ({
   }
 
   return (
-    <div>
-      <Dialog open={open} onClose={handleClose}>
-        <Form
-          toggleSnackbar={toggleSnackbar}
-          setSnackbarMessage={setSnackbarMessage}
-          setLoading={setLoading}
-          selectedClaim={selectedClaim}
-          onCancel={handleClose}
-        />
-      </Dialog>
-    </div>
+    <Dialog open={open} onClose={handleClose}>
+      <Form
+        toggleSnackbar={toggleSnackbar}
+        setSnackbarMessage={setSnackbarMessage}
+        setLoading={setLoading}
+        selectedClaim={selectedClaim}
+        onCancel={handleClose}
+      />
+    </Dialog>
   )
 }
+
 export default FormDialog
