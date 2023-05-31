@@ -257,10 +257,10 @@ export const Form = ({
               error={Boolean(errors.claim)}
               helperText={errors.claim?.message}
             >
-              {inputOptions.claim.map((i: string, claimText: number) => (
-                <MenuItem value={i} key={i}>
-                  <Tooltip key={i} title={tooltips.claim[claimText]} placement='right' arrow>
-                    <Box sx={{ width: '100%', height: '100%' }}>{i}</Box>
+              {inputOptions.claim.map((claimText: string, index: number) => (
+                <MenuItem value={claimText} key={claimText}>
+                  <Tooltip key={claimText} title={tooltips.claim[index]} placement='right' arrow>
+                    <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
                   </Tooltip>
                 </MenuItem>
               ))}
@@ -275,10 +275,10 @@ export const Form = ({
                 variant='outlined'
                 fullWidth
               >
-                {inputOptions.howKnown.map((i: string, claimText: number) => (
-                  <MenuItem value={i} key={i}>
-                    <Tooltip key={i} title={tooltips.howKnown[claimText]} placement='right' arrow>
-                      <Box sx={{ width: '100%', height: '100%' }}>{i}</Box>
+                {inputOptions.howKnown.map((howKnownText: string, index: number) => (
+                  <MenuItem value={howKnownText} key={howKnownText}>
+                    <Tooltip key={howKnownText} title={tooltips.howKnown[index]} placement='right' arrow>
+                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
                     </Tooltip>
                   </MenuItem>
                 ))}
@@ -345,10 +345,10 @@ export const Form = ({
                         variant='outlined'
                         fullWidth
                       >
-                        {inputOptions.aspect.map((i: string, claimText: number) => (
-                          <MenuItem value={i} key={i}>
-                            <Tooltip key={i} title={tooltips.aspect[claimText]} placement='right' arrow>
-                              <Box sx={{ width: '100%', height: '100%' }}>{i}</Box>
+                        {inputOptions.aspect.map((aspectText: string, index: number) => (
+                          <MenuItem value={aspectText} key={aspectText}>
+                            <Tooltip key={aspectText} title={tooltips.aspect[index]} placement='right' arrow>
+                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
                             </Tooltip>
                           </MenuItem>
                         ))}
