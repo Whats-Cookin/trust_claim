@@ -331,7 +331,12 @@ export const Form = ({
           sx={{
             ml: 1,
             mr: 1,
-            width: '50%'
+            width: '50%',
+            bgcolor: 'praimary.main',
+            margin: '0 auto',
+            '&:hover': {
+              backgroundColor: '#00695f'
+            }
           }}
         >
           Submit
