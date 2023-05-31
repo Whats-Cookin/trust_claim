@@ -226,7 +226,7 @@ export const Form = ({
         <form onSubmit={onSubmit}>
           <Box sx={styles.inputFieldWrap}>
             <Tooltip
-              title='you should put your site or social media '
+              title='You should put your site or social media '
               placement='right'
               arrow
               sx={{ backgroundColor: '#009688' }}
@@ -245,26 +245,27 @@ export const Form = ({
                 helperText={errors.subject?.message}
               />
             </Tooltip>
-
-            <TextField
-              select
-              label='Claim'
-              {...register('claim', { required: { value: true, message: 'claim is required' } })}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              error={Boolean(errors.claim)}
-              helperText={errors.claim?.message}
-            >
-              {inputOptions.claim.map((claimText: string, index: number) => (
-                <MenuItem value={claimText} key={claimText}>
-                  <Tooltip key={claimText} title={tooltips.claim[index]} placement='right' arrow>
-                    <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
-                  </Tooltip>
-                </MenuItem>
-              ))}
-            </TextField>
+            <Tooltip title='For evaluation being made ' placement='right' arrow>
+              <TextField
+                select
+                label='Claim'
+                {...register('claim', { required: { value: true, message: 'claim is required' } })}
+                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                margin='dense'
+                variant='outlined'
+                fullWidth
+                error={Boolean(errors.claim)}
+                helperText={errors.claim?.message}
+              >
+                {inputOptions.claim.map((claimText: string, index: number) => (
+                  <MenuItem value={claimText} key={claimText}>
+                    <Tooltip title={tooltips.claim[index]} placement='right' arrow>
+                      <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
+                    </Tooltip>
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Tooltip>
             <Tooltip title='The method or source of the claim ' placement='right' arrow>
               <TextField
                 select
@@ -276,8 +277,8 @@ export const Form = ({
                 fullWidth
               >
                 {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                  <MenuItem value={howKnownText} key={howKnownText}>
-                    <Tooltip key={howKnownText} title={tooltips.howKnown[index]} placement='right' arrow>
+                  <MenuItem value={howKnownText}>
+                    <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
                       <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
                     </Tooltip>
                   </MenuItem>
@@ -298,7 +299,7 @@ export const Form = ({
                 maxRows={4}
               />
             </Tooltip>
-            <Tooltip title='you should put the another site you made claim for' placement='right' arrow>
+            <Tooltip title='You should put the another site you made claim for' placement='right' arrow>
               <TextField
                 {...register('sourceURI')}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -311,7 +312,7 @@ export const Form = ({
               />
             </Tooltip>
             <Tooltip
-              title='option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
+              title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
               placement='right'
               arrow
             >
@@ -347,7 +348,7 @@ export const Form = ({
                       >
                         {inputOptions.aspect.map((aspectText: string, index: number) => (
                           <MenuItem value={aspectText} key={aspectText}>
-                            <Tooltip key={aspectText} title={tooltips.aspect[index]} placement='right' arrow>
+                            <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
                               <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
                             </Tooltip>
                           </MenuItem>
@@ -378,7 +379,7 @@ export const Form = ({
                     />
                   </>
                 ) : (
-                  <Tooltip title='if you want to add any additional site belongs to you' placement='right' arrow>
+                  <Tooltip title='If you want to add any additional site belongs to you' placement='right' arrow>
                     <TextField
                       {...register('object')}
                       sx={{ ml: 1, mr: 1, width: '22ch' }}
