@@ -28,3 +28,4 @@ const FormDialog = ({
     </div>
   )
 }
+export default FormDialog
