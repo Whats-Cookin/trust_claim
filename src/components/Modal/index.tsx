@@ -18,7 +18,7 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
           Claim
         </Typography>
         {selectedClaim &&
-          Object.keys(selectedClaim).map(key =>
+          Object.keys(selectedClaim).map((key: string) =>
             excludedFields.includes(key) ? null : (
               <Box sx={styles.detailField} key={key}>
                 <Typography component='h2' sx={{ fontWeight: 'bold' }}>

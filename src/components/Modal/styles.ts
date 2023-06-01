@@ -24,7 +24,7 @@ const styles = {
     columnGap: '40px',
     borderBottom: '1px solid #000',
     padding: '5px 10px',
-    background: '#eeeeee'
+    backgroud: '#eeeeee'
   },
   fieldContent: {
     overflow: 'hidden',
