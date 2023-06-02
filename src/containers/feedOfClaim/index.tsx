@@ -1,25 +1,14 @@
 import * as React from 'react'
 import { styled } from '@mui/material/styles'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardMedia from '@mui/material/CardMedia'
-import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import Collapse from '@mui/material/Collapse'
-import Avatar from '@mui/material/Avatar'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
+import { Card, CardContent, CardActions, IconButton, Collapse, Typography } from '@mui/material'
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
-import { Box, positions } from '@mui/system'
+import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { useNavigate } from 'react-router-dom'
-import IHomeProps from './types'
+import { IHomeProps, ExpandMoreProps } from './types'
 import mockData from '../../../mocks/mockDate'
 import { useEffect, useState } from 'react'
 
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean
-}
 type MockClaim = {
   id: number
   nodeUri: string
@@ -164,7 +153,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
             </Collapse>
 
             <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
-              <SchemaIcon sx={{ color: 'primary.main', right: 0 }} onClick={() => navigate('/search?query=hi')} />
+              <SchemaIcon sx={{ color: 'primary.main', right: 0 }} />
               <ExpandMore
                 expand={expanded === index}
                 onClick={() => handleExpandClick(index)}
