@@ -134,7 +134,21 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     <>
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
-        <Box sx={styles.authContainer}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: 2,
+            width: '100%',
+            padding: '2rem',
+            maxWidth: '430px',
+            marginTop: { xs: 15, md: 0 },
+            background: '#FFFFFF',
+            boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
+            zIndex: 20,
+            borderRadius: '10px'
+          }}
+        >
           <Typography
             variant='h5'
             style={{
