@@ -86,6 +86,11 @@ const Navbar = ({ isAuth }: any) => {
               </>
             )}
           </Toolbar>
+          {isSmallScreen && (
+            <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
+              <SearchBar />
+            </Toolbar>
+          )}
         </AppBar>
       </Box>
     </>

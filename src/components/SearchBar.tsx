@@ -4,7 +4,6 @@ import SearchIcon from '@mui/icons-material/Search'
 import { IconButton } from '@mui/material'
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material'
 
 const SearchBar = () => {
@@ -29,7 +28,6 @@ const SearchBar = () => {
       handleSearch()
     }
   }
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <>
@@ -39,7 +37,7 @@ const SearchBar = () => {
         sx={{
           display: 'flex',
           zIndex: 1,
-          m: isSmallScreen ? '80px auto 80px' : '0',
+          m: '0',
           p: '0 4px',
           alignItems: 'center',
           width: '395px',

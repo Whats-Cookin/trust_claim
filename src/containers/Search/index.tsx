@@ -3,7 +3,6 @@ import Cytoscape from 'cytoscape'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import NewClaim from '../../components/NewClaim/AddNewClaim'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
@@ -11,12 +10,6 @@ import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import { parseNode, parseNodes } from './graph.utils'
-import { Paper, TextField } from '@mui/material'
-import { InputBase } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import { IconButton } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
-import SearchBar from '../../components/SearchBar'
 import { useTheme } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
@@ -214,8 +207,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
@@ -227,7 +218,6 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-      {isSmallScreen && <SearchBar />}
 
       <Box ref={ref} sx={styles.cy} />
     </Container>

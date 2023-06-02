@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import axios from '../../axiosInstance'
 import { useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
@@ -11,14 +11,11 @@ import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
-import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
 import { TextField } from '@mui/material'
-import SearchBar from '../../components/SearchBar'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -133,12 +130,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   return (
     <>
-      {isSmallScreen && <SearchBar />}
-
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
         <Box sx={styles.authContainer}>
