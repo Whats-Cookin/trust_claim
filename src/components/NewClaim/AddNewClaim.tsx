@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import IHomeProps from '../../containers/Form/types'
 import { Form } from '../Form'
+
 const FormDialog = ({
   open,
   setOpen,
@@ -13,7 +14,6 @@ const FormDialog = ({
   const handleClose = () => {
     setOpen(false)
   }
-
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>

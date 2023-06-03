@@ -6,13 +6,13 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material'
-
 const SearchBar = () => {
   const navigate = useNavigate()
   const search = useLocation().search
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const theme = useTheme()
+
   const handleSearch = async () => {
     window.localStorage.removeItem('claims')
     if (searchVal.trim() !== '') {
@@ -22,13 +22,13 @@ const SearchBar = () => {
       })
     }
   }
+
   const handleSearchKeypress = async (event: any) => {
     if (event.key === 'Enter') {
       handleSearch()
     }
   }
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   return (
     <>
       {' '}
@@ -63,5 +63,4 @@ const SearchBar = () => {
     </>
   )
 }
-
 export default SearchBar

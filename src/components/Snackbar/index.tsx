@@ -1,6 +1,5 @@
 import MUISnackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
-
 const Snackbar = ({ isSnackbarOpen, snackbarMessage, toggleSnackbar }: any) => (
   <MUISnackbar
     open={isSnackbarOpen}
