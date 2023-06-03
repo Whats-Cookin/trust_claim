@@ -11,18 +11,6 @@ const styles = {
     width: '100vw',
     height: '100vh',
     zIndex: 1
-  },
-
-  searchFieldContainer: {
-    position: 'absolute',
-    top: '80px',
-    margin: '2rem',
-
-    width: '100%',
-    zIndex: 20,
-    display: 'flex',
-    columnGap: '5px',
-    backgroundColor: 'white'
   }
 }
 

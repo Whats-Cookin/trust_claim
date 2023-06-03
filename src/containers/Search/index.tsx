@@ -3,7 +3,6 @@ import Cytoscape from 'cytoscape'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import NewClaim from '../../components/NewClaim/AddNewClaim'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
@@ -112,22 +111,6 @@ const Search = (homeProps: IHomeProps) => {
       await fetchClaims(encodeURIComponent(searchVal), true, page.current)
       //page.current = 2
     }
-  }
-
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
-  const reset = () => {
-    navigate('/search')
-    setSearchVal('')
-    const ref = useRef<any>(null)
-    const page = useRef(1)
-    page.current = 1
-    if (!cy) return
-    cy.elements().remove()
   }
 
   const handleNodeClick = async (event: any) => {
