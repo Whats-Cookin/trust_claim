@@ -35,4 +35,5 @@ const styles = {
     margin: '20px 0 5px auto'
   }
 }
+
 export default styles
