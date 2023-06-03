@@ -21,7 +21,7 @@ const styles = {
     alignItems: 'center',
     borderBottom: '1px solid #000',
     padding: '5px 10px',
-    backgroud: '#eeeeee'
+    background: '#eeeeee'
   },
   fieldContent: {
     overflow: 'hidden',
@@ -32,5 +32,4 @@ const styles = {
     margin: '20px 0 5px auto'
   }
 }
-
 export default styles
