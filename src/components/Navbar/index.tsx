@@ -11,7 +11,6 @@ import { useState, useRef } from 'react'
 import Responsive from './NotAuthDropdown'
 import SearchBar from '../SearchBar'
 import { useTheme } from '@mui/material'
-
 const Navbar = ({ isAuth }: any) => {
   const navigate = useNavigate()
   const search = useLocation().search
@@ -20,7 +19,6 @@ const Navbar = ({ isAuth }: any) => {
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const page = useRef(1)
   const theme = useTheme()
-
   const handleSearch = async () => {
     window.localStorage.removeItem('claims')
     if (searchVal.trim() !== '') {
@@ -30,12 +28,12 @@ const Navbar = ({ isAuth }: any) => {
       })
     }
   }
-
   const handleSearchKeypress = async (event: any) => {
     if (event.key === 'Enter') {
       handleSearch()
     }
   }
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
@@ -59,7 +57,6 @@ const Navbar = ({ isAuth }: any) => {
                 <ProfileDropdown />
               </>
             )}
-
             {!isAuth && (
               <>
                 {isSmallScreen && <Responsive />}
@@ -90,4 +87,5 @@ const Navbar = ({ isAuth }: any) => {
     </>
   )
 }
+
 export default Navbar

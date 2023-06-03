@@ -1,16 +1,15 @@
-import React from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MUIModal from '@mui/material/Modal'
+
 import { camelCaseToSimpleString } from '../../utils/string.utils'
+
 import styles from './styles'
 
 const Modal = ({ open, setOpen, selectedClaim }: any) => {
   const handleClose = () => setOpen(false)
   if (!selectedClaim) return null
-
   const excludedFields = ['id', 'userId', 'issuerId', 'issuerIdType', 'createdAt', 'lastUpdatedAt', 'effectiveDate']
-
   return (
     <MUIModal open={open} onClose={handleClose}>
       <Box sx={{ ...styles.container, maxHeight: '80vh' }}>
@@ -34,5 +33,4 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
     </MUIModal>
   )
 }
-
 export default Modal
