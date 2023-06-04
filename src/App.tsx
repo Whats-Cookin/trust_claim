@@ -10,6 +10,7 @@ import Search from './containers/Search'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Box from '@mui/material/Box'
+import FeedClaim from './containers/feedOfClaim/index'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -31,7 +32,7 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/search')
+      navigate('/feed')
     }
   }, [])
 
@@ -91,6 +92,7 @@ const App = () => {
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
           <Routes>
+            <Route path='feed' element={<FeedClaim {...commonProps} />} />
             <Route path='search' element={<Search {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
