@@ -52,7 +52,9 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
       resources: ['ceramic://*?model=kjzl6hvfrbw6c7f8zr4bdyzfumj7hv7r9i7dbu57isrzezqjuetkum2885p9agc']
     })
     // Set the session in localStorage.
-    localStorage.setItem('did', session.serialize())
+    if (session) {
+        localStorage.setItem('did', session.serialize())
+    }
   }
 
   // const resolver = {
@@ -60,9 +62,10 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   //   ...ThreeIdResolver.getResolver(ceramic),
   // }
 
-  // Set our Ceramic DID to be our session DID.
-  compose.setDID(session.did)
-  ceramic.did = session.did
-
+  if (session) {
+      // Set our Ceramic DID to be our session DID.
+      compose.setDID(session.did)
+      ceramic.did = session.did
+  }
   return session
 }
