@@ -42,7 +42,8 @@ const SearchBar = () => {
           m: isSmallScreen ? '80px auto 80px' : '0',
           p: '0 4px',
           alignItems: 'center',
-          width: '395px',
+          width: '100%',
+          maxWidth: '395px',
           border: `1px solid ${theme.palette.primary.main}`,
           borderRadius: '50px'
         }}

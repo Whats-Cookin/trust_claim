@@ -109,22 +109,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }
 
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
-  const reset = () => {
-    navigate('/search')
-    setSearchVal('')
-    const ref = useRef<any>(null)
-    const page = useRef(1)
-    page.current = 1
-    if (!cy) return
-    cy.elements().remove()
-  }
-
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
     await fetchClaims(event.target.data('id'), false, page.current)
