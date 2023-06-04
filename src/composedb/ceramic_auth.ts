@@ -52,6 +52,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
       resources: ['ceramic://*?model=kjzl6hvfrbw6c7f8zr4bdyzfumj7hv7r9i7dbu57isrzezqjuetkum2885p9agc']
     })
     // Set the session in localStorage.
+    console.log("We got a did and authorized it: " + JSON.stringify(session.serialize()))
     localStorage.setItem('did', session.serialize())
   }
 
@@ -61,6 +62,7 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   // }
 
   // Set our Ceramic DID to be our session DID.
+  console.log("Setting the did for composedb to " + session.did)
   compose.setDID(session.did)
   ceramic.did = session.did
 
