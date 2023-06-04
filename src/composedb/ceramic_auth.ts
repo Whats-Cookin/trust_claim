@@ -53,8 +53,10 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     })
     // Set the session in localStorage.
     if (session) {
+        console.log("We got a did and authorized it: " + JSON.stringify(session.serialize()))
         localStorage.setItem('did', session.serialize())
     }
+
   }
 
   // const resolver = {
@@ -64,8 +66,15 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
 
   if (session) {
       // Set our Ceramic DID to be our session DID.
+      console.log("Setting the did for composedb to " + session.did)
       compose.setDID(session.did)
       ceramic.did = session.did
   }
+
+  // Set our Ceramic DID to be our session DID.
+  console.log("Setting the did for composedb to " + session.did)
+  compose.setDID(session.did)
+  ceramic.did = session.did
+
   return session
 }
