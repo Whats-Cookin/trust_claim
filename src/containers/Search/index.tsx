@@ -86,7 +86,7 @@ const Search = (homeProps: IHomeProps) => {
       cy.layout({
         name: 'circle',
         directed: true,
-        padding: 70,
+        padding: 110,
         animate: true,
         animationDuration: 1000
       }).run()

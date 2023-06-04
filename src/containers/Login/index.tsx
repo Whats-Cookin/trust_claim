@@ -142,7 +142,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             width: '100%',
             padding: '2rem',
             maxWidth: '430px',
-            marginTop: { xs: 15, md: 0 },
+            marginTop: { xs: 15, md: 8 },
             background: '#FFFFFF',
             boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
             zIndex: 20,
