@@ -70,15 +70,10 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
 
   if (session) {
       // Set our Ceramic DID to be our session DID.
-      console.log("Setting the did for composedb to " + session.did)
+      console.log("Setting the did for composedb to " + JSON.stringify(session.did) + " authenticated? " + session.did.authenticated)
       compose.setDID(session.did)
       ceramic.did = session.did
   }
-
-  // Set our Ceramic DID to be our session DID.
-  console.log("Setting the did for composedb to " + session.did)
-  compose.setDID(session.did)
-  ceramic.did = session.did
 
   return session
 }
