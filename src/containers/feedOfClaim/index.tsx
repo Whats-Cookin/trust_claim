@@ -89,7 +89,24 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const navigate = useNavigate()
   const [claims, setClaims] = useState<MockClaim[]>([])
+  const [claimSelected, setClaimSelected] = useState<number | null>(null)
 
+  const handleschame = async (claimId: number) => {
+    window.localStorage.removeItem('claims')
+    setClaimSelected(claimId)
+    navigate({
+      pathname: '/search',
+      search: `?query=${claimId}`
+    })
+  }
+  // const handleschame = async (claimId: number) => {
+  //   window.localStorage.removeItem('claims');
+  //   setClaimSelected(claimId);
+  //   navigate({
+  //     pathname: '/search',
+  //     search: `?query=${claimId}`
+  //   });
+  // };
   useEffect(() => {
     setClaims(mockData.nodes)
   }, [])
@@ -153,7 +170,10 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
             </Collapse>
 
             <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
-              <SchemaIcon sx={{ color: 'primary.main', right: 0 }} />
+              <SchemaIcon
+                sx={{ color: 'primary.main', right: 0, cursor: 'pointer' }}
+                onClick={() => handleschame(claim.id)}
+              />
               <ExpandMore
                 expand={expanded === index}
                 onClick={() => handleExpandClick(index)}

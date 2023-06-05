@@ -28,6 +28,8 @@ const Search = (homeProps: IHomeProps) => {
   const page = useRef(1)
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
+  const [claimId, setClaimId] = useState<number | null>(query ? Number(query) : null)
+
   const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -105,7 +107,7 @@ const Search = (homeProps: IHomeProps) => {
         search: `?query=${searchVal}`
       })
 
-      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
+      await fetchClaims(encodeURIComponent(searchVal), false, page.current)
       //page.current = 2
     }
   }
@@ -179,6 +181,12 @@ const Search = (homeProps: IHomeProps) => {
       fetchClaims(encodeURIComponent(query), true, page.current)
     }
   }, [query])
+  useEffect(() => {
+    const claimId = window.localStorage.getItem('claimId')
+    if (claimId) {
+      fetchClaims(claimId, false, page.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (!cy) {
