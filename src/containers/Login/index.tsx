@@ -36,6 +36,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const metamaskLink = document.getElementById('metamaskLink')
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
+    console.log("in handle auth, You have a token: " + accessToken)
     localStorage.setItem('accessToken', accessToken)
     localStorage.setItem('refreshToken', refreshToken)
     setLoading(false)
@@ -45,6 +46,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const navigate = useNavigate()
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
+
+  console.log("Hi this is Login comonent")
 
   useEffect(() => {
     if (githubAuthCode) {
@@ -67,16 +70,20 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }, [])
 
   const handleWalletAuth = async () => {
+    console.log("Hi this is handle wallet auth nice to meet you")
     const ethProvider = window.ethereum // import/get your web3 eth provider
     const addresses = await ethProvider.request({
       method: 'eth_requestAccounts'
     })
     const accountId = await getAccountId(ethProvider, addresses[0])
 
+    console.log("In handlewalletauth, accountId is " + accountId)
+
     if (accountId) {
       // User address is found, store and navigate to home page
       localStorage.setItem('ethAddress', accountId.address)
       try {
+        console.log("Trying to authenticate ceramic")
         await authenticateCeramic(ceramic, composeClient)
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
@@ -89,6 +96,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   const onSubmit = handleSubmit(async ({ email, password, ethAccountId }) => {
+    console.log("You pressed submit, congratulations")
     try {
       if (!email || !password) {
         toggleSnackbar(true)
@@ -113,6 +121,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   // Check if Metamask is installed
   let ethLoginOpt
+  console.log("Checking window ethereum which is metamask? " + window.ethereum.isMetaMask)
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
       <button id='loginButton' onClick={handleWalletAuth} style={styles.authbtn}>
@@ -188,7 +197,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           </Box>
           <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
             <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-            <Typography>Or, Login with </Typography>
+            <Typography>Or, login with </Typography>
             <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
           </Box>
           <Box>

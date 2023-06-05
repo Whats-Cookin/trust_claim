@@ -23,7 +23,7 @@ declare global {
 export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeClient) => {
   const sessionStr = localStorage.getItem('did') // for production you will want a better place than localStorage for your sessions.
   let session
-
+  console.log("In authenticate ceramic with sessionstr: " + sessionStr)
   if (sessionStr) {
     session = await DIDSession.fromSession(sessionStr)
   }
@@ -41,6 +41,8 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     })
     const accountId = await getAccountId(ethProvider, addresses[0])
     const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
+
+    console.log("got auth method: " + authMethod)
 
     /**
      * Create DIDSession & provide capabilities that we want to access.
