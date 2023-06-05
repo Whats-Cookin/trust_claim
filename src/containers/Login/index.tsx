@@ -36,7 +36,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const metamaskLink = document.getElementById('metamaskLink')
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
-    console.log("in handle auth, You have a token: " + accessToken)
+    console.log('in handle auth, You have a token: ' + accessToken)
     localStorage.setItem('accessToken', accessToken)
     localStorage.setItem('refreshToken', refreshToken)
     setLoading(false)
@@ -47,7 +47,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
 
-  console.log("Hi this is Login comonent")
+  console.log('Hi this is Login comonent')
 
   useEffect(() => {
     if (githubAuthCode) {
@@ -70,20 +70,20 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }, [])
 
   const handleWalletAuth = async () => {
-    console.log("Hi this is handle wallet auth nice to meet you")
+    console.log('Hi this is handle wallet auth nice to meet you')
     const ethProvider = window.ethereum // import/get your web3 eth provider
     const addresses = await ethProvider.request({
       method: 'eth_requestAccounts'
     })
     const accountId = await getAccountId(ethProvider, addresses[0])
 
-    console.log("In handlewalletauth, accountId is " + accountId)
+    console.log('In handlewalletauth, accountId is ' + accountId)
 
     if (accountId) {
       // User address is found, store and navigate to home page
       localStorage.setItem('ethAddress', accountId.address)
       try {
-        console.log("Trying to authenticate ceramic")
+        console.log('Trying to authenticate ceramic')
         await authenticateCeramic(ceramic, composeClient)
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
@@ -96,7 +96,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   const onSubmit = handleSubmit(async ({ email, password, ethAccountId }) => {
-    console.log("You pressed submit, congratulations")
+    console.log('You pressed submit, congratulations')
     try {
       if (!email || !password) {
         toggleSnackbar(true)

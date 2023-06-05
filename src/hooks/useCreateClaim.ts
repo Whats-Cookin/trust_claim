@@ -15,10 +15,10 @@ export function useCreateClaim() {
       const ethAddress = localStorage.getItem('ethAddress')
 
       if (did && ethAddress) {
-        console.log("User has did " + did + " and ethaddress " + ethAddress + " so publishing to ceramic")
+        console.log('User has did ' + did + ' and ethaddress ' + ethAddress + ' so publishing to ceramic')
         res = await PublishClaim(payload)
       } else {
-        console.log("No did, just publishing to prism")
+        console.log('No did, just publishing to prism')
         // if user is not auththicatesd with Metamask and/or do not have a did
         res = await axios.post('/api/claim', payload)
       }
