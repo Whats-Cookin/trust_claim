@@ -99,14 +99,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
       search: `?query=${claimId}`
     })
   }
-  // const handleschame = async (claimId: number) => {
-  //   window.localStorage.removeItem('claims');
-  //   setClaimSelected(claimId);
-  //   navigate({
-  //     pathname: '/search',
-  //     search: `?query=${claimId}`
-  //   });
-  // };
+
   useEffect(() => {
     setClaims(mockData.nodes)
   }, [])
