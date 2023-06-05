@@ -87,9 +87,7 @@ const App = () => {
             fontSize: 'calc(3px + 2vmin)',
             color: 'rgb(37, 3, 3)',
             overflow: 'hidden',
-            [theme.breakpoints.up('md')]: {
-              justifyContent: 'center'
-            }
+            justifyContent: 'center'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />

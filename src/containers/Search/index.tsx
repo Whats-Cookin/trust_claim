@@ -10,13 +10,8 @@ import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import { parseNode, parseNodes } from './graph.utils'
-import { Paper, TextField } from '@mui/material'
-import { InputBase } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-import { IconButton } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
-import SearchBar from '../../components/SearchBar'
 import { useTheme } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -33,6 +28,8 @@ const Search = (homeProps: IHomeProps) => {
   const page = useRef(1)
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
+  const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const updateClaims = (search: boolean, newClaims: any) => {
     if (!cy) return
@@ -92,7 +89,7 @@ const Search = (homeProps: IHomeProps) => {
       cy.layout({
         name: 'circle',
         directed: true,
-        padding: 30,
+        padding: isArange ? 110 : isSmallScreen ? 10 : 70,
         animate: true,
         animationDuration: 1000
       }).run()
@@ -197,8 +194,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   return (
     <Container sx={styles.container} maxWidth={false}>
       <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
@@ -210,7 +205,6 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-      {isSmallScreen && <SearchBar />}
 
       <Box ref={ref} sx={styles.cy} />
     </Container>
