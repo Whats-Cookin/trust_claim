@@ -131,7 +131,7 @@ export const Form = ({
         toggleSnackbar(true)
         setSnackbarMessage(message)
         if (isSuccess) {
-          navigate('search')
+          navigate('feed')
           reset()
         }
       } else {

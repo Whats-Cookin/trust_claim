@@ -46,7 +46,7 @@ const Navbar = ({ isAuth }: any) => {
             <Typography
               variant='h5'
               component='div'
-              onClick={() => navigate('/search')}
+              onClick={() => navigate('/feed')}
               sx={{
                 color: 'primary.main',
                 fontWeight: 'bold',
