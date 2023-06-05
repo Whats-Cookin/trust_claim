@@ -117,7 +117,7 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
   if (confidence) {
     variables['i']['content']['confidence'] = confidence
   }
-
+  console.log("about to execute query ")
   const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 
   if (response.errors) {

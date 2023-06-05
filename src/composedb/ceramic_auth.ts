@@ -55,6 +55,8 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     if (session) {
         console.log("We got a did and authorized it: " + JSON.stringify(session.serialize()))
         localStorage.setItem('did', session.serialize())
+    } else {
+        console.log("No did session for " + authMethod)
     }
 
   }
