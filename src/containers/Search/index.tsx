@@ -11,6 +11,7 @@ import IHomeProps from './types'
 import styles from './styles'
 import { parseNode, parseNodes } from './graph.utils'
 import { useTheme } from '@mui/material'
+import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -27,6 +28,8 @@ const Search = (homeProps: IHomeProps) => {
   const page = useRef(1)
   const [searchVal, setSearchVal] = useState<string>(query || '')
   const claimsPageMemo: any[] = []
+  const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const updateClaims = (search: boolean, newClaims: any) => {
     if (!cy) return
@@ -86,7 +89,7 @@ const Search = (homeProps: IHomeProps) => {
       cy.layout({
         name: 'circle',
         directed: true,
-        padding: 110,
+        padding: isArange ? 110 : isSmallScreen ? 10 : 70,
         animate: true,
         animationDuration: 1000
       }).run()
