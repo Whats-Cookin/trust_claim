@@ -121,7 +121,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
 
   // Check if Metamask is installed
   let ethLoginOpt
-  console.log("Checking window ethereum which is metamask? " + window.ethereum.isMetaMask)
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
       <button id='loginButton' onClick={handleWalletAuth} style={styles.authbtn}>
