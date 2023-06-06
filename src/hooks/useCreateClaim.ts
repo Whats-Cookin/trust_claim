@@ -4,7 +4,7 @@ import { PublishClaim } from '../composedb/compose'
 
 export function useCreateClaim() {
   const createClaim = useCallback(async (payload: any) => {
-    let res,
+    let res, claim,
       message = 'Something went wrong!',
       isSuccess = false
     try {
@@ -16,12 +16,23 @@ export function useCreateClaim() {
 
       if (did && ethAddress) {
         console.log("User has did " + did + " and ethaddress " + ethAddress + " so publishing to ceramic")
-        res = await PublishClaim(payload)
-      } else {
-        console.log("No did, just publishing to prism")
-        // if user is not auththicatesd with Metamask and/or do not have a did
-        res = await axios.post('/api/claim', payload)
+        try {
+           let claim = await PublishClaim(payload)
+        } catch (err) {
+           console.log("Error trying to publish claim to ceramic: " + err)
+        }
+      } 
+      // if we got a claim, include the address
+      if (claim) {
+         console.log("Published to ceramic! " + JSON.stringify(claim))
+         try {
+            payload['claimAddress'] = claim['data']['createLinkedClaim']['document']['id']
+            console.log('added claim address')
+         } catch (err) {
+            console.log("could not extract claim address")
+         }
       }
+      res = await axios.post('/api/claim', payload)
 
       if (res.status === 201) {
         message = 'Claim submitted successfully!'
