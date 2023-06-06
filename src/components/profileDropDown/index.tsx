@@ -19,6 +19,8 @@ const ProfileDropdown = ({ isAuth }: any) => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
+    localStorage.removeItem('did')
+
     handleNavigate('/login')
   }
 
