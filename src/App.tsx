@@ -21,13 +21,13 @@ const App = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  console.log("Hello, world")
+  console.log('Hello, world')
 
   const checkAuth = () => {
     const accessToken = localStorage.getItem('accessToken')
     const refreshToken = localStorage.getItem('refreshToken')
     const ethAddress = localStorage.getItem('ethAddress')
-    console.log("In check auth now")
+    console.log('In check auth now')
     if (ethAddress || (accessToken && refreshToken)) return true
     return false
   }
@@ -87,9 +87,7 @@ const App = () => {
             fontSize: 'calc(3px + 2vmin)',
             color: 'rgb(37, 3, 3)',
             overflow: 'hidden',
-            [theme.breakpoints.up('md')]: {
-              justifyContent: 'center'
-            }
+            justifyContent: 'center'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
