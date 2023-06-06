@@ -1,6 +1,5 @@
 const styles = {
   container: {
-    color: '#000000',
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -12,7 +11,6 @@ const styles = {
     bgcolor: 'background.paper',
     border: '2px solid #004',
     borderRadius: '4px',
-    boxShadow: 20,
     p: 4,
     overflow: 'hidden',
     overflowY: 'auto'
@@ -23,8 +21,7 @@ const styles = {
     alignItems: 'center',
     columnGap: '40px',
     borderBottom: '1px solid #000',
-    padding: '5px 10px',
-    backgroud: '#eeeeee'
+    padding: '5px 10px'
   },
   fieldContent: {
     overflow: 'hidden',
