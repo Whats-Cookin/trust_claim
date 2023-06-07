@@ -10,7 +10,6 @@ import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import { parseNode, parseNodes } from './graph.utils'
-import SearchBar from '../../components/SearchBar'
 import { useTheme } from '@mui/material'
 import { useMediaQuery } from '@mui/material'
 
