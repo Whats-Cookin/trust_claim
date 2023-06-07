@@ -120,7 +120,7 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
   console.log('about to execute query ')
   const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 
-  console.log("Response from composeclient: " + JSON.stringify(response))
+  console.log('Response from composeclient: ' + JSON.stringify(response))
   return response
 }
 

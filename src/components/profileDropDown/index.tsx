@@ -42,7 +42,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   return (
     <Box id='menu'>
       <Tooltip
-        title={<h2>menu</h2>}
+        title={undefined}
         disableFocusListener
         disableHoverListener={disableTooltip}
         disableTouchListener
@@ -74,7 +74,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
       </Tooltip>
 
       <Menu anchorEl={anchorEl} open={openMenu} onClose={handleClose} TransitionComponent={Fade}>
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ textAlign: 'center', width: '290px' }}>
           <Button
             sx={{
               width: '85%',
@@ -84,9 +84,9 @@ const ProfileDropdown = ({ isAuth }: any) => {
               boxShadow: 'none',
               border: 'none'
             }}
-            onClick={() => handleNavigate('/search')}
+            onClick={() => handleNavigate('/feed')}
           >
-            Search
+            Feed of claims
           </Button>
           <Button
             disableRipple={true}
@@ -102,6 +102,19 @@ const ProfileDropdown = ({ isAuth }: any) => {
             }}
           >
             Create Claim
+          </Button>
+          <Button
+            sx={{
+              width: '85%',
+              marginBottom: '1em',
+              color: '#2f0101',
+              backgroundColor: 'FAFAFA',
+              boxShadow: 'none',
+              border: 'none'
+            }}
+            onClick={() => handleNavigate('/search')}
+          >
+            Search
           </Button>
 
           <Button
