@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import axios from '../../axiosInstance'
 import { useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
@@ -11,14 +11,11 @@ import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
-import { useLocation } from 'react-router-dom'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
 import { TextField } from '@mui/material'
-import SearchBar from '../../components/SearchBar'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -36,6 +33,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const metamaskLink = document.getElementById('metamaskLink')
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
+    console.log('in handle auth, You have a token: ' + accessToken)
     localStorage.setItem('accessToken', accessToken)
     localStorage.setItem('refreshToken', refreshToken)
     setLoading(false)
@@ -45,6 +43,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const navigate = useNavigate()
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
+
+  console.log('Hi this is Login comonent')
 
   useEffect(() => {
     if (githubAuthCode) {
@@ -67,16 +67,20 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }, [])
 
   const handleWalletAuth = async () => {
+    console.log('Hi this is handle wallet auth nice to meet you')
     const ethProvider = window.ethereum // import/get your web3 eth provider
     const addresses = await ethProvider.request({
       method: 'eth_requestAccounts'
     })
     const accountId = await getAccountId(ethProvider, addresses[0])
 
+    console.log('In handlewalletauth, accountId is ' + accountId)
+
     if (accountId) {
       // User address is found, store and navigate to home page
       localStorage.setItem('ethAddress', accountId.address)
       try {
+        console.log('Trying to authenticate ceramic')
         await authenticateCeramic(ceramic, composeClient)
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
@@ -89,6 +93,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   const onSubmit = handleSubmit(async ({ email, password, ethAccountId }) => {
+    console.log('You pressed submit, congratulations')
     try {
       if (!email || !password) {
         toggleSnackbar(true)
@@ -133,15 +138,25 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     )
   }
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   return (
     <>
-      {isSmallScreen && <SearchBar />}
-
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
-        <Box sx={styles.authContainer}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: 2,
+            width: '100%',
+            padding: '2rem',
+            maxWidth: '430px',
+            marginTop: { xs: 15, md: 8 },
+            background: '#FFFFFF',
+            boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
+            zIndex: 20,
+            borderRadius: '10px'
+          }}
+        >
           <Typography
             variant='h5'
             style={{
@@ -188,7 +203,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           </Box>
           <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
             <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-            <Typography>Or, Login with </Typography>
+            <Typography>Or, login with </Typography>
             <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
           </Box>
           <Box>

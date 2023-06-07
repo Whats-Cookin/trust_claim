@@ -23,7 +23,7 @@ declare global {
 export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeClient) => {
   const sessionStr = localStorage.getItem('did') // for production you will want a better place than localStorage for your sessions.
   let session
-
+  console.log('In authenticate ceramic with sessionstr: ' + sessionStr)
   if (sessionStr) {
     session = await DIDSession.fromSession(sessionStr)
   }
@@ -42,6 +42,8 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
     const accountId = await getAccountId(ethProvider, addresses[0])
     const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
 
+    console.log('got auth method: ' + authMethod)
+
     /**
      * Create DIDSession & provide capabilities that we want to access.
      * @NOTE: Any production applications will want to provide a more complete list of capabilities.
@@ -52,7 +54,12 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
       resources: ['ceramic://*?model=kjzl6hvfrbw6c7f8zr4bdyzfumj7hv7r9i7dbu57isrzezqjuetkum2885p9agc']
     })
     // Set the session in localStorage.
-    localStorage.setItem('did', session.serialize())
+    if (session) {
+      console.log('We got a did and authorized it: ' + JSON.stringify(session.serialize()))
+      localStorage.setItem('did', session.serialize())
+    } else {
+      console.log('No did session for ' + authMethod)
+    }
   }
 
   // const resolver = {
@@ -60,9 +67,14 @@ export const authenticateCeramic = async (ceramic: CeramicApi, compose: ComposeC
   //   ...ThreeIdResolver.getResolver(ceramic),
   // }
 
-  // Set our Ceramic DID to be our session DID.
-  compose.setDID(session.did)
-  ceramic.did = session.did
+  if (session) {
+    // Set our Ceramic DID to be our session DID.
+    console.log(
+      'Setting the did for composedb to ' + JSON.stringify(session.did) + ' authenticated? ' + session.did.authenticated
+    )
+    compose.setDID(session.did)
+    ceramic.did = session.did
+  }
 
   return session
 }

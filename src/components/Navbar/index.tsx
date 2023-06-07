@@ -5,8 +5,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfileDropdown from '../profileDropDown/index'
-import { IconButton, InputBase, Paper, useMediaQuery } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
+import { useMediaQuery } from '@mui/material'
 import { useState, useRef } from 'react'
 import Responsive from './NotAuthDropdown'
 import SearchBar from '../SearchBar'
@@ -47,7 +46,7 @@ const Navbar = ({ isAuth }: any) => {
             <Typography
               variant='h5'
               component='div'
-              onClick={() => navigate('/search')}
+              onClick={() => navigate('/feed')}
               sx={{
                 color: 'primary.main',
                 fontWeight: 'bold',
@@ -88,6 +87,11 @@ const Navbar = ({ isAuth }: any) => {
               </>
             )}
           </Toolbar>
+          {isSmallScreen && (
+            <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
+              <SearchBar />
+            </Toolbar>
+          )}
         </AppBar>
       </Box>
     </>

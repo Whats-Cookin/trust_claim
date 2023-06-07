@@ -10,6 +10,7 @@ import Search from './containers/Search'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Box from '@mui/material/Box'
+import FeedClaim from './containers/feedOfClaim/index'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -20,10 +21,13 @@ const App = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  console.log('Hello, world')
+
   const checkAuth = () => {
     const accessToken = localStorage.getItem('accessToken')
     const refreshToken = localStorage.getItem('refreshToken')
     const ethAddress = localStorage.getItem('ethAddress')
+    console.log('In check auth now')
     if (ethAddress || (accessToken && refreshToken)) return true
     return false
   }
@@ -31,7 +35,7 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/search')
+      navigate('/feed')
     }
   }, [])
 
@@ -83,14 +87,13 @@ const App = () => {
             fontSize: 'calc(3px + 2vmin)',
             color: 'rgb(37, 3, 3)',
             overflow: 'hidden',
-            [theme.breakpoints.up('md')]: {
-              justifyContent: 'center'
-            }
+            justifyContent: 'center'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
           <Loader open={loading} />
           <Routes>
+            <Route path='feed' element={<FeedClaim {...commonProps} />} />
             <Route path='search' element={<Search {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />

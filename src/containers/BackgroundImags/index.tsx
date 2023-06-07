@@ -9,17 +9,17 @@ const BackgroundImages = () => {
       <CardMedia
         component='img'
         image={polygon1}
-        sx={{ width: { xs: '50%', md: '700px' }, position: 'absolute', top: '3%', left: '-10%' }}
+        sx={{ width: { xs: '50%', md: '450px' }, position: 'absolute', top: '3%', left: '-10%' }}
       />
       <CardMedia
         component='img'
         image={polygon2}
-        sx={{ width: { xs: '50%', md: '381px' }, position: 'absolute', top: '50%', right: '20%' }}
+        sx={{ width: { xs: '50%', md: '381px' }, position: 'absolute', top: '50%', right: '10%' }}
       />
       <CardMedia
         component='img'
         image={polygon3}
-        sx={{ width: { xs: '50%', md: '200px' }, position: 'absolute', right: { xs: '10%', md: '20%' }, top: '5%' }}
+        sx={{ width: { xs: '50%', md: '200px' }, position: 'absolute', right: { xs: '5%', md: '10%' }, top: '5%' }}
       />
     </>
   )
