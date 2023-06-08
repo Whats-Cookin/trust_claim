@@ -140,7 +140,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
         p: '10px',
         background: '#FFFFFF',
         ml: '130',
-        mt: '90px',
+        mt: isSmallScreen ? '140px' : '90px',
         boxShadow: 20,
         bgcolor: 'background.paper',
         flexDirection: 'column'
