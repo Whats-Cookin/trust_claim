@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -11,7 +11,8 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
-  FormHelperText
+  FormHelperText,
+  ListSubheader
 } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -31,12 +32,14 @@ const tooltips = {
     'Represents a claim asserting ownership or possession of the subject by an individual, organization, or entity',
     'Represents a claim asserting ownership or possession of the subject by an individual, organization, or entity'
   ],
-  aspect: [
+  aspectImpact: [
     ' Refers to the social impact or influence of the subject.',
     'Relates to the impact on climate or environmental factors.',
     ' Relates to the impact on work or employment-related aspects',
     ' Relates to the impact on financial aspects or economic factors.',
-    'Relates to the impact on education or learning.',
+    'Relates to the impact on education or learning.'
+  ],
+  aspectQuality: [
     'Relates to the technical quality or performance.',
     ' Relates to the aesthetic or visual quality.',
     ' Relates to the taste or flavor quality.',
@@ -51,12 +54,17 @@ const tooltips = {
     ' Relates to theological or religious aspects.',
     ' Relates to adventure or excitement',
     ' Relates to biographical or personal aspects.',
-    ' Relates to scientific accuracy or validity.',
+    ' Relates to scientific accuracy or validity.'
+  ],
+  aspectRisk: [
     ' Relates to the risk of safety or security concerns.',
-    ' Relates to the risk of reliability or trustworthiness.',
+    ' Relates to the risk of reliability or trustworthiness.'
+  ],
+  aspectRelationship: [
     ' Indicates a relationship where the subject works for another entity.',
     'Indicates a relationship where the subject is the same as another entity.'
   ],
+
   howKnown: [
     'The information is known directly from personal experience or firsthand knowledge.',
     'The information is known from someone else who has firsthand knowledge or experience',
@@ -158,13 +166,9 @@ export const Form = ({
     claim:
       selectedClaim?.entType === 'CLAIM'
         ? ['agree', 'disagree']
-        : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
-    aspect: [
-      'impact:social',
-      'impact:climate',
-      'impact:work',
-      'impact:financial',
-      'impact:educational',
+        : ['rated', 'same as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related to'],
+    aspectImpact: ['impact:social', 'impact:climate', 'impact:work', 'impact:financial', 'impact:educational'],
+    aspectQuality: [
       'quality:technical',
       'quality:asthetic',
       'quality:taste',
@@ -179,14 +183,10 @@ export const Form = ({
       'quality:theological',
       'quality:adventure',
       'quality:biographical',
-      'quality:scientific',
-      'risk:scam',
-      'risk:justice',
-      'risk:safety',
-      'risk:reliability',
-      'relationship:works-for',
-      'relationship:same-as'
+      'quality:scientific'
     ],
+    aspectRisk: ['risk:scam', 'risk:justice', 'risk:safety', 'risk:reliability'],
+    aspectRelationship: ['relationship:works-for', 'relationship:same-as'],
     howKnown: [
       'first_hand',
       'second_hand',
@@ -237,7 +237,7 @@ export const Form = ({
                 margin='dense'
                 variant='outlined'
                 fullWidth
-                label='Subject'
+                label='who this claim is about'
                 key='subject'
                 disabled={!!selectedClaim?.nodeUri}
                 type='text'
@@ -248,7 +248,7 @@ export const Form = ({
             <Tooltip title='For evaluation being made ' placement='right' arrow>
               <TextField
                 select
-                label='Claim'
+                label='Type of claim'
                 {...register('claim', { required: { value: true, message: 'claim is required' } })}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
                 margin='dense'
@@ -269,7 +269,7 @@ export const Form = ({
             <Tooltip title='The method or source of the claim ' placement='right' arrow>
               <TextField
                 select
-                label='How Known'
+                label='How do you know it?'
                 {...register('howKnown')}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
                 margin='dense'
@@ -306,7 +306,7 @@ export const Form = ({
                 margin='dense'
                 variant='outlined'
                 fullWidth
-                label='Source URI'
+                label='Link to Source'
                 key='sourceURI'
                 type='text'
               />
@@ -346,9 +346,41 @@ export const Form = ({
                         variant='outlined'
                         fullWidth
                       >
-                        {inputOptions.aspect.map((aspectText: string, index: number) => (
+                        {/* {inputOptions.aspectImpact.map((aspectText: string, index: number) => (
                           <MenuItem value={aspectText} key={aspectText}>
                             <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
+                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                            </Tooltip>
+                          </MenuItem>
+                        ))} */}
+                        <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.main' }}>Impact</ListSubheader>
+                        {inputOptions.aspectImpact.map((aspectText: string, index: number) => (
+                          <MenuItem value={aspectText} key={aspectText}>
+                            <Tooltip title={tooltips.aspectImpact[index]} placement='right' arrow>
+                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                            </Tooltip>
+                          </MenuItem>
+                        ))}
+                        <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.main' }}>Quality</ListSubheader>
+                        {inputOptions.aspectQuality.map((aspectText: string, index: number) => (
+                          <MenuItem value={aspectText} key={aspectText}>
+                            <Tooltip title={tooltips.aspectQuality[index]} placement='right' arrow>
+                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                            </Tooltip>
+                          </MenuItem>
+                        ))}
+                        <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.main' }}>Risk</ListSubheader>
+                        {inputOptions.aspectRisk.map((aspectText: string, index: number) => (
+                          <MenuItem value={aspectText} key={aspectText}>
+                            <Tooltip title={tooltips.aspectRisk[index]} placement='right' arrow>
+                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                            </Tooltip>
+                          </MenuItem>
+                        ))}
+                        <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.main' }}>Relationship</ListSubheader>
+                        {inputOptions.aspectRelationship.map((aspectText: string, index: number) => (
+                          <MenuItem value={aspectText} key={aspectText}>
+                            <Tooltip title={tooltips.aspectRelationship[index]} placement='right' arrow>
                               <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
                             </Tooltip>
                           </MenuItem>
