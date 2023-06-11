@@ -346,13 +346,6 @@ export const Form = ({
                         variant='outlined'
                         fullWidth
                       >
-                        {/* {inputOptions.aspectImpact.map((aspectText: string, index: number) => (
-                          <MenuItem value={aspectText} key={aspectText}>
-                            <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
-                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                            </Tooltip>
-                          </MenuItem>
-                        ))} */}
                         <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.main' }}>Impact</ListSubheader>
                         {inputOptions.aspectImpact.map((aspectText: string, index: number) => (
                           <MenuItem value={aspectText} key={aspectText}>
