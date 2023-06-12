@@ -6,74 +6,8 @@ import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { useNavigate } from 'react-router-dom'
 import { IHomeProps, ExpandMoreProps } from './types'
-import mockData from '../../../mocks/mockDate'
 import { useEffect, useState } from 'react'
-
-type MockClaim = {
-  id: number
-  nodeUri: string
-  name: string
-  entType: string
-  descrip: string
-  image: null
-  thumbnail: string
-  edgesFrom: {
-    id: number
-    claimId: number
-    startNodeId: number
-    endNodeId: number
-    label: string
-    thumbnail: null
-    claim: {
-      id: number
-      subject: string
-      claim: string
-      object: string
-      amt: null
-      aspect: string
-      author: null
-      claimAddress: null
-      confidence: number
-      createdAt: string
-      curator: null
-      dateObserved: null
-      digestMultibase: null
-      effectiveDate: null
-      howKnown: string
-      howMeasured: null
-      intendedAudience: null
-      issuerId: string
-      issuerIdType: string
-      lastUpdatedAt: string
-      proof: null
-      respondAt: null
-      score: number
-      sourceURI: string
-      stars: null
-      statement: string
-      unit: null
-    }
-    startNode: {
-      id: number
-      nodeUri: string
-      name: string
-      entType: string
-      descrip: string
-      image: null
-      thumbnail: string
-    }
-    endNode: {
-      id: number
-      nodeUri: string
-      name: string
-      entType: string
-      descrip: string
-      image: null
-      thumbnail: string
-    }
-  }[]
-  edgesTo: never[]
-}
+import axios from '../../axiosInstance'
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
@@ -88,8 +22,22 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const navigate = useNavigate()
-  const [claims, setClaims] = useState<MockClaim[]>([])
+  const [claims, setClaims] = useState<any>(null)
   const [claimSelected, setClaimSelected] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/nodes')
+        const data = response.data
+        setClaims(data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    fetchData() // Call the fetchData function
+  }, [])
 
   const handleschame = async (claimId: number) => {
     window.localStorage.removeItem('claims')
@@ -100,22 +48,23 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
     })
   }
 
-  useEffect(() => {
-    setClaims(mockData.nodes)
-  }, [])
+  const formatClaimText = (claim: any) => {
+    const Style = { color: '#009688' }
 
-  const formatClaimText = (node: MockClaim) => {
-    return node.edgesFrom.map(edge => {
-      const Style = { color: '#009688' } // Define the style object for the subject
-      const subject = <span style={Style}>{edge.startNode.nodeUri}</span>
-      const claimText = <span style={Style}>{edge.claim.claim}</span>
-      const source = <span style={Style}>{edge.endNode.nodeUri}</span>
-      return (
-        <>
-          {subject} claimed {claimText} about {source}
-        </>
-      )
-    })
+    // Retrieve the subject from edgesTo
+    const subject = <span style={Style}> {claim.edgesFrom[0]?.claim?.subject || ''}</span>
+
+    // Retrieve the claim text from the current claim
+    const claimText = <span style={Style}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+
+    // Retrieve the source from edgesFrom
+    const source = <span style={Style}> {claim.edgesFrom[0]?.endNode?.name || ''}</span>
+
+    return (
+      <>
+        {subject && <span style={Style}>{subject}</span>} got {claimText} claim from {source}
+      </>
+    )
   }
 
   const [expanded, setExpanded] = React.useState<number | null>(null)
@@ -142,44 +91,45 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
         flexDirection: 'column'
       }}
     >
-      {claims.map((claim, index) => (
-        <div key={claim.id}>
-          <Card
-            sx={{
-              maxWidth: 'fit',
-              height: 'fit',
-              m: '20px',
-              borderRadius: '20px',
-              border: '2px solid #009688',
-              display: 'flex'
-            }}
-          >
-            <CardContent>
-              <Typography sx={{ padding: '5px 0 0 5px' }}>{formatClaimText(claim)}</Typography>
-            </CardContent>
+      {claims &&
+        claims.map((claim: any, index: number) => (
+          <div key={claim.id}>
+            <Card
+              sx={{
+                maxWidth: 'fit',
+                height: 'fit',
+                m: '20px',
+                borderRadius: '20px',
+                border: '2px solid #009688',
+                display: 'flex'
+              }}
+            >
+              <CardContent>
+                <Typography sx={{ padding: '5px 0 0 5px' }}>{formatClaimText(claim)}</Typography>
+              </CardContent>
 
-            <Collapse in={expanded === index} timeout='auto' unmountOnExit>
-              <CardContent sx={{ display: 'block' }}></CardContent>
-            </Collapse>
+              <Collapse in={expanded === index} timeout='auto' unmountOnExit>
+                <CardContent sx={{ display: 'block' }}></CardContent>
+              </Collapse>
 
-            <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
-              <SchemaIcon
-                sx={{ color: 'primary.main', right: 0, cursor: 'pointer' }}
-                onClick={() => handleschame(claim.id)}
-              />
-              <ExpandMore
-                expand={expanded === index}
-                onClick={() => handleExpandClick(index)}
-                aria-expanded={expanded === index}
-                aria-label='show more'
-                sx={{ marginLeft: 'auto', display: 'block', right: '10px' }}
-              >
-                <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
-              </ExpandMore>
-            </CardActions>
-          </Card>
-        </div>
-      ))}
+              <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
+                <SchemaIcon
+                  sx={{ color: 'primary.main', right: 0, cursor: 'pointer' }}
+                  onClick={() => handleschame(claim.id)}
+                />
+                <ExpandMore
+                  expand={expanded === index}
+                  onClick={() => handleExpandClick(index)}
+                  aria-expanded={expanded === index}
+                  aria-label='show more'
+                  sx={{ marginLeft: 'auto', display: 'block', right: '10px' }}
+                >
+                  <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
+                </ExpandMore>
+              </CardActions>
+            </Card>
+          </div>
+        ))}
     </Box>
   )
 }

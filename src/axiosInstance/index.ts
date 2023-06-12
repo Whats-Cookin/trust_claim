@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios'
 import { BACKEND_BASE_URL } from '../utils/settings'
 
+const baseURL = process.env.NODE_ENV === 'production' ? BACKEND_BASE_URL : 'http://localhost:3000'
+
 const instance = axios.create({
   baseURL: BACKEND_BASE_URL,
   timeout: 10000
