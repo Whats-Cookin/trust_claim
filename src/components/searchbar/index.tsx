@@ -31,19 +31,19 @@ const SearchBar = () => {
 
   return (
     <>
-      {' '}
       <Paper
         component='div'
         sx={{
           display: 'flex',
-          zIndex: 1,
+          alignItems: 'center',
           m: '0',
           p: '0 4px',
-          alignItems: 'center',
           width: '100%',
           maxWidth: '395px',
           border: `1px solid ${theme.palette.primary.main}`,
-          borderRadius: '50px'
+          borderRadius: '50px',
+          marginLeft: 'auto',
+          margin: '16px'
         }}
       >
         <InputBase
