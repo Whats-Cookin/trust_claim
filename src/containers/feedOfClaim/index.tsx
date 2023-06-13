@@ -12,8 +12,6 @@ import node from '../../../db.json'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material'
 
-
-
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
   return <IconButton {...other} />
