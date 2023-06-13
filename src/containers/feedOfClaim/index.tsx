@@ -5,9 +5,10 @@ import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { useNavigate } from 'react-router-dom'
-import { IHomeProps, ExpandMoreProps } from './types'
+import { IHomeProps, ExpandMoreProps, Claim } from './types'
 import { useEffect, useState } from 'react'
 import axios from '../../axiosInstance'
+import node from '../../../db.json'
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
@@ -22,7 +23,7 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const navigate = useNavigate()
-  const [claims, setClaims] = useState<any>(null)
+  const [claims, setClaims] = useState<any[]>(node.nodes)
   const [claimSelected, setClaimSelected] = useState<number | null>(null)
 
   useEffect(() => {
@@ -51,13 +52,10 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
   const formatClaimText = (claim: any) => {
     const Style = { color: '#009688' }
 
-    // Retrieve the subject from edgesTo
     const subject = <span style={Style}> {claim.edgesFrom[0]?.claim?.subject || ''}</span>
 
-    // Retrieve the claim text from the current claim
     const claimText = <span style={Style}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
 
-    // Retrieve the source from edgesFrom
     const source = <span style={Style}> {claim.edgesFrom[0]?.endNode?.name || ''}</span>
 
     return (
@@ -91,45 +89,44 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
         flexDirection: 'column'
       }}
     >
-      {claims &&
-        claims.map((claim: any, index: number) => (
-          <div key={claim.id}>
-            <Card
-              sx={{
-                maxWidth: 'fit',
-                height: 'fit',
-                m: '20px',
-                borderRadius: '20px',
-                border: '2px solid #009688',
-                display: 'flex'
-              }}
-            >
-              <CardContent>
-                <Typography sx={{ padding: '5px 0 0 5px' }}>{formatClaimText(claim)}</Typography>
-              </CardContent>
+      {claims.map((claim: any, index: number) => (
+        <div key={claim.id}>
+          <Card
+            sx={{
+              maxWidth: 'fit',
+              height: 'fit',
+              m: '20px',
+              borderRadius: '20px',
+              border: '2px solid #009688',
+              display: 'flex'
+            }}
+          >
+            <CardContent>
+              <Typography sx={{ padding: '5px 0 0 5px' }}>{formatClaimText(claim)}</Typography>
+            </CardContent>
 
-              <Collapse in={expanded === index} timeout='auto' unmountOnExit>
-                <CardContent sx={{ display: 'block' }}></CardContent>
-              </Collapse>
+            <Collapse in={expanded === index} timeout='auto' unmountOnExit>
+              <CardContent sx={{ display: 'block' }}></CardContent>
+            </Collapse>
 
-              <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
-                <SchemaIcon
-                  sx={{ color: 'primary.main', right: 0, cursor: 'pointer' }}
-                  onClick={() => handleschame(claim.id)}
-                />
-                <ExpandMore
-                  expand={expanded === index}
-                  onClick={() => handleExpandClick(index)}
-                  aria-expanded={expanded === index}
-                  aria-label='show more'
-                  sx={{ marginLeft: 'auto', display: 'block', right: '10px' }}
-                >
-                  <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
-                </ExpandMore>
-              </CardActions>
-            </Card>
-          </div>
-        ))}
+            <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
+              <SchemaIcon
+                sx={{ color: 'primary.main', right: 0, cursor: 'pointer' }}
+                onClick={() => handleschame(claim.id)}
+              />
+              <ExpandMore
+                expand={expanded === index}
+                onClick={() => handleExpandClick(index)}
+                aria-expanded={expanded === index}
+                aria-label='show more'
+                sx={{ marginLeft: 'auto', display: 'block', right: '10px' }}
+              >
+                <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
+              </ExpandMore>
+            </CardActions>
+          </Card>
+        </div>
+      ))}
     </Box>
   )
 }
