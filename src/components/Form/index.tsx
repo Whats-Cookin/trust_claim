@@ -90,7 +90,7 @@ const data = {
     'biographical',
     'scientific'
   ],
-  test: ['Text', 'scam', 'justice', 'safety', 'reliability'],
+  test: ['Test', 'scam', 'justice', 'safety', 'reliability'],
   relationShip: ['RelationShip', 'works-for', 'same-as']
 }
 export default data

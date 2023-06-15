@@ -46,16 +46,13 @@ export default function MultipleSelectChip() {
     setPersonName(selectedValues)
   }
 
-  const use = personName.slice(1)
-
   useEffect(() => {
     console.log(personName)
-    console.log(use)
   }, [personName])
   return (
     <div>
       <FormControl sx={{ m: 1, width: 250 }}>
-        <InputLabel id='demo-multiple-chip-label'>Asp</InputLabel>
+        <InputLabel id='demo-multiple-chip-label'>Aspe</InputLabel>
         <Select
           multiple
           labelId='demo-multiple-chip-label'
@@ -98,6 +95,7 @@ export default function MultipleSelectChip() {
             ))}
           {personName[0] == ('Impact' || data.impact.includes('climate')) &&
             data.impact.map(name => (
+              // ('Impact' || 'social) .. tomorrow
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
