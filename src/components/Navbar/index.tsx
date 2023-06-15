@@ -8,7 +8,7 @@ import ProfileDropdown from '../profileDropDown/index'
 import { useMediaQuery } from '@mui/material'
 import { useState, useRef } from 'react'
 import Responsive from './NotAuthDropdown'
-import SearchBar from '../SearchBar'
+import SearchBar from '../searchbar'
 import { useTheme } from '@mui/material'
 
 const Navbar = ({ isAuth }: any) => {

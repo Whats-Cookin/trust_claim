@@ -25,9 +25,9 @@ const Search = (homeProps: IHomeProps) => {
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
-
   const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const special = useMediaQuery('(width:540px)')
 
   const updateClaims = (search: boolean, newClaims: any) => {
     if (!cy) return
@@ -87,13 +87,14 @@ const Search = (homeProps: IHomeProps) => {
       cy.layout({
         name: 'circle',
         directed: true,
-        padding: isArange ? 110 : isSmallScreen ? 10 : 70,
+        padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
         animate: true,
         animationDuration: 1000
       }).run()
       cy.center()
     }
   }
+
 
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
@@ -154,11 +155,13 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy])
 
+
   useEffect(() => {
     if (query && cy) {
       fetchClaims(encodeURIComponent(query), true, page.current)
     }
   }, [query, cy])
+
 
   useEffect(() => {
     if (!cy) {

@@ -1,9 +1,8 @@
+import React from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import MUIModal from '@mui/material/Modal'
-
 import { camelCaseToSimpleString } from '../../utils/string.utils'
-
 import styles from './styles'
 
 const Modal = ({ open, setOpen, selectedClaim }: any) => {

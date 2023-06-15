@@ -21,35 +21,22 @@ const styles = {
     backgroundColor: 'white',
     gap: '2%',
     width: '100%',
-
     alignItems: 'center',
     justifyContent: 'center'
-    // padding: "1rem",
   },
   ETHButton: {
-    textDecoration: 'none',
-    backgroundColor: 'white',
-    color: 'black',
-    margin: 'auto',
     width: '100%',
     borderRadius: '7px',
-    border: '2px solid #80B8BD',
     padding: '0.5rem',
-
     fontSize: '16px'
-    // display: "flex",
   },
   authLinkButton: {
     textDecoration: 'none',
-    margin: 'auto',
-    backgroundColor: 'white',
     color: 'black',
     width: '100%',
     display: 'flex',
-    alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '7px',
-    border: '2px solid #80B8BD',
 
     '&:hover': {
       backgroundColor: 'grey.300'

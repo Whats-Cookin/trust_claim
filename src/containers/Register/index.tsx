@@ -56,7 +56,6 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             })}
             fullWidth
             label='Email'
-            sx={styles.inputField}
             variant='filled'
             type='email'
             helperText={(errors.email?.message as string) || ''}
@@ -68,13 +67,12 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             })}
             fullWidth
             label='Password'
-            sx={styles.inputField}
             variant='filled'
             type='password'
             helperText={(errors.password?.message as string) || ''}
             error={!!errors.password}
           />
-          <Box sx={styles.submitButtonWrap}>
+          <Box>
             <Button type='submit' variant='contained' size='medium' sx={styles.submitButton}>
               Register
             </Button>
