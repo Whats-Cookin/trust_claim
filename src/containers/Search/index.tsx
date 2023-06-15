@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Cytoscape from 'cytoscape'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
@@ -15,7 +15,6 @@ import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
-  const navigate = useNavigate()
   const theme = useTheme()
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
@@ -26,10 +25,6 @@ const Search = (homeProps: IHomeProps) => {
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
-  const [searchVal, setSearchVal] = useState<string>(query || '')
-  const claimsPageMemo: any[] = []
-  // const [claimId, setClaimId] = useState<number | null>(query ? Number(query) : null)
-
   const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const special = useMediaQuery('(width:540px)')
@@ -100,19 +95,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }
 
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/search',
-        search: `?query=${searchVal}`
-      })
-
-      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
-      //page.current = 2
-    }
-  }
-
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
     await fetchClaims(event.target.data('id'), false, page.current)
@@ -173,15 +155,10 @@ const Search = (homeProps: IHomeProps) => {
   }, [cy])
 
   useEffect(() => {
-    if (cy && query) handleSearch()
-  }, [cy])
-
-  useEffect(() => {
-    if (query) {
-      setSearchVal(query)
+    if (query && cy) {
       fetchClaims(encodeURIComponent(query), true, page.current)
     }
-  }, [query])
+  }, [query, cy])
 
   useEffect(() => {
     if (!cy) {
