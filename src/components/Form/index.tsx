@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import MultipleSelectChip from '../Chip'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -69,6 +70,30 @@ const tooltips = {
     'The information is known through an integrated system or platform'
   ]
 }
+const data = {
+  impact: ['Impact', 'social', 'climate', 'work', 'financial', 'educational'],
+  quality: [
+    'Quality',
+    'technical',
+    'asthetic',
+    'taste',
+    'journalistic',
+    'academic',
+    'fun',
+    'usefulness',
+    'literary',
+    'relevance',
+    'self-improvment',
+    'historical',
+    'theological',
+    'adventure',
+    'biographical',
+    'scientific'
+  ],
+  test: ['Text', 'scam', 'justice', 'safety', 'reliability'],
+  relationShip: ['RelationShip', 'works-for', 'same-as']
+}
+export default data
 
 export const Form = ({
   toggleSnackbar,
@@ -337,23 +362,7 @@ export const Form = ({
                 {watchClaim === 'rated' ? (
                   <>
                     <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
-                      <TextField
-                        select
-                        label='Aspect'
-                        {...register('aspect')}
-                        sx={{ ml: 1, mr: 1, width: '22ch' }}
-                        margin='dense'
-                        variant='outlined'
-                        fullWidth
-                      >
-                        {inputOptions.aspect.map((aspectText: string, index: number) => (
-                          <MenuItem value={aspectText} key={aspectText}>
-                            <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
-                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                            </Tooltip>
-                          </MenuItem>
-                        ))}
-                      </TextField>
+                      <MultipleSelectChip />
                     </Tooltip>
 
                     <Controller
