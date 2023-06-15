@@ -95,7 +95,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }
 
-
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
     await fetchClaims(event.target.data('id'), false, page.current)
@@ -155,13 +154,11 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy])
 
-
   useEffect(() => {
     if (query && cy) {
       fetchClaims(encodeURIComponent(query), true, page.current)
     }
   }, [query, cy])
-
 
   useEffect(() => {
     if (!cy) {
