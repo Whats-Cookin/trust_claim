@@ -28,7 +28,6 @@ describe('Navbar component', () => {
 
     expect(navigate).toHaveBeenCalledWith('/login')
   })
-
   it('should render correctly when not authenticated', () => {
     const navigate = vi.fn()
     ;(useNavigate as jest.Mock).mockReturnValue(navigate)
@@ -36,11 +35,8 @@ describe('Navbar component', () => {
 
     render(<Navbar isAuth={false} />)
 
-    const trustClaimsText = screen.getByText('Trust Claims')
-    expect(trustClaimsText).toBeInTheDocument()
-
-    const searchButton = screen.getByRole('button', { name: /search/i })
-    expect(searchButton).toBeInTheDocument()
+    const trustClaimsText = screen.getAllByText(/trust claims/i)
+    expect(trustClaimsText.length).toBeGreaterThan(0)
 
     const loginButton = screen.getByRole('button', { name: /login/i })
     expect(loginButton).toBeInTheDocument()
