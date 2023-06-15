@@ -38,7 +38,6 @@ export default function MultipleSelectChip() {
 
     let selectedValues = value as string[]
 
-    // Truncate the selected values to a maximum of 2
     if (selectedValues.length > 2) {
       selectedValues = selectedValues.slice(0, 3)
     }
@@ -46,9 +45,6 @@ export default function MultipleSelectChip() {
     setPersonName(selectedValues)
   }
 
-  useEffect(() => {
-    console.log(personName)
-  }, [personName])
   return (
     <div>
       <FormControl sx={{ m: 1, width: 250 }}>
@@ -75,27 +71,30 @@ export default function MultipleSelectChip() {
                 {name}
               </MenuItem>
             ))}
-          {personName[0] == ('Quality' || data.quality.includes('journalistic')) &&
+          {(personName[0] == ('Quality' || data.quality.includes('journalistic')) ||
+            personName.some(item => data.quality.includes(item))) &&
             data.quality.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {personName[0] == ('Test' || data.test.includes('justice')) &&
+          {(personName[0] == ('Test' || data.test.includes('justice')) ||
+            personName.some(item => data.test.includes(item))) &&
             data.test.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {personName[0] == ('RelationShip' || data.relationShip.includes('same-as')) &&
+          {(personName[0] == ('RelationShip' || data.relationShip.includes('same-as')) ||
+            personName.some(item => data.relationShip.includes(item))) &&
             data.relationShip.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {personName[0] == ('Impact' || data.impact.includes('climate')) &&
+          {(personName[0] == ('Impact' || data.impact.includes('climate')) ||
+            personName.some(item => data.impact.includes(item))) &&
             data.impact.map(name => (
-              // ('Impact' || 'social) .. tomorrow
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
