@@ -71,9 +71,8 @@ const tooltips = {
   ]
 }
 const data = {
-  impact: ['Impact', 'social', 'climate', 'work', 'financial', 'educational'],
+  impact: ['social', 'climate', 'work', 'financial', 'educational'],
   quality: [
-    'Quality',
     'technical',
     'asthetic',
     'taste',
@@ -90,8 +89,8 @@ const data = {
     'biographical',
     'scientific'
   ],
-  test: ['Test', 'scam', 'justice', 'safety', 'reliability'],
-  relationShip: ['RelationShip', 'works-for', 'same-as']
+  test: ['scam', 'justice', 'safety', 'reliability'],
+  relationShip: ['works-for', 'same-as']
 }
 export default data
 

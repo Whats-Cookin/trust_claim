@@ -8,6 +8,7 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Chip from '@mui/material/Chip'
 import data from './Form'
+import CancelIcon from '@mui/icons-material/Cancel'
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -39,12 +40,15 @@ export default function MultipleSelectChip() {
     let selectedValues = value as string[]
 
     if (selectedValues.length > 2) {
-      selectedValues = selectedValues.slice(0, 3)
+      selectedValues = selectedValues.slice(0, 2)
     }
 
     setPersonName(selectedValues)
   }
 
+  const handleDelete = (value: any) => {
+    setPersonName(personName.filter(name => name !== value))
+  }
   return (
     <div>
       <FormControl sx={{ m: 1, width: 250 }}>
@@ -59,7 +63,12 @@ export default function MultipleSelectChip() {
           renderValue={selected => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.map(value => (
-                <Chip key={value} label={value} sx={{ cursor: 'pointer' }} />
+                <Chip
+                  key={value}
+                  label={value}
+                  deleteIcon={<CancelIcon onMouseDown={e => e.stopPropagation()} />}
+                  onDelete={() => handleDelete(value)}
+                />
               ))}
             </Box>
           )}
@@ -71,29 +80,25 @@ export default function MultipleSelectChip() {
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == ('Quality' || data.quality.includes('journalistic')) ||
-            personName.some(item => data.quality.includes(item))) &&
+          {(personName[0] == 'Quality' || personName.some(item => data.quality.includes(item))) &&
             data.quality.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == ('Test' || data.test.includes('justice')) ||
-            personName.some(item => data.test.includes(item))) &&
+          {(personName[0] == 'Test' || personName.some(item => data.test.includes(item))) &&
             data.test.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == ('RelationShip' || data.relationShip.includes('same-as')) ||
-            personName.some(item => data.relationShip.includes(item))) &&
+          {(personName[0] == 'RelationShip' || personName.some(item => data.relationShip.includes(item))) &&
             data.relationShip.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == ('Impact' || data.impact.includes('climate')) ||
-            personName.some(item => data.impact.includes(item))) &&
+          {(personName[0] == 'Impact' || personName.some(item => data.impact.includes(item))) &&
             data.impact.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
