@@ -69,7 +69,12 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
     return { status: 500 }
   }
 
-  const { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
+  let { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
+
+  if (howKnown) {
+    howKnown = howKnown.toUpperCase()
+    // todo check against allowed enum list
+  }
 
   if (!subject || !claim) {
     console.log('Subject and claim are required!')
