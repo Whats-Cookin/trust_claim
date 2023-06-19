@@ -99,21 +99,35 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
             sx={{
               maxWidth: 'fit',
               height: 'fit',
-              m: '20px',
+              mt: '15px',
               borderRadius: '20px',
               border: '2px solid #009688',
               display: 'flex',
               flexDirection: isSmallScreen ? 'column' : 'row'
             }}
           >
-            <CardContent>
-              <Typography sx={{ padding: '5px 0 0 5px', wordBreak: 'break-word' }}>{formatClaimText(claim)}</Typography>
-            </CardContent>
-
-            <Collapse in={expanded === index} timeout='auto' unmountOnExit>
-              <CardContent sx={{ display: 'block' }}></CardContent>
-            </Collapse>
-
+            <div style={{ display: 'block' }}>
+              <div style={{ marginBottom: '1px' }}>
+                <CardContent>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    {formatClaimText(claim)}
+                  </Typography>
+                </CardContent>
+              </div>
+              <div style={{ marginTop: '1px' }}>
+                <Collapse in={expanded === index} timeout='auto' unmountOnExit>
+                  <CardContent sx={{ paddingBottom: '1px', marginBottom: '1px' }}>
+                    {claim.edgesFrom[0]?.claim?.howKnown || ''}
+                  </CardContent>
+                  <CardContent sx={{ paddingBottom: '1px', marginBottom: '1px' }}>
+                    {claim.edgesFrom[0]?.claim?.aspect || ''}
+                  </CardContent>
+                  <CardContent sx={{ paddingBottom: '1px', marginBottom: '1px' }}>
+                    {claim.edgesFrom[0]?.claim?.confidence || ''}
+                  </CardContent>
+                </Collapse>
+              </div>
+            </div>
             <CardActions
               disableSpacing
               sx={{
