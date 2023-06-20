@@ -54,7 +54,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
   }
 
   const formatClaimText = (claim: any) => {
-    const Style = { color: '#009688', textDecoration: 'none' }
+    const Style = { color: '#009688' }
 
     function formatUrl(url: string) {
       if (!/^https?:\/\//i.test(url)) {
@@ -76,7 +76,9 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
       </span>
     )
 
-    const claimText = <span style={Style}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+    const claimText = (
+      <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+    )
 
     const source = (
       <span style={Style}>
