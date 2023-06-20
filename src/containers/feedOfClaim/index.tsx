@@ -99,33 +99,54 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
             sx={{
               maxWidth: 'fit',
               height: 'fit',
-              m: '20px',
+              mt: '15px',
               borderRadius: '20px',
               border: '2px solid #009688',
               display: 'flex',
               flexDirection: isSmallScreen ? 'column' : 'row'
             }}
           >
-            <CardContent>
-              <Typography sx={{ padding: '5px 0 0 5px', wordBreak: 'break-word' }}>{formatClaimText(claim)}</Typography>
-            </CardContent>
+            <div style={{ display: 'block' }}>
+              <CardContent>
+                <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                  {formatClaimText(claim)}
+                </Typography>
+                <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                  {claim.edgesFrom[0]?.claim?.statement || ''}
+                </Typography>
 
-            <Collapse in={expanded === index} timeout='auto' unmountOnExit>
-              <CardContent sx={{ display: 'block' }}></CardContent>
-            </Collapse>
-
+                <div style={{ display: expanded === index ? 'block' : 'none' }}>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    {claim.edgesFrom[0]?.claim?.howKnown || ''}
+                  </Typography>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    {claim.edgesFrom[0]?.claim?.aspect || ''}
+                  </Typography>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    {claim.edgesFrom[0]?.claim?.confidence || ''}
+                  </Typography>
+                </div>
+              </CardContent>
+            </div>
             <CardActions
               disableSpacing
               sx={{
                 marginLeft: 'auto',
                 marginTop: 'auto',
+                marginBottom: 'auto',
                 width: isSmallScreen ? '100%' : 'auto',
                 display: isSmallScreen ? 'flex' : 'block',
                 justifyContent: isSmallScreen ? 'space-evenly' : 'none'
               }}
             >
               <SchemaIcon
-                sx={{ color: 'primary.main', right: 0, cursor: 'pointer', marginLeft: isSmallScreen ? '5px' : 'auto' }}
+                sx={{
+                  color: 'primary.main',
+                  right: 0,
+                  cursor: 'pointer',
+                  marginTop: '10px',
+                  marginLeft: isSmallScreen ? '5px' : 'auto'
+                }}
                 onClick={() => handleschame(claim.id)}
               />
               <ExpandMore
@@ -133,7 +154,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
                 onClick={() => handleExpandClick(index)}
                 aria-expanded={expanded === index}
                 aria-label='show more'
-                sx={{ marginLeft: 'auto', right: '10px', display: 'block' }}
+                sx={{ marginLeft: 'auto', right: '10px', marginTop: '10px', display: 'block' }}
               >
                 <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
               </ExpandMore>
