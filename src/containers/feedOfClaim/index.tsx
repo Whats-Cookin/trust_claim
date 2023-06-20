@@ -76,18 +76,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
       </span>
     )
 
-    const claimText = (
-      <span style={Style}>
-        <a
-          href={formatUrl(claim.edgesFrom[0]?.claim?.claim || '')}
-          target='_blank'
-          rel='noopener noreferrer'
-          style={Style}
-        >
-          {claim.edgesFrom[0]?.claim?.claim || ''}
-        </a>
-      </span>
-    )
+    const claimText = <span style={Style}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
 
     const source = (
       <span style={Style}>
