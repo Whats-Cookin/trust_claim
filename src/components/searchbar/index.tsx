@@ -43,7 +43,11 @@ const SearchBar = () => {
           border: `1px solid ${theme.palette.primary.main}`,
           borderRadius: '50px',
           marginLeft: 'auto',
-          margin: '16px'
+          margin: '16px',
+          '@media (max-width: 768px) and (min-height: 1024px)': {
+            margin: '0 auto',
+            maxWidth: '395px'
+          }
         }}
       >
         <InputBase
