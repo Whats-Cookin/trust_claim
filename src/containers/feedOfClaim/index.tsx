@@ -4,7 +4,7 @@ import { Card, CardContent, CardActions, IconButton, Collapse, Typography } from
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { IHomeProps, ExpandMoreProps, Claim } from './types'
 import { useEffect, useState } from 'react'
 import axios from '../../axiosInstance'
@@ -54,13 +54,53 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
   }
 
   const formatClaimText = (claim: any) => {
-    const Style = { color: '#009688' }
+    const Style = { color: '#009688', textDecoration: 'none' }
 
-    const subject = <span style={Style}> {claim.edgesFrom[0]?.claim?.subject || ''}</span>
+    function formatUrl(url: string) {
+      if (!/^https?:\/\//i.test(url)) {
+        return 'http://' + url
+      }
+      return url
+    }
 
-    const claimText = <span style={Style}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+    const subject = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.claim?.subject || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.claim?.subject || ''}
+        </a>
+      </span>
+    )
 
-    const source = <span style={Style}> {claim.edgesFrom[0]?.endNode?.name || ''}</span>
+    const claimText = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.claim?.claim || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.claim?.claim || ''}
+        </a>
+      </span>
+    )
+
+    const source = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.endNode?.name || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.endNode?.name || ''}
+        </a>
+      </span>
+    )
 
     return (
       <>
