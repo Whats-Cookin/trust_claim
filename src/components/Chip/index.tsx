@@ -24,9 +24,9 @@ const names = ['Impact', 'Quality', 'Test', 'RelationShip']
 
 export default function MultipleSelectChip() {
   const theme = useTheme()
-  const [personName, setPersonName] = React.useState<string[]>([])
+  const [options, setOptions] = React.useState<string[]>([])
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  const handleChange = (event: SelectChangeEvent<typeof options>) => {
     const {
       target: { value }
     } = event
@@ -37,11 +37,11 @@ export default function MultipleSelectChip() {
       selectedValues = selectedValues.slice(0, 2)
     }
 
-    setPersonName(selectedValues)
+    setOptions(selectedValues)
   }
 
   const handleDelete = (value: any) => {
-    setPersonName(personName.filter(name => name !== value))
+    setOptions(options.filter(name => name !== value))
   }
   return (
     <div>
@@ -51,9 +51,10 @@ export default function MultipleSelectChip() {
           multiple
           labelId='demo-multiple-chip-label'
           id='demo-multiple-chip'
-          value={personName}
+          value={options}
           onChange={handleChange}
           input={<OutlinedInput id='select-multiple-chip' label='Aspect' />}
+          MenuProps={MenuProps}
           renderValue={selected => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.map(value => (
@@ -66,33 +67,32 @@ export default function MultipleSelectChip() {
               ))}
             </Box>
           )}
-          MenuProps={MenuProps}
         >
-          {personName.length === 0 &&
+          {options.length === 0 &&
             names.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == 'Quality' || personName.some(item => data.quality.includes(item))) &&
+          {(options[0] == 'Quality' || options.some(item => data.quality.includes(item))) &&
             data.quality.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == 'Test' || personName.some(item => data.test.includes(item))) &&
+          {(options[0] == 'Test' || options.some(item => data.test.includes(item))) &&
             data.test.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == 'RelationShip' || personName.some(item => data.relationShip.includes(item))) &&
+          {(options[0] == 'RelationShip' || options.some(item => data.relationShip.includes(item))) &&
             data.relationShip.map(name => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
-          {(personName[0] == 'Impact' || personName.some(item => data.impact.includes(item))) &&
+          {(options[0] == 'Impact' || options.some(item => data.impact.includes(item))) &&
             data.impact.map(name => (
               <MenuItem key={name} value={name}>
                 {name}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import MultipleSelectChip from '../Chip/Chip'
+import MultipleSelectChip from '../Chip'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -183,34 +183,6 @@ export const Form = ({
       selectedClaim?.entType === 'CLAIM'
         ? ['agree', 'disagree']
         : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
-    aspect: [
-      'impact:social',
-      'impact:climate',
-      'impact:work',
-      'impact:financial',
-      'impact:educational',
-      'quality:technical',
-      'quality:asthetic',
-      'quality:taste',
-      'quality:journalistic',
-      'quality:academic',
-      'quality:fun',
-      'quality:usefulness',
-      'quality:literary',
-      'quality:relevance',
-      'quality:self-improvment',
-      'quality:historical',
-      'quality:theological',
-      'quality:adventure',
-      'quality:biographical',
-      'quality:scientific',
-      'risk:scam',
-      'risk:justice',
-      'risk:safety',
-      'risk:reliability',
-      'relationship:works-for',
-      'relationship:same-as'
-    ],
     howKnown: [
       'first_hand',
       'second_hand',
