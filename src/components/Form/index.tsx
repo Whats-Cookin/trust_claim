@@ -158,7 +158,7 @@ export const Form = ({
     claim:
       selectedClaim?.entType === 'CLAIM'
         ? ['agree', 'disagree']
-        : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
+        : ['Rated', 'Same as', 'Performed', 'Helped', 'Harmed', 'Scam', 'Owns', 'Related to'],
     aspect: [
       'impact:social',
       'impact:climate',
@@ -188,245 +188,363 @@ export const Form = ({
       'relationship:same-as'
     ],
     howKnown: [
-      'first_hand',
-      'second_hand',
-      'website',
-      'verified_website',
-      'verified_login',
-      'signed_claim',
-      'blockchain',
-      'physical_document',
-      'integration'
+      'First hand',
+      'Second hand',
+      'Website',
+      'Verified website',
+      'Verified login',
+      'Signed claim',
+      'Blockchain',
+      'Physical document',
+      'Integration'
     ]
   }
 
   return (
     <>
-      <DialogTitle>
-        <Typography
-          variant='h4'
-          sx={{
-            mb: 3,
-            textAlign: 'center',
-            fontSize: '20px',
-            color: 'primary.main',
-            textTransform: 'uppercase',
-            fontWeight: 'bold'
-          }}
-        >
-          {selectedClaim
-            ? selectedClaim?.entType === 'CLAIM'
-              ? 'do you want to validate ?'
-              : 'what do you have to say about'
-            : 'Enter a Claim'}
-        </Typography>
-        {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
-      </DialogTitle>
-      <DialogContent>
-        <form onSubmit={onSubmit}>
-          <Box sx={styles.inputFieldWrap}>
-            <Tooltip
-              title='You should put your site or social media '
-              placement='right'
-              arrow
-              sx={{ backgroundColor: '#009688' }}
-            >
-              <TextField
-                {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='Subject'
-                key='subject'
-                disabled={!!selectedClaim?.nodeUri}
-                type='text'
-                error={Boolean(errors.subject)}
-                helperText={errors.subject?.message}
-              />
-            </Tooltip>
-            <Tooltip title='For evaluation being made ' placement='right' arrow>
-              <TextField
-                select
-                label='Claim'
-                {...register('claim', { required: { value: true, message: 'claim is required' } })}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                error={Boolean(errors.claim)}
-                helperText={errors.claim?.message}
+      <Box
+        sx={{
+          border: '2px solid #B2BEB5',
+          padding: '20px',
+          borderRadius: '5px',
+          boxSizing: 'border-box',
+          margin: 'auto'
+        }}
+      >
+        <DialogTitle>
+          <Typography
+            variant='h4'
+            sx={{
+              mb: 3,
+              textAlign: 'center',
+              fontSize: '20px',
+              color: 'primary.main',
+              textTransform: 'uppercase',
+              fontWeight: 'bold'
+            }}
+          >
+            {selectedClaim
+              ? selectedClaim?.entType === 'CLAIM'
+                ? 'do you want to validate ?'
+                : 'what do you have to say about'
+              : 'Enter a Claim'}
+          </Typography>
+          {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
+        </DialogTitle>
+        <DialogContent>
+          <form onSubmit={onSubmit}>
+            <Box sx={styles.inputFieldWrap}>
+              <Tooltip
+                title='You should put your site or social media '
+                placement='right'
+                arrow
+                sx={{ backgroundColor: '#009688' }}
               >
-                {inputOptions.claim.map((claimText: string, index: number) => (
-                  <MenuItem value={claimText} key={claimText}>
-                    <Tooltip title={tooltips.claim[index]} placement='right' arrow>
-                      <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
-                    </Tooltip>
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Tooltip>
-            <Tooltip title='The method or source of the claim ' placement='right' arrow>
-              <TextField
-                select
-                label='How Known'
-                {...register('howKnown')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
+                <TextField
+                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  sx={{ ml: 1, mr: 1, width: '90ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='What/Who is the claim about?'
+                  key='subject'
+                  disabled={!!selectedClaim?.nodeUri}
+                  type='text'
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject?.message}
+                />
+              </Tooltip>
+              <Tooltip
+                title='You should put your site or social media '
+                placement='right'
+                arrow
+                sx={{ backgroundColor: '#009688' }}
               >
-                {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                  <MenuItem value={howKnownText}>
-                    <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
-                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
-                    </Tooltip>
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Tooltip>
-            <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
-              <TextField
-                {...register('statement')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='Statement'
-                key='statement'
-                type='text'
-                multiline={true}
-                maxRows={4}
-              />
-            </Tooltip>
-            <Tooltip title='You should put the another site you made claim for' placement='right' arrow>
-              <TextField
-                {...register('sourceURI')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='Source URI'
-                key='sourceURI'
-                type='text'
-              />
-            </Tooltip>
-            <Tooltip
-              title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
-              placement='right'
-              arrow
-            >
-              <TextField
-                {...register('confidence')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='Confidence'
-                key='confidence'
-                type='number'
-                inputProps={{
-                  min: 0.0,
-                  max: 1.0,
-                  step: 0.1
-                }}
-              />
-            </Tooltip>
-            {!(selectedClaim?.entType === 'CLAIM') && (
-              <>
-                {watchClaim === 'rated' ? (
-                  <>
-                    <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
+                <TextField
+                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  sx={{ ml: 1, mr: 1, width: '90ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Link to its website'
+                  key='link to its website'
+                  disabled={!!selectedClaim?.nodeUri}
+                  type='text'
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject?.message}
+                />
+              </Tooltip>
+              <Tooltip
+                title='You should put your site or social media '
+                placement='right'
+                arrow
+                sx={{ backgroundColor: '#009688' }}
+              >
+                <TextField
+                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Rated'
+                  key='rated'
+                  disabled={!!selectedClaim?.nodeUri}
+                  type='text'
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject?.message}
+                />
+              </Tooltip>
+
+              <Tooltip
+                title='You should put your site or social media '
+                placement='right'
+                arrow
+                sx={{ backgroundColor: '#009688' }}
+              >
+                <TextField
+                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Academic'
+                  key='academic'
+                  disabled={!!selectedClaim?.nodeUri}
+                  type='text'
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject?.message}
+                />
+              </Tooltip>
+
+              <Tooltip
+                title='You should put your site or social media '
+                placement='right'
+                arrow
+                sx={{ backgroundColor: '#009688' }}
+              >
+                <TextField
+                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Quailty'
+                  key='quailty'
+                  disabled={!!selectedClaim?.nodeUri}
+                  type='text'
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject?.message}
+                />
+              </Tooltip>
+
+              <Tooltip
+                title='You should put your site or social media '
+                placement='right'
+                arrow
+                sx={{ backgroundColor: '#009688' }}
+              >
+                <TextField
+                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '90ch',
+                    '& .MuiOutlinedInput-root': {
+                      padding: '30px'
+                    }
+                  }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Add details about the claim'
+                  key='add details about the claim'
+                  disabled={!!selectedClaim?.nodeUri}
+                  type='text'
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject?.message}
+                />
+              </Tooltip>
+              <Tooltip title='For evaluation being made ' placement='right' arrow>
+                <TextField
+                  select
+                  label='Claim'
+                  {...register('claim', { required: { value: true, message: 'claim is required' } })}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  error={Boolean(errors.claim)}
+                  helperText={errors.claim?.message}
+                >
+                  {inputOptions.claim.map((claimText: string, index: number) => (
+                    <MenuItem value={claimText} key={claimText}>
+                      <Tooltip title={tooltips.claim[index]} placement='right' arrow>
+                        <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
+                      </Tooltip>
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Tooltip>
+              <Tooltip title='The method or source of the claim ' placement='right' arrow>
+                <TextField
+                  select
+                  label='How Known'
+                  {...register('howKnown')}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                >
+                  {inputOptions.howKnown.map((howKnownText: string, index: number) => (
+                    <MenuItem value={howKnownText}>
+                      <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
+                        <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
+                      </Tooltip>
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Tooltip>
+              <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
+                <TextField
+                  {...register('statement')}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Statement'
+                  key='statement'
+                  type='text'
+                  multiline={true}
+                  maxRows={4}
+                />
+              </Tooltip>
+              <Tooltip title='You should put the another site you made claim for' placement='right' arrow>
+                <TextField
+                  {...register('sourceURI')}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Source URI'
+                  key='sourceURI'
+                  type='text'
+                />
+              </Tooltip>
+              <Tooltip
+                title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
+                placement='right'
+                arrow
+              >
+                <TextField
+                  {...register('confidence')}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Confidence'
+                  key='confidence'
+                  type='number'
+                  inputProps={{
+                    min: 0.0,
+                    max: 1.0,
+                    step: 0.1
+                  }}
+                />
+              </Tooltip>
+              {!(selectedClaim?.entType === 'CLAIM') && (
+                <>
+                  {watchClaim === 'rated' ? (
+                    <>
+                      <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
+                        <TextField
+                          select
+                          label='Aspect'
+                          {...register('aspect')}
+                          sx={{ ml: 1, mr: 1, width: '30ch' }}
+                          margin='dense'
+                          variant='outlined'
+                          fullWidth
+                        >
+                          {inputOptions.aspect.map((aspectText: string, index: number) => (
+                            <MenuItem value={aspectText} key={aspectText}>
+                              <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
+                                <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                              </Tooltip>
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Tooltip>
+
+                      <Controller
+                        name='stars'
+                        control={control}
+                        rules={{ required: { value: true, message: 'rating is required' } }}
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                          <Tooltip title='A rating associated with the claim' placement='right' arrow>
+                            <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                              <Typography>Review Rating</Typography>
+                              <Rating
+                                name='stars'
+                                value={value}
+                                onChange={(e, newValue) => onChange(newValue)}
+                                precision={1}
+                                size='large'
+                              />
+
+                              <FormHelperText>{error?.message}</FormHelperText>
+                            </FormControl>
+                          </Tooltip>
+                        )}
+                      />
+                    </>
+                  ) : (
+                    <Tooltip title='If you want to add any additional site belongs to you' placement='right' arrow>
                       <TextField
-                        select
-                        label='Aspect'
-                        {...register('aspect')}
-                        sx={{ ml: 1, mr: 1, width: '22ch' }}
+                        {...register('object')}
+                        sx={{ ml: 1, mr: 1, width: '30ch' }}
                         margin='dense'
                         variant='outlined'
                         fullWidth
-                      >
-                        {inputOptions.aspect.map((aspectText: string, index: number) => (
-                          <MenuItem value={aspectText} key={aspectText}>
-                            <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
-                              <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                            </Tooltip>
-                          </MenuItem>
-                        ))}
-                      </TextField>
+                        label='Object'
+                        key='object'
+                        type='text'
+                      />
                     </Tooltip>
-
-                    <Controller
-                      name='stars'
-                      control={control}
-                      rules={{ required: { value: true, message: 'rating is required' } }}
-                      render={({ field: { onChange, value }, fieldState: { error } }) => (
-                        <Tooltip title='A rating associated with the claim' placement='right' arrow>
-                          <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                            <Typography>Review Rating</Typography>
-                            <Rating
-                              name='stars'
-                              value={value}
-                              onChange={(e, newValue) => onChange(newValue)}
-                              precision={1}
-                              size='large'
-                            />
-
-                            <FormHelperText>{error?.message}</FormHelperText>
-                          </FormControl>
-                        </Tooltip>
-                      )}
-                    />
-                  </>
-                ) : (
-                  <Tooltip title='If you want to add any additional site belongs to you' placement='right' arrow>
-                    <TextField
-                      {...register('object')}
-                      sx={{ ml: 1, mr: 1, width: '22ch' }}
-                      margin='dense'
-                      variant='outlined'
-                      fullWidth
-                      label='Object'
-                      key='object'
-                      type='text'
-                    />
-                  </Tooltip>
-                )}
-              </>
-            )}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='Effective Date'
-                value={watchEffectiveDate}
-                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                renderInput={(params: any) => (
-                  <TextField {...params} sx={{ ml: 1, mr: 1, width: '100%' }} variant='filled' />
-                )}
-              />
-            </LocalizationProvider>
-          </Box>
-        </form>
-      </DialogContent>
-      <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', columnGap: 3 }}>
-        <Button
-          onClick={onSubmit}
-          variant='contained'
-          size='large'
-          sx={{
-            ml: 1,
-            mr: 1,
-            width: '50%',
-            bgcolor: 'praimary.main',
-            margin: '0 auto',
-            '&:hover': {
-              backgroundColor: '#00695f'
-            }
-          }}
-        >
-          Submit
-        </Button>
-        {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
-      </DialogActions>
+                  )}
+                </>
+              )}
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label='Effective Date'
+                  value={null}
+                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                  renderInput={(params: any) => <TextField {...params} sx={{ ml: 1, mr: 1, width: '30ch' }} />}
+                />
+              </LocalizationProvider>
+            </Box>
+          </form>
+        </DialogContent>
+        <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', columnGap: 3 }}>
+          <Button
+            onClick={onSubmit}
+            variant='contained'
+            size='large'
+            sx={{
+              ml: 1,
+              mr: 1,
+              width: '50%',
+              bgcolor: 'praimary.main',
+              margin: '0 auto',
+              '&:hover': {
+                backgroundColor: '#00695f'
+              }
+            }}
+          >
+            Submit
+          </Button>
+          {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
+        </DialogActions>
+      </Box>
     </>
   )
 }
