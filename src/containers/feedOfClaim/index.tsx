@@ -143,21 +143,21 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
                   {formatClaimText(claim)}
                 </Typography>
                 <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                  <strong>Statement:</strong>
+                  <strong>Statement: </strong>
                   {claim.edgesFrom[0]?.claim?.statement || 'No information provided'}
                 </Typography>
 
                 <div style={{ display: expanded === index ? 'block' : 'none' }}>
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                    <strong>How Known:</strong>
+                    <strong>How Known: </strong>
                     {claim.edgesFrom[0]?.claim?.howKnown || ''}
                   </Typography>
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                    <strong>Aspect :</strong>
+                    <strong>Aspect: </strong>
                     {claim.edgesFrom[0]?.claim?.aspect || ''}
                   </Typography>
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                    <strong>confidence</strong> {claim.edgesFrom[0]?.claim?.confidence || ''}
+                    <strong>confidence: </strong> {claim.edgesFrom[0]?.claim?.confidence || ''}
                   </Typography>
                 </div>
               </CardContent>
