@@ -274,47 +274,6 @@ export const Form = ({
                   helperText={errors.subject?.message}
                 />
               </Tooltip>
-              <Tooltip
-                title='You should put your site or social media '
-                placement='right'
-                arrow
-                sx={{ backgroundColor: '#009688' }}
-              >
-                <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  label='Rated'
-                  key='rated'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject?.message}
-                />
-              </Tooltip>
-
-              <Tooltip
-                title='You should put your site or social media '
-                placement='right'
-                arrow
-                sx={{ backgroundColor: '#009688' }}
-              >
-                <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  label='Academic'
-                  key='academic'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject?.message}
-                />
-              </Tooltip>
 
               <Tooltip
                 title='You should put your site or social media '
@@ -337,37 +296,10 @@ export const Form = ({
                 />
               </Tooltip>
 
-              <Tooltip
-                title='You should put your site or social media '
-                placement='right'
-                arrow
-                sx={{ backgroundColor: '#009688' }}
-              >
-                <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '90ch',
-                    '& .MuiOutlinedInput-root': {
-                      padding: '30px'
-                    }
-                  }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  label='Add details about the claim'
-                  key='add details about the claim'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject?.message}
-                />
-              </Tooltip>
               <Tooltip title='For evaluation being made ' placement='right' arrow>
                 <TextField
                   select
-                  label='Claim'
+                  label='Rated'
                   {...register('claim', { required: { value: true, message: 'claim is required' } })}
                   sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
@@ -388,7 +320,7 @@ export const Form = ({
               <Tooltip title='The method or source of the claim ' placement='right' arrow>
                 <TextField
                   select
-                  label='How Known'
+                  label='How do you know?'
                   {...register('howKnown')}
                   sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
@@ -407,11 +339,18 @@ export const Form = ({
               <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
                 <TextField
                   {...register('statement')}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '90ch',
+                    '& .MuiOutlinedInput-root': {
+                      padding: '40px'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  label='Statement'
+                  label='Add details about the claim'
                   key='statement'
                   type='text'
                   multiline={true}
@@ -425,7 +364,7 @@ export const Form = ({
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  label='Source URI'
+                  label='Link to source '
                   key='sourceURI'
                   type='text'
                 />
@@ -458,7 +397,7 @@ export const Form = ({
                       <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
                         <TextField
                           select
-                          label='Aspect'
+                          label='Academic'
                           {...register('aspect')}
                           sx={{ ml: 1, mr: 1, width: '30ch' }}
                           margin='dense'
