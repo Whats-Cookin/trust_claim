@@ -158,7 +158,7 @@ export const Form = ({
     claim:
       selectedClaim?.entType === 'CLAIM'
         ? ['agree', 'disagree']
-        : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
+        : ['rated', 'same as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related to'],
     aspect: [
       'impact:social',
       'impact:climate',
@@ -188,15 +188,15 @@ export const Form = ({
       'relationship:same-as'
     ],
     howKnown: [
-      'first_hand',
-      'second_hand',
-      'website',
-      'verified_website',
-      'verified_login',
-      'signed_claim',
-      'blockchain',
-      'physical_document',
-      'integration'
+      'First hand',
+      'Second hand',
+      'Website',
+      'Verified website',
+      'Verified login',
+      'Signed claim',
+      'Blockchain',
+      'Physical document',
+      'Integration'
     ]
   }
 
@@ -298,7 +298,7 @@ export const Form = ({
               <Tooltip title='The method or source of the claim ' placement='right' arrow>
                 <TextField
                   select
-                  label='How do you Known?'
+                  label='How do you know?'
                   {...register('howKnown')}
                   sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
@@ -335,7 +335,7 @@ export const Form = ({
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  label='Source URI'
+                  label='Link to Source '
                   key='sourceURI'
                   type='text'
                 />
