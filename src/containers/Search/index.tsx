@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Cytoscape from 'cytoscape'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
@@ -15,7 +15,6 @@ import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
-  const navigate = useNavigate()
   const theme = useTheme()
 
   const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
@@ -26,12 +25,9 @@ const Search = (homeProps: IHomeProps) => {
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
-  const [searchVal, setSearchVal] = useState<string>(query || '')
-  const claimsPageMemo: any[] = []
-  // const [claimId, setClaimId] = useState<number | null>(query ? Number(query) : null)
-
   const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const special = useMediaQuery('(width:540px)')
 
   const updateClaims = (search: boolean, newClaims: any) => {
     if (!cy) return
@@ -91,7 +87,7 @@ const Search = (homeProps: IHomeProps) => {
       cy.layout({
         name: 'circle',
         directed: true,
-        padding: isArange ? 110 : isSmallScreen ? 10 : 70,
+        padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
         animate: true,
         animationDuration: 1000
       }).run()
@@ -99,23 +95,24 @@ const Search = (homeProps: IHomeProps) => {
     }
   }
 
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/search',
-        search: `?query=${searchVal}`
-      })
-
-      await fetchClaims(encodeURIComponent(searchVal), true, page.current)
-      //page.current = 2
-    }
-  }
-
   const handleNodeClick = async (event: any) => {
+    const originalEvent = event.originalEvent;
     event.preventDefault()
-    await fetchClaims(event.target.data('id'), false, page.current)
-    //page.current = page.current + 1
+    if (originalEvent.shiftKey) {
+      console.log('Shift + click detected');
+      // Your shift + click logic goes here...
+      // TODO refactor with handleMouseRightClick
+      const claim = event.target
+      const currentClaim = claim.data('raw')
+
+      if (currentClaim) {
+        setSelectedClaim(currentClaim)
+        setOpenNewClaim(true)
+      }
+    } else {
+      await fetchClaims(event.target.data('id'), false, page.current)
+      //page.current = page.current + 1
+    }
   }
 
   const handleEdgeClick = (event: any) => {
@@ -172,15 +169,10 @@ const Search = (homeProps: IHomeProps) => {
   }, [cy])
 
   useEffect(() => {
-    if (cy && query) handleSearch()
-  }, [cy])
-
-  useEffect(() => {
-    if (query) {
-      setSearchVal(query)
+    if (query && cy) {
       fetchClaims(encodeURIComponent(query), true, page.current)
     }
-  }, [query])
+  }, [query, cy])
 
   useEffect(() => {
     if (!cy) {

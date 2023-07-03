@@ -69,7 +69,12 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
     return { status: 500 }
   }
 
-  const { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
+  let { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars } = payload
+
+  if (howKnown) {
+    howKnown = howKnown.toUpperCase()
+    // todo check against allowed enum list
+  }
 
   if (!subject || !claim) {
     console.log('Subject and claim are required!')
@@ -117,7 +122,7 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
   if (confidence) {
     variables['i']['content']['confidence'] = confidence
   }
-  console.log('about to execute query ')
+  console.log('about to execute query on ' + JSON.stringify(variables))
   const response = await composeClient.executeQuery(CREATE_LINKED_CLAIM_MUTATION, variables)
 
   console.log('Response from composeclient: ' + JSON.stringify(response))

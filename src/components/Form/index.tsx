@@ -131,7 +131,7 @@ export const Form = ({
         toggleSnackbar(true)
         setSnackbarMessage(message)
         if (isSuccess) {
-          navigate('feed')
+          navigate('/feed')
           reset()
         }
       } else {
@@ -226,7 +226,7 @@ export const Form = ({
         <form onSubmit={onSubmit}>
           <Box sx={styles.inputFieldWrap}>
             <Tooltip
-              title='You should put your site or social media '
+              title='You should put the link to the site or social media account where the claim was created  '
               placement='right'
               arrow
               sx={{ backgroundColor: '#009688' }}
@@ -299,7 +299,7 @@ export const Form = ({
                 maxRows={4}
               />
             </Tooltip>
-            <Tooltip title='You should put the another site you made claim for' placement='right' arrow>
+            <Tooltip title='You should put your site here' placement='right' arrow>
               <TextField
                 {...register('sourceURI')}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}

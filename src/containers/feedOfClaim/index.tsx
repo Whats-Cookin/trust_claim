@@ -4,76 +4,13 @@ import { Card, CardContent, CardActions, IconButton, Collapse, Typography } from
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
-import { useNavigate } from 'react-router-dom'
-import { IHomeProps, ExpandMoreProps } from './types'
-import mockData from '../../../mocks/mockDate'
+import { Link, useNavigate } from 'react-router-dom'
+import { IHomeProps, ExpandMoreProps, Claim } from './types'
 import { useEffect, useState } from 'react'
-
-type MockClaim = {
-  id: number
-  nodeUri: string
-  name: string
-  entType: string
-  descrip: string
-  image: null
-  thumbnail: string
-  edgesFrom: {
-    id: number
-    claimId: number
-    startNodeId: number
-    endNodeId: number
-    label: string
-    thumbnail: null
-    claim: {
-      id: number
-      subject: string
-      claim: string
-      object: string
-      amt: null
-      aspect: string
-      author: null
-      claimAddress: null
-      confidence: number
-      createdAt: string
-      curator: null
-      dateObserved: null
-      digestMultibase: null
-      effectiveDate: null
-      howKnown: string
-      howMeasured: null
-      intendedAudience: null
-      issuerId: string
-      issuerIdType: string
-      lastUpdatedAt: string
-      proof: null
-      respondAt: null
-      score: number
-      sourceURI: string
-      stars: null
-      statement: string
-      unit: null
-    }
-    startNode: {
-      id: number
-      nodeUri: string
-      name: string
-      entType: string
-      descrip: string
-      image: null
-      thumbnail: string
-    }
-    endNode: {
-      id: number
-      nodeUri: string
-      name: string
-      entType: string
-      descrip: string
-      image: null
-      thumbnail: string
-    }
-  }[]
-  edgesTo: never[]
-}
+import axios from '../../axiosInstance'
+import node from '../../../db.json'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material'
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
@@ -88,8 +25,24 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const navigate = useNavigate()
-  const [claims, setClaims] = useState<MockClaim[]>([])
+  const [claims, setClaims] = useState<any[]>(node.nodes)
   const [claimSelected, setClaimSelected] = useState<number | null>(null)
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/nodes')
+        const data = response.data
+        setClaims(data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    fetchData() // Call the fetchData function
+  }, [])
 
   const handleschame = async (claimId: number) => {
     window.localStorage.removeItem('claims')
@@ -100,22 +53,51 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
     })
   }
 
-  useEffect(() => {
-    setClaims(mockData.nodes)
-  }, [])
+  const formatClaimText = (claim: any) => {
+    const Style = { color: '#009688' }
 
-  const formatClaimText = (node: MockClaim) => {
-    return node.edgesFrom.map(edge => {
-      const Style = { color: '#009688' } // Define the style object for the subject
-      const subject = <span style={Style}>{edge.startNode.nodeUri}</span>
-      const claimText = <span style={Style}>{edge.claim.claim}</span>
-      const source = <span style={Style}>{edge.endNode.nodeUri}</span>
-      return (
-        <>
-          {subject} claimed {claimText} about {source}
-        </>
-      )
-    })
+    function formatUrl(url: string) {
+      if (!/^https?:\/\//i.test(url)) {
+        return 'http://' + url
+      }
+      return url
+    }
+
+    const subject = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.claim?.subject || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.claim?.subject || ''}
+        </a>
+      </span>
+    )
+
+    const claimText = (
+      <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+    )
+
+    const source = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.endNode?.name || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.endNode?.name || ''}
+        </a>
+      </span>
+    )
+
+    return (
+      <>
+        {subject && <span style={Style}>{subject}</span>} got {claimText} claim from {source}
+      </>
+    )
   }
 
   const [expanded, setExpanded] = React.useState<number | null>(null)
@@ -136,35 +118,69 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
         p: '10px',
         background: '#FFFFFF',
         ml: '130',
-        mt: '90px',
+        mt: isSmallScreen ? '140px' : '90px',
         boxShadow: 20,
         bgcolor: 'background.paper',
         flexDirection: 'column'
       }}
     >
-      {claims.map((claim, index) => (
+      {claims.map((claim: any, index: number) => (
         <div key={claim.id}>
           <Card
             sx={{
               maxWidth: 'fit',
               height: 'fit',
-              m: '20px',
+              mt: '15px',
               borderRadius: '20px',
               border: '2px solid #009688',
-              display: 'flex'
+              display: 'flex',
+              flexDirection: isSmallScreen ? 'column' : 'row'
             }}
           >
-            <CardContent>
-              <Typography sx={{ padding: '5px 0 0 5px' }}>{formatClaimText(claim)}</Typography>
-            </CardContent>
+            <div style={{ display: 'block' }}>
+              <CardContent>
+                <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                  {formatClaimText(claim)}
+                </Typography>
+                <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                  <strong>Statement: </strong>
+                  {claim.edgesFrom[0]?.claim?.statement || 'No information provided'}
+                </Typography>
 
-            <Collapse in={expanded === index} timeout='auto' unmountOnExit>
-              <CardContent sx={{ display: 'block' }}></CardContent>
-            </Collapse>
-
-            <CardActions disableSpacing sx={{ marginLeft: 'auto', marginTop: 'auto', display: 'block' }}>
+                <div style={{ display: expanded === index ? 'block' : 'none' }}>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    <strong>How Known: </strong>
+                    {claim.edgesFrom[0]?.claim?.howKnown || ''}
+                  </Typography>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    <strong>Aspect: </strong>
+                    {claim.edgesFrom[0]?.claim?.aspect || ''}
+                  </Typography>
+                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    <strong>confidence: </strong> {claim.edgesFrom[0]?.claim?.confidence || ''}
+                  </Typography>
+                </div>
+              </CardContent>
+            </div>
+            <CardActions
+              disableSpacing
+              sx={{
+                marginLeft: 'auto',
+                marginTop: 'auto',
+                marginBottom: 'auto',
+                width: isSmallScreen ? '100%' : 'auto',
+                display: isSmallScreen ? 'flex' : 'block',
+                justifyContent: isSmallScreen ? 'space-evenly' : 'none'
+              }}
+            >
               <SchemaIcon
-                sx={{ color: 'primary.main', right: 0, cursor: 'pointer' }}
+                sx={{
+                  color: 'primary.main',
+                  right: 0,
+                  cursor: 'pointer',
+                  marginTop: '10px',
+                  marginLeft: isSmallScreen ? '5px' : 'auto'
+                }}
                 onClick={() => handleschame(claim.id)}
               />
               <ExpandMore
@@ -172,7 +188,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
                 onClick={() => handleExpandClick(index)}
                 aria-expanded={expanded === index}
                 aria-label='show more'
-                sx={{ marginLeft: 'auto', display: 'block', right: '10px' }}
+                sx={{ marginLeft: 'auto', right: '10px', marginTop: '10px', display: 'block' }}
               >
                 <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
               </ExpandMore>
