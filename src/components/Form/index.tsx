@@ -261,13 +261,13 @@ export const Form = ({
                 sx={{ backgroundColor: '#009688' }}
               >
                 <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  {...register('subject', { required: { value: true, message: 'name is required' } })}
                   sx={{ ml: 1, mr: 1, width: '90ch' }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
                   label='Link to its website'
-                  key='Link to its website'
+                  key='name'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
                   error={Boolean(errors.subject)}
@@ -277,7 +277,7 @@ export const Form = ({
               <Tooltip title='For evaluation being made ' placement='right' arrow>
                 <TextField
                   select
-                  label='Rated'
+                  label='Claim'
                   {...register('claim', { required: { value: true, message: 'claim is required' } })}
                   sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
@@ -317,7 +317,7 @@ export const Form = ({
               <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
                 <TextField
                   {...register('statement')}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  sx={{ ml: 1, mr: 1, width: '90ch', '& .MuiOutlinedInput-root': { padding: '40px' } }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
