@@ -158,7 +158,7 @@ export const Form = ({
     claim:
       selectedClaim?.entType === 'CLAIM'
         ? ['agree', 'disagree']
-        : ['Rated', 'Same as', 'Performed', 'Helped', 'Harmed', 'Scam', 'Owns', 'Related to'],
+        : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
     aspect: [
       'impact:social',
       'impact:climate',
@@ -188,15 +188,15 @@ export const Form = ({
       'relationship:same-as'
     ],
     howKnown: [
-      'First hand',
-      'Second hand',
-      'Website',
-      'Verified website',
-      'Verified login',
-      'Signed claim',
-      'Blockchain',
-      'Physical document',
-      'Integration'
+      'first_hand',
+      'second_hand',
+      'website',
+      'verified_website',
+      'verified_login',
+      'signed_claim',
+      'blockchain',
+      'physical_document',
+      'integration'
     ]
   }
 
@@ -206,8 +206,7 @@ export const Form = ({
         sx={{
           border: '2px solid #B2BEB5',
           padding: '20px',
-          borderRadius: '5px',
-          boxSizing: 'border-box',
+          borderRadius: 'border-box',
           margin: 'auto'
         }}
       >
@@ -235,7 +234,7 @@ export const Form = ({
           <form onSubmit={onSubmit}>
             <Box sx={styles.inputFieldWrap}>
               <Tooltip
-                title='You should put your site or social media '
+                title='You should put the link to the site or social media account where the claim was created  '
                 placement='right'
                 arrow
                 sx={{ backgroundColor: '#009688' }}
@@ -254,8 +253,9 @@ export const Form = ({
                   helperText={errors.subject?.message}
                 />
               </Tooltip>
+
               <Tooltip
-                title='You should put your site or social media '
+                title='You should put the link to the site or social media account where the claim was created  '
                 placement='right'
                 arrow
                 sx={{ backgroundColor: '#009688' }}
@@ -267,35 +267,13 @@ export const Form = ({
                   variant='outlined'
                   fullWidth
                   label='Link to its website'
-                  key='link to its website'
+                  key='Link to its website'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
                   error={Boolean(errors.subject)}
                   helperText={errors.subject?.message}
                 />
               </Tooltip>
-
-              <Tooltip
-                title='You should put your site or social media '
-                placement='right'
-                arrow
-                sx={{ backgroundColor: '#009688' }}
-              >
-                <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  label='Quailty'
-                  key='quailty'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject?.message}
-                />
-              </Tooltip>
-
               <Tooltip title='For evaluation being made ' placement='right' arrow>
                 <TextField
                   select
@@ -320,7 +298,7 @@ export const Form = ({
               <Tooltip title='The method or source of the claim ' placement='right' arrow>
                 <TextField
                   select
-                  label='How do you know?'
+                  label='How do you Known?'
                   {...register('howKnown')}
                   sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
@@ -339,14 +317,7 @@ export const Form = ({
               <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
                 <TextField
                   {...register('statement')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '90ch',
-                    '& .MuiOutlinedInput-root': {
-                      padding: '40px'
-                    }
-                  }}
+                  sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -357,14 +328,14 @@ export const Form = ({
                   maxRows={4}
                 />
               </Tooltip>
-              <Tooltip title='You should put the another site you made claim for' placement='right' arrow>
+              <Tooltip title='You should put your site here' placement='right' arrow>
                 <TextField
                   {...register('sourceURI')}
                   sx={{ ml: 1, mr: 1, width: '30ch' }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  label='Link to source '
+                  label='Source URI'
                   key='sourceURI'
                   type='text'
                 />
@@ -457,7 +428,9 @@ export const Form = ({
                   label='Effective Date'
                   value={null}
                   onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                  renderInput={(params: any) => <TextField {...params} sx={{ ml: 1, mr: 1, width: '30ch' }} />}
+                  renderInput={(params: any) => (
+                    <TextField {...params} sx={{ ml: 1, mr: 1, width: '30ch' }} variant='filled' />
+                  )}
                 />
               </LocalizationProvider>
             </Box>
