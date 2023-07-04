@@ -40,6 +40,7 @@ const SearchBar = () => {
           m: '0',
           p: '0 4px',
           alignItems: 'center',
+          height: '45px',
           width: '100%',
           maxWidth: '395px',
           border: `1px solid ${theme.palette.primary.main}`,

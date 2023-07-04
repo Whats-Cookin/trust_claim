@@ -56,33 +56,33 @@ const Navbar = ({ isAuth }: any) => {
               Trust Claims
             </Typography>
             {isAuth && (
-              <>
+              <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'end', gap: 2, alignItems: 'center' }}>
                 {!isSmallScreen && <SearchBar />}
                 <ProfileDropdown />
-              </>
+              </Box>
             )}
 
             {!isAuth && (
               <>
                 {isSmallScreen && <Responsive />}
                 {!isSmallScreen && (
-                  <>
+                  <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'end', gap: 2 }}>
                     <SearchBar />
-                    <Box>
+                    <Box sx={{ display: 'flex' }}>
                       <Button
-                        sx={{ pr: '30px', color: 'primary.main', fontWeight: 'bold' }}
+                        sx={{ pr: '20px', color: 'primary.main', fontWeight: 'bold' }}
                         onClick={() => navigate('/login')}
                       >
                         Login
                       </Button>
                       <Button
-                        sx={{ pr: '30px', color: 'primary.main', fontWeight: 'bold' }}
+                        sx={{ pr: '20px', color: 'primary.main', fontWeight: 'bold' }}
                         onClick={() => navigate('/register')}
                       >
                         Register
                       </Button>
                     </Box>
-                  </>
+                  </Box>
                 )}
               </>
             )}
