@@ -30,19 +30,19 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/nodes')
-        const data = response.data
-        setClaims(data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/nodes')
+  //       const data = response.data
+  //       setClaims(data)
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
 
-    fetchData() // Call the fetchData function
-  }, [])
+  //   fetchData() // Call the fetchData function
+  // }, [])
 
   const handleschame = async (claimId: number) => {
     window.localStorage.removeItem('claims')
