@@ -9,6 +9,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Chip from '@mui/material/Chip'
 import data from '../Form'
 import CancelIcon from '@mui/icons-material/Cancel'
+import { FormHelperText } from '@mui/material'
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -41,7 +42,14 @@ export default function MultipleSelectChip() {
   }
 
   const handleDelete = (value: any) => {
-    setOptions(options.filter(name => name !== value))
+    if (options.length === 2) {
+      const index = options.indexOf(value)
+      if (index === 1) {
+        setOptions(options.filter(name => name !== value))
+      }
+    } else {
+      setOptions(options.filter(name => name !== value))
+    }
   }
   return (
     <div>
@@ -99,6 +107,7 @@ export default function MultipleSelectChip() {
               </MenuItem>
             ))}
         </Select>
+        <FormHelperText>* Maximum of 2 aspects</FormHelperText>
       </FormControl>
     </div>
   )
