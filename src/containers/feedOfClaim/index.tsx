@@ -4,7 +4,7 @@ import { Card, CardContent, CardActions, IconButton, Collapse, Typography } from
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
-import { useNavigate } from 'react-router-dom'
+import {  useNavigate } from 'react-router-dom'
 import { IHomeProps, ExpandMoreProps } from './types'
 import { useEffect, useState } from 'react'
 import axios from '../../axiosInstance'
@@ -30,19 +30,19 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/nodes')
-        const data = response.data
-        setClaims(data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('/api/nodes')
+  //       const data = response.data
+  //       setClaims(data)
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
 
-    fetchData() // Call the fetchData function
-  }, [])
+  //   fetchData() // Call the fetchData function
+  // }, [])
 
   const handleschame = async (claimId: number) => {
     window.localStorage.removeItem('claims')
@@ -56,11 +56,42 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
   const formatClaimText = (claim: any) => {
     const Style = { color: '#009688' }
 
-    const subject = <span style={Style}> {claim.edgesFrom[0]?.claim?.subject || ''}</span>
+    function formatUrl(url: string) {
+      if (!/^https?:\/\//i.test(url)) {
+        return 'http://' + url
+      }
+      return url
+    }
 
-    const claimText = <span style={Style}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+    const subject = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.claim?.subject || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.claim?.subject || ''}
+        </a>
+      </span>
+    )
 
-    const source = <span style={Style}> {claim.edgesFrom[0]?.endNode?.name || ''}</span>
+    const claimText = (
+      <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.edgesFrom[0]?.claim?.claim || ''}</span>
+    )
+
+    const source = (
+      <span style={Style}>
+        <a
+          href={formatUrl(claim.edgesFrom[0]?.endNode?.name || '')}
+          target='_blank'
+          rel='noopener noreferrer'
+          style={Style}
+        >
+          {claim.edgesFrom[0]?.endNode?.name || ''}
+        </a>
+      </span>
+    )
 
     return (
       <>
@@ -112,18 +143,21 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
                   {formatClaimText(claim)}
                 </Typography>
                 <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                  {claim.edgesFrom[0]?.claim?.statement || ''}
+                  <strong>Statement: </strong>
+                  {claim.edgesFrom[0]?.claim?.statement || 'No information provided'}
                 </Typography>
 
                 <div style={{ display: expanded === index ? 'block' : 'none' }}>
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    <strong>How Known: </strong>
                     {claim.edgesFrom[0]?.claim?.howKnown || ''}
                   </Typography>
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                    <strong>Aspect: </strong>
                     {claim.edgesFrom[0]?.claim?.aspect || ''}
                   </Typography>
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                    {claim.edgesFrom[0]?.claim?.confidence || ''}
+                    <strong>confidence: </strong> {claim.edgesFrom[0]?.claim?.confidence || ''}
                   </Typography>
                 </div>
               </CardContent>

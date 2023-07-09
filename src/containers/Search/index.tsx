@@ -96,9 +96,23 @@ const Search = (homeProps: IHomeProps) => {
   }
 
   const handleNodeClick = async (event: any) => {
+    const originalEvent = event.originalEvent
     event.preventDefault()
-    await fetchClaims(event.target.data('id'), false, page.current)
-    //page.current = page.current + 1
+    if (originalEvent.shiftKey) {
+      console.log('Shift + click detected')
+      // Your shift + click logic goes here...
+      // TODO refactor with handleMouseRightClick
+      const claim = event.target
+      const currentClaim = claim.data('raw')
+
+      if (currentClaim) {
+        setSelectedClaim(currentClaim)
+        setOpenNewClaim(true)
+      }
+    } else {
+      await fetchClaims(event.target.data('id'), false, page.current)
+      //page.current = page.current + 1
+    }
   }
 
   const handleEdgeClick = (event: any) => {
