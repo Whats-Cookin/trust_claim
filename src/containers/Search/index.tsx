@@ -10,7 +10,8 @@ import cyConfig from './cyConfig'
 import IHomeProps from './types'
 import styles from './styles'
 import { parseNode, parseNodes } from './graph.utils'
-import { useTheme } from '@mui/material'
+import { IconButton, Tooltip, useTheme } from '@mui/material'
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark'
 import { useMediaQuery } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
@@ -199,7 +200,15 @@ const Search = (homeProps: IHomeProps) => {
         setSnackbarMessage={setSnackbarMessage}
         toggleSnackbar={toggleSnackbar}
       />
-
+      <Tooltip
+        title={
+          'Here the explaination of what is the node and what is the edge and claims and what right and left clicks do and what is the rows and lines refer to'
+        }
+      >
+        <IconButton sx={{ position: 'absolute', zIndex: 7685685, top: '100px', left: '250px', color: 'primary.main' }}>
+          <QuestionMarkIcon />
+        </IconButton>
+      </Tooltip>
       <Box ref={ref} sx={styles.cy} />
     </Container>
   )
