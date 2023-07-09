@@ -4,7 +4,7 @@ import { Card, CardContent, CardActions, IconButton, Collapse, Typography } from
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import { Box } from '@mui/system'
 import SchemaIcon from '@mui/icons-material/Schema'
-import {  useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { IHomeProps, ExpandMoreProps } from './types'
 import { useEffect, useState } from 'react'
 import axios from '../../axiosInstance'
