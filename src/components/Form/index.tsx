@@ -505,7 +505,7 @@ export const Form = ({
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   label='Effective Date'
-                  value={null}
+                  value={watchEffectiveDate}
                   onChange={(newValue: any) => setValue('effectiveDate', newValue)}
                   renderInput={(params: any) => (
                     <TextField
