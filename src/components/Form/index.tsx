@@ -207,7 +207,11 @@ export const Form = ({
           border: '2px solid #B2BEB5',
           padding: '20px',
           borderRadius: 'border-box',
-          margin: 'auto'
+          margin: 'auto',
+          '@media (max-width: 960px)': {
+            padding: '20px',
+            width: '90vw'
+          }
         }}
       >
         <DialogTitle>
@@ -232,6 +236,7 @@ export const Form = ({
         </DialogTitle>
         <DialogContent>
           <form onSubmit={onSubmit}>
+            {' '}
             <Box sx={styles.inputFieldWrap}>
               <Tooltip
                 title='You should put the link to the site or social media account where the claim was created  '
@@ -241,12 +246,18 @@ export const Form = ({
               >
                 <TextField
                   {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{ ml: 1, mr: 1, width: '90ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '90ch',
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
                   label='What/Who is the claim about?'
-                  key='subject'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
                   error={Boolean(errors.subject)}
@@ -262,7 +273,14 @@ export const Form = ({
               >
                 <TextField
                   {...register('subject', { required: { value: true, message: 'name is required' } })}
-                  sx={{ ml: 1, mr: 1, width: '90ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '90ch',
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -279,7 +297,14 @@ export const Form = ({
                   select
                   label='Claim'
                   {...register('claim', { required: { value: true, message: 'claim is required' } })}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '30ch',
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -300,7 +325,14 @@ export const Form = ({
                   select
                   label='How do you know?'
                   {...register('howKnown')}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '30ch',
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -317,7 +349,15 @@ export const Form = ({
               <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
                 <TextField
                   {...register('statement')}
-                  sx={{ ml: 1, mr: 1, width: '90ch', '& .MuiOutlinedInput-root': { padding: '40px' } }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '90ch',
+                    '& .MuiOutlinedInput-root': { padding: '40px' },
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -331,7 +371,14 @@ export const Form = ({
               <Tooltip title='You should put your site here' placement='right' arrow>
                 <TextField
                   {...register('sourceURI')}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '30ch',
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -347,7 +394,14 @@ export const Form = ({
               >
                 <TextField
                   {...register('confidence')}
-                  sx={{ ml: 1, mr: 1, width: '30ch' }}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '30ch',
+                    '@media (min-width: 600px)': {
+                      gridColumn: '1/3'
+                    }
+                  }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -370,7 +424,14 @@ export const Form = ({
                           select
                           label='Academic'
                           {...register('aspect')}
-                          sx={{ ml: 1, mr: 1, width: '30ch' }}
+                          sx={{
+                            ml: 1,
+                            mr: 1,
+                            width: '30ch',
+                            '@media (min-width: 600px)': {
+                              gridColumn: '1/3'
+                            }
+                          }}
                           margin='dense'
                           variant='outlined'
                           fullWidth
@@ -391,7 +452,18 @@ export const Form = ({
                         rules={{ required: { value: true, message: 'rating is required' } }}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                           <Tooltip title='A rating associated with the claim' placement='right' arrow>
-                            <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                            <FormControl
+                              sx={{
+                                ml: 1,
+                                mr: 1,
+                                width: '22ch',
+                                '@media (min-width: 600px)': {
+                                  gridColumn: '1/3'
+                                }
+                              }}
+                              fullWidth
+                              error={!!error}
+                            >
                               <Typography>Review Rating</Typography>
                               <Rating
                                 name='stars'
@@ -411,7 +483,14 @@ export const Form = ({
                     <Tooltip title='If you want to add any additional site belongs to you' placement='right' arrow>
                       <TextField
                         {...register('object')}
-                        sx={{ ml: 1, mr: 1, width: '30ch' }}
+                        sx={{
+                          ml: 1,
+                          mr: 1,
+                          width: '30ch',
+                          '@media (min-width: 600px)': {
+                            gridColumn: '1/3'
+                          }
+                        }}
                         margin='dense'
                         variant='outlined'
                         fullWidth
@@ -429,14 +508,35 @@ export const Form = ({
                   value={null}
                   onChange={(newValue: any) => setValue('effectiveDate', newValue)}
                   renderInput={(params: any) => (
-                    <TextField {...params} sx={{ ml: 1, mr: 1, width: '30ch' }} variant='filled' />
+                    <TextField
+                      {...params}
+                      sx={{
+                        ml: 1,
+                        mr: 1,
+                        width: '30ch',
+                        '@media (min-width: 600px)': {
+                          gridColumn: '1/3'
+                        }
+                      }}
+                      variant='filled'
+                    />
                   )}
                 />
               </LocalizationProvider>
             </Box>
           </form>
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', columnGap: 3 }}>
+        <DialogActions
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            width: '100%',
+            columnGap: 3,
+            '@media (min-width: 600px)': {
+              flexDirection: 'row'
+            }
+          }}
+        >
           <Button
             onClick={onSubmit}
             variant='contained'
@@ -445,6 +545,9 @@ export const Form = ({
               ml: 1,
               mr: 1,
               width: '50%',
+              '@media (min-width: 600px)': {
+                width: 'calc(50% - 1rem)'
+              },
               bgcolor: 'praimary.main',
               margin: '0 auto',
               '&:hover': {
