@@ -115,7 +115,7 @@ export const Form = ({
       claim: 'rated',
       object: '' as string,
       statement: '' as string,
-      aspect: '' as string,
+      aspect: [],
       howKnown: '' as string,
       sourceURI: '' as string,
       effectiveDate: new Date(),
@@ -174,7 +174,7 @@ export const Form = ({
       setValue('object', '')
     } else {
       setValue('stars', null)
-      setValue('aspect', '')
+      setValue('aspect', [])
     }
   }, [watchClaim, setValue])
 
@@ -333,7 +333,7 @@ export const Form = ({
                 {watchClaim === 'rated' ? (
                   <>
                     <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
-                      <MultipleSelectChip />
+                      <MultipleSelectChip control={control} name={'aspect'} />
                     </Tooltip>
 
                     <Controller

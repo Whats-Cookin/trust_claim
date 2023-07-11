@@ -1,17 +1,13 @@
-import React, { useEffect } from 'react'
-import { Theme, useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import Chip from '@mui/material/Chip'
 import data from '../Form'
+import { useState } from 'react'
 import CancelIcon from '@mui/icons-material/Cancel'
-import { FormHelperText } from '@mui/material'
+import { useController, Control } from 'react-hook-form'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { Box, MenuItem, FormHelperText, InputLabel, FormControl, OutlinedInput, Chip } from '@mui/material'
+
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
+
 const MenuProps = {
   PaperProps: {
     style: {
@@ -22,10 +18,19 @@ const MenuProps = {
 }
 
 const names = ['Impact', 'Quality', 'Test', 'RelationShip']
+interface MultipleSelectChipProps {
+  name: string
+  control: Control<any>
+}
 
-export default function MultipleSelectChip() {
-  const theme = useTheme()
-  const [options, setOptions] = React.useState<string[]>([])
+export default function MultipleSelectChip({ name, control }: MultipleSelectChipProps) {
+  const { field } = useController({
+    control,
+    name
+  })
+
+  const { value, onChange } = field
+  const [options, setOptions] = useState<string[]>(value)
 
   const handleChange = (event: SelectChangeEvent<typeof options>) => {
     const {
@@ -39,6 +44,7 @@ export default function MultipleSelectChip() {
     }
 
     setOptions(selectedValues)
+    onChange(selectedValues)
   }
 
   const handleDelete = (value: any) => {
@@ -51,6 +57,7 @@ export default function MultipleSelectChip() {
       setOptions(options.filter(name => name !== value))
     }
   }
+
   return (
     <div>
       <FormControl sx={{ m: 1, width: 250 }}>
