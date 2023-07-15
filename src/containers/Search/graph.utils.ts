@@ -70,13 +70,13 @@ const parseClaims = (claims: any) => {
   return elements
 }
 
-const parseNodes = (data: any) => {
+const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
 
   data.forEach((node: any) => {
     // adding subject node
-    parseNode(nodes, edges, node)
+    parseSingleNode(nodes, edges, node)
   })
   return { nodes, edges }
 }
@@ -137,7 +137,7 @@ const getNodeData = (node: any) => {
   return nodeData
 }
 
-const parseNode = (nodes: {}[], edges: {}[], node: any) => {
+const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
   // adding subject node
   if (node.name && node.nodeUri) {
     const nodeData = getNodeData(node)
@@ -191,4 +191,4 @@ const parseNode = (nodes: {}[], edges: {}[], node: any) => {
   return { nodes, edges }
 }
 
-export { parseClaims, parseNodes, parseNode }
+export { parseClaims, parseMultipleNodes, parseSingleNode }

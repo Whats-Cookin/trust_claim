@@ -1,17 +1,14 @@
-import { useState, useRef, useEffect } from 'react'
+import styles from './styles'
+import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
-import { useLocation, useNavigate } from 'react-router-dom'
-import Container from '@mui/material/Container'
-import Box from '@mui/material/Box'
-import NewClaim from '../../components/NewClaim/AddNewClaim'
+import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
-import cyConfig from './cyConfig'
-import IHomeProps from './types'
-import styles from './styles'
-import { parseNode, parseNodes } from './graph.utils'
-import { useTheme } from '@mui/material'
-import { useMediaQuery } from '@mui/material'
+import { useLocation } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
+import NewClaim from '../../components/NewClaim/AddNewClaim'
+import { parseSingleNode, parseMultipleNodes } from './graph.utils'
+import { useTheme, useMediaQuery, Container, Box } from '@mui/material'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -29,69 +26,62 @@ const Search = (homeProps: IHomeProps) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const special = useMediaQuery('(width:540px)')
 
-  const updateClaims = (search: boolean, newClaims: any) => {
+  const runCy = () => {
     if (!cy) return
-    const parsedClaims = parseNodes(newClaims)
-    if (search) {
-      cy.elements().remove()
-      cy.add(parsedClaims)
-    } else {
-      cy.add(parsedClaims)
-    }
+    cy.layout({
+      name: 'circle',
+      padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
+      animate: true,
+      animationDuration: 1000
+    }).run()
+    cy.center()
   }
 
-  const fetchClaims = async (query: string, search: boolean, page: number) => {
+  const fetchQueryClaims = async (query: string, page: number) => {
     setLoading(true)
     try {
-      if (search) {
-        const res = await axios.get(`/api/node?page=${page}&limit=5`, {
-          params: { search: query }
-        })
+      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
+        params: { search: query }
+      })
 
-        if (res.data.nodes.length > 0) {
-          updateClaims(search, res.data.nodes)
-        } else {
-          setSnackbarMessage('No results found')
-          toggleSnackbar(true)
-        }
+      if (res.data.nodes.length > 0 && cy) {
+        const parsedClaims = parseMultipleNodes(res.data.nodes)
+        cy.elements().remove()
+        cy.add(parsedClaims)
       } else {
-        const res = await axios.get(`/api/node/${query}?page=${page}&limit=5`)
-
-        if (res.data) {
-          let newNodes: any[] = []
-          let newEdges: any[] = []
-          parseNode(newNodes, newEdges, res.data)
-          if (!cy) return
-          cy.add({ nodes: newNodes, edges: newEdges } as any)
-          // this was supposed to add thumbnail images but it doesn't work
-          /*
-          cy.nodes().forEach(function(node) {
-             var thumbnailUrl = node.data('raw').thumbnail;
-             if (thumbnailUrl) {
-                var imageHtml = '<img src="' + thumbnailUrl + '" width="50" height="50">';
-                node.style('content', imageHtml);
-             }
-          });
-          */
-        } else {
-          setSnackbarMessage('No results found')
-          toggleSnackbar(true)
-        }
+        setSnackbarMessage('No results found')
+        toggleSnackbar(true)
       }
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
     } finally {
       setLoading(false)
-      if (!cy) return
-      cy.layout({
-        name: 'circle',
-        directed: true,
-        padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
-        animate: true,
-        animationDuration: 1000
-      }).run()
-      cy.center()
+      runCy()
+    }
+  }
+
+  const fetchRelatedClaims = async (id: string, page: number) => {
+    setLoading(true)
+    try {
+      const res = await axios.get(`/api/node/${id}?page=${page}&limit=5`)
+
+      if (res.data) {
+        let newNodes: any[] = []
+        let newEdges: any[] = []
+        parseSingleNode(newNodes, newEdges, res.data)
+        if (!cy) return
+        cy.add({ nodes: newNodes, edges: newEdges } as any)
+      } else {
+        setSnackbarMessage('No results found')
+        toggleSnackbar(true)
+      }
+    } catch (err: any) {
+      toggleSnackbar(true)
+      setSnackbarMessage(err.message)
+    } finally {
+      setLoading(false)
+      runCy()
     }
   }
 
@@ -110,7 +100,7 @@ const Search = (homeProps: IHomeProps) => {
         setOpenNewClaim(true)
       }
     } else {
-      await fetchClaims(event.target.data('id'), false, page.current)
+      await fetchRelatedClaims(event.target.data('id'), page.current)
       //page.current = page.current + 1
     }
   }
@@ -170,7 +160,7 @@ const Search = (homeProps: IHomeProps) => {
 
   useEffect(() => {
     if (query && cy) {
-      fetchClaims(encodeURIComponent(query), true, page.current)
+      fetchQueryClaims(encodeURIComponent(query), page.current)
     }
   }, [query, cy])
 
