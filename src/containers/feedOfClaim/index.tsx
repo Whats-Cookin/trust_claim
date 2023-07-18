@@ -1,16 +1,11 @@
-import * as React from 'react'
-import { styled } from '@mui/material/styles'
-import { Card, CardContent, CardActions, IconButton, Collapse, Typography } from '@mui/material'
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
-import { Box } from '@mui/system'
-import SchemaIcon from '@mui/icons-material/Schema'
-import { Link, useNavigate } from 'react-router-dom'
-import { IHomeProps, ExpandMoreProps, Claim } from './types'
-import { useEffect, useState } from 'react'
-import axios from '../../axiosInstance'
+import { useState } from 'react'
 import node from '../../../db.json'
-import { useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import { useNavigate } from 'react-router-dom'
+import SchemaIcon from '@mui/icons-material/Schema'
+import { IHomeProps, ExpandMoreProps } from './types'
+import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
+import { Box, Card, CardContent, CardActions, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material'
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
@@ -23,30 +18,13 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   })
 }))
 
-const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
+const FeedClaim = ({}: IHomeProps) => {
   const navigate = useNavigate()
-  const [claims, setClaims] = useState<any[]>(node.nodes)
-  const [claimSelected, setClaimSelected] = useState<number | null>(null)
+  const claims = node.nodes
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('/api/nodes')
-  //       const data = response.data
-  //       setClaims(data)
-  //     } catch (error) {
-  //       console.error(error)
-  //     }
-  //   }
-
-  //   fetchData() // Call the fetchData function
-  // }, [])
-
-  const handleschame = async (claimId: number) => {
-    window.localStorage.removeItem('claims')
-    setClaimSelected(claimId)
+  const handleschema = async (claimId: number) => {
     navigate({
       pathname: '/search',
       search: `?query=${claimId}`
@@ -100,7 +78,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
     )
   }
 
-  const [expanded, setExpanded] = React.useState<number | null>(null)
+  const [expanded, setExpanded] = useState<number | null>(null)
   const handleExpandClick = (index: number) => {
     if (expanded === index) {
       setExpanded(null)
@@ -181,7 +159,7 @@ const FeedClaim = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProp
                   marginTop: '10px',
                   marginLeft: isSmallScreen ? '5px' : 'auto'
                 }}
-                onClick={() => handleschame(claim.id)}
+                onClick={() => handleschema(claim.id)}
               />
               <ExpandMore
                 expand={expanded === index}
