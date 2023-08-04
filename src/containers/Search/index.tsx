@@ -30,6 +30,7 @@ const Search = (homeProps: IHomeProps) => {
     if (!cy) return
     cy.layout({
       name: 'circle',
+      // name: 'breadthfirst',
       padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
       animate: true,
       animationDuration: 1000
@@ -133,6 +134,7 @@ const Search = (homeProps: IHomeProps) => {
     event.preventDefault()
     const claim = event.target
     const currentClaim = claim.data('raw')
+    console.log('plaaaaaaaay', currentClaim)
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)

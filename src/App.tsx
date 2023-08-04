@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
 import Navbar from './components/Navbar'
@@ -11,6 +11,8 @@ import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
+import Rate from './components/Rate'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -96,8 +98,14 @@ const App = () => {
             <Route path='feed' element={<FeedClaim {...commonProps} />} />
             <Route path='search' element={<Search {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
-            <Route path='login' element={<Login {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
+            <Route path='login' element={<Login {...commonProps} />} />
+            <Route
+              path='/rate'
+              element={
+                checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+              }
+            />
           </Routes>
         </Box>
       </ThemeProvider>

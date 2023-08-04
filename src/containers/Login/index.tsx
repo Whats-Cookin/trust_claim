@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react'
 import axios from '../../axiosInstance'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -22,6 +22,7 @@ const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_C
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
   const theme = useTheme()
+  const location = useLocation()
 
   const {
     register,
@@ -107,6 +108,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
         } = await axios.post<{ accessToken: string; refreshToken: string }>(loginUrl, data)
 
         handleAuth(accessToken, refreshToken)
+        if (location.state?.from) {
+          navigate(location.state?.from)
+        }
       }
     } catch (err: any) {
       setLoading(false)
