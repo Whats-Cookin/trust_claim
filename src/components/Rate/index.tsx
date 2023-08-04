@@ -65,7 +65,17 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
 
   const inputOptions = {
     aspect: ['fast turnaround', 'good value', 'responsive', ' quality'],
-    howKnown: ['first_hand']
+    howKnown: [
+      'first_hand',
+      'second_hand',
+      'website',
+      'verified_website',
+      'verified_login',
+      'signed_claim',
+      'blockchain',
+      'physical_document',
+      'integration'
+    ]
   }
 
   return (
