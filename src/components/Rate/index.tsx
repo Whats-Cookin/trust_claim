@@ -8,6 +8,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { useQueryParams } from '../../hooks'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
@@ -17,7 +19,9 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
     handleSubmit,
     formState: { errors },
     reset,
-    control
+    watch,
+    control,
+    setValue
   } = useForm({
     defaultValues: {
       subject: subject as string,
@@ -25,6 +29,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       statement: '' as string,
       aspect: '' as string,
       howKnown: '' as string,
+      effectiveDate: new Date(),
       stars: null as number | null
     }
   })
@@ -32,9 +37,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, stars }) => {
+  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars }) => {
     if (subject && claim) {
       const starsAsNumber = Number(stars)
+      const effectiveDateAsString = effectiveDate.toISOString()
 
       const payload = {
         subject,
@@ -42,6 +48,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         statement,
         aspect,
         howKnown,
+        effectiveDate: effectiveDateAsString,
         stars: starsAsNumber
       }
 
@@ -62,6 +69,8 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       setSnackbarMessage('Subject and Claims are required fields.')
     }
   })
+
+  const watchEffectiveDate = watch('effectiveDate')
 
   const inputOptions = {
     aspect: ['fast turnaround', 'good value', 'responsive', ' quality'],
@@ -99,7 +108,6 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         <Typography
           variant='h4'
           sx={{
-            mb: 3,
             textAlign: 'center',
             fontSize: '20px',
             color: 'primary.main',
@@ -167,10 +175,20 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                   </Tooltip>
                 )}
               />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label='Effective Date'
+                  value={watchEffectiveDate}
+                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                  renderInput={(params: any) => (
+                    <TextField {...params} sx={{ ml: 1, mr: 1, width: '100%' }} variant='filled' />
+                  )}
+                />
+              </LocalizationProvider>
             </>
           }
 
-        <input type="hidden" name="howKnown" value="first_hand" {...register('howKnown')} />
+          <input type='hidden' value='first_hand' {...register('howKnown')} />
         </Box>
       </form>
       <Button
