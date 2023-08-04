@@ -103,36 +103,18 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             textAlign: 'center',
             fontSize: '20px',
             color: 'primary.main',
-            textTransform: 'uppercase',
             fontWeight: 'bold'
           }}
         >
-          {`what do you have to say about ${subject || 'this company'}`}
+          {`Welcome!  Rate your experience with ${subject || 'this company'}`}
         </Typography>
       </Box>
       <form onSubmit={onSubmit}>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 3, m: 1 }}>
-          <Tooltip title='The method or source of the claim ' placement='right' arrow>
-            <TextField
-              select
-              label='How Known'
-              {...register('howKnown')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-            >
-              {inputOptions.howKnown.map((howKnownText: string) => (
-                <MenuItem value={howKnownText}>
-                  <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
-                </MenuItem>
-              ))}
-            </TextField>
-          </Tooltip>
-          <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
+          <Tooltip title='Tell about your experience ' placement='right' arrow>
             <TextField
               {...register('statement')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              sx={{ ml: 1, mr: 1, width: '40ch' }}
               margin='dense'
               variant='outlined'
               fullWidth
@@ -140,12 +122,13 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
               key='statement'
               type='text'
               multiline={true}
-              maxRows={4}
+              rows={4}
+              maxRows={6}
             />
           </Tooltip>
           {
             <>
-              <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
+              <Tooltip title='What aspect is this rating about?' placement='right' arrow>
                 <TextField
                   select
                   label='Aspect'
@@ -168,9 +151,9 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                 control={control}
                 rules={{ required: { value: true, message: 'rating is required' } }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <Tooltip title='A rating associated with the claim' placement='right' arrow>
+                  <Tooltip title='Your rating' placement='right' arrow>
                     <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                      <Typography>Review Rating</Typography>
+                      <Typography>Your Rating</Typography>
                       <Rating
                         name='stars'
                         value={value}
@@ -186,6 +169,25 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
               />
             </>
           }
+
+
+          <Tooltip title='How do you know, is this your first-hand experience?' placement='right' arrow>
+            <TextField
+              select
+              label='How Known'
+              {...register('howKnown')}
+              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+            >
+              {inputOptions.howKnown.map((howKnownText: string) => (
+                <MenuItem value={howKnownText}>
+                  <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
+                </MenuItem>
+              ))}
+            </TextField>
+          </Tooltip>
         </Box>
       </form>
       <Button
