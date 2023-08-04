@@ -114,7 +114,14 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             fontWeight: 'bold'
           }}
         >
-          {`Welcome!  Rate your experience with ${subject || 'this company'}`}
+          {`Welcome!  Rate your experience with `}
+          <strong
+            style={{
+              fontWeight: 1000
+            }}
+          >
+            {`${subject || 'this company'}`}
+          </strong>
         </Typography>
       </Box>
       <form onSubmit={onSubmit}>
