@@ -8,9 +8,13 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { useQueryParams } from '../../hooks'
+
 import Dialog from '@mui/material/Dialog'
 import DialogContentText from '@mui/material/DialogContentText'
 import React, { useEffect, useState } from 'react'
+        import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
@@ -24,7 +28,9 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
     handleSubmit,
     formState: { errors },
     reset,
-    control
+    watch,
+    control,
+    setValue
   } = useForm({
     defaultValues: {
       subject: subject as string,
@@ -32,6 +38,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       statement: '' as string,
       aspect: '' as string,
       howKnown: '' as string,
+      effectiveDate: new Date(),
       stars: null as number | null
     }
   })
@@ -39,9 +46,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, stars }) => {
+  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars }) => {
     if (subject && claim) {
       const starsAsNumber = Number(stars)
+      const effectiveDateAsString = effectiveDate.toISOString()
 
       const payload = {
         subject,
@@ -49,6 +57,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         statement,
         aspect,
         howKnown,
+        effectiveDate: effectiveDateAsString,
         stars: starsAsNumber
       }
 
@@ -71,6 +80,8 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       }
     }
   })
+
+  const watchEffectiveDate = watch('effectiveDate')
 
   const inputOptions = {
     aspect: ['fast turnaround', 'good value', 'responsive', ' quality'],
@@ -108,40 +119,21 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         <Typography
           variant='h4'
           sx={{
-            mb: 3,
             textAlign: 'center',
             fontSize: '20px',
             color: 'primary.main',
-            textTransform: 'uppercase',
             fontWeight: 'bold'
           }}
         >
-          {`what do you have to say about ${subject || 'this company'}`}
+          {`Welcome!  Rate your experience with ${subject || 'this company'}`}
         </Typography>
       </Box>
       <form onSubmit={onSubmit}>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 3, m: 1 }}>
-          <Tooltip title='The method or source of the claim ' placement='right' arrow>
-            <TextField
-              select
-              label='How Known'
-              {...register('howKnown')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-            >
-              {inputOptions.howKnown.map((howKnownText: string) => (
-                <MenuItem value={howKnownText}>
-                  <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
-                </MenuItem>
-              ))}
-            </TextField>
-          </Tooltip>
-          <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 1, m: 1 }}>
+          <Tooltip title='Tell about your experience ' placement='right' arrow>
             <TextField
               {...register('statement')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
+              sx={{ ml: 1, mr: 1, width: '40ch' }}
               margin='dense'
               variant='outlined'
               fullWidth
@@ -149,12 +141,13 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
               key='statement'
               type='text'
               multiline={true}
-              maxRows={4}
+              rows={4}
+              maxRows={6}
             />
           </Tooltip>
           {
             <>
-              <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
+              <Tooltip title='What aspect is this rating about?' placement='right' arrow>
                 <TextField
                   select
                   label='Aspect'
@@ -177,9 +170,9 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                 control={control}
                 rules={{ required: { value: true, message: 'rating is required' } }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <Tooltip title='A rating associated with the claim' placement='right' arrow>
+                  <Tooltip title='Your rating' placement='right' arrow>
                     <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                      <Typography>Review Rating</Typography>
+                      <Typography>Your Rating</Typography>
                       <Rating
                         name='stars'
                         value={value}
@@ -204,8 +197,20 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                   </Tooltip>
                 )}
               />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label='Effective Date'
+                  value={watchEffectiveDate}
+                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                  renderInput={(params: any) => (
+                    <TextField {...params} sx={{ ml: 1, mr: 1, width: '100%' }} variant='filled' />
+                  )}
+                />
+              </LocalizationProvider>
             </>
           }
+
+          <input type='hidden' value='first_hand' {...register('howKnown')} />
         </Box>
       </form>
 
