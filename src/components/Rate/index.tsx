@@ -12,9 +12,8 @@ import { useQueryParams } from '../../hooks'
 import Dialog from '@mui/material/Dialog'
 import DialogContentText from '@mui/material/DialogContentText'
 import React, { useEffect, useState } from 'react'
-        import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
