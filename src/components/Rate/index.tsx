@@ -110,7 +110,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         </Typography>
       </Box>
       <form onSubmit={onSubmit}>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 3, m: 1 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 1, m: 1 }}>
           <Tooltip title='Tell about your experience ' placement='right' arrow>
             <TextField
               {...register('statement')}
@@ -170,24 +170,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             </>
           }
 
-
-          <Tooltip title='How do you know, is this your first-hand experience?' placement='right' arrow>
-            <TextField
-              select
-              label='How Known'
-              {...register('howKnown')}
-              sx={{ ml: 1, mr: 1, width: '22ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-            >
-              {inputOptions.howKnown.map((howKnownText: string) => (
-                <MenuItem value={howKnownText}>
-                  <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
-                </MenuItem>
-              ))}
-            </TextField>
-          </Tooltip>
+        <input type="hidden" name="howKnown" value="first_hand" {...register('howKnown')} />
         </Box>
       </form>
       <Button
