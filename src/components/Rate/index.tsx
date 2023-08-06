@@ -8,12 +8,20 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { useQueryParams } from '../../hooks'
+
+import Dialog from '@mui/material/Dialog'
+import DialogContentText from '@mui/material/DialogContentText'
+import React, { useEffect, useState } from 'react'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
   const subject = queryParams.get('subject')
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -54,19 +62,21 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
 
       setLoading(true)
 
-      const { message, isSuccess } = await createClaim(payload)
+      const { message, isSuccess } = await createClaim(payload) // Change this line
 
       setLoading(false)
       toggleSnackbar(true)
       setSnackbarMessage(message)
       if (isSuccess) {
-        navigate('/feed')
+        setDialogOpen(true)
+        setIsFormSubmitted(true)
+
         reset()
+      } else {
+        setLoading(false)
+        toggleSnackbar(true)
+        setSnackbarMessage('Subject and Claims are required fields.')
       }
-    } else {
-      setLoading(false)
-      toggleSnackbar(true)
-      setSnackbarMessage('Subject and Claims are required fields.')
     }
   })
 
@@ -178,6 +188,17 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                       />
 
                       <FormHelperText>{error?.message}</FormHelperText>
+                      <Dialog
+                        open={dialogOpen}
+                        onClose={() => {
+                          setDialogOpen(false)
+                          if (isFormSubmitted) {
+                            navigate('/feed')
+                          }
+                        }}
+                      >
+                        <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
+                      </Dialog>
                     </FormControl>
                   </Tooltip>
                 )}
@@ -198,8 +219,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
           <input type='hidden' value='first_hand' {...register('howKnown')} />
         </Box>
       </form>
+
       <Button
         onClick={onSubmit}
+        type='submit'
         variant='contained'
         size='large'
         sx={{
