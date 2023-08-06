@@ -1,17 +1,15 @@
 import Box from '@mui/material/Box'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import { TextField, Button, FormControl, MenuItem, Rating, FormHelperText } from '@mui/material'
 import IHomeProps from '../../containers/Form/types'
-import styles from '../../containers/Form/styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { useQueryParams } from '../../hooks'
-
 import Dialog from '@mui/material/Dialog'
 import DialogContentText from '@mui/material/DialogContentText'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
@@ -19,7 +17,6 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   const queryParams = useQueryParams()
   const subject = queryParams.get('subject')
   const [dialogOpen, setDialogOpen] = React.useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
   const {
@@ -70,7 +67,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       if (isSuccess) {
         setDialogOpen(true)
         setIsFormSubmitted(true)
-
+        setTimeout(() => {
+          setDialogOpen(false)
+          navigate('/feed')
+        }, 3000)
         reset()
       } else {
         setLoading(false)
@@ -158,7 +158,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                   select
                   label='Aspect'
                   {...register('aspect')}
-                  sx={{ ml: 1, mr: 1, width: '22ch' }}
+                  sx={{ ml: 1, mr: 1, maxWidth: 600 }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -177,7 +177,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                 rules={{ required: { value: true, message: 'rating is required' } }}
                 render={({ field: { onChange, value }, fieldState: { error } }) => (
                   <Tooltip title='Your rating' placement='right' arrow>
-                    <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                    <FormControl sx={{ ml: 1, mr: 1, width: 'fit-content' }} fullWidth error={!!error}>
                       <Typography>Your Rating</Typography>
                       <Rating
                         name='stars'
@@ -209,7 +209,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                   value={watchEffectiveDate}
                   onChange={(newValue: any) => setValue('effectiveDate', newValue)}
                   renderInput={(params: any) => (
-                    <TextField {...params} sx={{ ml: 1, mr: 1, width: '100%' }} variant='filled' />
+                    <TextField {...params} sx={{ ml: 1, mr: 1, width: 600 }} variant='filled' />
                   )}
                 />
               </LocalizationProvider>
