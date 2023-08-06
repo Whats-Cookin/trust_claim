@@ -12,7 +12,6 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
-import { BrowserRouter as Router } from 'react-router-dom'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
