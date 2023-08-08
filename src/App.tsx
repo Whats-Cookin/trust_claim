@@ -12,6 +12,7 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
+import Validate from './components/Validate'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -103,6 +104,16 @@ const App = () => {
               path='/rate'
               element={
                 checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+              }
+            />
+            <Route
+              path='/validate'
+              element={
+                checkAuth() ? (
+                  <Validate {...commonProps} />
+                ) : (
+                  <Navigate to='/login' replace state={{ from: location }} />
+                )
               }
             />
           </Routes>
