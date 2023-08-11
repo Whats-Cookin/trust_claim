@@ -86,14 +86,18 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
       }
-      navigate('/')
+      if (location.state?.from) {
+        navigate(location.state.from);
     } else {
-      // User address is not found, navigate to login page
-      navigate('/login')
+        navigate('/');
     }
+} else {
+    navigate('/login');
+}
+      
   }
 
-  const onSubmit = handleSubmit(async ({ email, password, ethAccountId }) => {
+  const onSubmit = handleSubmit(async ({ email, password }) => {
     console.log('You pressed submit, congratulations')
     try {
       if (!email || !password) {

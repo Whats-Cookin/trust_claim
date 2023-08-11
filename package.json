@@ -31,7 +31,8 @@
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.43.9",
     "react-router-dom": "^6.3.0",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "update": "^0.7.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

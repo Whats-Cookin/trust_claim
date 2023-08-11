@@ -20,6 +20,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
     localStorage.removeItem('accessToken')
     localStorage.removeItem('refreshToken')
     localStorage.removeItem('did')
+    localStorage.removeItem('ethAddress')
 
     handleNavigate('/login')
   }
