@@ -30,7 +30,7 @@ const App = () => {
     const ethAddress = localStorage.getItem('ethAddress')
     const did = localStorage.getItem('did')
     console.log('In check auth now')
-    return !!((did && ethAddress)|| (accessToken && refreshToken)) 
+    return !!((did && ethAddress) || (accessToken && refreshToken))
   }
 
   useEffect(() => {
@@ -46,8 +46,8 @@ const App = () => {
     setLoading,
     setMetaNav
   }
-  // const isLoginPage = window.location.pathname === '/login'
-  // const isRegisterPage = window.location.pathname === '/register'
+  const isLoginPage = window.location.pathname === '/login'
+  const isRegisterPage = window.location.pathname === '/register'
 
   const theme = createTheme({
     palette: {

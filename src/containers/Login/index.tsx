@@ -87,14 +87,13 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
         console.log(`Error trying to authenticate ceramic: ${e}`)
       }
       if (location.state?.from) {
-        navigate(location.state.from);
+        navigate(location.state.from)
+      } else {
+        navigate('/')
+      }
     } else {
-        navigate('/');
+      navigate('/login')
     }
-} else {
-    navigate('/login');
-}
-      
   }
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
