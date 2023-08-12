@@ -28,9 +28,9 @@ const App = () => {
     const accessToken = localStorage.getItem('accessToken')
     const refreshToken = localStorage.getItem('refreshToken')
     const ethAddress = localStorage.getItem('ethAddress')
+    const did = localStorage.getItem('did')
     console.log('In check auth now')
-    if (ethAddress || (accessToken && refreshToken)) return true
-    return false
+    return !!((did && ethAddress) || (accessToken && refreshToken))
   }
 
   useEffect(() => {
