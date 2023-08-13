@@ -95,6 +95,10 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       navigate('/login')
     }
   }
+  const handleMetamaskAuth = (event: { preventDefault: () => void }) => {
+    event.preventDefault()
+    handleWalletAuth()
+  }
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     console.log('You pressed submit, congratulations')
@@ -127,7 +131,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <button id='loginButton' onClick={handleWalletAuth} style={styles.authbtn}>
+      <button id='loginButton' onClick={handleMetamaskAuth} style={styles.authbtn}>
         <span>
           <img src={metaicon} alt='' style={{ width: '30px' }} />
         </span>
