@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
-import { TextField, Button, FormControl, MenuItem, Rating, FormHelperText } from '@mui/material'
+import { TextField, Button, FormControl, MenuItem, Rating, FormHelperText, Divider } from '@mui/material'
 import IHomeProps from '../../containers/Form/types'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
@@ -14,9 +14,13 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import axios from '../../axiosInstance'
 
-const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
+const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
-  const [subjecttValue, setSubjectValue] = useState('unknown aspect')
+  const [subjectValue, setSubjectValue] = useState('')
+  const [claimVerbValue, setClaimVerbValue] = useState('')
+  const [objectValue, setObjectValue] = useState('')
+  const [amtValue, setAmtValue] = useState('')
+  const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const subject = queryParams.get('subject')
   if (subject) {
     const parts = subject.split('/')
@@ -29,7 +33,11 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
       try {
         var res = await axios.get(`/api/claim/${number}`)
         console.log(res.data)
-        setSubjectValue(res.data.subject || 'unknown aspect')
+        setSubjectValue(res.data.subject || 'unknown')
+        setClaimVerbValue(res.data.claim || 'unknown')
+        setObjectValue(res.data.object || 'unknown')
+        setAmtValue(res.data.amt || 'unknown')
+        setEffectiveDateValue(res.data.effectiveDate || 'unknown')
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -105,7 +113,15 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   const watchEffectiveDate = watch('effectiveDate')
 
   const inputOptions = {
-    aspect: ['fast turnaround', 'good value', 'responsive', ' quality'],
+    aspect: [
+      'yes, i heard about it',
+      ' yes, I was involved in working on it',
+      'yes, I received some benefit from it!',
+      ' yes, I read about it',
+      'yes, other',
+      'no, sorry, I have no knowledge about this',
+      `I dont know about the claim but i know about ${subjectValue}`
+    ],
     howKnown: [
       'first_hand',
       'second_hand',
@@ -127,7 +143,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         rowGap: 2,
         width: '100%',
         padding: '2rem',
-        maxWidth: '430px',
+        maxWidth: '830px',
         marginTop: { xs: 15, md: 8 },
         background: '#FFFFFF',
         boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
@@ -146,100 +162,110 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             fontWeight: 'bold'
           }}
         >
-          {`Welcome!  Rate your experience with`}
-          <strong
-            style={{
-              fontWeight: 1000
-            }}
-          >
-            {subjecttValue || 'this company'}
-          </strong>
+          {`Welcome!  We value your input, thank you for helping keep it real`}
         </Typography>
       </Box>
-      <form onSubmit={onSubmit}>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 1, m: 1 }}>
-          <Tooltip title='Tell about your experience ' placement='right' arrow>
+      <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'row', borderTop: '3px solid #009688' }}>
+        <Box sx={{ width: '50%', borderRight: '3px solid #009688' }}>
+          <Typography
+            variant='h4'
+            sx={{
+              textAlign: 'center',
+              fontSize: '20px',
+              color: 'primary.main',
+              fontWeight: 'bold',
+              mb: '20px',
+              mt: '20px'
+            }}
+          >
+            {`We have a claim that`}
+          </Typography>
+          <Box
+            sx={{
+              width: '100%',
+              color: 'primary.main',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              '& > *': { margin: '20px 0' }
+            }}
+          >
+            <Typography variant='h5'>{`subject: ${subjectValue}`}</Typography>
+            <Typography variant='h5'>{`claim: ${claimVerbValue}`}</Typography>
+            <Typography variant='h5'>{`object: ${objectValue}`}</Typography>
+            <Typography variant='h5'>{`amt: ${amtValue}`}</Typography>
+            <Typography variant='h5'>{`effectiveDate: ${effectiveDateValue}`}</Typography>
+          </Box>
+        </Box>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '50%', rowGap: 1, m: 1 }}>
+          <Typography
+            sx={{
+              textAlign: 'center',
+              fontSize: '20px',
+              color: 'primary.main',
+              fontWeight: 'bold',
+              mt: '10px'
+            }}
+          >
+            Do you know anything about this?
+          </Typography>
+          <Tooltip title='What aspect is this rating about?' placement='right' arrow>
+            <TextField
+              select
+              label='explain here'
+              {...register('aspect')}
+              sx={{ width: '95%' }}
+              margin='dense'
+              variant='outlined'
+              fullWidth
+            >
+              {inputOptions.aspect.map((aspectText: string, index: number) => (
+                <MenuItem value={aspectText} key={aspectText}>
+                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                </MenuItem>
+              ))}
+            </TextField>
+          </Tooltip>
+          <Tooltip title='write more information here ' placement='right' arrow>
             <TextField
               {...register('statement')}
+              placeholder={
+                'Type If received benefit and If  you read or heard about it what was your source If other write your relation to the claim'
+              }
               sx={{ ml: 1, mr: 1, width: '40ch' }}
               margin='dense'
               variant='outlined'
               fullWidth
-              label='Statement'
+              label='more Info'
               key='statement'
               type='text'
               multiline={true}
               rows={4}
               maxRows={6}
             />
-          </Tooltip>
-          {
-            <>
-              <Tooltip title='What aspect is this rating about?' placement='right' arrow>
-                <TextField
-                  select
-                  label='Aspect'
-                  {...register('aspect')}
-                  sx={{ ml: 1, mr: 1, maxWidth: 600 }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                >
-                  {inputOptions.aspect.map((aspectText: string, index: number) => (
-                    <MenuItem value={aspectText} key={aspectText}>
-                      <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-
-              <Controller
-                name='stars'
-                control={control}
-                rules={{ required: { value: true, message: 'rating is required' } }}
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <Tooltip title='Your rating' placement='right' arrow>
-                    <FormControl sx={{ ml: 1, mr: 1, width: 'fit-content' }} fullWidth error={!!error}>
-                      <Typography>Your Rating</Typography>
-                      <Rating
-                        name='stars'
-                        value={value}
-                        onChange={(e, newValue) => onChange(newValue)}
-                        precision={1}
-                        size='large'
-                      />
-
-                      <FormHelperText>{error?.message}</FormHelperText>
-                      <Dialog
-                        open={dialogOpen}
-                        onClose={() => {
-                          setDialogOpen(false)
-                          if (isFormSubmitted) {
-                            navigate('/feed')
-                          }
-                        }}
-                      >
-                        <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
-                      </Dialog>
-                    </FormControl>
-                  </Tooltip>
-                )}
-              />
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label='Effective Date'
-                  value={watchEffectiveDate}
-                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                  renderInput={(params: any) => (
-                    <TextField {...params} sx={{ ml: 1, mr: 1, width: 600 }} variant='filled' />
-                  )}
-                />
-              </LocalizationProvider>
-            </>
-          }
-
+          </Tooltip>{' '}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label='Effective Date'
+              value={watchEffectiveDate}
+              onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+              renderInput={(params: any) => (
+                <TextField {...params} sx={{ ml: 1, mr: 1, width: 600 }} variant='filled' />
+              )}
+            />
+          </LocalizationProvider>
           <input type='hidden' value='first_hand' {...register('howKnown')} />
         </Box>
+        <Dialog
+          open={dialogOpen}
+          onClose={() => {
+            setDialogOpen(false)
+            if (isFormSubmitted) {
+              navigate('/feed')
+            }
+          }}
+        >
+          <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
+        </Dialog>
       </form>
 
       <Button
@@ -264,7 +290,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   )
 }
 
-export default Rate
+export default Validate
 function setRes(data: any) {
   throw new Error('Function not implemented.')
 }
