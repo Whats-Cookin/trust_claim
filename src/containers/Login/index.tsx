@@ -87,6 +87,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
       }
+      if (location.state?.from) {
+        navigate(location.state.from)
+      } 
     } else {
       navigate('/login')
     }
