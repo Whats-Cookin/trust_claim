@@ -89,7 +89,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       }
       if (location.state?.from) {
         navigate(location.state.from)
-      } 
+      }
     } else {
       navigate('/login')
     }
