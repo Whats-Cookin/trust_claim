@@ -190,9 +190,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
             <Typography variant='h5'>{`subject: ${subjectValue}`}</Typography>
             <Typography variant='h5'>{`claim: ${claimVerbValue}`}</Typography>
             {objectValue && <Typography variant='h5'>{`object: ${objectValue}`}</Typography>}
-{amtValue && <Typography variant='h5'>{`amt: ${amtValue}`}</Typography>}
-{effectiveDateValue && <Typography variant='h5'>{`effectiveDate: ${effectiveDateValue}`}</Typography>}
-
+            {amtValue && <Typography variant='h5'>{`amt: ${amtValue}`}</Typography>}
+            {effectiveDateValue && <Typography variant='h5'>{`effectiveDate: ${effectiveDateValue}`}</Typography>}
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '50%', rowGap: 1, m: 1 }}>
