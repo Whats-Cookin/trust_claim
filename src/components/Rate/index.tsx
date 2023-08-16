@@ -9,35 +9,13 @@ import Tooltip from '@mui/material/Tooltip'
 import { useQueryParams } from '../../hooks'
 import Dialog from '@mui/material/Dialog'
 import DialogContentText from '@mui/material/DialogContentText'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import axios from '../../axiosInstance'
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
-  const [subjecttValue, setSubjectValue] = useState('unknown aspect')
   const subject = queryParams.get('subject')
-  if (subject) {
-    const parts = subject.split('/')
-    var number = parts[parts.length - 1] || undefined
-    var url = parts[parts.length - 3] || undefined
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        var res = await axios.get(`/api/claim/${number}`)
-        console.log(res.data)
-        setSubjectValue(res.data.subject || 'unknown aspect')
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    fetchData()
-  }, [number])
-
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
@@ -146,13 +124,13 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             fontWeight: 'bold'
           }}
         >
-          {`Welcome!  Rate your experience with`}
+          {`Welcome!  Rate your experience with `}
           <strong
             style={{
               fontWeight: 1000
             }}
           >
-            {subjecttValue || 'this company'}
+            {`${subject || 'this company'}`}
           </strong>
         </Typography>
       </Box>
@@ -265,6 +243,3 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
 }
 
 export default Rate
-function setRes(data: any) {
-  throw new Error('Function not implemented.')
-}
