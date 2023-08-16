@@ -83,17 +83,23 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
       try {
         console.log('Trying to authenticate ceramic')
         await authenticateCeramic(ceramic, composeClient)
+        navigate('/')
       } catch (e) {
         console.log(`Error trying to authenticate ceramic: ${e}`)
       }
-      navigate('/')
+      if (location.state?.from) {
+        navigate(location.state.from)
+      }
     } else {
-      // User address is not found, navigate to login page
       navigate('/login')
     }
   }
+  const handleMetamaskAuth = (event: { preventDefault: () => void }) => {
+    event.preventDefault()
+    handleWalletAuth()
+  }
 
-  const onSubmit = handleSubmit(async ({ email, password, ethAccountId }) => {
+  const onSubmit = handleSubmit(async ({ email, password }) => {
     console.log('You pressed submit, congratulations')
     try {
       if (!email || !password) {
@@ -124,7 +130,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <button id='loginButton' onClick={handleWalletAuth} style={styles.authbtn}>
+      <button id='loginButton' onClick={handleMetamaskAuth} style={styles.authbtn}>
         <span>
           <img src={metaicon} alt='' style={{ width: '30px' }} />
         </span>
