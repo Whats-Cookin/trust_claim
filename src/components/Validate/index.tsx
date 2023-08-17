@@ -33,11 +33,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
       try {
         var res = await axios.get(`/api/claim/${number}`)
         console.log(res.data)
-        setSubjectValue(res.data.subject || 'unknown')
-        setClaimVerbValue(res.data.claim || 'unknown')
-        setObjectValue(res.data.object || 'unknown')
-        setAmtValue(res.data.amt || 'unknown')
-        setEffectiveDateValue(res.data.effectiveDate || 'unknown')
+        setSubjectValue(res.data.subject)
+        setClaimVerbValue(res.data.claim)
+        setObjectValue(res.data.object)
+        setAmtValue(res.data.amt)
+        setEffectiveDateValue(res.data.effectiveDate)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -114,13 +114,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
 
   const inputOptions = {
     aspect: [
-      'yes, i heard about it',
-      ' yes, I was involved in working on it',
-      'yes, I received some benefit from it!',
-      ' yes, I read about it',
-      'yes, other',
-      'no, sorry, I have no knowledge about this',
-      `I dont know about the claim but i know about ${subjectValue}`
+      'validate first hand',
+      'validate from source',
+      'received direct benefit',
+      'reject first hand',
+      'reject from source'
     ],
     howKnown: [
       'first_hand',
@@ -191,9 +189,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
           >
             <Typography variant='h5'>{`subject: ${subjectValue}`}</Typography>
             <Typography variant='h5'>{`claim: ${claimVerbValue}`}</Typography>
-            <Typography variant='h5'>{`object: ${objectValue}`}</Typography>
-            <Typography variant='h5'>{`amt: ${amtValue}`}</Typography>
-            <Typography variant='h5'>{`effectiveDate: ${effectiveDateValue}`}</Typography>
+            {objectValue && <Typography variant='h5'>{`object: ${objectValue}`}</Typography>}
+            {amtValue && <Typography variant='h5'>{`amt: ${amtValue}`}</Typography>}
+            {effectiveDateValue && <Typography variant='h5'>{`effectiveDate: ${effectiveDateValue}`}</Typography>}
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '50%', rowGap: 1, m: 1 }}>
