@@ -238,7 +238,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
               key='statement'
               type='text'
               multiline={true}
-              
               maxRows={6}
             />
           </Tooltip>{' '}
