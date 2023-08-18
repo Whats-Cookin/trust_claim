@@ -209,6 +209,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
           <Tooltip title='What aspect is this rating about?' placement='right' arrow>
             <TextField
               select
+              defaultValue=''
               label='explain here'
               {...register('aspect')}
               sx={{ width: '95%' }}
@@ -237,7 +238,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps
               key='statement'
               type='text'
               multiline={true}
-              rows={4}
+              
               maxRows={6}
             />
           </Tooltip>{' '}
