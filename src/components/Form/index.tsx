@@ -20,6 +20,7 @@ import styles from '../../containers/Form/styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
+import { composeClient } from '../../composedb'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
@@ -102,6 +103,30 @@ export const Form = ({
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
+
+  // querying composeDB
+  useEffect(() => {
+    const QUERY = `
+      query{
+        linkedClaimIndex(last: 3) {
+          edges {
+            node {
+              statement
+              effectiveDate
+              confidence
+              rating { stars, aspect }
+              source { howKnown }
+            }
+          }
+        }
+      }
+    `
+    const getData = async () => {
+      const data = await composeClient.executeQuery(QUERY)
+      console.log(data)
+    }
+    getData()
+  }, [])
 
   const onSubmit = handleSubmit(
     async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
