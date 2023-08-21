@@ -1,11 +1,14 @@
-import { useState } from 'react'
-import node from '../../../db.json'
+import { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { IHomeProps, ExpandMoreProps } from './types'
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import { Box, Card, CardContent, CardActions, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material'
+import axios from 'axios'
+import Loader from '../../components/Loader'
+import { Claim } from './types'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
@@ -19,10 +22,22 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }))
 
 const FeedClaim = ({}: IHomeProps) => {
+  const [claims, setClaims] = useState<Array<Claim>>([])
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const claims = node.nodes
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  useEffect(() => {
+    setIsLoading(true)
+    axios.get(`${BACKEND_BASE_URL}/api/claimsfeed`, { timeout: 60000 })
+      .then((res) => {
+        console.log(res.data)
+        setClaims(res.data)
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false))
+  }, [])
 
   const handleschema = async (claimId: number) => {
     navigate({
@@ -102,7 +117,7 @@ const FeedClaim = ({}: IHomeProps) => {
         flexDirection: 'column'
       }}
     >
-      {claims.map((claim: any, index: number) => (
+      {claims ? claims.map((claim: any, index: number) => (
         <div key={claim.id}>
           <Card
             sx={{
@@ -173,7 +188,7 @@ const FeedClaim = ({}: IHomeProps) => {
             </CardActions>
           </Card>
         </div>
-      ))}
+      )) : <Loader open={isLoading} />}
     </Box>
   )
 }
