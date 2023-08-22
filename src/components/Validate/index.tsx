@@ -306,7 +306,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 type='text'
                 multiline={true}
                 rows={4}
-                maxRows={6}
               />
             </Tooltip>{' '}
             <LocalizationProvider dateAdapter={AdapterDateFns}>

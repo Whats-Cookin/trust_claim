@@ -233,6 +233,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           <Typography variant='body1' style={{ color: 'black' }}>
             Click here to{' '}
             <Typography
+              component='span'
               onClick={() => navigate('/register')}
               sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
             >
