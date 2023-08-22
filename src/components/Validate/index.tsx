@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
-import { TextField, Button, MenuItem, FormControl, InputLabel, OutlinedInput, InputAdornment } from '@mui/material'
+import { TextField, Button, MenuItem } from '@mui/material'
 import IHomeProps from '../../containers/Form/types'
 import { useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
@@ -81,6 +81,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     defaultValues: {
       subject: subject as string,
       claim: 'rated',
+      object: '' as string | number,
       statement: '' as string,
       aspect: '' as string,
       howKnown: '' as string,
@@ -92,43 +93,46 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars }) => {
-    if (subject && claim) {
-      const starsAsNumber = Number(stars)
-      const effectiveDateAsString = effectiveDate.toISOString()
+  const onSubmit = handleSubmit(
+    async ({ subject, claim, statement, object, aspect, howKnown, effectiveDate, stars }) => {
+      if (subject && claim) {
+        const starsAsNumber = Number(stars)
+        const effectiveDateAsString = effectiveDate.toISOString()
 
-      const payload = {
-        subject,
-        claim,
-        statement,
-        aspect,
-        howKnown,
-        effectiveDate: effectiveDateAsString,
-        stars: starsAsNumber
-      }
+        const payload = {
+          subject,
+          claim,
+          statement,
+          object,
+          aspect,
+          howKnown,
+          effectiveDate: effectiveDateAsString,
+          stars: starsAsNumber
+        }
 
-      setLoading(true)
+        setLoading(true)
 
-      const { message, isSuccess } = await createClaim(payload) // Change this line
+        const { message, isSuccess } = await createClaim(payload) // Change this line
 
-      setLoading(false)
-      toggleSnackbar(true)
-      setSnackbarMessage(message)
-      if (isSuccess) {
-        setDialogOpen(true)
-        setIsFormSubmitted(true)
-        setTimeout(() => {
-          setDialogOpen(false)
-          navigate('/feed')
-        }, 3000)
-        reset()
-      } else {
         setLoading(false)
         toggleSnackbar(true)
-        setSnackbarMessage('Subject and Claims are required fields.')
+        setSnackbarMessage(message)
+        if (isSuccess) {
+          setDialogOpen(true)
+          setIsFormSubmitted(true)
+          setTimeout(() => {
+            setDialogOpen(false)
+            navigate('/feed')
+          }, 3000)
+          reset()
+        } else {
+          setLoading(false)
+          toggleSnackbar(true)
+          setSnackbarMessage('Subject and Claims are required fields.')
+        }
       }
     }
-  })
+  )
 
   const watchEffectiveDate = watch('effectiveDate')
 
@@ -275,20 +279,30 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </TextField>
               </Tooltip>
               {priceInputValue === 'received direct benefit' && (
-                <FormControl {...register('howKnown')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Amount</InputLabel>
-                  <OutlinedInput
-                    id='outlined-adornment-amount'
-                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                    label='Amount'
-                  />
-                </FormControl>
+                <TextField
+                  {...register('object')}
+                  sx={{ mt: 1, width: '100%' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='Amount'
+                  key='object'
+                  type='text'
+                  defaultValue={''}
+                />
               )}
               {priceInputValue === 'validate from source' && (
-                <FormControl {...register('howKnown')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
-                  <OutlinedInput id='outlined-adornment-amount' label='Source' />
-                </FormControl>
+                <TextField
+                  {...register('howKnown')}
+                  sx={{ mt: 1, width: '100%' }}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  label='source'
+                  key='howKnown'
+                  type='text'
+                  defaultValue={''}
+                />
               )}
             </Box>
             <Tooltip title='write more information here ' placement='right' arrow>
