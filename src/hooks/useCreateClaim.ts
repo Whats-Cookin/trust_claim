@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import axios from '../axiosInstance'
 import { PublishClaim } from '../composedb/compose'
+import { authenticateCeramic, ceramic, composeClient } from '../composedb'
 
 export function useCreateClaim() {
   const createClaim = useCallback(async (payload: any) => {
@@ -14,6 +15,16 @@ export function useCreateClaim() {
       // check if the user is authenticated with metamask and has did
       const did = localStorage.getItem('did')
       const ethAddress = localStorage.getItem('ethAddress')
+
+      // quick fix for "Ceramic instance is not authenticated" error
+      if (!ceramic.did) {
+        try {
+          const session = await authenticateCeramic(ceramic, composeClient)
+          console.log(`Session: ${session}`)
+        } catch (error) {
+          console.log(`Error authenticating ceramic instance: Error message: ${error}`)
+        }
+      }
 
       if (did && ethAddress) {
         console.log('User has did ' + did + ' and ethaddress ' + ethAddress + ' so publishing to ceramic')
