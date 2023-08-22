@@ -149,6 +149,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
               multiline={true}
               rows={4}
               maxRows={6}
+              defaultValue={''}
             />
           </Tooltip>
           {
@@ -162,6 +163,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                   margin='dense'
                   variant='outlined'
                   fullWidth
+                  defaultValue={''}
                 >
                   {inputOptions.aspect.map((aspectText: string, index: number) => (
                     <MenuItem value={aspectText} key={aspectText}>
