@@ -148,7 +148,6 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
               type='text'
               multiline={true}
               rows={4}
-              maxRows={6}
             />
           </Tooltip>
           {
@@ -156,6 +155,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
               <Tooltip title='What aspect is this rating about?' placement='right' arrow>
                 <TextField
                   select
+                  defaultValue=''
                   label='Aspect'
                   {...register('aspect')}
                   sx={{ ml: 1, mr: 1, maxWidth: 600 }}

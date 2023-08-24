@@ -9,8 +9,6 @@ const cyConfig = (containerRef: any) => {
         style: {
           height: 300,
           width: 300,
-          shape: 'round',
-          borderRadius: '10%',
           borderColor: '#00695f',
           borderWidth: '10px',
           borderOpacity: 0.5,
@@ -22,7 +20,6 @@ const cyConfig = (containerRef: any) => {
           textValign: 'center',
           textWrap: 'wrap',
           textMaxWidth: 100,
-          textOverflowWrap: 'breakWord',
           content: 'data(label)'
         }
       },

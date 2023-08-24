@@ -204,7 +204,7 @@ export const Form = ({
     <>
       <DialogTitle>
         <Typography
-          variant='h4'
+          variant='body2'
           sx={{
             mb: 3,
             textAlign: 'center',
@@ -248,6 +248,7 @@ export const Form = ({
             <Tooltip title='For evaluation being made ' placement='right' arrow>
               <TextField
                 select
+                defaultValue=''
                 label='Claim'
                 {...register('claim', { required: { value: true, message: 'claim is required' } })}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -269,6 +270,7 @@ export const Form = ({
             <Tooltip title='The method or source of the claim ' placement='right' arrow>
               <TextField
                 select
+                defaultValue=''
                 label='How Known'
                 {...register('howKnown')}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -277,7 +279,7 @@ export const Form = ({
                 fullWidth
               >
                 {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                  <MenuItem value={howKnownText}>
+                  <MenuItem value={howKnownText} key={index}>
                     <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
                       <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
                     </Tooltip>
@@ -339,6 +341,7 @@ export const Form = ({
                     <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
                       <TextField
                         select
+                        defaultValue=''
                         label='Aspect'
                         {...register('aspect')}
                         sx={{ ml: 1, mr: 1, width: '22ch' }}
