@@ -17,6 +17,10 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import axios from '../../axiosInstance'
 
+function ensureString(value: any): string {
+    return typeof value === 'string' ? value : '';
+}
+
 const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -47,7 +51,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   useEffect(() => {
 
-    const claimDict = {
+    const claimDict: {[key: string]: string } = {
       'rated': 'was rated',
       'helped': 'created a positive impact',
       'impact': 'created a positive impact',
@@ -59,7 +63,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         var res = await axios.get(`/api/claim/${number}`)
         console.log(res.data)
         setSubjectValue(res.data.subject)
-        setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
+        const claim_key = ensureString(res.data.claim)
+        setClaimVerbValue(claim_key in claimDict ? claimDict[claim_key] : res.data.claim)
         setStatementValue(res.data.statement)
         setObjectValue(res.data.object)
         setAmtValue(res.data.amt)
@@ -94,14 +99,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       aspect: '' as string,
       howKnown: '' as string,
       effectiveDate: new Date(),
-      stars: null as number | null
+      stars: null as number | null,
+      amt: null as number | null,
+      source: '' as string
     }
   })
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars }) => {
+  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, source }) => {
     if (subject && claim) {
       const starsAsNumber = Number(stars)
       const effectiveDateAsString = effectiveDate.toISOString()
@@ -113,7 +120,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         aspect,
         howKnown,
         effectiveDate: effectiveDateAsString,
-        stars: starsAsNumber
+        stars: starsAsNumber,
+        amt: amt,
+        source: source
       }
 
       setLoading(true)
