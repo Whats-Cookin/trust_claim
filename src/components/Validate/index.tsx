@@ -27,16 +27,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [objectValue, setObjectValue] = useState('')
   const [amtValue, setAmtValue] = useState('')
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
-  const [priceInputValue, setPriceInputValue] = useState('')
+  const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
-
+  const howknown = (queryParams.get('how-known') || '').replace(/_/g, ' ') || 'validate first hand';
+  console.log("how known: " + howknown)
   const toggleExpansion = () => {
     setExpanded(!expanded)
   }
 
   const handleAspectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = event.target.value
-    setPriceInputValue(selectedValue)
+    setHowknownInputValue(selectedValue)
   }
 
   if (subject) {
@@ -45,17 +46,25 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   }
 
   useEffect(() => {
+
+    const claimDict = {
+      'rated': 'was rated',
+      'helped': 'created a positive impact',
+      'impact': 'created a positive impact',
+    }
+
     const fetchData = async () => {
       try {
         setLoading(true)
         var res = await axios.get(`/api/claim/${number}`)
         console.log(res.data)
         setSubjectValue(res.data.subject)
-        setClaimVerbValue(res.data.claim)
+        setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
         setStatementValue(res.data.statement)
         setObjectValue(res.data.object)
         setAmtValue(res.data.amt)
-        setEffectiveDateValue(res.data.effectiveDate)
+        const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate;
+        setEffectiveDateValue(dayPart)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -209,8 +218,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 '& > *': { margin: '11px 0' }
               }}
             >
-              <Typography variant='h5'>{`subject: ${subjectValue}`}</Typography>
-              <Typography variant='h5'>{`claim: ${claimVerbValue}`}</Typography>
+              <Typography variant='h5' style={{ fontWeight: 'bold', color: '#003747'}}>{`${subjectValue}`}</Typography>
+              <Typography variant='h5' style={{ color: '#065465' }}>{`${claimVerbValue}`}</Typography>
               {statementValue && (
                 <Box sx={{ display: 'flex', margin: '0' }}>
                   <Typography
@@ -223,7 +232,18 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       WebkitBoxOrient: 'vertical'
                     }}
                   >
-                    {`statement: ${statementValue}`}
+                  <Box 
+                    border={1} 
+                    borderColor="grey.300" 
+                    padding={1} 
+                    display="inline-block"
+                    color="black"
+                    borderRadius="2px"
+                    style={{ fontSize: '11pt'}}
+                   >
+                   {statementValue}
+                   </Box>
+
                   </Typography>
                   <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
                     {expanded ? (
@@ -238,9 +258,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </Box>
                 </Box>
               )}
-              {objectValue && <Typography variant='h5'>{`object: ${objectValue}`}</Typography>}
-              {amtValue && <Typography variant='h5'>{`amt: ${amtValue}`}</Typography>}
-              {effectiveDateValue && <Typography variant='h5'>{`effectiveDate: ${effectiveDateValue}`}</Typography>}
+              {objectValue && <Typography variant='h5'>{`to: ${objectValue}`}</Typography>}
+              {amtValue && <Typography variant='h5' style={{ color: '#065465' }}>{`worth: ${amtValue}`}</Typography>}
+              {effectiveDateValue && <Typography style={{ color: '#065465' }}>{`as of: ${effectiveDateValue}`}</Typography>}
             </Box>
           </Box>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '50%', rowGap: 1, m: 1 }}>
@@ -256,15 +276,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               Do you know anything about this?
             </Typography>
             <Box sx={{ width: '95%' }}>
-              <Tooltip title='What aspect is this rating about?' placement='right' arrow>
+              <Tooltip title='How do you know about it?' placement='right' arrow>
                 <TextField
                   select
                   label='Choices'
-                  {...register('aspect')}
+                  {...register('howKnown')}
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  defaultValue={'validate first hand'}
+                  defaultValue={howknown}
                   onChange={handleAspectChange}
                 >
                   {inputOptions.aspect.map((aspectText: string, index: number) => (
@@ -274,9 +294,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   ))}
                 </TextField>
               </Tooltip>
-              {priceInputValue === 'received direct benefit' && (
-                <FormControl {...register('howKnown')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Amount</InputLabel>
+              {(howknownInputValue === 'received direct benefit' || howknown === 'received direct benefit') && (
+                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
                   <OutlinedInput
                     id='outlined-adornment-amount'
                     startAdornment={<InputAdornment position='start'>$</InputAdornment>}
@@ -284,8 +304,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   />
                 </FormControl>
               )}
-              {priceInputValue === 'validate from source' && (
-                <FormControl {...register('howKnown')} fullWidth sx={{ mt: 1, width: '100%' }}>
+              {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
+                <FormControl {...register('source')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
                   <OutlinedInput id='outlined-adornment-amount' label='Source' />
                 </FormControl>
@@ -295,7 +315,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               <TextField
                 {...register('statement')}
                 placeholder={
-                  'Type If received benefit and If  you read or heard about it what was your source If other write your relation to the claim'
+                  ''
                 }
                 sx={{ ml: 1, mr: 1, width: '40ch' }}
                 margin='dense'
