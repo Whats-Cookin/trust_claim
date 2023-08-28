@@ -29,7 +29,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
-  const howknown = (queryParams.get('how-known') || '').replace(/_/g, ' ') || 'validate first hand'
+  const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'validate first hand'
   console.log('how known: ' + howknown)
   const toggleExpansion = () => {
     setExpanded(!expanded)
