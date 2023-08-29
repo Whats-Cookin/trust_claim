@@ -95,6 +95,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       claim: 'rated',
       statement: '' as string,
       aspect: '' as string,
+      source: '' as string,
+      amt: '' as string,
       howKnown: '' as string,
       effectiveDate: new Date(),
       stars: null as number | null
@@ -104,43 +106,46 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars }) => {
-    if (subject && claim) {
-      const starsAsNumber = Number(stars)
-      const effectiveDateAsString = effectiveDate.toISOString()
+  const onSubmit = handleSubmit(
+    async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, source }) => {
+      if (subject && claim) {
+        const starsAsNumber = Number(stars)
+        const effectiveDateAsString = effectiveDate.toISOString()
 
-      const payload = {
-        subject,
-        claim,
-        statement,
-        aspect,
-        howKnown,
-        effectiveDate: effectiveDateAsString,
-        stars: starsAsNumber
-      }
+        const payload = {
+          subject,
+          claim,
+          statement,
+          aspect,
+          amt,
+          source,
+          howKnown,
+          effectiveDate: effectiveDateAsString,
+          stars: starsAsNumber
+        }
+        setLoading(true)
 
-      setLoading(true)
+        const { message, isSuccess } = await createClaim(payload) // Change this line
 
-      const { message, isSuccess } = await createClaim(payload) // Change this line
-
-      setLoading(false)
-      toggleSnackbar(true)
-      setSnackbarMessage(message)
-      if (isSuccess) {
-        setDialogOpen(true)
-        setIsFormSubmitted(true)
-        setTimeout(() => {
-          setDialogOpen(false)
-          navigate('/feed')
-        }, 3000)
-        reset()
-      } else {
         setLoading(false)
         toggleSnackbar(true)
-        setSnackbarMessage('Subject and Claims are required fields.')
+        setSnackbarMessage(message)
+        if (isSuccess) {
+          setDialogOpen(true)
+          setIsFormSubmitted(true)
+          setTimeout(() => {
+            setDialogOpen(false)
+            navigate('/feed')
+          }, 3000)
+          reset()
+        } else {
+          setLoading(false)
+          toggleSnackbar(true)
+          setSnackbarMessage('Subject and Claims are required fields.')
+        }
       }
     }
-  })
+  )
 
   const watchEffectiveDate = watch('effectiveDate')
 
@@ -295,7 +300,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </TextField>
               </Tooltip>
               {(howknownInputValue === 'received direct benefit' || howknown === 'received direct benefit') && (
-                <FormControl {...register('aspect')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
                   <OutlinedInput
                     id='outlined-adornment-amount'
@@ -305,7 +310,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </FormControl>
               )}
               {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
-                <FormControl {...register('aspect')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                <FormControl {...register('source')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
                   <OutlinedInput id='outlined-adornment-amount' label='Source' />
                 </FormControl>
