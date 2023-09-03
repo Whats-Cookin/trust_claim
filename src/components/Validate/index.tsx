@@ -29,8 +29,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
-  const howknown = (queryParams.get('how-known') || '').replace(/_/g, ' ') || 'validate first hand';
-  console.log("how known: " + howknown)
+  const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'validate first hand'
+  console.log('how known: ' + howknown)
   const toggleExpansion = () => {
     setExpanded(!expanded)
   }
@@ -46,11 +46,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   }
 
   useEffect(() => {
+    interface ClaimDict {
+      [key: string]: string
+    }
 
-    const claimDict = {
-      'rated': 'was rated',
-      'helped': 'created a positive impact',
-      'impact': 'created a positive impact',
+    const claimDict: ClaimDict = {
+      rated: 'was rated',
+      helped: 'created a positive impact',
+      impact: 'created a positive impact'
     }
 
     const fetchData = async () => {
@@ -63,7 +66,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         setStatementValue(res.data.statement)
         setObjectValue(res.data.object)
         setAmtValue(res.data.amt)
-        const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate;
+        const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
         setEffectiveDateValue(dayPart)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -92,6 +95,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       claim: 'rated',
       statement: '' as string,
       aspect: '' as string,
+      sourceURI: '' as string,
+      amt: '' as string,
       howKnown: '' as string,
       effectiveDate: new Date(),
       stars: null as number | null
@@ -101,43 +106,46 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars }) => {
-    if (subject && claim) {
-      const starsAsNumber = Number(stars)
-      const effectiveDateAsString = effectiveDate.toISOString()
+  const onSubmit = handleSubmit(
+    async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, sourceURI }) => {
+      if (subject && claim) {
+        const starsAsNumber = Number(stars)
+        const effectiveDateAsString = effectiveDate.toISOString()
 
-      const payload = {
-        subject,
-        claim,
-        statement,
-        aspect,
-        howKnown,
-        effectiveDate: effectiveDateAsString,
-        stars: starsAsNumber
-      }
+        const payload = {
+          subject,
+          claim,
+          statement,
+          aspect,
+          amt,
+          sourceURI,
+          howKnown,
+          effectiveDate: effectiveDateAsString,
+          stars: starsAsNumber
+        }
+        setLoading(true)
 
-      setLoading(true)
+        const { message, isSuccess } = await createClaim(payload) // Change this line
 
-      const { message, isSuccess } = await createClaim(payload) // Change this line
-
-      setLoading(false)
-      toggleSnackbar(true)
-      setSnackbarMessage(message)
-      if (isSuccess) {
-        setDialogOpen(true)
-        setIsFormSubmitted(true)
-        setTimeout(() => {
-          setDialogOpen(false)
-          navigate('/feed')
-        }, 3000)
-        reset()
-      } else {
         setLoading(false)
         toggleSnackbar(true)
-        setSnackbarMessage('Subject and Claims are required fields.')
+        setSnackbarMessage(message)
+        if (isSuccess) {
+          setDialogOpen(true)
+          setIsFormSubmitted(true)
+          setTimeout(() => {
+            setDialogOpen(false)
+            navigate('/feed')
+          }, 3000)
+          reset()
+        } else {
+          setLoading(false)
+          toggleSnackbar(true)
+          setSnackbarMessage('Subject and Claims are required fields.')
+        }
       }
     }
-  })
+  )
 
   const watchEffectiveDate = watch('effectiveDate')
 
@@ -215,35 +223,30 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 color: 'primary.main',
                 fontSize: '20px',
                 fontWeight: 'bold',
-                '& > *': { margin: '11px 0' }
+                '& > *': { margin: '12px 0' }
               }}
             >
-              <Typography variant='h5' style={{ fontWeight: 'bold', color: '#003747'}}>{`${subjectValue}`}</Typography>
+              <Typography variant='h5' style={{ fontWeight: 'bold', color: '#003747' }}>{`${subjectValue}`}</Typography>
               <Typography variant='h5' style={{ color: '#065465' }}>{`${claimVerbValue}`}</Typography>
               {statementValue && (
                 <Box sx={{ display: 'flex', margin: '0' }}>
                   <Typography
                     variant='h5'
-                    style={{
+                    borderColor='primary.main'
+                    sx={{
+                      p: '6px 8px 0',
+                      color: 'black',
+                      borderRadius: 1,
+                      border: 1,
+                      fontSize: '11pt',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       display: '-webkit-box',
-                      WebkitLineClamp: expanded ? 'unset' : 4,
+                      WebkitLineClamp: expanded ? 'unset' : 10,
                       WebkitBoxOrient: 'vertical'
                     }}
                   >
-                  <Box 
-                    border={1} 
-                    borderColor="grey.300" 
-                    padding={1} 
-                    display="inline-block"
-                    color="black"
-                    borderRadius="2px"
-                    style={{ fontSize: '11pt'}}
-                   >
-                   {statementValue}
-                   </Box>
-
+                    {statementValue}
                   </Typography>
                   <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
                     {expanded ? (
@@ -260,10 +263,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               )}
               {objectValue && <Typography variant='h5'>{`to: ${objectValue}`}</Typography>}
               {amtValue && <Typography variant='h5' style={{ color: '#065465' }}>{`worth: ${amtValue}`}</Typography>}
-              {effectiveDateValue && <Typography style={{ color: '#065465' }}>{`as of: ${effectiveDateValue}`}</Typography>}
+              {effectiveDateValue && (
+                <Typography style={{ color: '#065465' }}>{`as of: ${effectiveDateValue}`}</Typography>
+              )}
             </Box>
           </Box>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', width: '50%', rowGap: 1, m: 1 }}>
+          <Box sx={{ width: '50%', rowGap: 1, m: 1 }}>
             <Typography
               sx={{
                 textAlign: 'center',
@@ -275,7 +280,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             >
               Do you know anything about this?
             </Typography>
-            <Box sx={{ width: '95%' }}>
+            <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
               <Tooltip title='How do you know about it?' placement='right' arrow>
                 <TextField
                   select
@@ -305,7 +310,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </FormControl>
               )}
               {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
-                <FormControl {...register('source')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
                   <OutlinedInput id='outlined-adornment-amount' label='Source' />
                 </FormControl>
@@ -314,10 +319,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             <Tooltip title='write more information here ' placement='right' arrow>
               <TextField
                 {...register('statement')}
-                placeholder={
-                  ''
-                }
-                sx={{ ml: 1, mr: 1, width: '40ch' }}
+                placeholder={''}
+                sx={{ mr: 1, width: '95%', mb: '20px' }}
                 margin='dense'
                 variant='outlined'
                 fullWidth
@@ -333,9 +336,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 label='Effective Date'
                 value={watchEffectiveDate}
                 onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                renderInput={(params: any) => (
-                  <TextField {...params} sx={{ ml: 1, mr: 1, width: 600 }} variant='filled' />
-                )}
+                renderInput={(params: any) => <TextField {...params} sx={{ mr: 1, width: '95%' }} variant='filled' />}
               />
             </LocalizationProvider>
             <input type='hidden' value='first_hand' {...register('howKnown')} />
