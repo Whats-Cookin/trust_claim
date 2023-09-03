@@ -95,7 +95,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       claim: 'rated',
       statement: '' as string,
       aspect: '' as string,
-      source: '' as string,
+      sourceURI: '' as string,
       amt: '' as string,
       howKnown: '' as string,
       effectiveDate: new Date(),
@@ -107,7 +107,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const navigate = useNavigate()
 
   const onSubmit = handleSubmit(
-    async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, source }) => {
+    async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, sourceURI }) => {
       if (subject && claim) {
         const starsAsNumber = Number(stars)
         const effectiveDateAsString = effectiveDate.toISOString()
@@ -118,7 +118,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           statement,
           aspect,
           amt,
-          source,
+          sourceURI,
           howKnown,
           effectiveDate: effectiveDateAsString,
           stars: starsAsNumber
@@ -310,7 +310,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </FormControl>
               )}
               {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
-                <FormControl {...register('source')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
                   <OutlinedInput id='outlined-adornment-amount' label='Source' />
                 </FormControl>
