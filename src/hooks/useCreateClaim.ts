@@ -26,10 +26,11 @@ export function useCreateClaim() {
         }
       }
 
+      let claim
       if (did && ethAddress) {
         console.log('User has did ' + did + ' and ethaddress ' + ethAddress + ' so publishing to ceramic')
         try {
-          let claim = await PublishClaim(payload)
+          claim = await PublishClaim(payload)
         } catch (err) {
           console.log('Error trying to publish claim to ceramic: ' + err)
         }

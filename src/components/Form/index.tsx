@@ -72,7 +72,8 @@ export const Form = ({
       sourceURI: '' as string,
       effectiveDate: new Date(),
       confidence: null as number | null,
-      stars: null as number | null
+      stars: null as number | null,
+      amt: null as number | null
     }
   })
 
@@ -109,6 +110,7 @@ export const Form = ({
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
+        console.log("Normalizing to number amt: " + amt)
         const amtAsNumber = Number(amt)
 
         const payload = {
@@ -390,9 +392,10 @@ export const Form = ({
                   </>
                 ) : watchClaim === 'impact' ? (
                <>
-                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
                   <OutlinedInput
+                    {...register('amt')}
                     id='outlined-adornment-amount'
                     startAdornment={<InputAdornment position='start'>$</InputAdornment>}
                     label='Amount'
