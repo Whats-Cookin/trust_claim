@@ -296,24 +296,24 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Typography>
             <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
               <Tooltip title='How do you know about it?' placement='right' arrow>
-                <TextField
-                  select
-                  label='Choices'
-                  {...register('howKnown')}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  defaultValue={howknown}
-                  onChange={handleHowKnownChange}
-                >
-                  {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                    <MenuItem value={howKnownText} key={howKnownText}>
-                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
-                    </MenuItem>
-                  ))}
+                 <TextField
+                        select
+                        label='How known'
+                        {...register('howKnown')}
+                        margin='dense'
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={FIRST_HAND}
+                        onChange={handleHowKnownChange}
+                    >
+                   {inputOptions.howKnown.map((howKnownItem) => (
+                        <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
+                             <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
+                        </MenuItem>
+                    ))}
                 </TextField>
               </Tooltip>
-              {(howknownInputValue === 'received direct benefit' || howknown === 'received direct benefit') && (
+              {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
                 <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
                   <OutlinedInput
@@ -323,7 +323,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   />
                 </FormControl>
               )}
-              {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
+              {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
                 <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
                   <OutlinedInput id='outlined-adornment-amount' label='Source' />
