@@ -66,8 +66,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         setStatementValue(res.data.statement)
         setObjectValue(res.data.object)
         setAmtValue(res.data.amt)
-        const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
-        setEffectiveDateValue(dayPart)
+        if (res.data.effectiveDate) {
+          const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
+          setEffectiveDateValue(dayPart)
+        }
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
