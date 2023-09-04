@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
-import { TextField, Button, MenuItem, FormControl, InputLabel, OutlinedInput, InputAdornment } from '@mui/material'
+import { TextField, Button, MenuItem } from '@mui/material'
 import IHomeProps from '../../containers/Form/types'
 import { useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
@@ -46,6 +46,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   }
 
   useEffect(() => {
+    setHowknownInputValue(howknown)
     interface ClaimDict {
       [key: string]: string
     }
@@ -66,8 +67,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         setStatementValue(res.data.statement)
         setObjectValue(res.data.object)
         setAmtValue(res.data.amt)
-        const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
-        setEffectiveDateValue(dayPart)
+        setEffectiveDateValue(res.data.effectiveDate)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -87,19 +87,20 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     formState: { errors },
     reset,
     watch,
-    control,
     setValue
   } = useForm({
     defaultValues: {
       subject: subject as string,
       claim: 'rated',
       statement: '' as string,
+      object: '' as string,
+      howKnown: '' as string,
       aspect: '' as string,
       sourceURI: '' as string,
-      amt: '' as string,
-      howKnown: '' as string,
       effectiveDate: new Date(),
-      stars: null as number | null
+      stars: null as number | null,
+      amt: '' as number | string,
+      confidence: null as number | null
     }
   })
 
@@ -107,42 +108,53 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const navigate = useNavigate()
 
   const onSubmit = handleSubmit(
-    async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, sourceURI }) => {
+    async ({
+      subject,
+      claim,
+      object,
+      statement,
+      aspect,
+      howKnown,
+      sourceURI,
+      effectiveDate,
+      confidence,
+      stars,
+      amt
+    }) => {
       if (subject && claim) {
-        const starsAsNumber = Number(stars)
         const effectiveDateAsString = effectiveDate.toISOString()
+        const confidenceAsNumber = Number(confidence)
+        const starsAsNumber = Number(stars)
 
         const payload = {
           subject,
           claim,
+          object,
           statement,
           aspect,
+          howKnown,
           amt,
           sourceURI,
-          howKnown,
           effectiveDate: effectiveDateAsString,
+          confidence: confidenceAsNumber,
           stars: starsAsNumber
         }
+
         setLoading(true)
 
-        const { message, isSuccess } = await createClaim(payload) // Change this line
+        const { message, isSuccess } = await createClaim(payload)
 
         setLoading(false)
         toggleSnackbar(true)
         setSnackbarMessage(message)
         if (isSuccess) {
-          setDialogOpen(true)
-          setIsFormSubmitted(true)
-          setTimeout(() => {
-            setDialogOpen(false)
-            navigate('/feed')
-          }, 3000)
+          // navigate('/feed')
           reset()
-        } else {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage('Subject and Claims are required fields.')
         }
+      } else {
+        setLoading(false)
+        toggleSnackbar(true)
+        setSnackbarMessage('Subject and Claims are required fields.')
       }
     }
   )
@@ -161,9 +173,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       'first_hand',
       'second_hand',
       'website',
-      'verified_website',
       'verified_login',
-      'signed_claim',
       'blockchain',
       'physical_document',
       'integration'
@@ -285,7 +295,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <TextField
                   select
                   label='Choices'
-                  {...register('howKnown')}
+                  {...register('aspect')}
                   margin='dense'
                   variant='outlined'
                   fullWidth
@@ -299,21 +309,37 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   ))}
                 </TextField>
               </Tooltip>
-              {(howknownInputValue === 'received direct benefit' || howknown === 'received direct benefit') && (
-                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                  <OutlinedInput
-                    id='outlined-adornment-amount'
-                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                    label='Amount'
-                  />
-                </FormControl>
+              {howknownInputValue === 'received direct benefit' && (
+                <TextField
+                  {...register('amt')}
+                  fullWidth
+                  sx={{ mt: 1, width: '100%' }}
+                  margin='dense'
+                  variant='outlined'
+                  label='Amount'
+                  key='amt'
+                  type='text'
+                  placeholder='$'
+                />
               )}
-              {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
-                <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
-                  <OutlinedInput id='outlined-adornment-amount' label='Source' />
-                </FormControl>
+              {howknownInputValue === 'validate from source' && (
+                <TextField
+                  select
+                  {...register('howKnown')}
+                  fullWidth
+                  sx={{ mt: 1, width: '100%' }}
+                  margin='dense'
+                  variant='outlined'
+                  label='Source URI'
+                  key='sourceURI'
+                  type='text'
+                >
+                  {inputOptions.howKnown.map((howKnownText: string, index: number) => (
+                    <MenuItem value={howKnownText} key={howKnownText}>
+                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
+                    </MenuItem>
+                  ))}
+                </TextField>
               )}
             </Box>
             <Tooltip title='write more information here ' placement='right' arrow>
