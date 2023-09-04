@@ -98,7 +98,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       statement: '' as string,
       aspect: '' as string,
       sourceURI: '' as string,
-      amt: '' as string,
+      amt: null as number | null,
       howKnown: '' as string,
       effectiveDate: new Date(),
       stars: null as number | null
@@ -112,6 +112,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, sourceURI }) => {
       if (subject && claim) {
         const starsAsNumber = Number(stars)
+        const amtAsNumber = Number(amt)
         const effectiveDateAsString = effectiveDate.toISOString()
 
         const payload = {
@@ -119,11 +120,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           claim,
           statement,
           aspect,
-          amt,
           sourceURI,
           howKnown,
           effectiveDate: effectiveDateAsString,
-          stars: starsAsNumber
+          stars: starsAsNumber,
+          amtAsNumber,
         }
         setLoading(true)
 
