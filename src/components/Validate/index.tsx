@@ -120,19 +120,27 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI }) => {
       if (subject) {
         const effectiveDateAsString = effectiveDate.toISOString()
-        
-        const payload = {
+
+        type PayloadType = {
+          subject: string;
+          statement: string;
+          sourceURI: string;
+          howKnown: string;
+          effectiveDate: string;
+          claim: string;
+          amt?: string | number;
+          score?: number;
+        };
+         
+        const payload: PayloadType = {
           subject,
           statement,
           sourceURI,
           howKnown,
           effectiveDate: effectiveDateAsString,
+          claim: CLAIM_RATED
         }
 
-        // the default validation claim
-        payload.claim = CLAIM_RATED
-
-        let score = undefined
         // some how known settings have implications for other fields
         if (howKnown === FIRST_HAND_BENEFIT) {
             payload.claim = CLAIM_IMPACT
