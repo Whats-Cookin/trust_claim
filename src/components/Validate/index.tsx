@@ -17,6 +17,17 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import axios from '../../axiosInstance'
 
+// TODO make these shared in settings across app
+
+const FIRST_HAND = 'FIRST_HAND'
+const WEB_DOCUMENT = 'WEB_DOCUMENT'
+const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
+const FIRST_HAND_REJECTED = 'FIRST_HAND_REJECTED'
+const WEB_DOCUMENT_REJECTED = 'WEB_DOCUMENT_REJECTED'
+
+const CLAIM_RATED = 'rated'
+const CLAIM_IMPACT = 'impact'
+
 const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -29,13 +40,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
-  const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'validate first hand'
+  const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'FIRST_HAND'
   console.log('how known: ' + howknown)
   const toggleExpansion = () => {
     setExpanded(!expanded)
   }
 
-  const handleAspectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHowKnownChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = event.target.value
     setHowknownInputValue(selectedValue)
   }
@@ -51,7 +62,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     }
 
     const claimDict: ClaimDict = {
-      rated: 'was rated',
+      rated: 'was reviewed as follows',
       helped: 'created a positive impact',
       impact: 'created a positive impact'
     }
@@ -94,14 +105,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   } = useForm({
     defaultValues: {
       subject: subject as string,
-      claim: 'rated',
       statement: '' as string,
-      aspect: '' as string,
       sourceURI: '' as string,
       amt: '' as string,
       howKnown: '' as string,
       effectiveDate: new Date(),
-      stars: null as number | null
     }
   })
 
@@ -109,22 +117,35 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const navigate = useNavigate()
 
   const onSubmit = handleSubmit(
-    async ({ subject, claim, statement, aspect, howKnown, effectiveDate, stars, amt, sourceURI }) => {
-      if (subject && claim) {
-        const starsAsNumber = Number(stars)
+    async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI }) => {
+      if (subject) {
         const effectiveDateAsString = effectiveDate.toISOString()
-
+        
         const payload = {
           subject,
-          claim,
           statement,
-          aspect,
-          amt,
           sourceURI,
           howKnown,
           effectiveDate: effectiveDateAsString,
-          stars: starsAsNumber
         }
+
+        // the default validation claim
+        payload.claim = CLAIM_RATED
+
+        let score = undefined
+        // some how known settings have implications for other fields
+        if (howKnown === FIRST_HAND_BENEFIT) {
+            payload.claim = CLAIM_IMPACT
+            payload.amt = amt
+            payload.howKnown = FIRST_HAND
+        } else if (howKnown === FIRST_HAND_REJECTED) {
+            payload.score = -1
+            payload.howKnown = FIRST_HAND
+        } else if (howKnown === WEB_DOCUMENT_REJECTED) {
+            payload.score = -1
+            payload.howKnown = WEB_DOCUMENT
+        }         
+
         setLoading(true)
 
         const { message, isSuccess } = await createClaim(payload) // Change this line
@@ -152,24 +173,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const watchEffectiveDate = watch('effectiveDate')
 
   const inputOptions = {
-    aspect: [
-      'validate first hand',
-      'validate from source',
-      'received direct benefit',
-      'reject first hand',
-      'reject from source'
-    ],
     howKnown: [
-      'first_hand',
-      'second_hand',
-      'website',
-      'verified_website',
-      'verified_login',
-      'signed_claim',
-      'blockchain',
-      'physical_document',
-      'integration'
-    ]
+      { value: FIRST_HAND, text: 'validate first hand'},
+      { value: WEB_DOCUMENT, text: 'validate from source'},
+
+      // these are not valid to return to server, will be modified in handler
+      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit'},
+      { value: FIRST_HAND_REJECTED, text: 'reject first hand'},
+      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source'}
+    ],
   }
 
   return (
@@ -284,24 +296,24 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Typography>
             <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
               <Tooltip title='How do you know about it?' placement='right' arrow>
-                <TextField
-                  select
-                  label='Choices'
-                  {...register('howKnown')}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  defaultValue={howknown}
-                  onChange={handleAspectChange}
-                >
-                  {inputOptions.aspect.map((aspectText: string, index: number) => (
-                    <MenuItem value={aspectText} key={aspectText}>
-                      <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                    </MenuItem>
-                  ))}
+                 <TextField
+                        select
+                        label='How known'
+                        {...register('howKnown')}
+                        margin='dense'
+                        variant='outlined'
+                        fullWidth
+                        defaultValue={FIRST_HAND}
+                        onChange={handleHowKnownChange}
+                    >
+                   {inputOptions.howKnown.map((howKnownItem) => (
+                        <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
+                             <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
+                        </MenuItem>
+                    ))}
                 </TextField>
               </Tooltip>
-              {(howknownInputValue === 'received direct benefit' || howknown === 'received direct benefit') && (
+              {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
                 <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
                   <OutlinedInput
@@ -311,7 +323,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   />
                 </FormControl>
               )}
-              {(howknownInputValue === 'validate from source' || howknown === 'validate from source') && (
+              {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
                 <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
                   <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
                   <OutlinedInput id='outlined-adornment-amount' label='Source' />
