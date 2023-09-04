@@ -104,11 +104,12 @@ export const Form = ({
   }, [])
 
   const onSubmit = handleSubmit(
-    async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
+    async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars, amt }) => {
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
+        const amtAsNumber = Number(amt)
 
         const payload = {
           subject,
@@ -120,7 +121,8 @@ export const Form = ({
           sourceURI,
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
-          stars: starsAsNumber
+          stars: starsAsNumber,
+          amt: amtAsNumber
         }
 
         setLoading(true)
