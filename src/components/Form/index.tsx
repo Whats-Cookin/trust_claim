@@ -7,6 +7,9 @@ import {
   Button,
   FormControl,
   MenuItem,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -24,39 +27,11 @@ import { composeClient } from '../../composedb'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
-    'Represents a claim that asserts the subject is identical or equivalent to another entity or object',
-    'Refers to a claim stating that the subject has carried out or performed a specific action or task ',
-    ' Denotes a claim indicating that the subject provided assistance, aid, or support to another entity or individual',
-    '  Represents a claim asserting that the subject caused harm, damage, or negative consequences to another entity or individual',
-    ' Indicates a claim suggesting that the subject is involved in fraudulent or deceptive activities.',
-    'Represents a claim asserting ownership or possession of the subject by an individual, organization, or entity',
-    'Represents a claim asserting ownership or possession of the subject by an individual, organization, or entity'
+    'Denotes a claim indicating that the subject created a positive impact to others',
+    'Report about the subject, generally about negative or problematic behavior',
+    'Indicates a relationship between the subject and some other entity.',
   ],
   aspect: [
-    ' Refers to the social impact or influence of the subject.',
-    'Relates to the impact on climate or environmental factors.',
-    ' Relates to the impact on work or employment-related aspects',
-    ' Relates to the impact on financial aspects or economic factors.',
-    'Relates to the impact on education or learning.',
-    'Relates to the technical quality or performance.',
-    ' Relates to the aesthetic or visual quality.',
-    ' Relates to the taste or flavor quality.',
-    'Relates to the journalistic quality or integrity.',
-    'Relates to the academic or educational quality.',
-    'Relates to the fun or entertainment value.',
-    'Relates to the usefulness or practical value.',
-    ' Relates to the literary quality or artistic value.',
-    ' Relates to the relevance or significance.',
-    ' Relates to self-improvement or personal development.',
-    ' Relates to historical significance or relevance.',
-    ' Relates to theological or religious aspects.',
-    ' Relates to adventure or excitement',
-    ' Relates to biographical or personal aspects.',
-    ' Relates to scientific accuracy or validity.',
-    ' Relates to the risk of safety or security concerns.',
-    ' Relates to the risk of reliability or trustworthiness.',
-    ' Indicates a relationship where the subject works for another entity.',
-    'Indicates a relationship where the subject is the same as another entity.'
   ],
   howKnown: [
     'The information is known directly from personal experience or firsthand knowledge.',
@@ -97,7 +72,8 @@ export const Form = ({
       sourceURI: '' as string,
       effectiveDate: new Date(),
       confidence: null as number | null,
-      stars: null as number | null
+      stars: null as number | null,
+      amt: null as number | null
     }
   })
 
@@ -129,11 +105,13 @@ export const Form = ({
   }, [])
 
   const onSubmit = handleSubmit(
-    async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars }) => {
+    async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars, amt }) => {
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
+        console.log("Normalizing to number amt: " + amt)
+        const amtAsNumber = Number(amt)
 
         const payload = {
           subject,
@@ -145,7 +123,8 @@ export const Form = ({
           sourceURI,
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
-          stars: starsAsNumber
+          stars: starsAsNumber,
+          amt: amtAsNumber
         }
 
         setLoading(true)
@@ -162,7 +141,7 @@ export const Form = ({
       } else {
         setLoading(false)
         toggleSnackbar(true)
-        setSnackbarMessage('Subject and Claims are required fields.')
+        setSnackbarMessage('Subject and Claim are required fields.')
       }
     }
   )
@@ -183,20 +162,23 @@ export const Form = ({
     claim:
       selectedClaim?.entType === 'CLAIM'
         ? ['agree', 'disagree']
-        : ['rated', 'same_as', 'performed', 'helped', 'harmed', 'scam', 'owns', 'related_to'],
+        : ['rated', 'impact', 'report', 'related_to'],
     aspect: [
       'impact:social',
       'impact:climate',
       'impact:work',
       'impact:financial',
       'impact:educational',
+      'quality:speed',
+      'quality:excellence',
+      'quality:affordable',
       'quality:technical',
       'quality:asthetic',
+      'quality:usefulness',
       'quality:taste',
       'quality:journalistic',
       'quality:academic',
       'quality:fun',
-      'quality:usefulness',
       'quality:literary',
       'quality:relevance',
       'quality:self-improvment',
@@ -205,11 +187,15 @@ export const Form = ({
       'quality:adventure',
       'quality:biographical',
       'quality:scientific',
-      'risk:scam',
-      'risk:justice',
-      'risk:safety',
-      'risk:reliability',
+      'report:scam',
+      'report:spam',
+      'report:misinfo',
+      'report:abuse',
+      'report:dangerous',
+      'relationship:owns',
       'relationship:works-for',
+      'relationship:works-with',
+      'relationship:worked-on',
       'relationship:same-as'
     ],
     howKnown: [
@@ -229,7 +215,7 @@ export const Form = ({
     <>
       <DialogTitle>
         <Typography
-          variant='body2'
+          variant='h4'
           sx={{
             mb: 3,
             textAlign: 'center',
@@ -273,7 +259,6 @@ export const Form = ({
             <Tooltip title='For evaluation being made ' placement='right' arrow>
               <TextField
                 select
-                defaultValue=''
                 label='Claim'
                 {...register('claim', { required: { value: true, message: 'claim is required' } })}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -295,7 +280,6 @@ export const Form = ({
             <Tooltip title='The method or source of the claim ' placement='right' arrow>
               <TextField
                 select
-                defaultValue=''
                 label='How Known'
                 {...register('howKnown')}
                 sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -304,7 +288,7 @@ export const Form = ({
                 fullWidth
               >
                 {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                  <MenuItem value={howKnownText} key={index}>
+                  <MenuItem value={howKnownText}>
                     <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
                       <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
                     </Tooltip>
@@ -359,6 +343,7 @@ export const Form = ({
                 }}
               />
             </Tooltip>
+
             {!(selectedClaim?.entType === 'CLAIM') && (
               <>
                 {watchClaim === 'rated' ? (
@@ -366,7 +351,6 @@ export const Form = ({
                     <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
                       <TextField
                         select
-                        defaultValue=''
                         label='Aspect'
                         {...register('aspect')}
                         sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -406,8 +390,21 @@ export const Form = ({
                       )}
                     />
                   </>
-                ) : (
-                  <Tooltip title='If you want to add any additional site belongs to you' placement='right' arrow>
+                ) : watchClaim === 'impact' ? (
+               <>
+                <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
+                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
+                  <OutlinedInput
+                    {...register('amt')}
+                    id='outlined-adornment-amount'
+                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
+                    label='Amount'
+                  />
+                </FormControl>
+                </>
+               ) : watchClaim === 'related' ? (
+                  <>
+                  <Tooltip title='What entity is the subject related to?' placement='right' arrow>
                     <TextField
                       {...register('object')}
                       sx={{ ml: 1, mr: 1, width: '22ch' }}
@@ -419,7 +416,12 @@ export const Form = ({
                       type='text'
                     />
                   </Tooltip>
-                )}
+                  </>
+                )  : (
+                     // default case
+                     <>
+                     </>
+                  )}
               </>
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
