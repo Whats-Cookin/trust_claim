@@ -59,31 +59,17 @@ const FeedClaim = ({}: IHomeProps) => {
 
     const subject = (
       <span style={Style}>
-        <a
-          href={formatUrl(claim.link || '')}
-          target='_blank'
-          rel='noopener noreferrer'
-          style={Style}
-        >
-
+        <a href={formatUrl(claim.link || '')} target='_blank' rel='noopener noreferrer' style={Style}>
           {claim.name || ''}
         </a>
       </span>
     )
 
-    const claimText = (
-      <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.claim || ''}</span>
-    )
+    const claimText = <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.claim || ''}</span>
 
     const source = (
       <span style={Style}>
-        <a
-          href={formatUrl(claim.source_link || '')}
-          target='_blank'
-          rel='noopener noreferrer'
-          style={Style}
-        >
-
+        <a href={formatUrl(claim.source_link || '')} target='_blank' rel='noopener noreferrer' style={Style}>
           {claim.source_name || ''}
         </a>
       </span>
@@ -139,59 +125,52 @@ const FeedClaim = ({}: IHomeProps) => {
                   <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                     {formatClaimText(claim)}
                   </Typography>
-                  { claim.statement &&
+                  {claim.statement && (
                     <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Statement:</strong> {claim.statement}
-                  </Typography>
-                  }
+                      <strong>Statement:</strong> {claim.statement}
+                    </Typography>
+                  )}
 
                   <div style={{ display: expanded === index ? 'block' : 'none' }}>
-                    {
-                      claim.how_known &&
+                    {claim.how_known && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>How Known: </strong>
                         {claim.how_known}
                       </Typography>
-                    }
+                    )}
 
-                    {
-                      claim.aspect &&
+                    {claim.aspect && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>Aspect: </strong>
                         {claim.aspect}
                       </Typography>
-                    }
+                    )}
 
-                    {
-                      claim.confidence &&
+                    {claim.confidence && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>Confidence: </strong>
                         {claim.confidence}
                       </Typography>
-                    }
-                    {
-                      claim.stars &&
+                    )}
+                    {claim.stars && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>Rating as Stars: </strong>
                         {claim.stars}
                       </Typography>
-                    }
+                    )}
 
-                    {
-                      claim.score &&
+                    {claim.score && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>Rating as Score: </strong>
                         {claim.score}
                       </Typography>
-                    }
+                    )}
 
-                    {
-                      claim.amt &&
+                    {claim.amt && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Amount of claim: </strong>
-                        $ {claim.amt}
+                        <strong>Amount of claim: </strong>$ {claim.amt}
                       </Typography>
-                    }
+                    )}
                   </div>
                 </CardContent>
               </div>

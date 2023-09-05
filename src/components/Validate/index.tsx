@@ -109,87 +109,85 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       sourceURI: '' as string,
       amt: '' as string,
       howKnown: '' as string,
-      effectiveDate: new Date(),
+      effectiveDate: new Date()
     }
   })
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(
-    async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI }) => {
-      if (subject) {
-        const effectiveDateAsString = effectiveDate.toISOString()
+  const onSubmit = handleSubmit(async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI }) => {
+    if (subject) {
+      const effectiveDateAsString = effectiveDate.toISOString()
 
-        type PayloadType = {
-          subject: string;
-          statement: string;
-          sourceURI: string;
-          howKnown: string;
-          effectiveDate: string;
-          claim: string;
-          amt?: string | number;
-          score?: number;
-        };
-         
-        const payload: PayloadType = {
-          subject,
-          statement,
-          sourceURI,
-          howKnown,
-          effectiveDate: effectiveDateAsString,
-          claim: CLAIM_RATED
-        }
+      type PayloadType = {
+        subject: string
+        statement: string
+        sourceURI: string
+        howKnown: string
+        effectiveDate: string
+        claim: string
+        amt?: string | number
+        score?: number
+      }
 
-        // some how known settings have implications for other fields
-        if (howKnown === FIRST_HAND_BENEFIT) {
-            payload.claim = CLAIM_IMPACT
-            payload.amt = amt
-            payload.howKnown = FIRST_HAND
-        } else if (howKnown === FIRST_HAND_REJECTED) {
-            payload.score = -1
-            payload.howKnown = FIRST_HAND
-        } else if (howKnown === WEB_DOCUMENT_REJECTED) {
-            payload.score = -1
-            payload.howKnown = WEB_DOCUMENT
-        }         
+      const payload: PayloadType = {
+        subject,
+        statement,
+        sourceURI,
+        howKnown,
+        effectiveDate: effectiveDateAsString,
+        claim: CLAIM_RATED
+      }
 
-        setLoading(true)
+      // some how known settings have implications for other fields
+      if (howKnown === FIRST_HAND_BENEFIT) {
+        payload.claim = CLAIM_IMPACT
+        payload.amt = amt
+        payload.howKnown = FIRST_HAND
+      } else if (howKnown === FIRST_HAND_REJECTED) {
+        payload.score = -1
+        payload.howKnown = FIRST_HAND
+      } else if (howKnown === WEB_DOCUMENT_REJECTED) {
+        payload.score = -1
+        payload.howKnown = WEB_DOCUMENT
+      }
 
-        const { message, isSuccess } = await createClaim(payload) // Change this line
+      setLoading(true)
 
+      const { message, isSuccess } = await createClaim(payload) // Change this line
+
+      setLoading(false)
+      toggleSnackbar(true)
+      setSnackbarMessage(message)
+      if (isSuccess) {
+        setDialogOpen(true)
+        setIsFormSubmitted(true)
+        setTimeout(() => {
+          setDialogOpen(false)
+          navigate('/feed')
+        }, 3000)
+        reset()
+      } else {
         setLoading(false)
         toggleSnackbar(true)
-        setSnackbarMessage(message)
-        if (isSuccess) {
-          setDialogOpen(true)
-          setIsFormSubmitted(true)
-          setTimeout(() => {
-            setDialogOpen(false)
-            navigate('/feed')
-          }, 3000)
-          reset()
-        } else {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage('Subject and Claims are required fields.')
-        }
+        setSnackbarMessage('Subject and Claims are required fields.')
       }
     }
-  )
+  })
 
   const watchEffectiveDate = watch('effectiveDate')
 
   const inputOptions = {
     howKnown: [
-      { value: FIRST_HAND, text: 'validate first hand'},
-      { value: WEB_DOCUMENT, text: 'validate from source'},
+      { value: FIRST_HAND, text: 'validate first hand' },
+      { value: WEB_DOCUMENT, text: 'validate from source' },
 
       // these are not valid to return to server, will be modified in handler
-      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit'},
-      { value: FIRST_HAND_REJECTED, text: 'reject first hand'},
-      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source'}
-    ],
+      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
+      { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
+      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
+    ]
   }
 
   return (
@@ -304,21 +302,21 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Typography>
             <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
               <Tooltip title='How do you know about it?' placement='right' arrow>
-                 <TextField
-                        select
-                        label='How known'
-                        {...register('howKnown')}
-                        margin='dense'
-                        variant='outlined'
-                        fullWidth
-                        defaultValue={FIRST_HAND}
-                        onChange={handleHowKnownChange}
-                    >
-                   {inputOptions.howKnown.map((howKnownItem) => (
-                        <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
-                             <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
-                        </MenuItem>
-                    ))}
+                <TextField
+                  select
+                  label='How known'
+                  {...register('howKnown')}
+                  margin='dense'
+                  variant='outlined'
+                  fullWidth
+                  defaultValue={FIRST_HAND}
+                  onChange={handleHowKnownChange}
+                >
+                  {inputOptions.howKnown.map(howKnownItem => (
+                    <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
+                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Tooltip>
               {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
