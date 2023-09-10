@@ -12,6 +12,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import React, { useState } from 'react'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import BackgroundImages from '../../containers/BackgroundImags'
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
@@ -98,147 +99,150 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        rowGap: 2,
-        width: '100%',
-        padding: '2rem',
-        maxWidth: '430px',
-        marginTop: { xs: 15, md: 8 },
-        background: '#FFFFFF',
-        boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
-        zIndex: 20,
-        borderRadius: '10px',
-        margin: '0'
-      }}
-    >
-      <Box sx={{}}>
-        <Typography
-          variant='h4'
-          sx={{
-            textAlign: 'center',
-            fontSize: '20px',
-            color: 'primary.main',
-            fontWeight: 'bold'
-          }}
-        >
-          {`Welcome!  Rate your experience with `}
-          <strong
-            style={{
-              fontWeight: 1000
-            }}
-          >
-            {`${subject || 'this company'}`}
-          </strong>
-        </Typography>
-      </Box>
-      <form onSubmit={onSubmit}>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 1, m: 1 }}>
-          <Tooltip title='Tell about your experience ' placement='right' arrow>
-            <TextField
-              {...register('statement')}
-              sx={{ ml: 1, mr: 1, width: '40ch' }}
-              margin='dense'
-              variant='outlined'
-              fullWidth
-              label='Statement'
-              key='statement'
-              type='text'
-              multiline={true}
-              rows={4}
-            />
-          </Tooltip>
-          {
-            <>
-              <Tooltip title='What aspect is this rating about?' placement='right' arrow>
-                <TextField
-                  select
-                  defaultValue=''
-                  label='Aspect'
-                  {...register('aspect')}
-                  sx={{ ml: 1, mr: 1, maxWidth: 600 }}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                >
-                  {inputOptions.aspect.map((aspectText: string, index: number) => (
-                    <MenuItem value={aspectText} key={aspectText}>
-                      <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-
-              <Controller
-                name='stars'
-                control={control}
-                rules={{ required: { value: true, message: 'rating is required' } }}
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                  <Tooltip title='Your rating' placement='right' arrow>
-                    <FormControl sx={{ ml: 1, mr: 1, width: 'fit-content' }} fullWidth error={!!error}>
-                      <Typography>Your Rating</Typography>
-                      <Rating
-                        name='stars'
-                        value={value}
-                        onChange={(e, newValue) => onChange(newValue)}
-                        precision={1}
-                        size='large'
-                      />
-
-                      <FormHelperText>{error?.message}</FormHelperText>
-                      <Dialog
-                        open={dialogOpen}
-                        onClose={() => {
-                          setDialogOpen(false)
-                          if (isFormSubmitted) {
-                            navigate('/feed')
-                          }
-                        }}
-                      >
-                        <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
-                      </Dialog>
-                    </FormControl>
-                  </Tooltip>
-                )}
-              />
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label='Effective Date'
-                  value={watchEffectiveDate}
-                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                  renderInput={(params: any) => (
-                    <TextField {...params} sx={{ ml: 1, mr: 1, width: 600 }} variant='filled' />
-                  )}
-                />
-              </LocalizationProvider>
-            </>
-          }
-
-          <input type='hidden' value='first_hand' {...register('howKnown')} />
-        </Box>
-      </form>
-
-      <Button
-        onClick={onSubmit}
-        type='submit'
-        variant='contained'
-        size='large'
+    <>
+      <BackgroundImages />
+      <Box
         sx={{
-          ml: 1,
-          mr: 1,
-          width: '50%',
-          bgcolor: 'praimary.main',
-          margin: '0 auto',
-          '&:hover': {
-            backgroundColor: '#00695f'
-          }
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 2,
+          width: '100%',
+          padding: '2rem',
+          maxWidth: '430px',
+          marginTop: { xs: 15, md: 8 },
+          background: '#FFFFFF',
+          boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
+          zIndex: 20,
+          borderRadius: '10px',
+          margin: '0'
         }}
       >
-        Submit
-      </Button>
-    </Box>
+        <Box sx={{}}>
+          <Typography
+            variant='h4'
+            sx={{
+              textAlign: 'center',
+              fontSize: '20px',
+              color: 'primary.main',
+              fontWeight: 'bold'
+            }}
+          >
+            {`Welcome!  Rate your experience with `}
+            <strong
+              style={{
+                fontWeight: 1000
+              }}
+            >
+              {`${subject || 'this company'}`}
+            </strong>
+          </Typography>
+        </Box>
+        <form onSubmit={onSubmit}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: 600, rowGap: 1, m: 1 }}>
+            <Tooltip title='Tell about your experience ' placement='right' arrow>
+              <TextField
+                {...register('statement')}
+                sx={{ ml: 1, mr: 1, width: '40ch' }}
+                margin='dense'
+                variant='outlined'
+                fullWidth
+                label='Statement'
+                key='statement'
+                type='text'
+                multiline={true}
+                rows={4}
+              />
+            </Tooltip>
+            {
+              <>
+                <Tooltip title='What aspect is this rating about?' placement='right' arrow>
+                  <TextField
+                    select
+                    defaultValue=''
+                    label='Aspect'
+                    {...register('aspect')}
+                    sx={{ ml: 1, mr: 1, maxWidth: 600 }}
+                    margin='dense'
+                    variant='outlined'
+                    fullWidth
+                  >
+                    {inputOptions.aspect.map((aspectText: string, index: number) => (
+                      <MenuItem value={aspectText} key={aspectText}>
+                        <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Tooltip>
+
+                <Controller
+                  name='stars'
+                  control={control}
+                  rules={{ required: { value: true, message: 'rating is required' } }}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <Tooltip title='Your rating' placement='right' arrow>
+                      <FormControl sx={{ ml: 1, mr: 1, width: 'fit-content' }} fullWidth error={!!error}>
+                        <Typography>Your Rating</Typography>
+                        <Rating
+                          name='stars'
+                          value={value}
+                          onChange={(e, newValue) => onChange(newValue)}
+                          precision={1}
+                          size='large'
+                        />
+
+                        <FormHelperText>{error?.message}</FormHelperText>
+                        <Dialog
+                          open={dialogOpen}
+                          onClose={() => {
+                            setDialogOpen(false)
+                            if (isFormSubmitted) {
+                              navigate('/feed')
+                            }
+                          }}
+                        >
+                          <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
+                        </Dialog>
+                      </FormControl>
+                    </Tooltip>
+                  )}
+                />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label='Effective Date'
+                    value={watchEffectiveDate}
+                    onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                    renderInput={(params: any) => (
+                      <TextField {...params} sx={{ ml: 1, mr: 1, width: 600 }} variant='filled' />
+                    )}
+                  />
+                </LocalizationProvider>
+              </>
+            }
+
+            <input type='hidden' value='first_hand' {...register('howKnown')} />
+          </Box>
+        </form>
+
+        <Button
+          onClick={onSubmit}
+          type='submit'
+          variant='contained'
+          size='large'
+          sx={{
+            ml: 1,
+            mr: 1,
+            width: '50%',
+            bgcolor: 'praimary.main',
+            margin: '0 auto',
+            '&:hover': {
+              backgroundColor: '#00695f'
+            }
+          }}
+        >
+          Submit
+        </Button>
+      </Box>
+    </>
   )
 }
 

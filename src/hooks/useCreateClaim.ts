@@ -36,7 +36,7 @@ export function useCreateClaim() {
         }
       }
       // if we got a claim, include the address
-      console.log("publish claim returned: " + JSON.stringify(claim))
+      console.log('publish claim returned: ' + JSON.stringify(claim))
       if (claim) {
         console.log('Published to ceramic! ' + JSON.stringify(claim))
         try {
@@ -46,7 +46,7 @@ export function useCreateClaim() {
           console.log('could not extract claim address')
         }
       }
-      console.log("Saving to database with payload: " + JSON.stringify(payload))
+      console.log('Saving to database with payload: ' + JSON.stringify(payload))
       res = await axios.post('/api/claim', payload)
 
       if (res.status === 201) {

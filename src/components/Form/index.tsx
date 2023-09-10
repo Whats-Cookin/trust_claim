@@ -29,10 +29,9 @@ const tooltips = {
     'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
     'Denotes a claim indicating that the subject created a positive impact to others',
     'Report about the subject, generally about negative or problematic behavior',
-    'Indicates a relationship between the subject and some other entity.',
+    'Indicates a relationship between the subject and some other entity.'
   ],
-  aspect: [
-  ],
+  aspect: [],
   howKnown: [
     'The information is known directly from personal experience or firsthand knowledge.',
     'The information is known from someone else who has firsthand knowledge or experience',
@@ -105,12 +104,24 @@ export const Form = ({
   }, [])
 
   const onSubmit = handleSubmit(
-    async ({ subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars, amt }) => {
+    async ({
+      subject,
+      claim,
+      object,
+      statement,
+      aspect,
+      howKnown,
+      sourceURI,
+      effectiveDate,
+      confidence,
+      stars,
+      amt
+    }) => {
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
-        console.log("Normalizing to number amt: " + amt)
+        console.log('Normalizing to number amt: ' + amt)
         const amtAsNumber = Number(amt)
 
         const payload = {
@@ -159,10 +170,7 @@ export const Form = ({
   }, [watchClaim, setValue])
 
   const inputOptions = {
-    claim:
-      selectedClaim?.entType === 'CLAIM'
-        ? ['agree', 'disagree']
-        : ['rated', 'impact', 'report', 'related_to'],
+    claim: selectedClaim?.entType === 'CLAIM' ? ['agree', 'disagree'] : ['rated', 'impact', 'report', 'related_to'],
     aspect: [
       'impact:social',
       'impact:climate',
@@ -391,37 +399,36 @@ export const Form = ({
                     />
                   </>
                 ) : watchClaim === 'impact' ? (
-               <>
-                <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                  <OutlinedInput
-                    {...register('amt')}
-                    id='outlined-adornment-amount'
-                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                    label='Amount'
-                  />
-                </FormControl>
-                </>
-               ) : watchClaim === 'related' ? (
                   <>
-                  <Tooltip title='What entity is the subject related to?' placement='right' arrow>
-                    <TextField
-                      {...register('object')}
-                      sx={{ ml: 1, mr: 1, width: '22ch' }}
-                      margin='dense'
-                      variant='outlined'
-                      fullWidth
-                      label='Object'
-                      key='object'
-                      type='text'
-                    />
-                  </Tooltip>
+                    <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
+                      <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
+                      <OutlinedInput
+                        {...register('amt')}
+                        id='outlined-adornment-amount'
+                        startAdornment={<InputAdornment position='start'>$</InputAdornment>}
+                        label='Amount'
+                      />
+                    </FormControl>
                   </>
-                )  : (
-                     // default case
-                     <>
-                     </>
-                  )}
+                ) : watchClaim === 'related' ? (
+                  <>
+                    <Tooltip title='What entity is the subject related to?' placement='right' arrow>
+                      <TextField
+                        {...register('object')}
+                        sx={{ ml: 1, mr: 1, width: '22ch' }}
+                        margin='dense'
+                        variant='outlined'
+                        fullWidth
+                        label='Object'
+                        key='object'
+                        type='text'
+                      />
+                    </Tooltip>
+                  </>
+                ) : (
+                  // default case
+                  <></>
+                )}
               </>
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
