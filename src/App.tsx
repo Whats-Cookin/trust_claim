@@ -13,6 +13,7 @@ import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
+import GoogleCallback from './components/Callbacks/GoogleCallback'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -100,6 +101,7 @@ const App = () => {
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
+            <Route path='auth/google/callback' element={<GoogleCallback {...commonProps} />} />
             <Route
               path='/rate'
               element={
