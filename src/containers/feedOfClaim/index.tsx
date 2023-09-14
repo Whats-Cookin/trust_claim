@@ -40,10 +40,11 @@ const FeedClaim = ({}: IHomeProps) => {
       .finally(() => setIsLoading(false))
   }, [])
 
-  const handleschema = async (claimId: number) => {
+  const handleschema = async (nodeUri: string) => {
+    const domain = nodeUri.replace(/^https?:\/\//, '')
     navigate({
       pathname: '/search',
-      search: `?query=${claimId}`
+      search: `?query=${domain}`
     })
   }
 
@@ -193,7 +194,7 @@ const FeedClaim = ({}: IHomeProps) => {
                     marginTop: '10px',
                     marginLeft: isSmallScreen ? '5px' : 'auto'
                   }}
-                  onClick={() => handleschema(claim.claim_id)}
+                  onClick={() => handleschema(claim.link)}
                 />
                 <ExpandMore
                   expand={expanded === index}

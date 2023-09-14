@@ -103,11 +103,16 @@ const getNodeData = (node: any) => {
       [key: string]: any
     }
   }
+  let label = node.name || uri
+  if ((label == 'Not Acceptable!') || (label == 'Not Acceptable') ){
+     console.log("Node name is " + node.name)
+     label = ''
+  }
 
   const nodeData: NodeData = {
     data: {
       id: node.id.toString(),
-      label: node.name || uri,
+      label: label,
       raw: node
     }
   }
