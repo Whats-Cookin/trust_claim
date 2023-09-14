@@ -41,7 +41,7 @@ const FeedClaim = ({}: IHomeProps) => {
   }, [])
 
   const handleschema = async (nodeUri: string) => {
-    const domain = nodeUri.replace(/^https?:\/\//, '')
+    const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/,'')
     navigate({
       pathname: '/search',
       search: `?query=${domain}`
