@@ -169,6 +169,13 @@ export const Form = ({
     }
   }, [watchClaim, setValue])
 
+  const howKnownMapping: { [key: string]: string } = {
+    'first_hand': 'FIRST_HAND',
+    'second_hand': 'SECOND_HAND',
+    'website': 'WEB_DOCUMENT',
+    'physical_document': 'PHYSICAL_DOCUMENT'
+  }
+
   const inputOptions = {
     claim: selectedClaim?.entType === 'CLAIM' ? ['agree', 'disagree'] : ['rated', 'impact', 'report', 'related_to'],
     aspect: [
@@ -210,12 +217,7 @@ export const Form = ({
       'first_hand',
       'second_hand',
       'website',
-      'verified_website',
-      'verified_login',
-      'signed_claim',
-      'blockchain',
-      'physical_document',
-      'integration'
+      'physical_document'
     ]
   }
 
@@ -296,7 +298,7 @@ export const Form = ({
                 fullWidth
               >
                 {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                  <MenuItem value={howKnownText}>
+                  <MenuItem value={howKnownMapping[howKnownText]}>
                     <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
                       <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
                     </Tooltip>
