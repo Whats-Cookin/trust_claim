@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import GoogleIcon from '@mui/icons-material/Google'
 import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
@@ -233,6 +234,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               sx={styles.authLinkButton}
               style={{ border: `1px solid ${theme.palette.primary.main}` }}
             >
+              <GoogleIcon sx={styles.authIcon} />
               Google
             </MuiLink>
           </Box>
