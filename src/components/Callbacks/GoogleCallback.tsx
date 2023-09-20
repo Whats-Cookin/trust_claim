@@ -1,9 +1,8 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useLayoutEffect, useCallback } from 'react'
 import { useQueryParams } from '../../hooks'
 import { useNavigate } from 'react-router-dom'
 import CallBackProps from './types'
 import axios from '../../axiosInstance'
-import getGoogleAuthUrl from '../../utils/getGoogleAuthUrl'
 
 const GoogleCallback = ({ setLoading, toggleSnackbar, setSnackbarMessage }: CallBackProps) => {
   const navigate = useNavigate()
@@ -16,20 +15,15 @@ const GoogleCallback = ({ setLoading, toggleSnackbar, setSnackbarMessage }: Call
     setLoading(false)
     navigate('/')
   }, [])
-  const [code, setCode] = useState('')
-  const googleAuthCode = queryParams.get('code')
-  useEffect(() => {
-    console.log(`googleauthcode: ${googleAuthCode}`)
-    setCode(googleAuthCode as string)
-    console.log(`code: ${code}`)
-    if (!code) {
+
+  useLayoutEffect(() => {
+    const googleAuthCode = queryParams.get('code')
+    if (!googleAuthCode) {
       console.log('no authorization code found! redirecting to callback url')
-      const googleAuthUrl = getGoogleAuthUrl()
-      axios.get(googleAuthUrl).catch(err => console.error(err))
     } else {
       const googleAuthUrlBackend = '/auth/google'
       axios
-        .post<{ accessToken: string; refreshToken: string }>(googleAuthUrlBackend, { code })
+        .post<{ accessToken: string; refreshToken: string }>(googleAuthUrlBackend, { code: googleAuthCode })
         .then(res => {
           console.log('Authentication successful!')
           handleAuth(res.data.accessToken, res.data.refreshToken)
@@ -41,7 +35,7 @@ const GoogleCallback = ({ setLoading, toggleSnackbar, setSnackbarMessage }: Call
           console.error(err.message)
         })
     }
-  }, [code])
+  }, [])
 
   return <div></div>
 }
