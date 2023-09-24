@@ -94,7 +94,7 @@ const FeedClaim = ({}: IHomeProps) => {
 
   return (
     <>
-      {claims && (
+      {claims && claims.length > 0 ? (
         <Box
           sx={{
             position: 'center',
@@ -109,7 +109,7 @@ const FeedClaim = ({}: IHomeProps) => {
             flexDirection: 'column'
           }}
         >
-          {claims &&
+          {
             claims.map((claim: any, index: number) => (
               <div key={claim.id}>
                 <Card
@@ -212,8 +212,9 @@ const FeedClaim = ({}: IHomeProps) => {
               </div>
             ))}
         </Box>
-      )}
+      ):
       <Loader open={isLoading} />
+    }
     </>
   )
 }
