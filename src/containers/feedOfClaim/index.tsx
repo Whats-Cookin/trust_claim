@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { IHomeProps, ExpandMoreProps } from './types'
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
-import { Box, Card, CardContent, CardActions, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Card, CardContent, CardActions, IconButton, Typography, useMediaQuery, useTheme, Button } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
 import { Claim } from './types'
@@ -40,8 +40,16 @@ const FeedClaim = ({}: IHomeProps) => {
       .finally(() => setIsLoading(false))
   }, [])
 
+  const handelValidation = (subject: any,id: number) => {
+    console.log( subject,'and',id)
+    navigate({
+      pathname: '/validate',
+      search: `?subject=${subject}/${id}`
+    })
+  }
+
   const handleschema = async (nodeUri: string) => {
-    const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/,'')
+    const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/, '')
     navigate({
       pathname: '/search',
       search: `?query=${domain}`
@@ -93,126 +101,144 @@ const FeedClaim = ({}: IHomeProps) => {
   }
 
   return (
-    <Box
-      sx={{
-        position: 'center',
-        justifyContent: 'center',
-        width: '75%',
-        p: '10px',
-        background: '#FFFFFF',
-        ml: '130',
-        mt: isSmallScreen ? '140px' : '90px',
-        boxShadow: 20,
-        bgcolor: 'background.paper',
-        flexDirection: 'column'
-      }}
-    >
-      {claims ? (
-        claims.map((claim: any, index: number) => (
-          <div key={claim.id}>
-            <Card
-              sx={{
-                maxWidth: 'fit',
-                height: 'fit',
-                mt: '15px',
-                borderRadius: '20px',
-                border: '2px solid #009688',
-                display: 'flex',
-                flexDirection: isSmallScreen ? 'column' : 'row'
-              }}
-            >
-              <div style={{ display: 'block' }}>
-                <CardContent>
-                  <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                    {formatClaimText(claim)}
-                  </Typography>
-                  {claim.statement && (
-                    <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                      <strong>Statement:</strong> {claim.statement}
-                    </Typography>
-                  )}
-
-                  <div style={{ display: expanded === index ? 'block' : 'none' }}>
-                    {claim.how_known && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>How Known: </strong>
-                        {claim.how_known}
-                      </Typography>
-                    )}
-
-                    {claim.aspect && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Aspect: </strong>
-                        {claim.aspect}
-                      </Typography>
-                    )}
-
-                    {claim.confidence && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Confidence: </strong>
-                        {claim.confidence}
-                      </Typography>
-                    )}
-                    {claim.stars && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Rating as Stars: </strong>
-                        {claim.stars}
-                      </Typography>
-                    )}
-
-                    {claim.score && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Rating as Score: </strong>
-                        {claim.score}
-                      </Typography>
-                    )}
-
-                    {claim.amt && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Amount of claim: </strong>$ {claim.amt}
-                      </Typography>
-                    )}
-                  </div>
-                </CardContent>
-              </div>
-              <CardActions
-                disableSpacing
-                sx={{
-                  marginLeft: 'auto',
-                  marginTop: 'auto',
-                  marginBottom: 'auto',
-                  width: isSmallScreen ? '100%' : 'auto',
-                  display: isSmallScreen ? 'flex' : 'block',
-                  justifyContent: isSmallScreen ? 'space-evenly' : 'none'
-                }}
-              >
-                <SchemaIcon
+    <>
+      {claims && claims.length > 0 ? (
+        <Box
+          sx={{
+            position: 'center',
+            justifyContent: 'center',
+            width: '75%',
+            p: '0 10px',
+            background: '#FFFFFF',
+            ml: '130',
+            mt: isSmallScreen ? '140px' : '90px',
+            boxShadow: 20,
+            bgcolor: 'background.paper',
+            flexDirection: 'column'
+          }}
+        >
+          {
+            claims.map((claim: any, index: number) => (
+              <div key={claim.id}>
+                <Card
                   sx={{
-                    color: 'primary.main',
-                    right: 0,
-                    cursor: 'pointer',
-                    marginTop: '10px',
-                    marginLeft: isSmallScreen ? '5px' : 'auto'
+                    maxWidth: 'fit',
+                    height: 'fit',
+                    mt: '15px',
+                    borderRadius: '20px',
+                    border: '2px solid #009688',
+                    display: 'flex',
+                    flexDirection: isSmallScreen ? 'column' : 'row'
                   }}
-                  onClick={() => handleschema(claim.link)}
-                />
-                <ExpandMore
-                  expand={expanded === index}
-                  onClick={() => handleExpandClick(index)}
-                  aria-expanded={expanded === index}
-                  aria-label='show more'
-                  sx={{ marginLeft: 'auto', right: '10px', marginTop: '10px', display: 'block' }}
                 >
-                  <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
-                </ExpandMore>
-              </CardActions>
-            </Card>
-          </div>
-        ))
-      ) : (
-        <Loader open={isLoading} />
-      )}
-    </Box>
+                  <Box sx={{ display: 'block' }}>
+                    <CardContent>
+                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                        {formatClaimText(claim)}
+                      </Typography>
+                      {claim.statement && (
+                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong>Statement:</strong> {claim.statement}
+                        </Typography>
+                      )}
+
+                      <div style={{ display: expanded === index ? 'block' : 'none' }}>
+                        {claim.how_known && (
+                          <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                            <strong>How Known: </strong>
+                            {claim.how_known}
+                          </Typography>
+                        )}
+
+                        {claim.aspect && (
+                          <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                            <strong>Aspect: </strong>
+                            {claim.aspect}
+                          </Typography>
+                        )}
+
+                        {claim.confidence && (
+                          <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                            <strong>Confidence: </strong>
+                            {claim.confidence}
+                          </Typography>
+                        )}
+                        {claim.stars && (
+                          <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                            <strong>Rating as Stars: </strong>
+                            {claim.stars}
+                          </Typography>
+                        )}
+
+                        {claim.score && (
+                          <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                            <strong>Rating as Score: </strong>
+                            {claim.score}
+                          </Typography>
+                        )}
+
+                        {claim.amt && (
+                          <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                            <strong>Amount of claim: </strong>$ {claim.amt}
+                          </Typography>
+                        )}
+                      </div>
+                    </CardContent>
+                    <Button
+                    onClick={ ()=> handelValidation( claim.link, claim.claim_id)}
+                     sx={{
+                       m: '0 0 10px 20px',
+                       bgcolor:'primary.main',
+                       color:'white',
+                       fontSize:'10px',
+                       fontWeight:'bold',
+                       p:'4px',
+                       '&:hover': {
+                        backgroundColor: '#00695f'
+                      }
+                      }}>
+                        Validate
+                    </Button>
+                  </Box>
+                  <CardActions
+                    disableSpacing
+                    sx={{
+                      marginLeft: 'auto',
+                      marginTop: 'auto',
+                      marginBottom: 'auto',
+                      width: isSmallScreen ? '100%' : 'auto',
+                      display: isSmallScreen ? 'flex' : 'block',
+                      justifyContent: isSmallScreen ? 'space-evenly' : 'none'
+                    }}
+                  >
+                    <SchemaIcon
+                      sx={{
+                        color: 'primary.main',
+                        right: 0,
+                        cursor: 'pointer',
+                        marginTop: '10px',
+                        marginLeft: isSmallScreen ? '5px' : 'auto'
+                      }}
+                      onClick={() => handleschema(claim.link)}
+                    />
+                    <ExpandMore
+                      expand={expanded === index}
+                      onClick={() => handleExpandClick(index)}
+                      aria-expanded={expanded === index}
+                      aria-label='show more'
+                      sx={{ marginLeft: 'auto', right: '10px', marginTop: '10px', display: 'block' }}
+                    >
+                      <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
+                    </ExpandMore>
+                  </CardActions>
+                </Card>
+              </div>
+            ))}
+        </Box>
+      ):
+      <Loader open={isLoading} />
+    }
+    </>
   )
 }
 
