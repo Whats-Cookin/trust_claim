@@ -24,6 +24,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
+import FileUpload from '../UploadFiles'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
@@ -443,6 +444,7 @@ export const Form = ({
                 )}
               />
             </LocalizationProvider>
+            <FileUpload toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined}/>
           </Box>
         </form>
       </DialogContent>
