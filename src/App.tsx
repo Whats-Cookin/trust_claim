@@ -101,7 +101,7 @@ const App = () => {
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
-            <Route path='auth/google/callback' element={<GoogleCallback {...commonProps} />} />
+            <Route path='googlecallback' element={<GoogleCallback {...commonProps} />} />
             <Route
               path='/rate'
               element={
