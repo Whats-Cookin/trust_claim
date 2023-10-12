@@ -12,7 +12,7 @@ const isValidUrl = (urlString: string) => {
 
 const getLabel = (uri: any) => {
   if (isValidUrl(uri)) {
-    if (uri.hostname === 'trustclaims.whatscookin.us') {
+    if (uri.hostname === 'live.linkedtrust.us' || uri.hostname === 'trustclaims.whatscookin.us') {
       return decodeURIComponent(uri.pathname.split('/').pop())
     }
     return `Host:\n${uri.origin}\n\n Path:\n${uri.pathname}`
@@ -87,7 +87,7 @@ const getNodeData = (node: any) => {
   // not important - just here for reference from before
   /*if (isValidUrl(uri)) {
     let uriObj = new URL(node.nodeUri)
-    if (uriObj.hostname === 'trustclaims.whatscookin.us') {
+    if (uriObj.hostname === 'live.linkedtrust.us'  || uri.hostname === 'trustclaims.whatscookin.us') {
       let decodedUri = decodeURIComponent(uri.pathname.split('/').pop())
       uri = decodedUri.pathname
     }
