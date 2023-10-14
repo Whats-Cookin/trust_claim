@@ -248,7 +248,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 '& > *': { margin: '12px 0' }
               }}
             >
-              <Typography variant='h5' style={{ fontWeight: 'bold', color: '#003747' }}>{`${subjectValue}`}</Typography>
+              <Typography
+                variant='h5'
+                style={{ fontWeight: 'bold', color: '#003747', maxWidth: '100%', overflowWrap: 'break-word' }}
+              >{`${subjectValue}`}</Typography>
               <Typography variant='h5' style={{ color: '#065465' }}>{`${claimVerbValue}`}</Typography>
               {statementValue && (
                 <Box sx={{ display: 'flex', margin: '0' }}>
