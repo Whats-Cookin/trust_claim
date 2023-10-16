@@ -1,9 +1,9 @@
 import { Box, Button, Typography, List, ListItem, ListItemText } from '@mui/material'
-import axios from 'axios'
+import axios from '../../axiosInstance'
 import React, { useState } from 'react'
-import ILoginProps from '../../containers/Login/types'
+// import ILoginProps from '../../containers/Login/types'
 
-function FileUpload({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) {
+function FileUpload({ passImageFormData }: any) {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,17 +20,18 @@ function FileUpload({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginPr
     const formData = new FormData()
 
     for (let i = 0; i < selectedFiles.length; i++) {
-      formData.append(`file-${i}`, selectedFiles[i])
+      formData.append('images', selectedFiles[i])
     }
 
-    axios.post('YOUR_UPLOAD_API_ENDPOINT', formData).then(response => {
-      console.log(response.data)
-    })
+    // axios.post('/api/image-upload', formData).then(response => {
+    //   console.log(response.data)
+    // })
+    passImageFormData(formData)
   }
 
   return (
     <>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-around', flexDirection: 'row',mb:'-15px' }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-around', flexDirection: 'row', mb: '-15px' }}>
         <Box sx={{ mr: '30px' }}>
           <input type='file' onChange={handleFileChange} multiple style={{ display: 'none' }} id='file-upload' />
           <label htmlFor='file-upload'>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -25,6 +25,7 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
 import FileUpload from '../UploadFiles'
+import axios from '../../axiosInstance'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
@@ -77,8 +78,13 @@ export const Form = ({
     }
   })
 
+  const [imageFormData, setImageFormData] = useState<FormData>()
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
+
+  const receiveImageFormData = (imageData: FormData) => {
+    setImageFormData(imageData)
+  }
 
   // querying composeDB
   useEffect(() => {
@@ -105,19 +111,10 @@ export const Form = ({
   }, [])
 
   const onSubmit = handleSubmit(
-    async ({
-      subject,
-      claim,
-      object,
-      statement,
-      aspect,
-      howKnown,
-      sourceURI,
-      effectiveDate,
-      confidence,
-      stars,
-      amt
-    }) => {
+    async (
+      { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars, amt },
+      imageFormData
+    ) => {
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
@@ -141,7 +138,7 @@ export const Form = ({
 
         setLoading(true)
 
-        const { message, isSuccess } = await createClaim(payload)
+        const { message, isSuccess } = await createClaim(payload, imageFormData)
 
         setLoading(false)
         toggleSnackbar(true)
@@ -171,10 +168,10 @@ export const Form = ({
   }, [watchClaim, setValue])
 
   const howKnownMapping: { [key: string]: string } = {
-    'first_hand': 'FIRST_HAND',
-    'second_hand': 'SECOND_HAND',
-    'website': 'WEB_DOCUMENT',
-    'physical_document': 'PHYSICAL_DOCUMENT'
+    first_hand: 'FIRST_HAND',
+    second_hand: 'SECOND_HAND',
+    website: 'WEB_DOCUMENT',
+    physical_document: 'PHYSICAL_DOCUMENT'
   }
 
   const inputOptions = {
@@ -214,12 +211,7 @@ export const Form = ({
       'relationship:worked-on',
       'relationship:same-as'
     ],
-    howKnown: [
-      'first_hand',
-      'second_hand',
-      'website',
-      'physical_document'
-    ]
+    howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
 
   return (
@@ -444,7 +436,7 @@ export const Form = ({
                 )}
               />
             </LocalizationProvider>
-            <FileUpload toggleSnackbar={undefined} setSnackbarMessage={undefined} setLoading={undefined}/>
+            <FileUpload passImageFormData={receiveImageFormData} />
           </Box>
         </form>
       </DialogContent>
