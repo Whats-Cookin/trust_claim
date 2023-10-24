@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import GoogleIcon from '@mui/icons-material/Google'
 import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
@@ -17,6 +18,7 @@ import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
 import { TextField } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
+import getGoogleAuthUrl from '../../utils/getGoogleAuthUrl'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
@@ -224,6 +226,16 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             >
               <GitHubIcon sx={styles.authIcon} />
               Github
+            </MuiLink>
+          </Box>
+          <Box>
+            <MuiLink
+              href={getGoogleAuthUrl()}
+              sx={styles.authLinkButton}
+              style={{ border: `1px solid ${theme.palette.primary.main}` }}
+            >
+              <GoogleIcon sx={styles.authIcon} />
+              Google
             </MuiLink>
           </Box>
           <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
