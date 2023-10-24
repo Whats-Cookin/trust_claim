@@ -74,7 +74,8 @@ export const Form = ({
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null,
-      amt: null as number | null
+      amt: null as number | null,
+      imageFormData: null as any
     }
   })
 
@@ -83,6 +84,7 @@ export const Form = ({
   const navigate = useNavigate()
 
   const receiveImageFormData = (imageData: FormData) => {
+    console.log(imageData)
     setImageFormData(imageData)
   }
 
@@ -111,10 +113,19 @@ export const Form = ({
   }, [])
 
   const onSubmit = handleSubmit(
-    async (
-      { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars, amt },
-      imageFormData
-    ) => {
+    async ({
+      subject,
+      claim,
+      object,
+      statement,
+      aspect,
+      howKnown,
+      sourceURI,
+      effectiveDate,
+      confidence,
+      stars,
+      amt
+    }) => {
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
@@ -133,12 +144,13 @@ export const Form = ({
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
-          amt: amtAsNumber
+          amt: amtAsNumber,
+          imageFormData
         }
 
         setLoading(true)
-
-        const { message, isSuccess } = await createClaim(payload, imageFormData)
+        console.log(payload)
+        const { message, isSuccess } = await createClaim(payload)
 
         setLoading(false)
         toggleSnackbar(true)

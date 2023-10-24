@@ -26,7 +26,7 @@ function FileUpload({ passImageFormData }: any) {
     // axios.post('/api/image-upload', formData).then(response => {
     //   console.log(response.data)
     // })
-    passImageFormData(formData)
+    passImageFormData(selectedFiles)
   }
 
   return (

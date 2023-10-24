@@ -4,7 +4,7 @@ import { PublishClaim } from '../composedb/compose'
 import { authenticateCeramic, ceramic, composeClient } from '../composedb'
 
 export function useCreateClaim() {
-  const createClaim = useCallback(async (payload: any, imagePayload: any) => {
+  const createClaim = useCallback(async (payload: any) => {
     let res,
       claim,
       message = 'Something went wrong!',
@@ -53,15 +53,6 @@ export function useCreateClaim() {
         message = 'Claim submitted successfully!'
         isSuccess = true
       }
-
-      axios
-        .post('/api/image-upload', imagePayload)
-        .then(response => {
-          console.log(response.data)
-        })
-        .catch(err => {
-          console.log(`Error from image upload: ${err}`)
-        })
     } catch (err: any) {
       if (err.response) {
         message = err.response.data.message
