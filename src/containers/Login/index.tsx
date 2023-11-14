@@ -12,13 +12,14 @@ import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
-import { GITHUB_CLIENT_ID } from '../../utils/settings'
+import { GITHUB_CLIENT_ID, LINKEDIN_CLIENT_ID, LINKEDIN_REDIRECT_URI, LINKEDIN_SCOPE } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
 import { TextField } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
+const linkedinUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${LINKEDIN_REDIRECT_URI}&scope=${LINKEDIN_SCOPE}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
   const theme = useTheme()
@@ -45,27 +46,27 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
 
-  console.log('Hi this is Login comonent')
+  console.log('Hi this is Login component')
 
-  useEffect(() => {
-    if (githubAuthCode) {
-      const githubAuthUrl = '/auth/github'
-      axios
-        .post<{ accessToken: string; refreshToken: string }>(githubAuthUrl, {
-          githubAuthCode
-        })
-        .then(res => {
-          const { accessToken, refreshToken } = res.data
-          handleAuth(accessToken, refreshToken)
-        })
-        .catch(err => {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage(err.message)
-          console.error(err.message)
-        })
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (githubAuthCode) {
+  //     const githubAuthUrl = '/auth/github'
+  //     axios
+  //       .post<{ accessToken: string; refreshToken: string }>(githubAuthUrl, {
+  //         githubAuthCode
+  //       })
+  //       .then(res => {
+  //         const { accessToken, refreshToken } = res.data
+  //         handleAuth(accessToken, refreshToken)
+  //       })
+  //       .catch(err => {
+  //         setLoading(false)
+  //         toggleSnackbar(true)
+  //         setSnackbarMessage(err.message)
+  //         console.error(err.message)
+  //       })
+  //   }
+  // }, [])
 
   const handleWalletAuth = async () => {
     console.log('Hi this is handle wallet auth nice to meet you')
@@ -224,6 +225,15 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             >
               <GitHubIcon sx={styles.authIcon} />
               Github
+            </MuiLink>
+          </Box>
+          <Box>
+            <MuiLink
+              href={linkedinUrl}
+              sx={styles.authLinkButton}
+              style={{ border: `1px solid ${theme.palette.primary.main}` }}
+            >
+              LinkedIn
             </MuiLink>
           </Box>
           <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
