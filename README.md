@@ -25,7 +25,7 @@ VITE_BACKEND_BASE_URL=http://localhost:9000
 VITE_CERAMIC_URL='http://13.56.165.66/'
 ```
 
-To avoid having to run the back end you may point to the live backend
+To avoid having to run the back end you may point to the live backend BUT DO NOT WRITE JUNK TO IT
 
 ```bash
 VITE_CERAMIC_URL='https://ceramic.linkedtrust.us/'
