@@ -157,7 +157,7 @@ const FeedClaim = ({}: IHomeProps) => {
                           </Typography>
                         )}
 
-                        {claim.confidence && (
+                        {claim.confidence !== 0 && (
                           <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                             <strong>Confidence: </strong>
                             {claim.confidence}

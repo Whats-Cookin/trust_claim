@@ -44,7 +44,7 @@ const Search = (homeProps: IHomeProps) => {
       const res = await axios.get(`/api/node?page=${page}&limit=5`, {
         params: { search: query }
       })
-
+      
       if (res.data.nodes.length > 0 && cy) {
         const parsedClaims = parseMultipleNodes(res.data.nodes)
         cy.elements().remove()
