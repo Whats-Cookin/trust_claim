@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -24,6 +24,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
+import FileUpload from '../UploadFiles'
+import axios from '../../axiosInstance'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
@@ -72,12 +74,19 @@ export const Form = ({
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null,
-      amt: null as number | null
+      amt: null as number | null,
+      imageFormData: null as any
     }
   })
 
+  const [imageFormData, setImageFormData] = useState<FormData>()
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
+
+  const receiveImageFormData = (imageData: FormData) => {
+    console.log(imageData)
+    setImageFormData(imageData)
+  }
 
   // querying composeDB
   useEffect(() => {
@@ -135,11 +144,12 @@ export const Form = ({
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
-          amt: amtAsNumber
+          amt: amtAsNumber,
+          imageFormData
         }
 
         setLoading(true)
-
+        console.log(payload)
         const { message, isSuccess } = await createClaim(payload)
 
         setLoading(false)
@@ -170,10 +180,10 @@ export const Form = ({
   }, [watchClaim, setValue])
 
   const howKnownMapping: { [key: string]: string } = {
-    'first_hand': 'FIRST_HAND',
-    'second_hand': 'SECOND_HAND',
-    'website': 'WEB_DOCUMENT',
-    'physical_document': 'PHYSICAL_DOCUMENT'
+    first_hand: 'FIRST_HAND',
+    second_hand: 'SECOND_HAND',
+    website: 'WEB_DOCUMENT',
+    physical_document: 'PHYSICAL_DOCUMENT'
   }
 
   const inputOptions = {
@@ -213,12 +223,7 @@ export const Form = ({
       'relationship:worked-on',
       'relationship:same-as'
     ],
-    howKnown: [
-      'first_hand',
-      'second_hand',
-      'website',
-      'physical_document'
-    ]
+    howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
 
   return (
@@ -443,6 +448,7 @@ export const Form = ({
                 )}
               />
             </LocalizationProvider>
+            <FileUpload passImageFormData={receiveImageFormData} />
           </Box>
         </form>
       </DialogContent>
