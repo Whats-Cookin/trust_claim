@@ -78,6 +78,7 @@ export const Form = ({
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
+  const did = localStorage.getItem('did')
 
   // querying composeDB
   useEffect(() => {
@@ -135,7 +136,8 @@ export const Form = ({
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
-          amt: amtAsNumber
+          amt: amtAsNumber,
+          issuerId: did
         }
 
         setLoading(true)
