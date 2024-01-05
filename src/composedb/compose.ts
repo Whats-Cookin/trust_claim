@@ -6,6 +6,7 @@ const CREATE_LINKED_CLAIM_MUTATION = `
       document {
         id
         claim
+        issuerId
         object
         statement
         subjectID
@@ -38,6 +39,7 @@ type LinkedClaimPayload = {
   confidence: number
   stars: number
   amt: number
+  issuerId: string
 }
 
 interface Content {
@@ -71,6 +73,7 @@ interface Content {
     intendedAudience?: string
     respondAt?: string
   }
+  issuerId?: string
 }
 
 const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
@@ -79,8 +82,20 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
     return { status: 500 }
   }
 
-  let { subject, claim, object, statement, aspect, howKnown, sourceURI, effectiveDate, confidence, stars, amt } =
-    payload
+  let {
+    subject,
+    claim,
+    object,
+    statement,
+    aspect,
+    howKnown,
+    sourceURI,
+    effectiveDate,
+    confidence,
+    stars,
+    amt,
+    issuerId
+  } = payload
 
   if (howKnown) {
     howKnown = howKnown.toUpperCase()
@@ -105,6 +120,9 @@ const PublishClaim = async (payload: LinkedClaimPayload): Promise<any> => {
         effectiveDate: edate
       }
     }
+  }
+  if (issuerId) {
+    variables['i']['content']['issuerId'] = issuerId
   }
 
   if (stars) {

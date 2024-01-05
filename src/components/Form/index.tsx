@@ -72,7 +72,8 @@ export const Form = ({
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null,
-      amt: null as number | null
+      amt: null as number | null,
+      issuerId: null as string | null
     }
   })
 
