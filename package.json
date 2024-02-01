@@ -23,6 +23,7 @@
     "@mui/material": "^5.8.2",
     "@mui/system": "^5.11.15",
     "@mui/x-date-pickers": "^5.0.0-alpha.5",
+    "@sismo-core/sismo-connect-react": "^0.0.23",
     "cytoscape": "^3.22.1",
     "date-fns": "^2.28.0",
     "did-session": "^1.0.0",

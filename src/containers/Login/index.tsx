@@ -17,6 +17,14 @@ import { useForm } from 'react-hook-form'
 import { useTheme } from '@mui/material'
 import { TextField } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
+import { SismoConnectButton, AuthType, SismoConnectConfig, SismoConnectResponse } from '@sismo-core/sismo-connect-react'
+
+const config: SismoConnectConfig = {
+  appId: '0x204c3494bf2f02d64fd5011c47b92ca8',
+  vault: {
+    impersonate: ['', '']
+  }
+}
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
@@ -225,6 +233,34 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               <GitHubIcon sx={styles.authIcon} />
               Github
             </MuiLink>
+          </Box>
+          <Box>
+            <SismoConnectButton
+              // the client config created
+              config={config}
+              // request a proof of account ownership
+              // (here VAULT ownership)
+              auth={{ authType: AuthType.VAULT }}
+              // request a message signature
+              signature={{ message: 'Trying out sismo connect' }}
+              //  a response containing his proofs
+              onResponse={async (response: SismoConnectResponse) => {
+                axios.post('/auth/sismo-verify', JSON.stringify(response)).then(res => {
+                  if (res.status == 200) {
+                    const { vaultId } = res.data
+                    console.log(vaultId)
+                    setLoading(false)
+                  } else {
+                    console.log('server error')
+                    setLoading(false)
+                  }
+                })
+              }}
+              // onResponseBytes={async (bytes: string) => {
+              //Send the response to your contract to verify it
+              //thanks to the @sismo-core/sismo-connect-solidity package
+              // }}
+            />
           </Box>
           <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
             {ethLoginOpt}
