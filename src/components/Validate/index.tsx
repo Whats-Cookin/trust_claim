@@ -17,6 +17,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import axios from '../../axiosInstance'
 import BackgroundImages from '../../containers/BackgroundImags'
+import StarIcon from '@mui/icons-material/Star'
 
 // TODO make these shared in settings across app
 
@@ -36,8 +37,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [subjectValue, setSubjectValue] = useState('')
   const [claimVerbValue, setClaimVerbValue] = useState('')
   const [statementValue, setStatementValue] = useState('')
-  const [objectValue, setObjectValue] = useState('')
+  const [howKnown, setHowKnown] = useState('')
   const [amtValue, setAmtValue] = useState('')
+  const [issuerId, setIssuerId] = useState('')
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
@@ -76,8 +78,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         setSubjectValue(res.data.subject)
         setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
         setStatementValue(res.data.statement)
-        setObjectValue(res.data.object)
+        setHowKnown(res.data.howKnown)
         setAmtValue(res.data.amt)
+        setIssuerId(res.data.issuerId)
         if (res.data.effectiveDate) {
           const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
           setEffectiveDateValue(dayPart)
@@ -197,48 +200,75 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <BackgroundImages />
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          rowGap: 2,
-          width: '100%',
-          padding: '2rem',
-          maxWidth: '830px',
+          width: '1348px',
+          maxWidth: '1348px',
           marginTop: { xs: 15, md: 8 },
           background: '#FFFFFF',
           boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
           zIndex: 20,
           borderRadius: '10px',
-          margin: '0'
+          pb: '20px'
         }}
       >
-        <Box sx={{}}>
-          <Typography
-            variant='h4'
-            sx={{
-              textAlign: 'center',
-              fontSize: '20px',
-              color: 'primary.main',
-              fontWeight: 'bold'
+        <Typography
+          variant='h4'
+          sx={{
+            textAlign: 'center',
+            fontSize: '24px',
+            color: 'rgba(121, 121, 121, 0.8)',
+            fontWeight: '400',
+            lineHeight: '28.6px',
+            m: '10px 0',
+            fontFamily: 'Roboto, sans-serif'
+          }}
+        >
+          <span
+            style={{
+              color: '#009688',
+              display: 'block',
+              fontSize: '28px',
+              fontWeight: '600',
+              lineHeight: '40.05px',
+              fontFamily: 'Roboto, sans-serif'
             }}
           >
-            {`Welcome!  We value your input, thank you for helping keep it real`}
-          </Typography>
-        </Box>
-        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'row', borderTop: '3px solid #009688' }}>
-          <Box sx={{ width: '50%', borderRight: '3px solid #009688' }}>
-            <Typography
-              variant='h4'
-              sx={{
-                textAlign: 'center',
-                fontSize: '20px',
-                color: 'primary.main',
-                fontWeight: 'bold',
-                mb: '20px',
-                mt: '20px'
-              }}
-            >
-              {`We have a claim that`}
-            </Typography>
+            Welcome !
+          </span>{' '}
+          We value your input, thank you for helping keep it real
+        </Typography>
+
+        <form
+          onSubmit={onSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            width: '100%',
+            marginBottom: '20px'
+          }}
+        >
+          <Box sx={{ width: '47%', bgcolor: '#7979790D', borderRadius: '10px', p: '20px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography
+                variant='h4'
+                sx={{
+                  textAlign: 'left',
+                  fontSize: '22px',
+                  color: '#009688',
+                  fontWeight: 'bold',
+                  mb: '10px'
+                }}
+              >
+                {`We have a claim that`}
+              </Typography>
+              <Box>
+                <StarIcon sx={{ color: '#009688' }} />
+                <StarIcon sx={{ color: '#009688' }} />
+                <StarIcon sx={{ color: '#009688' }} />
+                <StarIcon sx={{ color: '#009688' }} />
+                <StarIcon sx={{ color: '#009688' }} />
+              </Box>
+            </Box>
             <Box
               sx={{
                 width: '100%',
@@ -249,65 +279,162 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               }}
             >
               <Typography
-                variant='h5'
-                style={{ fontWeight: 'bold', color: '#003747', maxWidth: '100%', overflowWrap: 'break-word' }}
-              >{`${subjectValue}`}</Typography>
-              <Typography variant='h5' style={{ color: '#065465' }}>{`${claimVerbValue}`}</Typography>
-              {statementValue && (
-                <Box sx={{ display: 'flex', margin: '0' }}>
-                  <Typography
-                    variant='h5'
-                    borderColor='primary.main'
-                    sx={{
-                      p: '6px 8px 0',
-                      color: 'black',
-                      borderRadius: 1,
-                      border: 1,
-                      fontSize: '11pt',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: expanded ? 'unset' : 10,
-                      WebkitBoxOrient: 'vertical'
-                    }}
-                  >
-                    {statementValue}
-                  </Typography>
-                  <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
-                    {expanded ? (
-                      <>
-                        <ExpandLessIcon />
-                      </>
-                    ) : (
-                      <Box style={{ display: 'flex', alignItems: 'center' }}>
-                        <ExpandMoreIcon />
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
-              )}
-              {objectValue && <Typography variant='h5'>{`to: ${objectValue}`}</Typography>}
-              {amtValue && <Typography variant='h5' style={{ color: '#065465' }}>{`worth: ${amtValue}`}</Typography>}
-              {effectiveDateValue && (
-                <Typography style={{ color: '#065465' }}>{`as of: ${effectiveDateValue}`}</Typography>
-              )}
+                sx={{
+                  fontWeight: '600',
+                  color: '#1E3B39',
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  fontSize: '20px',
+                  fontFamily: 'Inter, sans-serif',
+                  mb: '10px'
+                }}
+              >
+                {' '}
+                Issuer ID :{' '}
+                <span
+                  style={{
+                    fontWeight: '400',
+                    color: '#1E3B39',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif'
+                  }}
+                >{`${issuerId}`}</span>
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: '600',
+                  color: '#1E3B39',
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  fontSize: '20px',
+                  fontFamily: 'Inter, sans-serif',
+                  mb: '10px'
+                }}
+              >
+                {' '}
+                Subject :{' '}
+                <span
+                  style={{
+                    fontWeight: '400',
+                    color: '#1E3B39',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif'
+                  }}
+                >{`${subjectValue}`}</span>
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: '600',
+                  color: '#1E3B39',
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  fontSize: '20px',
+                  fontFamily: 'Inter, sans-serif',
+                  mb: '10px'
+                }}
+              >
+                {' '}
+                Rated :{' '}
+                <span
+                  style={{
+                    fontWeight: '400',
+                    color: '#1E3B39',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif'
+                  }}
+                >{`${claimVerbValue}`}</span>
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: '600',
+                  color: '#1E3B39',
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  fontSize: '20px',
+                  fontFamily: 'Inter, sans-serif',
+                  mb: '10px'
+                }}
+              >
+                {' '}
+                how Known :{' '}
+                <span
+                  style={{
+                    fontWeight: '400',
+                    color: '#1E3B39',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif'
+                  }}
+                >{`${howKnown}`}</span>
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: '600',
+                  color: '#1E3B39',
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  fontSize: '20px',
+                  fontFamily: 'Inter, sans-serif',
+                  mb: '10px'
+                }}
+              >
+                {' '}
+                Date :{' '}
+                <span
+                  style={{
+                    fontWeight: '400',
+                    color: '#1E3B39',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif'
+                  }}
+                >{`${effectiveDateValue}`}</span>
+              </Typography>
+              <Typography
+                sx={{
+                  fontWeight: '600',
+                  color: '#1E3B39',
+                  maxWidth: '100%',
+                  overflowWrap: 'break-word',
+                  fontSize: '20px',
+                  fontFamily: 'Inter, sans-serif',
+                  mb: '10px'
+                }}
+              >
+                {' '}
+                Statement :{' '}
+                <span
+                  style={{
+                    fontWeight: '400',
+                    color: '#1E3B39',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif'
+                  }}
+                >{`${statementValue}`}</span>
+              </Typography>
             </Box>
           </Box>
-          <Box sx={{ width: '50%', rowGap: 1, m: 1 }}>
+          <Box sx={{ width: '48%', bgcolor: '#7979790D', borderRadius: '10px', p: '20px' }}>
             <Typography
               sx={{
-                textAlign: 'center',
-                fontSize: '20px',
-                color: 'primary.main',
-                fontWeight: 'bold',
-                mt: '10px'
+                fontSize: '22px',
+                color: '#009688',
+                fontWeight: '600',
+                lineHeight: '34.33px'
               }}
             >
               Do you know anything about this?
             </Typography>
-            <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
+            <Box sx={{ width: '95%', mb: '10px', mt: '10px' }}>
               <Tooltip title='How do you know about it?' placement='right' arrow>
                 <TextField
+                  sx={{
+                    backgroundColor: 'white'
+                  }}
                   select
                   label='How known'
                   {...register('howKnown')}
@@ -341,11 +468,21 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </FormControl>
               )}
             </Box>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label='Effective Date'
+                value={watchEffectiveDate}
+                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                renderInput={(params: any) => (
+                  <TextField {...params} sx={{ mr: 1, width: '95%', backgroundColor: '#FFFFFF' }} />
+                )}
+              />
+            </LocalizationProvider>
             <Tooltip title='write more information here ' placement='right' arrow>
               <TextField
                 {...register('statement')}
                 placeholder={''}
-                sx={{ mr: 1, width: '95%', mb: '20px' }}
+                sx={{ mt: '15px', width: '95%', mb: '20px', backgroundColor: 'white' }}
                 margin='dense'
                 variant='outlined'
                 fullWidth
@@ -353,17 +490,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 key='statement'
                 type='text'
                 multiline={true}
-                rows={4}
+                rows={5}
               />
             </Tooltip>{' '}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='Effective Date'
-                value={watchEffectiveDate}
-                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                renderInput={(params: any) => <TextField {...params} sx={{ mr: 1, width: '95%' }} variant='filled' />}
-              />
-            </LocalizationProvider>
             <input type='hidden' value='first_hand' {...register('howKnown')} />
           </Box>
           <Dialog
@@ -378,25 +507,28 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
           </Dialog>
         </form>
-
-        <Button
-          onClick={onSubmit}
-          type='submit'
-          variant='contained'
-          size='large'
-          sx={{
-            ml: 1,
-            mr: 1,
-            width: '50%',
-            bgcolor: 'praimary.main',
-            margin: '0 auto',
-            '&:hover': {
-              backgroundColor: '#00695f'
-            }
-          }}
-        >
-          Submit
-        </Button>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <Button
+            onClick={onSubmit}
+            type='submit'
+            variant='contained'
+            size='large'
+            sx={{
+              width: '312px',
+              bgcolor: 'praimary.main',
+              borderRadius: '5px',
+              '&:hover': {
+                backgroundColor: '#00695f'
+              },
+              fontSize: '20px',
+              fontWeight: '600',
+              lineHeight: '24.13px',
+              fontFamily: 'Roboto, sans-serif'
+            }}
+          >
+            Submit
+          </Button>
+        </Box>
       </Box>
     </>
   )
