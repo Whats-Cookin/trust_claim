@@ -41,10 +41,10 @@ const Search = (homeProps: IHomeProps) => {
   const fetchQueryClaims = async (query: string, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/node?page=${page}&limit=5`, {
+      const res = await axios.get(`/api/node/search?page=${page}&limit=5`, {
         params: { search: query }
       })
-      
+
       if (res.data.nodes.length > 0 && cy) {
         const parsedClaims = parseMultipleNodes(res.data.nodes)
         cy.elements().remove()
