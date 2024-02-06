@@ -8,8 +8,6 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { useQueryParams } from '../../hooks'
 import Dialog from '@mui/material/Dialog'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import Loader from '../Loader'
 import DialogContentText from '@mui/material/DialogContentText'
 import React, { useEffect, useState } from 'react'
@@ -18,7 +16,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import axios from '../../axiosInstance'
 import BackgroundImages from '../../containers/BackgroundImags'
 import StarIcon from '@mui/icons-material/Star'
-
+import { useTheme } from '@mui/material'
 // TODO make these shared in settings across app
 
 const FIRST_HAND = 'FIRST_HAND'
@@ -38,16 +36,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [claimVerbValue, setClaimVerbValue] = useState('')
   const [statementValue, setStatementValue] = useState('')
   const [howKnown, setHowKnown] = useState('')
-  const [amtValue, setAmtValue] = useState('')
+  const [stars, setStars] = useState('')
   const [issuerId, setIssuerId] = useState('')
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
   const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'FIRST_HAND'
-  console.log('how known: ' + howknown)
-  const toggleExpansion = () => {
-    setExpanded(!expanded)
-  }
+  const theme = useTheme()
+  console.log(':  Validate  theme', theme)
 
   const handleHowKnownChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = event.target.value
@@ -79,7 +75,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
         setStatementValue(res.data.statement)
         setHowKnown(res.data.howKnown)
-        setAmtValue(res.data.amt)
+        setStars(res.data.stars)
         setIssuerId(res.data.issuerId)
         if (res.data.effectiveDate) {
           const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
@@ -186,13 +182,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     howKnown: [
       { value: FIRST_HAND, text: 'validate first hand' },
       { value: WEB_DOCUMENT, text: 'validate from source' },
-
-      // these are not valid to return to server, will be modified in handler
       { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
       { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
       { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
     ]
   }
+  const numberOfStars = Number(stars)
+
+  const starsArray = Array.from({ length: numberOfStars }, (_, index) => (
+    <StarIcon key={index} sx={{ color: '#009688' }} />
+  ))
 
   return (
     <>
@@ -200,7 +199,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <BackgroundImages />
       <Box
         sx={{
-          width: '1348px',
+          width: '90%',
           maxWidth: '1348px',
           marginTop: { xs: 15, md: 8 },
           background: '#FFFFFF',
@@ -219,7 +218,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             fontWeight: '400',
             lineHeight: '28.6px',
             m: '10px 0',
-            fontFamily: 'Roboto, sans-serif'
+            fontFamily: 'Roboto, sans-serif',
+            [theme.breakpoints.down('sm')]: {
+                  width: '98%',
+                }
           }}
         >
           <span
@@ -237,263 +239,286 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           We value your input, thank you for helping keep it real
         </Typography>
 
-        <form
-          onSubmit={onSubmit}
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            width: '100%',
-            marginBottom: '20px'
-          }}
-        >
-          <Box sx={{ width: '47%', bgcolor: '#7979790D', borderRadius: '10px', p: '20px' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography
-                variant='h4'
+        <form onSubmit={onSubmit}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              width: '100%',
+              marginBottom: '20px',
+              [theme.breakpoints.down('sm')]: {
+                flexDirection: 'column'
+              }
+            }}
+          >
+            <Box
+              sx={{
+                width: '48%',
+                bgcolor: '#7979790D',
+                borderRadius: '10px',
+                p: '20px',
+                [theme.breakpoints.down('sm')]: {
+                  width: '98%',
+                  ml:'5px',
+                  mb:'10px'
+                }
+              }}
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography
+                  variant='h4'
+                  sx={{
+                    textAlign: 'left',
+                    fontSize: '22px',
+                    color: '#009688',
+                    fontWeight: 'bold',
+                    mb: '10px'
+                  }}
+                >
+                  {`We have a claim that`}
+                </Typography>
+                <Box>{starsArray}</Box>
+              </Box>
+              <Box
                 sx={{
-                  textAlign: 'left',
-                  fontSize: '22px',
-                  color: '#009688',
+                  width: '100%',
+                  maxHeight:'488px',
+                  color: 'primary.main',
+                  fontSize: '20px',
                   fontWeight: 'bold',
-                  mb: '10px'
+                  '& > *': { margin: '12px 0' },
+                  overflow: 'auto'
                 }}
               >
-                {`We have a claim that`}
-              </Typography>
-              <Box>
-                <StarIcon sx={{ color: '#009688' }} />
-                <StarIcon sx={{ color: '#009688' }} />
-                <StarIcon sx={{ color: '#009688' }} />
-                <StarIcon sx={{ color: '#009688' }} />
-                <StarIcon sx={{ color: '#009688' }} />
+                <Typography
+                  sx={{
+                    fontWeight: '600',
+                    color: '#1E3B39',
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif',
+                    mb: '10px'
+                  }}
+                >
+                  {' '}
+                  Issuer ID :{' '}
+                  <span
+                    style={{
+                      fontWeight: '400',
+                      color: '#1E3B39',
+                      overflowWrap: 'break-word',
+                      fontSize: '20px',
+                      fontFamily: 'Inter, sans-serif'
+                    }}
+                  >{`${issuerId}`}</span>
+                </Typography>
+                <Typography
+                  sx={{
+                    fontWeight: '600',
+                    color: '#1E3B39',
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif',
+                    mb: '10px'
+                  }}
+                >
+                  {' '}
+                  Subject :{' '}
+                  <span
+                    style={{
+                      fontWeight: '400',
+                      color: '#1E3B39',
+                      overflowWrap: 'break-word',
+                      fontSize: '20px',
+                      fontFamily: 'Inter, sans-serif'
+                    }}
+                  >{`${subjectValue}`}</span>
+                </Typography>
+                <Typography
+                  sx={{
+                    fontWeight: '600',
+                    color: '#1E3B39',
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif',
+                    mb: '10px'
+                  }}
+                >
+                  {' '}
+                  Rated :{' '}
+                  <span
+                    style={{
+                      fontWeight: '400',
+                      color: '#1E3B39',
+                      overflowWrap: 'break-word',
+                      fontSize: '20px',
+                      fontFamily: 'Inter, sans-serif'
+                    }}
+                  >{`${claimVerbValue}`}</span>
+                </Typography>
+                <Typography
+                  sx={{
+                    fontWeight: '600',
+                    color: '#1E3B39',
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif',
+                    mb: '10px'
+                  }}
+                >
+                  {' '}
+                  how Known :{' '}
+                  <span
+                    style={{
+                      fontWeight: '400',
+                      color: '#1E3B39',
+                      overflowWrap: 'break-word',
+                      fontSize: '20px',
+                      fontFamily: 'Inter, sans-serif'
+                    }}
+                  >{`${howKnown}`}</span>
+                </Typography>
+                <Typography
+                  sx={{
+                    fontWeight: '600',
+                    color: '#1E3B39',
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif',
+                    mb: '10px'
+                  }}
+                >
+                  {' '}
+                  Date :{' '}
+                  <span
+                    style={{
+                      fontWeight: '400',
+                      color: '#1E3B39',
+                      overflowWrap: 'break-word',
+                      fontSize: '20px',
+                      fontFamily: 'Inter, sans-serif'
+                    }}
+                  >{`${effectiveDateValue}`}</span>
+                </Typography>
+                <Typography
+                  sx={{
+                    fontWeight: '600',
+                    color: '#1E3B39',
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word',
+                    fontSize: '20px',
+                    fontFamily: 'Inter, sans-serif',
+                    mb: '10px'
+                  }}
+                >
+                  {' '}
+                  Statement :{' '}
+                  <span
+                    style={{
+                      fontWeight: '400',
+                      color: '#1E3B39',
+                      overflowWrap: 'break-word',
+                      fontSize: '20px',
+                      fontFamily: 'Inter, sans-serif'
+                    }}
+                  >{`${statementValue}`}</span>
+                </Typography>
               </Box>
             </Box>
             <Box
               sx={{
-                width: '100%',
-                color: 'primary.main',
-                fontSize: '20px',
-                fontWeight: 'bold',
-                '& > *': { margin: '12px 0' }
+                width: '48%',
+                bgcolor: '#7979790D',
+                borderRadius: '10px',
+                p: '20px',
+                [theme.breakpoints.down('sm')]: {
+                  width: '98%',
+                  ml:'5px'
+                }
               }}
             >
               <Typography
                 sx={{
+                  fontSize: '22px',
+                  color: '#009688',
                   fontWeight: '600',
-                  color: '#1E3B39',
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word',
-                  fontSize: '20px',
-                  fontFamily: 'Inter, sans-serif',
-                  mb: '10px'
+                  lineHeight: '34.33px'
                 }}
               >
-                {' '}
-                Issuer ID :{' '}
-                <span
-                  style={{
-                    fontWeight: '400',
-                    color: '#1E3B39',
-                    overflowWrap: 'break-word',
-                    fontSize: '20px',
-                    fontFamily: 'Inter, sans-serif'
-                  }}
-                >{`${issuerId}`}</span>
+                Do you know anything about this?
               </Typography>
-              <Typography
-                sx={{
-                  fontWeight: '600',
-                  color: '#1E3B39',
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word',
-                  fontSize: '20px',
-                  fontFamily: 'Inter, sans-serif',
-                  mb: '10px'
-                }}
-              >
-                {' '}
-                Subject :{' '}
-                <span
-                  style={{
-                    fontWeight: '400',
-                    color: '#1E3B39',
-                    overflowWrap: 'break-word',
-                    fontSize: '20px',
-                    fontFamily: 'Inter, sans-serif'
-                  }}
-                >{`${subjectValue}`}</span>
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: '600',
-                  color: '#1E3B39',
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word',
-                  fontSize: '20px',
-                  fontFamily: 'Inter, sans-serif',
-                  mb: '10px'
-                }}
-              >
-                {' '}
-                Rated :{' '}
-                <span
-                  style={{
-                    fontWeight: '400',
-                    color: '#1E3B39',
-                    overflowWrap: 'break-word',
-                    fontSize: '20px',
-                    fontFamily: 'Inter, sans-serif'
-                  }}
-                >{`${claimVerbValue}`}</span>
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: '600',
-                  color: '#1E3B39',
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word',
-                  fontSize: '20px',
-                  fontFamily: 'Inter, sans-serif',
-                  mb: '10px'
-                }}
-              >
-                {' '}
-                how Known :{' '}
-                <span
-                  style={{
-                    fontWeight: '400',
-                    color: '#1E3B39',
-                    overflowWrap: 'break-word',
-                    fontSize: '20px',
-                    fontFamily: 'Inter, sans-serif'
-                  }}
-                >{`${howKnown}`}</span>
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: '600',
-                  color: '#1E3B39',
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word',
-                  fontSize: '20px',
-                  fontFamily: 'Inter, sans-serif',
-                  mb: '10px'
-                }}
-              >
-                {' '}
-                Date :{' '}
-                <span
-                  style={{
-                    fontWeight: '400',
-                    color: '#1E3B39',
-                    overflowWrap: 'break-word',
-                    fontSize: '20px',
-                    fontFamily: 'Inter, sans-serif'
-                  }}
-                >{`${effectiveDateValue}`}</span>
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: '600',
-                  color: '#1E3B39',
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word',
-                  fontSize: '20px',
-                  fontFamily: 'Inter, sans-serif',
-                  mb: '10px'
-                }}
-              >
-                {' '}
-                Statement :{' '}
-                <span
-                  style={{
-                    fontWeight: '400',
-                    color: '#1E3B39',
-                    overflowWrap: 'break-word',
-                    fontSize: '20px',
-                    fontFamily: 'Inter, sans-serif'
-                  }}
-                >{`${statementValue}`}</span>
-              </Typography>
-            </Box>
-          </Box>
-          <Box sx={{ width: '48%', bgcolor: '#7979790D', borderRadius: '10px', p: '20px' }}>
-            <Typography
-              sx={{
-                fontSize: '22px',
-                color: '#009688',
-                fontWeight: '600',
-                lineHeight: '34.33px'
-              }}
-            >
-              Do you know anything about this?
-            </Typography>
-            <Box sx={{ width: '95%', mb: '10px', mt: '10px' }}>
-              <Tooltip title='How do you know about it?' placement='right' arrow>
+              <Box sx={{ width: '95%', mb: '10px', mt: '10px' }}>
+                <Tooltip title='How do you know about it?' placement='right' arrow>
+                  <TextField
+                    sx={{
+                      backgroundColor: 'white'
+                    }}
+                    select
+                    label='How known'
+                    {...register('howKnown')}
+                    margin='dense'
+                    variant='outlined'
+                    fullWidth
+                    defaultValue={FIRST_HAND}
+                    onChange={handleHowKnownChange}
+                  >
+                    {inputOptions.howKnown.map(howKnownItem => (
+                      <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
+                        <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Tooltip>
+                {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
+                  <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                    <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
+                    <OutlinedInput
+                      id='outlined-adornment-amount'
+                      startAdornment={<InputAdornment position='start'>$</InputAdornment>}
+                      label='Amount'
+                    />
+                  </FormControl>
+                )}
+                {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
+                  <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                    <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
+                    <OutlinedInput id='outlined-adornment-amount' label='Source' />
+                  </FormControl>
+                )}
+              </Box>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label='Effective Date'
+                  value={watchEffectiveDate}
+                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                  renderInput={(params: any) => (
+                    <TextField {...params} sx={{ mr: 1, width: '95%', backgroundColor: '#FFFFFF' }} />
+                  )}
+                />
+              </LocalizationProvider>
+              <Tooltip title='write more information here ' placement='right' arrow>
                 <TextField
-                  sx={{
-                    backgroundColor: 'white'
-                  }}
-                  select
-                  label='How known'
-                  {...register('howKnown')}
+                  {...register('statement')}
+                  placeholder={''}
+                  sx={{ mt: '15px', width: '95%', mb: '20px', backgroundColor: 'white' }}
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  defaultValue={FIRST_HAND}
-                  onChange={handleHowKnownChange}
-                >
-                  {inputOptions.howKnown.map(howKnownItem => (
-                    <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
-                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-              {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
-                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                  <OutlinedInput
-                    id='outlined-adornment-amount'
-                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                    label='Amount'
-                  />
-                </FormControl>
-              )}
-              {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
-                <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
-                  <OutlinedInput id='outlined-adornment-amount' label='Source' />
-                </FormControl>
-              )}
+                  label='explain here'
+                  key='statement'
+                  type='text'
+                  multiline={true}
+                  rows={5}
+                />
+              </Tooltip>{' '}
+              <input type='hidden' value='first_hand' {...register('howKnown')} />
             </Box>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='Effective Date'
-                value={watchEffectiveDate}
-                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                renderInput={(params: any) => (
-                  <TextField {...params} sx={{ mr: 1, width: '95%', backgroundColor: '#FFFFFF' }} />
-                )}
-              />
-            </LocalizationProvider>
-            <Tooltip title='write more information here ' placement='right' arrow>
-              <TextField
-                {...register('statement')}
-                placeholder={''}
-                sx={{ mt: '15px', width: '95%', mb: '20px', backgroundColor: 'white' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='explain here'
-                key='statement'
-                type='text'
-                multiline={true}
-                rows={5}
-              />
-            </Tooltip>{' '}
-            <input type='hidden' value='first_hand' {...register('howKnown')} />
           </Box>
           <Dialog
             open={dialogOpen}
