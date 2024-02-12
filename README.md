@@ -4,7 +4,7 @@ See [Use Cases](https://docs.google.com/document/d/1iWRypT4aHS67MJhuCZj7e5gzcCr3
 
 To enter data, visit [pro](http://trustclaims.whatscookin.us)
 
-To deploy latest code, pull directly on server
+<a name="deploy"></a>To deploy latest code, pull directly on server
 
 ```bash
 ssh -l ubuntu -i [key] trustclaims.whatscookin.us
