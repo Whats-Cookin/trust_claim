@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { IHomeProps, ExpandMoreProps } from './types'
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
 import {
   Box,
   Card,
@@ -14,20 +13,18 @@ import {
   useMediaQuery,
   useTheme,
   Button,
-  Grid
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
 import { Claim } from './types'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import Divider from '@mui/material/Divider'
-import { Link } from '@mui/icons-material'
-import { flexbox } from '@mui/system'
+import { format } from 'date-fns';
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props
   return <IconButton {...other} />
-})(({ theme }) => ({
+})(({  }) => ({
   marginLeft: 'auto'
 }))
 
@@ -111,6 +108,8 @@ const FeedClaim = ({}: IHomeProps) => {
       setExpanded(index)
     }
   }
+  console.log("claims",claims)
+
 
   return (
     <Box display='flex' justifyContent='center' alignItems='center' width='100%'>
@@ -147,12 +146,19 @@ const FeedClaim = ({}: IHomeProps) => {
                     <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                       {formatClaimText(claim)}
                     </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     {claim.stars && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>Rating as Stars: </strong>
                         {claim.stars}
                       </Typography>
                     )}
+                      {claim.effective_date && (
+                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                     {format(new Date(claim.effective_date), 'MMMM d, yyyy')}
+                      </Typography>
+                    )}
+                    </Box>
                     {claim.claim && (
                       <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
                         <strong>From:</strong> {claim.source_name}
