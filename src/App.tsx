@@ -13,6 +13,7 @@ import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
+import ClaimReport from './components/ClaimReport'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -96,6 +97,7 @@ const App = () => {
           <Loader open={loading} />
           <Routes>
             <Route path='feed' element={<FeedClaim {...commonProps} />} />
+            <Route path='report/:claimId' element={<ClaimReport />} />
             <Route path='search' element={<Search {...commonProps} />} />
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
