@@ -172,10 +172,10 @@ export const Form = ({
   }, [watchClaim, setValue])
 
   const howKnownMapping: { [key: string]: string } = {
-    'first_hand': 'FIRST_HAND',
-    'second_hand': 'SECOND_HAND',
-    'website': 'WEB_DOCUMENT',
-    'physical_document': 'PHYSICAL_DOCUMENT'
+    first_hand: 'FIRST_HAND',
+    second_hand: 'SECOND_HAND',
+    website: 'WEB_DOCUMENT',
+    physical_document: 'PHYSICAL_DOCUMENT'
   }
 
   const inputOptions = {
@@ -215,12 +215,7 @@ export const Form = ({
       'relationship:worked-on',
       'relationship:same-as'
     ],
-    howKnown: [
-      'first_hand',
-      'second_hand',
-      'website',
-      'physical_document'
-    ]
+    howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
 
   return (
