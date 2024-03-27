@@ -50,7 +50,7 @@ const FeedClaim = ({}: IHomeProps) => {
       .finally(() => setIsLoading(false))
   }, [])
 
-  const handelValidation = (subject: any, id: number) => {
+  const handleValidation = (subject: any, id: number) => {
     console.log(subject, 'and', id)
     navigate({
       pathname: '/validate',
@@ -108,11 +108,6 @@ const FeedClaim = ({}: IHomeProps) => {
     } else {
       setExpanded(index)
     }
-  }
-
-  const [open, setOpen] = useState(false)
-  const handleVerifacationsDialog = () => {
-    setOpen(true)
   }
 
   return (
@@ -199,7 +194,7 @@ const FeedClaim = ({}: IHomeProps) => {
                     </div>
                   </CardContent>
                   <Button
-                    onClick={() => handelValidation(claim.link, claim.claim_id)}
+                    onClick={() => handleValidation(claim.link, claim.claim_id)}
                     sx={{
                       m: '0 0 10px 20px',
                       bgcolor: 'primary.main',
