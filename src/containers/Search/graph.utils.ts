@@ -104,9 +104,9 @@ const getNodeData = (node: any) => {
     }
   }
   let label = node.name || uri
-  if ((label == 'Not Acceptable!') || (label == 'Not Acceptable') ){
-     console.log("Node name is " + node.name)
-     label = ''
+  if (label == 'Not Acceptable!' || label == 'Not Acceptable') {
+    console.log('Node name is ' + node.name)
+    label = ''
   }
 
   const nodeData: NodeData = {
