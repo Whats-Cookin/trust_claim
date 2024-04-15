@@ -5,7 +5,7 @@ import Link from '@mui/material/Link'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress } from '@mui/material'
 import { renderClaimInfo } from './ReenderClaimInfo'
 import { ceramic } from '../../composedb'
-import { CERAMIC_URL } from '../../utils/settings'
+import { BACKEND_BASE_URL, CERAMIC_URL } from '../../utils/settings'
 
 const DonationReport = () => {
   const { claimId } = useParams()
@@ -13,10 +13,12 @@ const DonationReport = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const url = BACKEND_BASE_URL + '/api/report/' + claimId
+
   useEffect(() => {
     const fetchReportData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/report/${claimId}`)
+        const response = await axios.get(url)
         setReportData(response.data)
         console.log(response.data)
       } catch (err) {
