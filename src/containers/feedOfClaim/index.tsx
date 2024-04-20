@@ -4,17 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
 import { IHomeProps, ExpandMoreProps } from './types'
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
-import {
-  Box,
-  Card,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Button
-} from '@mui/material'
+import { Box, Card, CardContent, IconButton, Typography, useMediaQuery, useTheme, Button, Divider } from '@mui/material'
+import { format } from 'date-fns'
 import axios from 'axios'
 import Loader from '../../components/Loader'
 import { Claim } from './types'
@@ -67,7 +58,7 @@ const FeedClaim = ({}: IHomeProps) => {
   }
 
   const formatClaimText = (claim: any) => {
-    const Style = { color: '#009688' }
+    const Style = { color: '#3C6B65', textDecoration: 'none', fontWeight: 700, fontSize: '25px', lineHeight: '25px' }
 
     function formatUrl(url: string) {
       if (!/^https?:\/\//i.test(url)) {
@@ -84,8 +75,6 @@ const FeedClaim = ({}: IHomeProps) => {
       </span>
     )
 
-    const claimText = <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.claim || ''}</span>
-
     const source = (
       <span style={Style}>
         <a href={formatUrl(claim.source_link || '')} target='_blank' rel='noopener noreferrer' style={Style}>
@@ -94,11 +83,7 @@ const FeedClaim = ({}: IHomeProps) => {
       </span>
     )
 
-    return (
-      <>
-        {subject && <span style={Style}>{subject}</span>} got {claimText} claim from {source}
-      </>
-    )
+    return <>{subject && <span style={Style}>{subject}</span>}</>
   }
 
   const [expanded, setExpanded] = useState<number | null>(null)
@@ -134,61 +119,97 @@ const FeedClaim = ({}: IHomeProps) => {
                   maxWidth: 'fit',
                   height: 'fit',
                   mt: '15px',
-                  borderRadius: '20px',
-                  border: '2px solid #009688',
+                  borderRadius: '24px',
+                  border: '5px solid #3C6B65',
                   display: 'flex',
                   flexDirection: isSmallScreen ? 'column' : 'row'
                 }}
               >
                 <Box sx={{ display: 'block' }}>
                   <CardContent>
-                    <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                      {formatClaimText(claim)}
+                    <Typography
+                      sx={{
+                        padding: '5px',
+                        wordBreak: 'break-word',
+                        marginBottom: '10px',
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <span>{formatClaimText(claim)}</span>
+                      <SchemaIcon
+                        sx={{
+                          color: 'primary.main',
+                          cursor: 'pointer',
+                          marginLeft: '29em',
+                          marginBottom: '0,5em'
+                        }}
+                        onClick={() => handleschema(claim.link)}
+                      />
                     </Typography>
+                    <Divider sx={{ margin: '0.5em' }} />
+                    {claim.effective_date && (
+                      <Typography sx={{ padding: '5px', wordBreak: 'break-word', mr: '0' }}>
+                        {format(new Date(claim.effective_date), 'MMMM d, yyyy')}
+                      </Typography>
+                    )}
                     {claim.statement && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Statement:</strong> {claim.statement}
+                      <Typography
+                        sx={{
+                          padding: '5px',
+                          wordBreak: 'break-word',
+                          marginBottom: '1px',
+                          fontWeight: 800,
+                          lineHeight: '30px'
+                        }}
+                      >
+                        <strong style={{ marginRight: '8.2em' }}>from:</strong> {claim.source_name}
+                      </Typography>
+                    )}
+                    {claim.statement && (
+                      <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                        <strong style={{ marginRight: '5.6em' }}>Statement:</strong> {claim.statement}
                       </Typography>
                     )}
 
                     <div style={{ display: expanded === index ? 'block' : 'none' }}>
                       {claim.how_known && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>How Known: </strong>
+                        <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong style={{ marginRight: '4.7em' }}>How Known: </strong>
                           {claim.how_known}
                         </Typography>
                       )}
 
                       {claim.aspect && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Aspect: </strong>
+                        <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong style={{ marginRight: '7.1em' }}>Aspect: </strong>
                           {claim.aspect}
                         </Typography>
                       )}
 
                       {claim.confidence !== 0 && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Confidence: </strong>
+                        <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong style={{ marginRight: '5em' }}>Confidence: </strong>
                           {claim.confidence}
                         </Typography>
                       )}
                       {claim.stars && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Rating as Stars: </strong>
+                        <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong style={{ marginRight: '2.5em' }}>Rating as Stars: </strong>
                           {claim.stars}
                         </Typography>
                       )}
 
                       {claim.score && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Rating as Score: </strong>
+                        <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong style={{ marginRight: '2.5em' }}>Rating as Score: </strong>
                           {claim.score}
                         </Typography>
                       )}
 
                       {claim.amt && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Amount of claim: </strong>$ {claim.amt}
+                        <Typography sx={{ padding: '5px', wordBreak: 'break-word', marginBottom: '1px' }}>
+                          <strong style={{ marginRight: '2.5em' }}>Amount of claim: </strong>$ {claim.amt}
                         </Typography>
                       )}
                     </div>
@@ -226,38 +247,16 @@ const FeedClaim = ({}: IHomeProps) => {
                       Report
                     </Button>
                   </Link>
-                </Box>
-                <CardActions
-                  disableSpacing
-                  sx={{
-                    marginLeft: 'auto',
-                    marginTop: 'auto',
-                    marginBottom: 'auto',
-                    width: isSmallScreen ? '100%' : 'auto',
-                    display: isSmallScreen ? 'flex' : 'block',
-                    justifyContent: isSmallScreen ? 'space-evenly' : 'none'
-                  }}
-                >
-                  <SchemaIcon
-                    sx={{
-                      color: 'primary.main',
-                      right: 0,
-                      cursor: 'pointer',
-                      marginTop: '10px',
-                      marginLeft: isSmallScreen ? '5px' : 'auto'
-                    }}
-                    onClick={() => handleschema(claim.link)}
-                  />
                   <ExpandMore
                     expand={expanded === index}
                     onClick={() => handleExpandClick(index)}
                     aria-expanded={expanded === index}
                     aria-label='show more'
-                    sx={{ marginLeft: 'auto', right: '10px', marginTop: '10px', display: 'block' }}
+                    sx={{ m: '0 0 10px 30px' }}
                   >
                     <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
                   </ExpandMore>
-                </CardActions>
+                </Box>
               </Card>
             </div>
           ))}
