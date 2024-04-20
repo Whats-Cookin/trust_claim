@@ -89,12 +89,11 @@ const Search = (homeProps: IHomeProps) => {
   const handleNodeClick = async (event: any) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
-    if (originalEvent.shiftKey) {
-      console.log('Shift + click detected')
+    if (originalEvent) {
       // Your shift + click logic goes here...
       // TODO refactor with handleMouseRightClick
-      const claim = event.target
-      const currentClaim = claim.data('raw')
+      // const claim = event.target
+      const currentClaim = event.target.data('raw')
 
       if (currentClaim) {
         setSelectedClaim(currentClaim)
