@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react'
 import axios from '../../axiosInstance'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -141,9 +141,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     ethLoginOpt = (
       <p id='metamaskLink'>
         To login with Ethereum{' '}
-        <a href='https://metamask.io/' target='_blank'>
+        <Link to='https://metamask.io/' target='_blank'>
           Install Metamask
-        </a>
+        </Link>
       </p>
     )
   }

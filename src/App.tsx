@@ -24,14 +24,11 @@ const App = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  console.log('Hello, world')
-
   const checkAuth = () => {
     const accessToken = localStorage.getItem('accessToken')
     const refreshToken = localStorage.getItem('refreshToken')
     const ethAddress = localStorage.getItem('ethAddress')
     const did = localStorage.getItem('did')
-    console.log('In check auth now')
     return !!((did && ethAddress) || (accessToken && refreshToken))
   }
 
