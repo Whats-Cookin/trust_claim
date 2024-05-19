@@ -36,14 +36,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         }
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 1rem' }}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 1rem' }}>
         <Typography variant='h6'>Menu</Typography>
         {isOpen && (
           <IconButton onClick={toggleSidebar}>
             <ArrowBack sx={{ color: '#fff' }} />
           </IconButton>
         )}
-      </Box>
+      </Box> */}
       <List>
         <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
           <Home sx={{ color: '#fff' }} />

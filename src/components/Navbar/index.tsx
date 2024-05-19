@@ -52,7 +52,14 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
     <Box sx={{ display: 'flex' }}>
       <AppBar position='fixed' sx={{ backgroundColor: '#0a1c1d', color: '#ffffff' }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              minWidth: '23vw',
+              maxWidth: isSmallScreen ? '80vw' : '23vw'
+            }}
+          >
             <IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
               <MenuIcon />
             </IconButton>

@@ -78,7 +78,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           sx={{
             position: 'center',
             justifyContent: 'center',
-            width: isSmallScreen ? '100%' : '75%',
+            width: isSmallScreen ? '100%' : '50%',
             p: '0 10px',
             background: '#0a1c1d',
             // ml: isSmallScreen ? 0 : '0px',
@@ -226,7 +226,17 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     }}
                     onClick={event => handleMenuClick(event, index)}
                   >
-                    <MoreVertIcon />
+                    <span
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transform: 'rotate(90deg)',
+                        color: '#009688'
+                      }}
+                    >
+                      <MoreVertIcon />
+                    </span>
                   </IconButton>
                   <Menu
                     anchorEl={anchorEl}
