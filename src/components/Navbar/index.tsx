@@ -29,10 +29,20 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
     switch (location.pathname) {
       case '/feed':
         return 'Feed of Claims'
+      case '/':
+        return 'Create Claims'
       case '/create-claim':
         return 'Create Claim'
       case '/explore':
         return 'Explore'
+      case '/search':
+        return 'Search claims'
+      case '/terms':
+        return 'Terms of Service'
+      case '/privacy':
+        return 'Privacy policy'
+      case '/cookie':
+        return 'Cookies policy'
       default:
         return ''
     }
@@ -49,15 +59,28 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
             <Typography
               variant='h6'
               component='div'
-              sx={{ color: '#009688', fontWeight: 'bold', cursor: 'pointer' }}
+              sx={{ color: '#009688', fontWeight: 'bold', cursor: 'pointer', maxWidth: '150px' }}
               onClick={() => navigate('/feed')}
             >
               Trust Claims
             </Typography>
           </Box>
-          <Typography variant='h6' component='div' sx={{ flexGrow: 1, textAlign: 'center', color: '#ffffff' }}>
-            {getPageName()}
-          </Typography>
+          <Box sx={{ textAlign: 'center', flexGrow: 1 }}>
+            <Box sx={{ display: 'inline-block', textAlign: 'center' }}>
+              <Typography variant='h6' component='div' sx={{ color: '#ffffff' }}>
+                {getPageName()}
+              </Typography>
+              <Box
+                sx={{
+                  height: '4px',
+                  backgroundColor: '#009688',
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '100%'
+                }}
+              />
+            </Box>
+          </Box>
           {!isSmallScreen && <SearchBar />}
         </Toolbar>
         {isSmallScreen && (

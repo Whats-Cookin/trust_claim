@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import ReportIcon from '@mui/icons-material/Report'
+import AssessmentIcon from '@mui/icons-material/Assessment'
 import StarIcon from '@mui/icons-material/Star'
-import LinkIcon from '@mui/icons-material/Link'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { IHomeProps, Claim } from './types'
 import {
   Box,
@@ -108,6 +108,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     <a href={claim.link} target='_blank' rel='noopener noreferrer' style={{ textDecoration: 'none' }}>
                       <Typography variant='h6' sx={{ marginBottom: '10px' }} fontWeight={'bold'} color='#ffffff'>
                         {claim.name}
+                        <OpenInNewIcon sx={{ marginLeft: '5px', color: '#ffffff', fontSize: '1rem' }} />
                       </Typography>
                     </a>
                     <Typography variant='body2' sx={{ marginBottom: '10px', color: '#ffffff' }}>
@@ -155,7 +156,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     </Button>
                     <Link to={'/report/' + claim.claim_id}>
                       <Button
-                        startIcon={<ReportIcon />}
+                        startIcon={<AssessmentIcon />}
                         sx={{
                           fontSize: '10px',
                           fontWeight: 'bold',
@@ -168,35 +169,41 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           }
                         }}
                       >
-                        Report
+                        Evidence
                       </Button>
                     </Link>
-                    <Box>
-                      <Button
-                        startIcon={<SchemaIcon />}
-                        onClick={() => handleschema(claim.link)}
+                    <Button
+                      startIcon={<SchemaIcon />}
+                      onClick={() => handleschema(claim.link)}
+                      sx={{
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        marginRight: '10px',
+                        p: '4px',
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: '#00695f',
+                          color: 'white'
+                        }
+                      }}
+                    >
+                      Graph View
+                    </Button>
+                    <Box sx={{ flexGrow: 1 }} />
+                    {claim.stars && (
+                      <Box
                         sx={{
-                          fontSize: '10px',
-                          fontWeight: 'bold',
-                          marginRight: '10px',
+                          display: 'flex',
                           p: '4px',
-                          color: 'white',
-                          '&:hover': {
-                            backgroundColor: '#00695f',
-                            color: 'white'
-                          }
+                          flexWrap: 'wrap',
+                          justifyContent: 'flex-end'
                         }}
                       >
-                        EVIDENCE
-                      </Button>
-                    </Box>
-                    {claim.stars && (
-                      <Box sx={{ display: 'flex', p: '4px', flexWrap: 'wrap', justifyContent: 'center' }}>
                         {Array.from({ length: claim.stars }).map((_, index) => (
                           <StarIcon
                             key={index}
                             sx={{
-                              color: '#faaf00',
+                              color: '#009688',
                               width: '3vw',
                               height: '3vw',
                               fontSize: '3vw',
@@ -208,6 +215,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                       </Box>
                     )}
                   </Box>
+
                   <IconButton
                     sx={{
                       position: 'absolute',
@@ -247,7 +255,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         <Typography variant='body2' color='#ffffff'>
                           From: {claim.source_link}
                         </Typography>
-                        <LinkIcon style={{ marginLeft: '5px' }} />
+                        <OpenInNewIcon style={{ marginLeft: '5px' }} />
                       </MenuItem>
                     )}
                     {claim.how_known && (
