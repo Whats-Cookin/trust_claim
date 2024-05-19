@@ -1,39 +1,34 @@
-import { useState, useEffect } from 'react'
-import { styled } from '@mui/material/styles'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
-import { IHomeProps, ExpandMoreProps } from './types'
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import ReportIcon from '@mui/icons-material/Report'
+import StarIcon from '@mui/icons-material/Star'
+import LinkIcon from '@mui/icons-material/Link'
+import { IHomeProps, Claim } from './types'
 import {
   Box,
   Card,
   CardContent,
-  CardActions,
   IconButton,
   Typography,
   useMediaQuery,
   useTheme,
-  Button
+  Button,
+  Menu,
+  MenuItem,
+  Grow
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
-import { Claim } from './types'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props
-  return <IconButton {...other} />
-})(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest
-  })
-}))
-
-const FeedClaim = ({}: IHomeProps) => {
+const FeedClaim: React.FC<IHomeProps> = () => {
   const [claims, setClaims] = useState<Array<Claim>>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const navigate = useNavigate()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
@@ -66,48 +61,14 @@ const FeedClaim = ({}: IHomeProps) => {
     })
   }
 
-  const formatClaimText = (claim: any) => {
-    const Style = { color: '#009688' }
-
-    function formatUrl(url: string) {
-      if (!/^https?:\/\//i.test(url)) {
-        return 'http://' + url
-      }
-      return url
-    }
-
-    const subject = (
-      <span style={Style}>
-        <a href={formatUrl(claim.link || '')} target='_blank' rel='noopener noreferrer' style={Style}>
-          {claim.name || ''}
-        </a>
-      </span>
-    )
-
-    const claimText = <span style={{ color: '#009688', textDecoration: 'none' }}>{claim.claim || ''}</span>
-
-    const source = (
-      <span style={Style}>
-        <a href={formatUrl(claim.source_link || '')} target='_blank' rel='noopener noreferrer' style={Style}>
-          {claim.source_name || ''}
-        </a>
-      </span>
-    )
-
-    return (
-      <>
-        {subject && <span style={Style}>{subject}</span>} got {claimText} claim from {source}
-      </>
-    )
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
+    setAnchorEl(event.currentTarget)
+    setSelectedIndex(index)
   }
 
-  const [expanded, setExpanded] = useState<number | null>(null)
-  const handleExpandClick = (index: number) => {
-    if (expanded === index) {
-      setExpanded(null)
-    } else {
-      setExpanded(index)
-    }
+  const handleClose = () => {
+    setAnchorEl(null)
+    setSelectedIndex(null)
   }
 
   return (
@@ -117,13 +78,13 @@ const FeedClaim = ({}: IHomeProps) => {
           sx={{
             position: 'center',
             justifyContent: 'center',
-            width: '75%',
+            width: isSmallScreen ? '100%' : '75%',
             p: '0 10px',
-            background: '#FFFFFF',
-            ml: '130',
-            mt: isSmallScreen ? '140px' : '90px',
+            background: '#0a1c1d',
+            // ml: isSmallScreen ? 0 : '0px',
+            mt: isSmallScreen ? '12vh' : '90px',
             boxShadow: 20,
-            bgcolor: 'background.paper',
+            bgcolor: '#0a1c1d',
             flexDirection: 'column'
           }}
         >
@@ -135,129 +96,204 @@ const FeedClaim = ({}: IHomeProps) => {
                   height: 'fit',
                   mt: '15px',
                   borderRadius: '20px',
-                  border: '2px solid #009688',
                   display: 'flex',
-                  flexDirection: isSmallScreen ? 'column' : 'row'
+                  flexDirection: isSmallScreen ? 'column' : 'row',
+                  backgroundColor: selectedIndex === index ? '#2d3838' : '#172d2d',
+                  filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
+                  color: '#ffffff'
                 }}
               >
-                <Box sx={{ display: 'block' }}>
+                <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                   <CardContent>
-                    <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                      {formatClaimText(claim)}
+                    <a href={claim.link} target='_blank' rel='noopener noreferrer' style={{ textDecoration: 'none' }}>
+                      <Typography variant='h6' sx={{ marginBottom: '10px' }} fontWeight={'bold'} color='#ffffff'>
+                        {claim.name}
+                      </Typography>
+                    </a>
+                    <Typography variant='body2' sx={{ marginBottom: '10px', color: '#ffffff' }}>
+                      {new Date(claim.effective_date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
                     </Typography>
                     {claim.statement && (
-                      <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                        <strong>Statement:</strong> {claim.statement}
+                      <Typography
+                        sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px', color: '#ffffff' }}
+                      >
+                        {claim.statement}
                       </Typography>
                     )}
-
-                    <div style={{ display: expanded === index ? 'block' : 'none' }}>
-                      {claim.how_known && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>How Known: </strong>
-                          {claim.how_known}
-                        </Typography>
-                      )}
-
-                      {claim.aspect && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Aspect: </strong>
-                          {claim.aspect}
-                        </Typography>
-                      )}
-
-                      {claim.confidence !== 0 && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Confidence: </strong>
-                          {claim.confidence}
-                        </Typography>
-                      )}
-                      {claim.stars && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Rating as Stars: </strong>
-                          {claim.stars}
-                        </Typography>
-                      )}
-
-                      {claim.score && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Rating as Score: </strong>
-                          {claim.score}
-                        </Typography>
-                      )}
-
-                      {claim.amt && (
-                        <Typography sx={{ padding: '5px 1 1 5px', wordBreak: 'break-word', marginBottom: '1px' }}>
-                          <strong>Amount of claim: </strong>$ {claim.amt}
-                        </Typography>
-                      )}
-                    </div>
                   </CardContent>
-                  <Button
-                    onClick={() => handleValidation(claim.link, claim.claim_id)}
+                  <Box
                     sx={{
-                      m: '0 0 10px 20px',
-                      bgcolor: 'primary.main',
-                      color: 'white',
-                      fontSize: '10px',
-                      fontWeight: 'bold',
-                      p: '4px',
-                      '&:hover': {
-                        backgroundColor: '#00695f'
-                      }
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      position: 'relative',
+                      mt: '10px',
+                      mb: '10px',
+                      pl: '20px',
+                      pr: '20px'
                     }}
                   >
-                    Validate
-                  </Button>
-                  <Link to={'/report/' + claim.claim_id}>
                     <Button
+                      onClick={() => handleValidation(claim.link, claim.claim_id)}
+                      startIcon={<CheckCircleIcon />}
                       sx={{
-                        m: '0 0 10px 10px',
+                        color: 'white',
                         fontSize: '10px',
                         fontWeight: 'bold',
-                        border: '1px solid #009688',
+                        marginRight: '10px',
                         p: '4px',
                         '&:hover': {
-                          backgroundColor: '#00695f',
-                          color: 'white'
+                          backgroundColor: '#00695f'
                         }
                       }}
                     >
-                      Report
+                      VALIDATE
                     </Button>
-                  </Link>
-                </Box>
-                <CardActions
-                  disableSpacing
-                  sx={{
-                    marginLeft: 'auto',
-                    marginTop: 'auto',
-                    marginBottom: 'auto',
-                    width: isSmallScreen ? '100%' : 'auto',
-                    display: isSmallScreen ? 'flex' : 'block',
-                    justifyContent: isSmallScreen ? 'space-evenly' : 'none'
-                  }}
-                >
-                  <SchemaIcon
+                    <Link to={'/report/' + claim.claim_id}>
+                      <Button
+                        startIcon={<ReportIcon />}
+                        sx={{
+                          fontSize: '10px',
+                          fontWeight: 'bold',
+                          marginRight: '10px',
+                          p: '4px',
+                          color: 'white',
+                          '&:hover': {
+                            backgroundColor: '#00695f',
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        Report
+                      </Button>
+                    </Link>
+                    <Box>
+                      <Button
+                        startIcon={<SchemaIcon />}
+                        onClick={() => handleschema(claim.link)}
+                        sx={{
+                          fontSize: '10px',
+                          fontWeight: 'bold',
+                          marginRight: '10px',
+                          p: '4px',
+                          color: 'white',
+                          '&:hover': {
+                            backgroundColor: '#00695f',
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        EVIDENCE
+                      </Button>
+                    </Box>
+                    {claim.stars && (
+                      <Box sx={{ display: 'flex', p: '4px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {Array.from({ length: claim.stars }).map((_, index) => (
+                          <StarIcon
+                            key={index}
+                            sx={{
+                              color: '#faaf00',
+                              width: '3vw',
+                              height: '3vw',
+                              fontSize: '3vw',
+                              maxWidth: '24px',
+                              maxHeight: '24px'
+                            }}
+                          />
+                        ))}
+                      </Box>
+                    )}
+                  </Box>
+                  <IconButton
                     sx={{
-                      color: 'primary.main',
-                      right: 0,
-                      cursor: 'pointer',
-                      marginTop: '10px',
-                      marginLeft: isSmallScreen ? '5px' : 'auto'
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      color: '#ffffff',
+                      cursor: 'pointer'
                     }}
-                    onClick={() => handleschema(claim.link)}
-                  />
-                  <ExpandMore
-                    expand={expanded === index}
-                    onClick={() => handleExpandClick(index)}
-                    aria-expanded={expanded === index}
-                    aria-label='show more'
-                    sx={{ marginLeft: 'auto', right: '10px', marginTop: '10px', display: 'block' }}
+                    onClick={event => handleMenuClick(event, index)}
                   >
-                    <ExpandCircleDownIcon sx={{ color: 'primary.main' }} />
-                  </ExpandMore>
-                </CardActions>
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl && selectedIndex === index)}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right'
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right'
+                    }}
+                    TransitionComponent={Grow}
+                    transitionDuration={250}
+                    sx={{
+                      '& .MuiPaper-root': {
+                        backgroundColor: '#172d2d',
+                        color: '#ffffff',
+                        border: '1px solid #009688'
+                      }
+                    }}
+                  >
+                    {claim.source_link && (
+                      <MenuItem onClick={() => window.open(claim.source_link, '_blank')}>
+                        <Typography variant='body2' color='#ffffff'>
+                          From: {claim.source_link}
+                        </Typography>
+                        <LinkIcon style={{ marginLeft: '5px' }} />
+                      </MenuItem>
+                    )}
+                    {claim.how_known && (
+                      <MenuItem>
+                        <Typography variant='body2' color='#ffffff'>
+                          How Known: {claim.how_known}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                    {claim.aspect && (
+                      <MenuItem>
+                        <Typography variant='body2' color='#ffffff'>
+                          Aspect: {claim.aspect}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                    {claim.confidence !== 0 && (
+                      <MenuItem>
+                        <Typography variant='body2' color='#ffffff'>
+                          Confidence: {claim.confidence}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                    {claim.stars && (
+                      <MenuItem>
+                        <Typography variant='body2' color='#ffffff'>
+                          Rating as Stars: {claim.stars}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                    {claim.score && (
+                      <MenuItem>
+                        <Typography variant='body2' color='#ffffff'>
+                          Rating as Score: {claim.score}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                    {claim.amt && (
+                      <MenuItem>
+                        <Typography variant='body2' color='#ffffff'>
+                          Amount of claim: $ {claim.amt}
+                        </Typography>
+                      </MenuItem>
+                    )}
+                  </Menu>
+                </Box>
               </Card>
             </div>
           ))}

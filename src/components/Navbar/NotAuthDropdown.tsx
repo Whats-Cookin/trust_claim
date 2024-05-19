@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
-import { Menu, IconButton, Button, Box, Fade, Tooltip, Hidden } from '@mui/material'
+import { Menu, IconButton, Button, Box, Fade, Tooltip } from '@mui/material'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 const Responsive = () => {

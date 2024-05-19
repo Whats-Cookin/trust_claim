@@ -1,100 +1,73 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import ProfileDropdown from '../profileDropDown/index'
-import { useMediaQuery } from '@mui/material'
-import { useState, useRef } from 'react'
-import Responsive from './NotAuthDropdown'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu'
 import SearchBar from '../searchbar'
-import { useTheme } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/material'
+import Sidebar from '../Sidebar'
 
-const Navbar = ({ isAuth }: any) => {
+interface NavbarProps {
+  isAuth: boolean
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const navigate = useNavigate()
-  const search = useLocation().search
-  const ref = useRef<any>(null)
-  const query = new URLSearchParams(search).get('query')
-  const [searchVal, setSearchVal] = useState<string>(query || '')
-  const page = useRef(1)
+  const location = useLocation()
   const theme = useTheme()
-
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/search',
-        search: `?query=${searchVal}`
-      })
-    }
-  }
-
-  const handleSearchKeypress = async (event: any) => {
-    if (event.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
+
+  const getPageName = () => {
+    switch (location.pathname) {
+      case '/feed':
+        return 'Feed of Claims'
+      case '/create-claim':
+        return 'Create Claim'
+      case '/explore':
+        return 'Explore'
+      default:
+        return ''
+    }
+  }
+
   return (
-    <>
-      <Box>
-        <AppBar position='fixed' sx={{ backgroundColor: '#eeeeee', color: '#280606' }}>
-          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Box sx={{ display: 'flex' }}>
+      <AppBar position='fixed' sx={{ backgroundColor: '#0a1c1d', color: '#ffffff' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
+              <MenuIcon />
+            </IconButton>
             <Typography
-              variant='h5'
+              variant='h6'
               component='div'
+              sx={{ color: '#009688', fontWeight: 'bold', cursor: 'pointer' }}
               onClick={() => navigate('/feed')}
-              sx={{
-                color: 'primary.main',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
             >
               Trust Claims
             </Typography>
-            {isAuth && (
-              <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'end', gap: 2, alignItems: 'center' }}>
-                {!isSmallScreen && <SearchBar />}
-                <ProfileDropdown />
-              </Box>
-            )}
-
-            {!isAuth && (
-              <>
-                {isSmallScreen && <Responsive />}
-                {!isSmallScreen && (
-                  <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'end', gap: 2 }}>
-                    <SearchBar />
-                    <Box sx={{ display: 'flex' }}>
-                      <Button
-                        sx={{ pr: '20px', color: 'primary.main', fontWeight: 'bold' }}
-                        onClick={() => navigate('/login')}
-                      >
-                        Login
-                      </Button>
-                      <Button
-                        sx={{ pr: '20px', color: 'primary.main', fontWeight: 'bold' }}
-                        onClick={() => navigate('/register')}
-                      >
-                        Register
-                      </Button>
-                    </Box>
-                  </Box>
-                )}
-              </>
-            )}
+          </Box>
+          <Typography variant='h6' component='div' sx={{ flexGrow: 1, textAlign: 'center', color: '#ffffff' }}>
+            {getPageName()}
+          </Typography>
+          {!isSmallScreen && <SearchBar />}
+        </Toolbar>
+        {isSmallScreen && (
+          <Toolbar sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
+            <SearchBar />
           </Toolbar>
-          {isSmallScreen && (
-            <Toolbar sx={{ display: 'flex', justifyContent: 'center' }}>
-              <SearchBar />
-            </Toolbar>
-          )}
-        </AppBar>
-      </Box>
-    </>
+        )}
+      </AppBar>
+      <Sidebar isAuth={isAuth} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    </Box>
   )
 }
 

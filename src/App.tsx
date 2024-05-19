@@ -14,6 +14,10 @@ import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
+import Footer from './components/Footer'
+import Terms from './containers/Terms'
+import Cookie from './containers/Cookie'
+import Privacy from './containers/Privacy'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -69,56 +73,54 @@ const App = () => {
   })
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {/* Render the navigation component only if the user is not on the login or register page */}
-        <Navbar isAuth={checkAuth()} />
-
-        <Box
-          sx={{
-            position: 'relative',
-            backgroundColor: '#eeeeee',
-            minHeight: '100vh',
-            display: 'flex',
-            width: '100%',
-            flexDirection: 'column',
-            alignItems: 'center',
-            fontSize: 'calc(3px + 2vmin)',
-            color: 'rgb(37, 3, 3)',
-            overflow: 'hidden',
-            justifyContent: 'center'
-          }}
-        >
-          <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
-          <Loader open={loading} />
-          <Routes>
-            <Route path='feed' element={<FeedClaim {...commonProps} />} />
-            <Route path='report/:claimId' element={<ClaimReport />} />
-            <Route path='search' element={<Search {...commonProps} />} />
-            <Route path='/' element={<Form {...commonProps} />} />
-            <Route path='register' element={<Register {...commonProps} />} />
-            <Route path='login' element={<Login {...commonProps} />} />
-            <Route
-              path='/rate'
-              element={
-                checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
-              }
-            />
-            <Route
-              path='/validate'
-              element={
-                checkAuth() ? (
-                  <Validate {...commonProps} />
-                ) : (
-                  <Navigate to='/login' replace state={{ from: location }} />
-                )
-              }
-            />
-          </Routes>
-        </Box>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {/* Render the navigation component only if the user is not on the login or register page */}
+      {!isLoginPage && !isRegisterPage && <Navbar isAuth={checkAuth()} />}
+      <Box
+        sx={{
+          position: 'relative',
+          backgroundColor: '#0a1c1d',
+          minHeight: '100vh',
+          display: 'flex',
+          width: '100%',
+          flexDirection: 'column',
+          alignItems: 'center',
+          fontSize: 'calc(3px + 2vmin)',
+          color: 'rgb(37, 3, 3)',
+          overflow: 'hidden',
+          justifyContent: 'center',
+          paddingBottom: '5.5rem'
+        }}
+      >
+        <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
+        <Loader open={loading} />
+        <Routes>
+          <Route path='feed' element={<FeedClaim {...commonProps} />} />
+          <Route path='report/:claimId' element={<ClaimReport />} />
+          <Route path='search' element={<Search {...commonProps} />} />
+          <Route path='/' element={<Form {...commonProps} />} />
+          <Route path='register' element={<Register {...commonProps} />} />
+          <Route path='login' element={<Login {...commonProps} />} />
+          <Route path='terms' element={<Terms />} />
+          <Route path='privacy' element={<Privacy />} />
+          <Route path='cookie' element={<Cookie />} />
+          <Route
+            path='/rate'
+            element={
+              checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+            }
+          />
+          <Route
+            path='/validate'
+            element={
+              checkAuth() ? <Validate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+            }
+          />
+        </Routes>
+        {!isLoginPage && !isRegisterPage && <Footer />}
+      </Box>
+    </ThemeProvider>
   )
 }
 
