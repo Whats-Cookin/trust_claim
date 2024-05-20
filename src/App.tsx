@@ -87,7 +87,7 @@ const App = () => {
       >
         <Box
           sx={{
-            width: '10%',
+            width: '30%',
             bgcolor: '#0a1c1d'
           }}
         >
@@ -95,7 +95,7 @@ const App = () => {
         </Box>
         <Box
           sx={{
-            width: '90%',
+            width: '40%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -132,6 +132,14 @@ const App = () => {
               }
             />
           </Routes>
+        </Box>
+        <Box
+          sx={{
+            width: '30%',
+            bgcolor: '#0a1c1d'
+          }}
+        >
+          <RightSideComponent />
         </Box>
       </Box>
     </ThemeProvider>

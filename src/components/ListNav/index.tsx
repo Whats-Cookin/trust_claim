@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, List, ListItemButton, ListItemText, Button } from '@mui/material'
-import { Home, Explore, Create, Search } from '@mui/icons-material'
+import { Home, Explore, Create, Search, CenterFocusWeakTwoTone } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 
 const ListNav: React.FC = () => {
@@ -27,32 +27,46 @@ const ListNav: React.FC = () => {
         backgroundColor: '#0A1C1D',
         color: '#fff',
         display: 'flex',
-        flexDirection: 'column', // Make the main box a column flex container
-        justifyContent: 'space-between' // Space between nav items and the button
+        flexDirection: 'column',
+        justifyContent: 'space-between'
       }}
     >
       <List component='nav'>
         <ListItemButton onClick={() => navigate('/feed')}>
-          <Home sx={{ color: '#fff' }} />
+          <Home sx={{ color: '#fff', m: '0.5em' }} />
           <ListItemText primary='Home' />
         </ListItemButton>
         <ListItemButton onClick={() => navigate('/search?query=.')}>
-          <Explore sx={{ color: '#fff' }} />
+          <Explore sx={{ color: '#fff', m: '0.5em' }} />
           <ListItemText primary='Explore' />
         </ListItemButton>
+
         {isAuthenticated && (
           <>
-            <ListItemButton onClick={() => navigate('/')}>
-              <Create sx={{ color: '#fff' }} />
-              <ListItemText primary='Create Claim' />
-            </ListItemButton>
             <ListItemButton onClick={() => navigate('/search')}>
-              <Search sx={{ color: '#fff' }} />
+              <Search sx={{ color: '#fff', m: '0.5em' }} />
               <ListItemText primary='Search' />
             </ListItemButton>
           </>
         )}
+        <ListItemButton
+          onClick={() => navigate('/')}
+          sx={{
+            width: '13em',
+            mt: '15em',
+            ml: '5em',
+            borderRadius: '40px',
+            backgroundColor: 'primary.main',
+            '&:hover': {
+              backgroundColor: '#00695f'
+            }
+          }}
+        >
+          <Create sx={{ color: '#fff', m: '0.5em', textAlign: 'center' }} />
+          <ListItemText primary='Create Claim' />
+        </ListItemButton>
       </List>
+
       {isAuthenticated ? (
         <Button
           onClick={handleLogout}
