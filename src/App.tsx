@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
@@ -8,14 +8,13 @@ import Register from './containers/Register'
 import Form from './containers/Form'
 import Search from './containers/Search'
 import './App.css'
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { CssBaseline, ThemeProvider, createTheme, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
-import FeedClaim from './containers/feedOfClaim'
-import ListNav from './components/ListNav'
-import RightSideComponent from './components/RightSideComponent'
+import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
+import Footer from './components/Footer'
 import Terms from './containers/Terms'
 import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
@@ -25,6 +24,7 @@ const App = () => {
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [metaNav, setMetaNav] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -41,6 +41,15 @@ const App = () => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
       navigate('/feed')
+    }
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
 
@@ -72,39 +81,54 @@ const App = () => {
       }
     }
   })
+  const globalStyles = (
+    <GlobalStyles
+      styles={{
+        '::-webkit-scrollbar': {
+          width: '0',
+          height: '0'
+        },
+        body: {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none'
+        }
+      }}
+    />
+  )
+
+  const showFooter = location.pathname !== '/feed' || windowWidth < 800
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {!isLoginPage && !isRegisterPage && <Navbar />}
+      {globalStyles}
+
+      {!isLoginPage && !isRegisterPage && <Navbar isAuth={checkAuth()} />}
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           minHeight: '100vh',
-          width: '100%'
+          backgroundColor: '#0a1c1d',
+          width: '100%',
+          fontSize: 'calc(3px + 2vmin)',
+          color: 'rgb(37, 3, 3)',
+          overflow: 'hidden'
         }}
       >
+        <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
+        <Loader open={loading} />
         <Box
           sx={{
-            width: '30%',
-            bgcolor: '#0a1c1d'
-          }}
-        >
-          <ListNav />
-        </Box>
-        <Box
-          sx={{
-            width: '40%',
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            overflow: 'auto',
-            backgroundColor: '#0A1C1D'
+            justifyContent: 'center',
+            width: '100%',
+            paddingBottom: '5.5rem'
           }}
         >
-          <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
-          <Loader open={loading} />
           <Routes>
             <Route path='feed' element={<FeedClaim {...commonProps} />} />
             <Route path='report/:claimId' element={<ClaimReport />} />
@@ -133,14 +157,7 @@ const App = () => {
             />
           </Routes>
         </Box>
-        <Box
-          sx={{
-            width: '30%',
-            bgcolor: '#0a1c1d'
-          }}
-        >
-          <RightSideComponent />
-        </Box>
+        {showFooter && <Footer />}
       </Box>
     </ThemeProvider>
   )

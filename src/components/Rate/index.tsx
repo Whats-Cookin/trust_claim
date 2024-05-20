@@ -20,15 +20,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    watch,
-    control,
-    setValue
-  } = useForm({
+  const { register, handleSubmit, reset, watch, control, setValue } = useForm({
     defaultValues: {
       subject: subject as string,
       claim: 'rated',
@@ -133,7 +125,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                 fontWeight: 1000
               }}
             >
-              {`${subject || 'this company'}`}
+              {`${subject ?? 'this company'}`}
             </strong>
           </Typography>
         </Box>
@@ -166,7 +158,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                     variant='outlined'
                     fullWidth
                   >
-                    {inputOptions.aspect.map((aspectText: string, index: number) => (
+                    {inputOptions.aspect.map((aspectText: string) => (
                       <MenuItem value={aspectText} key={aspectText}>
                         <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
                       </MenuItem>

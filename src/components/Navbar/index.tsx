@@ -6,14 +6,25 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
-import SearchBar from '../searchbar'
 import { useMediaQuery, useTheme } from '@mui/material'
+import SearchBar from '../searchbar'
+import Sidebar from '../Sidebar'
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  isAuth: boolean
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down(800))
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
   const getPageName = () => {
     switch (location.pathname) {
@@ -21,8 +32,6 @@ const Navbar: React.FC = () => {
         return 'Feed of Claims'
       case '/':
         return 'Create Claims'
-      case '/create-claim':
-        return 'Create Claim'
       case '/explore':
         return 'Explore'
       case '/search':
@@ -40,36 +49,39 @@ const Navbar: React.FC = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position='fixed' sx={{ backgroundColor: '#0a1c1d', color: '#ffffff' }} elevation={0}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              minWidth: '23vw',
-              maxWidth: isSmallScreen ? '80vw' : '23vw'
-            }}
-          >
+      <AppBar position='fixed' sx={{ backgroundColor: '#0a1c1d', color: '#ffffff' }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {(location.pathname !== '/feed' || isMediumScreen) && (
+              <IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography
-              variant='h4'
+              variant='h6'
               component='div'
               sx={{
                 color: '#009688',
                 fontWeight: 'bold',
                 cursor: 'pointer',
-                maxWidth: '10em',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+                width: isSmallScreen ? '100%' : '23vw'
               }}
               onClick={() => navigate('/feed')}
             >
               Trust Claims
             </Typography>
           </Box>
-          <Box sx={{ textAlign: 'center', flexGrow: 1 }}>
-            <Box sx={{ display: 'inline-block', textAlign: 'center' }}>
-              <Typography variant='h6' component='div' sx={{ color: '#ffffff' }}>
-                {getPageName()}
-              </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography
+              variant='h6'
+              component='div'
+              sx={{
+                color: '#ffffff',
+                textAlign: 'center',
+                flexGrow: isSmallScreen ? 1 : 0
+              }}
+            >
+              {getPageName()}
               <Box
                 sx={{
                   height: '4px',
@@ -79,16 +91,14 @@ const Navbar: React.FC = () => {
                   width: '100%'
                 }}
               />
-            </Box>
+            </Typography>
           </Box>
-          {!isSmallScreen && <SearchBar />}
-        </Toolbar>
-        {isSmallScreen && (
-          <Toolbar sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', width: isSmallScreen ? '23%' : '23vw' }}>
             <SearchBar />
-          </Toolbar>
-        )}
+          </Box>
+        </Toolbar>
       </AppBar>
+      <Sidebar isAuth={isAuth} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
     </Box>
   )
 }

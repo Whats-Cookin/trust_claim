@@ -9,7 +9,7 @@ const BackgroundImages = () => {
       <CardMedia
         component='img'
         image={polygon1}
-        sx={{ width: { xs: '50%', md: '450px' }, position: 'absolute', top: '3%', left: '30%' }}
+        sx={{ width: { xs: '50%', md: '450px' }, position: 'absolute', top: '3%', left: '-10%' }}
       />
       <CardMedia
         component='img'

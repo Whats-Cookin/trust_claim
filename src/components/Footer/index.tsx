@@ -10,16 +10,21 @@ const Footer: React.FC = () => {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
-        marginLeft: '9em',
+        justifyContent: isSmallScreen ? 'center' : 'space-between',
         padding: '1rem',
+        textAlign: 'center',
+        alignItems: 'center',
+        gap: '1rem',
+        backgroundColor: '#1a1a1a00',
         color: '#ffffff',
-        width: '100%',
-        height: '100%',
-        mt: '50em'
+        bottom: 0,
+        width: '100%'
       }}
     >
-      <Box sx={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+      <Link to='/' style={{ color: '#ffffff', textDecoration: 'none' }}>
+        <Typography>© {new Date().getFullYear()} LinkedTrust</Typography>
+      </Link>
+      <Box sx={{ display: 'flex', gap: '1rem' }}>
         <Typography>
           <Link to='/terms' style={{ color: '#ffffff', textDecoration: 'none' }}>
             Terms of Service
@@ -35,11 +40,6 @@ const Footer: React.FC = () => {
             Cookie Policy
           </Link>
         </Typography>
-      </Box>
-      <Box>
-        <Link to='/' style={{ color: '#ffffff', textDecoration: 'none' }}>
-          <Typography>© {new Date().getFullYear()} LinkedTrust.</Typography>
-        </Link>
       </Box>
     </Box>
   )

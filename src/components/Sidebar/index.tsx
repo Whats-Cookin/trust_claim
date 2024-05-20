@@ -1,6 +1,6 @@
 import React from 'react'
-import { Box, Drawer, List, ListItemText, IconButton, Typography, ListItemButton, Button } from '@mui/material'
-import { Home, Explore, Create, ArrowBack, Search } from '@mui/icons-material'
+import { Drawer, List, ListItemText, ListItemButton, Button, Box, useMediaQuery, useTheme } from '@mui/material'
+import { Home, Create, Search } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 
 interface SidebarProps {
@@ -11,6 +11,8 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
   const navigate = useNavigate()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
@@ -36,34 +38,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         }
       }}
     >
-      {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 1rem' }}>
-        <Typography variant='h6'>Menu</Typography>
-        {isOpen && (
-          <IconButton onClick={toggleSidebar}>
-            <ArrowBack sx={{ color: '#fff' }} />
-          </IconButton>
-        )}
-      </Box> */}
       <List>
-        <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
+        <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
           <Home sx={{ color: '#fff' }} />
-          <ListItemText primary='Home (Feed of Claims)' />
-        </ListItemButton>
-        <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/search?query=.')}>
-          <Explore sx={{ color: '#fff' }} />
-          <ListItemText primary='Explore' />
+          <ListItemText primary='Home' />
         </ListItemButton>
         {isAuth ? (
           <>
-            <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/')}>
-              <Create sx={{ color: '#fff' }} />
-              <ListItemText primary='Create Claim' />
-            </ListItemButton>
-            <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
+            <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
               <Search sx={{ color: '#fff' }} />
               <ListItemText primary='Search' />
             </ListItemButton>
-            <ListItemButton onClick={handleLogout}>
+            <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
               <Button
                 sx={{
                   width: '100%',
@@ -80,10 +66,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
           </>
         ) : (
           <>
-            <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
+            <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
               <Button
                 sx={{
                   width: '100%',
+                  maxWidth: '16vw',
                   color: '#fff',
                   backgroundColor: 'primary.main',
                   '&:hover': {
@@ -94,10 +81,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
                 Login
               </Button>
             </ListItemButton>
-            <ListItemButton onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
+            <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
               <Button
                 sx={{
                   width: '100%',
+                  maxWidth: '16vw',
                   color: '#fff',
                   backgroundColor: 'primary.main',
                   '&:hover': {
@@ -111,6 +99,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
           </>
         )}
       </List>
+      {isAuth && (
+        <Box sx={{ p: 2, mt: 'auto', mb: 'auto' }}>
+          <Button
+            variant='contained'
+            color='primary'
+            component='button'
+            startIcon={<Create />}
+            onClick={() => navigate('/')}
+            sx={{
+              backgroundColor: '#009688',
+              borderRadius: '30px',
+              width: '100%',
+              maxwidth: isSmallScreen ? '100%' : '16vw',
+              gap: '1rem',
+              '&:hover': {
+                backgroundColor: '#00796b'
+              }
+            }}
+          >
+            Create Claim
+          </Button>
+        </Box>
+      )}
     </Drawer>
   )
 }

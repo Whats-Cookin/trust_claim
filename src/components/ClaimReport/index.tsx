@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import Link from '@mui/material/Link'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress } from '@mui/material'
 import { renderClaimInfo } from './ReenderClaimInfo'
-import { ceramic } from '../../composedb'
-import { BACKEND_BASE_URL, CERAMIC_URL } from '../../utils/settings'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const DonationReport = () => {
   const { claimId } = useParams()

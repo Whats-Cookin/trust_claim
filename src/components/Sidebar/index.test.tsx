@@ -24,7 +24,7 @@ describe('Sidebar component', () => {
       </MemoryRouter>
     )
 
-    const homeButton = screen.getByText('Home (Feed of Claims)')
+    const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
     const exploreButton = screen.getByText('Explore')
@@ -53,7 +53,7 @@ describe('Sidebar component', () => {
       </MemoryRouter>
     )
 
-    const homeButton = screen.getByText('Home (Feed of Claims)')
+    const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
     const exploreButton = screen.getByText('Explore')
