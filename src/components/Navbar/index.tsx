@@ -8,22 +8,12 @@ import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import SearchBar from '../searchbar'
 import { useMediaQuery, useTheme } from '@mui/material'
-import Sidebar from '../Sidebar'
 
-interface NavbarProps {
-  isAuth: boolean
-}
-
-const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+const Navbar: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
 
   const getPageName = () => {
     switch (location.pathname) {
@@ -50,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position='fixed' sx={{ backgroundColor: '#0a1c1d', color: '#ffffff' }}>
+      <AppBar position='fixed' sx={{ backgroundColor: '#0a1c1d', color: '#ffffff' }} elevation={0}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box
             sx={{
@@ -60,13 +50,16 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
               maxWidth: isSmallScreen ? '80vw' : '23vw'
             }}
           >
-            <IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
-              <MenuIcon />
-            </IconButton>
             <Typography
-              variant='h6'
+              variant='h4'
               component='div'
-              sx={{ color: '#009688', fontWeight: 'bold', cursor: 'pointer', maxWidth: '150px' }}
+              sx={{
+                color: '#009688',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                maxWidth: '10em',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+              }}
               onClick={() => navigate('/feed')}
             >
               Trust Claims
@@ -96,7 +89,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth }) => {
           </Toolbar>
         )}
       </AppBar>
-      <Sidebar isAuth={isAuth} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
     </Box>
   )
 }

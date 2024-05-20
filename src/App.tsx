@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
@@ -10,11 +10,12 @@ import Search from './containers/Search'
 import './App.css'
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Box from '@mui/material/Box'
-import FeedClaim from './containers/feedOfClaim/index'
+import FeedClaim from './containers/feedOfClaim'
+import ListNav from './components/ListNav'
+import RightSideComponent from './components/RightSideComponent'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
-import Footer from './components/Footer'
 import Terms from './containers/Terms'
 import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
@@ -75,50 +76,63 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {/* Render the navigation component only if the user is not on the login or register page */}
-      {!isLoginPage && !isRegisterPage && <Navbar isAuth={checkAuth()} />}
+      {!isLoginPage && !isRegisterPage && <Navbar />}
       <Box
         sx={{
-          position: 'relative',
-          backgroundColor: '#0a1c1d',
-          minHeight: '100vh',
           display: 'flex',
-          width: '100%',
-          flexDirection: 'column',
-          alignItems: 'center',
-          fontSize: 'calc(3px + 2vmin)',
-          color: 'rgb(37, 3, 3)',
-          overflow: 'hidden',
-          justifyContent: 'center',
-          paddingBottom: '5.5rem'
+          flexDirection: 'row',
+          minHeight: '100vh',
+          width: '100%'
         }}
       >
-        <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
-        <Loader open={loading} />
-        <Routes>
-          <Route path='feed' element={<FeedClaim {...commonProps} />} />
-          <Route path='report/:claimId' element={<ClaimReport />} />
-          <Route path='search' element={<Search {...commonProps} />} />
-          <Route path='/' element={<Form {...commonProps} />} />
-          <Route path='register' element={<Register {...commonProps} />} />
-          <Route path='login' element={<Login {...commonProps} />} />
-          <Route path='terms' element={<Terms />} />
-          <Route path='privacy' element={<Privacy />} />
-          <Route path='cookie' element={<Cookie />} />
-          <Route
-            path='/rate'
-            element={
-              checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
-            }
-          />
-          <Route
-            path='/validate'
-            element={
-              checkAuth() ? <Validate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
-            }
-          />
-        </Routes>
-        {!isLoginPage && !isRegisterPage && <Footer />}
+        <Box
+          sx={{
+            width: '10%',
+            bgcolor: '#0a1c1d'
+          }}
+        >
+          <ListNav />
+        </Box>
+        <Box
+          sx={{
+            width: '90%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            overflow: 'auto',
+            backgroundColor: '#0A1C1D'
+          }}
+        >
+          <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
+          <Loader open={loading} />
+          <Routes>
+            <Route path='feed' element={<FeedClaim {...commonProps} />} />
+            <Route path='report/:claimId' element={<ClaimReport />} />
+            <Route path='search' element={<Search {...commonProps} />} />
+            <Route path='/' element={<Form {...commonProps} />} />
+            <Route path='register' element={<Register {...commonProps} />} />
+            <Route path='login' element={<Login {...commonProps} />} />
+            <Route path='terms' element={<Terms />} />
+            <Route path='privacy' element={<Privacy />} />
+            <Route path='cookie' element={<Cookie />} />
+            <Route
+              path='/rate'
+              element={
+                checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+              }
+            />
+            <Route
+              path='/validate'
+              element={
+                checkAuth() ? (
+                  <Validate {...commonProps} />
+                ) : (
+                  <Navigate to='/login' replace state={{ from: location }} />
+                )
+              }
+            />
+          </Routes>
+        </Box>
       </Box>
     </ThemeProvider>
   )

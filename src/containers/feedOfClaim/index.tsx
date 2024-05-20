@@ -38,7 +38,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     axios
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, { timeout: 60000 })
       .then(res => {
-        console.log(res.data)
         setClaims(res.data)
       })
       .catch(err => console.error(err))
@@ -46,7 +45,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }, [])
 
   const handleValidation = (subject: any, id: number) => {
-    console.log(subject, 'and', id)
     navigate({
       pathname: '/validate',
       search: `?subject=${subject}/${id}`
@@ -80,11 +78,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             justifyContent: 'center',
             width: isSmallScreen ? '100%' : '50%',
             p: '0 10px',
-            background: '#0a1c1d',
             // ml: isSmallScreen ? 0 : '0px',
             mt: isSmallScreen ? '12vh' : '90px',
-            boxShadow: 20,
-            bgcolor: '#0a1c1d',
             flexDirection: 'column'
           }}
         >
