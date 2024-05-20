@@ -8,7 +8,7 @@ import IDropdownProps from './types'
 
 const Dropdown = ({ label, value, setter, options, variant, sx }: IDropdownProps) => {
   const handleChange = (event: SelectChangeEvent) => {
-    setter(event.target.value)
+    setter(event.target.value as string)
   }
 
   return (

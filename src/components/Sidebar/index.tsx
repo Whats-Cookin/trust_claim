@@ -106,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         )}
       </List>
       {isAuth && (
-        <Box sx={{ p: 2, mt: 'auto', mb: 'auto' }}>
+        <Box sx={{ p: 2, mt: 'auto', mb: '64px', display: 'flex', justifyContent: 'center' }}>
           <Button
             variant='contained'
             color='primary'
@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
               backgroundColor: '#009688',
               borderRadius: '30px',
               width: '100%',
-              maxwidth: isSmallScreen ? '100%' : '16vw',
+              maxwidth: isSmallScreen ? '16vw' : '100%',
               gap: '1rem',
               '&:hover': {
                 backgroundColor: '#00796b'
