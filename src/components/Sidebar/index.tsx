@@ -43,38 +43,40 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
           <Home sx={{ color: '#fff' }} />
           <ListItemText primary='Home' />
         </ListItemButton>
+        <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
+          <Search sx={{ color: '#fff' }} />
+          <ListItemText primary='Search' />
+        </ListItemButton>
         {isAuth ? (
-          <>
-            <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
-              <Search sx={{ color: '#fff' }} />
-              <ListItemText primary='Search' />
-            </ListItemButton>
-            <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
-              <Button
-                sx={{
-                  width: '100%',
-                  color: '#fff',
-                  backgroundColor: 'primary.main',
-                  '&:hover': {
-                    backgroundColor: '#00695f'
-                  }
-                }}
-              >
-                Logout
-              </Button>
-            </ListItemButton>
-          </>
+          <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
+            <Button
+              sx={{
+                width: '100%',
+                color: '#fff',
+                backgroundColor: 'primary.main',
+                '&:hover': {
+                  backgroundColor: '#00695f'
+                }
+              }}
+            >
+              Logout
+            </Button>
+          </ListItemButton>
         ) : (
           <>
             <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
               <Button
+                variant='contained'
+                color='primary'
+                component='button'
+                onClick={() => navigate('/')}
                 sx={{
+                  backgroundColor: '#009688',
+                  borderRadius: '30px',
                   width: '100%',
-                  maxWidth: '16vw',
-                  color: '#fff',
-                  backgroundColor: 'primary.main',
+                  maxwidth: isSmallScreen ? '100%' : '16vw',
                   '&:hover': {
-                    backgroundColor: '#00695f'
+                    backgroundColor: '#00796b'
                   }
                 }}
               >
@@ -83,13 +85,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             </ListItemButton>
             <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
               <Button
+                variant='contained'
+                color='primary'
+                component='button'
+                onClick={() => navigate('/')}
                 sx={{
+                  backgroundColor: '#009688',
+                  borderRadius: '30px',
                   width: '100%',
-                  maxWidth: '16vw',
-                  color: '#fff',
-                  backgroundColor: 'primary.main',
+                  maxwidth: isSmallScreen ? '100%' : '16vw',
                   '&:hover': {
-                    backgroundColor: '#00695f'
+                    backgroundColor: '#00796b'
                   }
                 }}
               >
