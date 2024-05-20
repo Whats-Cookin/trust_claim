@@ -14,7 +14,9 @@ const Footer: React.FC = () => {
         marginLeft: '9em',
         padding: '1rem',
         color: '#ffffff',
-        width: '100%'
+        width: '100%',
+        height: '100%',
+        mt: '50em'
       }}
     >
       <Box sx={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
@@ -34,7 +36,7 @@ const Footer: React.FC = () => {
           </Link>
         </Typography>
       </Box>
-      <Box sx={{ marginTop: '1rem' }}>
+      <Box>
         <Link to='/' style={{ color: '#ffffff', textDecoration: 'none' }}>
           <Typography>© {new Date().getFullYear()} LinkedTrust.</Typography>
         </Link>

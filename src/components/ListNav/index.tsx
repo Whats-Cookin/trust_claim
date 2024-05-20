@@ -53,7 +53,7 @@ const ListNav: React.FC = () => {
           onClick={() => navigate('/')}
           sx={{
             width: '13em',
-            mt: '15em',
+            mt: '38em',
             ml: '5em',
             borderRadius: '40px',
             backgroundColor: 'primary.main',
@@ -67,7 +67,7 @@ const ListNav: React.FC = () => {
         </ListItemButton>
       </List>
 
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? (
         <Button
           onClick={handleLogout}
           sx={{
@@ -97,7 +97,7 @@ const ListNav: React.FC = () => {
             Login
           </Button>
         </Box>
-      )}
+      )} */}
     </Box>
   )
 }
