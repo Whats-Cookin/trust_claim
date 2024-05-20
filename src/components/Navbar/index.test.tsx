@@ -14,7 +14,7 @@ describe('Navbar component', () => {
     ;(useNavigate as jest.Mock).mockReturnValue(navigate)
     ;(useLocation as jest.Mock).mockReturnValue({ search: '' })
 
-    render(<Navbar isAuth={true} />)
+    render(<Navbar />)
     const trustClaimsText = screen.getByText('Trust Claims')
     expect(trustClaimsText).toBeInTheDocument()
 
@@ -33,7 +33,7 @@ describe('Navbar component', () => {
     ;(useNavigate as jest.Mock).mockReturnValue(navigate)
     ;(useLocation as jest.Mock).mockReturnValue({ search: '' })
 
-    render(<Navbar isAuth={false} />)
+    render(<Navbar />)
 
     const trustClaimsText = screen.getAllByText(/trust claims/i)
     expect(trustClaimsText.length).toBeGreaterThan(0)
