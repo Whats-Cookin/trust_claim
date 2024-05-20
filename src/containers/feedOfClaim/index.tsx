@@ -6,7 +6,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import AssessmentIcon from '@mui/icons-material/Assessment'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { IHomeProps, Claim } from './types'
+import { IHomeProps, Claim as ImportedClaim } from './types'
 import {
   Box,
   Card,
@@ -26,18 +26,24 @@ import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
 import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 
+interface LocalClaim {
+  name: string
+  source_link: string
+}
+
 const extractProfileName = (url: string) => {
   let regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
   const match = RegExp(regex).exec(url)
   return match ? match[1].replace(/-/g, ' ') : url
 }
+
 const extractSourceName = (url: string) => {
   let regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
   const match = regex.exec(url)
   return match ? match[1].replace(/\./g, ' ') : url
 }
 
-const ClaimName = ({ claim }) => {
+const ClaimName = ({ claim }: { claim: LocalClaim }) => {
   const displayName = extractProfileName(claim.name)
 
   return (
@@ -47,7 +53,8 @@ const ClaimName = ({ claim }) => {
     </Typography>
   )
 }
-const SourceLink = ({ claim }) => {
+
+const SourceLink = ({ claim }: { claim: LocalClaim }) => {
   const displayLink = extractSourceName(claim.source_link)
 
   return (
@@ -58,7 +65,7 @@ const SourceLink = ({ claim }) => {
 }
 
 const FeedClaim: React.FC<IHomeProps> = () => {
-  const [claims, setClaims] = useState<Array<Claim>>([])
+  const [claims, setClaims] = useState<Array<ImportedClaim>>([])
   const [isAuth, setIsAuth] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
