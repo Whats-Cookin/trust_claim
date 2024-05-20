@@ -76,15 +76,14 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           sx={{
             position: 'center',
             justifyContent: 'center',
-            width: isSmallScreen ? '100%' : '50%',
+            width: isSmallScreen ? '100%' : '100%',
             p: '0 10px',
-            // ml: isSmallScreen ? 0 : '0px',
             mt: isSmallScreen ? '12vh' : '90px',
             flexDirection: 'column'
           }}
         >
           {claims.map((claim: any, index: number) => (
-            <div key={claim.id}>
+            <Box key={claim.id}>
               <Card
                 sx={{
                   maxWidth: 'fit',
@@ -100,12 +99,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
               >
                 <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                   <CardContent>
-                    <a href={claim.link} target='_blank' rel='noopener noreferrer' style={{ textDecoration: 'none' }}>
+                    <Link to={claim.link} target='_blank' rel='noopener noreferrer' style={{ textDecoration: 'none' }}>
                       <Typography variant='h6' sx={{ marginBottom: '10px' }} fontWeight={'bold'} color='#ffffff'>
                         {claim.name}
                         <OpenInNewIcon sx={{ marginLeft: '5px', color: '#ffffff', fontSize: '1rem' }} />
                       </Typography>
-                    </a>
+                    </Link>
                     <Typography variant='body2' sx={{ marginBottom: '10px', color: '#ffffff' }}>
                       {new Date(claim.effective_date).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -230,7 +229,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         color: '#009688'
                       }}
                     >
-                      <MoreVertIcon />
+                      <MoreVertIcon sx={{ fontSize: '1.5em' }} />
                     </span>
                   </IconButton>
                   <Menu
@@ -308,7 +307,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   </Menu>
                 </Box>
               </Card>
-            </div>
+            </Box>
           ))}
         </Box>
       ) : (
