@@ -67,8 +67,8 @@ const DonationReport = () => {
             <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
               Link:{' '}
             </Typography>
-            <Link href={`https://linkedtrust.us/claims/${claimId}`} sx={{ color: '#1976d2' }}>
-              https://linkedtrust.us/claims/{claimId}
+            <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: '#1976d2' }}>
+              https://live.linkedtrust.us/claims/{claimId}
             </Link>
           </Typography>
         </CardContent>
@@ -95,7 +95,7 @@ const DonationReport = () => {
         <Typography color={'white'}>No Validations found.</Typography>
       )}
       <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={'white'}>
-        Attestations:
+        Related Attestations:
       </Typography>
       {reportData.data.attestations.length > 0 ? (
         <Grid container spacing={2}>
@@ -111,7 +111,7 @@ const DonationReport = () => {
           ))}
         </Grid>
       ) : (
-        <Typography color={'white'}>No attestaions found.</Typography>
+        <Typography color={'white'}>No independent related attestations found.</Typography>
       )}
     </Container>
   )

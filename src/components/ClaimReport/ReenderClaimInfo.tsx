@@ -73,7 +73,7 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
       {/* Render other claim information */}
       {otherEntries.map(([key, value]) => {
         // Handle date formatting
-
+        const refLink = value ? value.toString().startsWith("http") ? value.toString() : CERAMIC_URL + 'api/v0/streams/' + value.toString() : ''
         return (
           value && (
             <Typography key={key} variant='body1'>
@@ -83,11 +83,11 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
                     {formatClaimKey(key)}:{' '}
                   </Typography>
                   <Link
-                    href={key.split('/').includes('http') ? value.toString() : CERAMIC_URL + 'api/v0/streams/' + value}
+                    href={refLink}
                     style={{ color: '#1976d2' }}
                     target='_blank'
                   >
-                    here
+                   {refLink} 
                   </Link>
                 </>
               ) : (
