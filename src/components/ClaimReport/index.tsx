@@ -53,7 +53,7 @@ const DonationReport = () => {
 
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-      <Typography variant='h4' gutterBottom>
+      <Typography variant='h4' gutterBottom color={'white'}>
         Report for{' '}
         <Typography variant='inherit' component='span' color='primary.main'>
           {reportData.data.claim.subject}
@@ -74,7 +74,7 @@ const DonationReport = () => {
         </CardContent>
       </Card>
       {/* Placeholder for additional data section */}
-      <Typography variant='h6' gutterBottom sx={{ mt: 4 }}>
+      <Typography variant='h6' gutterBottom sx={{ mt: 4 }} color={'white'}>
         Validations:
       </Typography>
       {/* Customize this section with additional information as needed */}
@@ -83,7 +83,7 @@ const DonationReport = () => {
           {reportData.data.validations.map((attestation: any, index: number) => (
             <Grid item xs={12} key={index}>
               <Card>
-                <CardContent>
+                <CardContent color={'white'}>
                   {/* Display Attestation Information */}
                   {renderClaimInfo(attestation)}
                 </CardContent>
@@ -92,9 +92,9 @@ const DonationReport = () => {
           ))}
         </Grid>
       ) : (
-        <Typography>No Validations found.</Typography>
+        <Typography color={'white'}>No Validations found.</Typography>
       )}
-      <Typography variant='h6' gutterBottom sx={{ mt: 2 }}>
+      <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={'white'}>
         Attestations:
       </Typography>
       {reportData.data.attestations.length > 0 ? (
@@ -102,7 +102,7 @@ const DonationReport = () => {
           {reportData.data.attestations.map((attestation: any, index: number) => (
             <Grid item xs={12} key={index}>
               <Card>
-                <CardContent>
+                <CardContent color={'white'}>
                   {/* Display Attestation Information */}
                   {renderClaimInfo(attestation)}
                 </CardContent>
@@ -111,7 +111,7 @@ const DonationReport = () => {
           ))}
         </Grid>
       ) : (
-        <Typography>No attestaions found.</Typography>
+        <Typography color={'white'}>No attestaions found.</Typography>
       )}
     </Container>
   )

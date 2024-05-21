@@ -8,18 +8,23 @@ import Register from './containers/Register'
 import Form from './containers/Form'
 import Search from './containers/Search'
 import './App.css'
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { CssBaseline, ThemeProvider, createTheme, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
+import Footer from './components/Footer'
+import Terms from './containers/Terms'
+import Cookie from './containers/Cookie'
+import Privacy from './containers/Privacy'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [metaNav, setMetaNav] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -36,6 +41,15 @@ const App = () => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
       navigate('/feed')
+    }
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
 
@@ -67,31 +81,54 @@ const App = () => {
       }
     }
   })
+  const globalStyles = (
+    <GlobalStyles
+      styles={{
+        '::-webkit-scrollbar': {
+          width: '0',
+          height: '0'
+        },
+        body: {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none'
+        }
+      }}
+    />
+  )
+
+  const showFooter = location.pathname !== '/feed' || windowWidth < 800
 
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {/* Render the navigation component only if the user is not on the login or register page */}
-        <Navbar isAuth={checkAuth()} />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {globalStyles}
 
+      {!isLoginPage && !isRegisterPage && <Navbar isAuth={checkAuth()} />}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          backgroundColor: '#0a1c1d',
+          width: '100%',
+          fontSize: 'calc(3px + 2vmin)',
+          color: 'rgb(37, 3, 3)',
+          overflow: 'hidden'
+        }}
+      >
+        <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
+        <Loader open={loading} />
         <Box
           sx={{
-            position: 'relative',
-            backgroundColor: '#eeeeee',
-            minHeight: '100vh',
+            flex: 1,
             display: 'flex',
-            width: '100%',
             flexDirection: 'column',
             alignItems: 'center',
-            fontSize: 'calc(3px + 2vmin)',
-            color: 'rgb(37, 3, 3)',
-            overflow: 'hidden',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            width: '100%',
+            paddingBottom: '5.5rem'
           }}
         >
-          <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
-          <Loader open={loading} />
           <Routes>
             <Route path='feed' element={<FeedClaim {...commonProps} />} />
             <Route path='report/:claimId' element={<ClaimReport />} />
@@ -99,6 +136,9 @@ const App = () => {
             <Route path='/' element={<Form {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
+            <Route path='terms' element={<Terms />} />
+            <Route path='privacy' element={<Privacy />} />
+            <Route path='cookie' element={<Cookie />} />
             <Route
               path='/rate'
               element={
@@ -117,8 +157,9 @@ const App = () => {
             />
           </Routes>
         </Box>
-      </ThemeProvider>
-    </>
+        {showFooter && <Footer />}
+      </Box>
+    </ThemeProvider>
   )
 }
 
