@@ -26,6 +26,8 @@ import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
 import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 
+const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
+
 interface LocalClaim {
   name: string
   source_link: string
@@ -97,7 +99,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     console.log(subject, 'and', id)
     navigate({
       pathname: '/validate',
-      search: `?subject=${subject}/${id}`
+      search: `?subject=${CLAIM_ROOT_URL}/${id}`
     })
   }
 
