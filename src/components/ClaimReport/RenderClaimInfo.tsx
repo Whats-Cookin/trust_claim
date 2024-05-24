@@ -1,4 +1,4 @@
-import { Chip, Typography, Box, Link, Avatar } from '@mui/material'
+import { Chip, Typography, Box, Link } from '@mui/material'
 import { CERAMIC_URL } from '../../utils/settings'
 
 // Helper functions for rendering claim and attestation info
@@ -49,7 +49,16 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
         }}
       >
         {/* Render the image */}
-        <Avatar src={`${claim.image && claim.image}`}></Avatar>
+        {claim.image && (
+          <img src={claim.image}
+               style={{
+                 width: '4rem',
+                 height: '4rem',
+                 objectFit: 'contain',
+                 aspectRatio: '1/1'
+               }}
+               alt='claim image' />
+        )}
 
         {/* Render chips in a row at the top */}
         <Box
