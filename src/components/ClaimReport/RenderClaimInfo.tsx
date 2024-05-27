@@ -69,8 +69,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             src={claim.image}
             style={{
               width: '100%',
-              objectFit: 'cover',
-              aspectRatio: '1/1'
+              maxHeight: '100%'
             }}
             alt='claim image'
           />
