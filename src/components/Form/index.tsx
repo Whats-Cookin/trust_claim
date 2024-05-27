@@ -409,7 +409,7 @@ export const Form = ({
                       />
                     </FormControl>
                   </>
-                ) : watchClaim === 'related' ? (
+                ) : watchClaim === 'related_to' ? (
                   <>
                     <Tooltip title='What entity is the subject related to?' placement='right' arrow>
                       <TextField
