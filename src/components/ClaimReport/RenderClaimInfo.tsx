@@ -12,7 +12,8 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
     'createdAt',
     'lastUpdatedAt',
     'claim_id',
-    'thumbnail'
+    'thumbnail',
+    'image',
   ]
   const chipKeys = [
     'aspect',
@@ -33,41 +34,68 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
 
   return (
     <>
-      {/* Render chips in a row at the top */}
       <Box
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
-          mb: 1
+          alignItems: {
+            xs: 'center',
+            md: 'flex-start'
+          },
+          flexDirection: {
+            xs: 'column',
+            md: 'row',
+          },
+          gap: 2,
         }}
       >
-        {chipEntries.map(([key, value]) => {
-          if (key === 'effectiveDate' && value) {
-            value = new Date(value).toLocaleDateString()
-          } else if (key === 'amt' && value) {
-            value = `$${value}`
-          } else if (key == 'aspect' && value) {
-            //"impact:educational" => "Impact: Educational"
-            value = value
-              .split(':')
-              .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-              .join(':')
-          }
-          return (
-            value && (
-              <Chip
-                key={key}
-                label={`${formatClaimKey(key)}: ${value}`}
-                color='primary'
-                sx={{
-                  backgroundColor: '#008a7cdc',
-                  color: 'white',
-                  m: '0.2rem 0.2rem 0.2rem 0.2rem'
-                }}
-              />
+        {/* Render the image */}
+        {claim.image && (
+          <img src={claim.image}
+               style={{
+                 width: '4rem',
+                 height: '4rem',
+                 objectFit: 'contain',
+                 aspectRatio: '1/1'
+               }}
+               alt='claim image' />
+        )}
+
+        {/* Render chips in a row at the top */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            mb: 1
+          }}
+        >
+          {chipEntries.map(([key, value]) => {
+            if (key === 'effectiveDate' && value) {
+              value = new Date(value).toLocaleDateString()
+            } else if (key === 'amt' && value) {
+              value = `$${value}`
+            } else if (key == 'aspect' && value) {
+              //"impact:educational" => "Impact: Educational"
+              value = value
+                .split(':')
+                .map(s => s.charAt(0).toUpperCase() + s.slice(1))
+                .join(':')
+            }
+            return (
+              value && (
+                <Chip
+                  key={key}
+                  label={`${formatClaimKey(key)}: ${value}`}
+                  color='primary'
+                  sx={{
+                    backgroundColor: '#008a7cdc',
+                    color: 'white',
+                    m: '0.2rem 0.2rem 0.2rem 0.2rem'
+                  }}
+                />
+              )
             )
-          )
-        })}
+          })}
+        </Box>
       </Box>
 
       {/* Render other claim information */}
@@ -87,7 +115,7 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
                     style={{ color: '#1976d2' }}
                     target='_blank'
                   >
-                   {refLink} 
+                   {refLink}
                   </Link>
                 </>
               ) : (
