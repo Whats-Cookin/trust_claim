@@ -3,20 +3,20 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import Link from '@mui/material/Link'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress } from '@mui/material'
-import { renderClaimInfo } from './RenderClaimInfo'
-import { ceramic } from '../../composedb'
-import { BACKEND_BASE_URL, CERAMIC_URL } from '../../utils/settings'
+import RenderClaimInfo from './RenderClaimInfo'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const DonationReport = () => {
   const { claimId } = useParams()
   const [reportData, setReportData] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   const url = BACKEND_BASE_URL + '/api/report/' + claimId
 
   useEffect(() => {
     const fetchReportData = async () => {
+      setIsLoading(true)
       try {
         const response = await axios.get(url)
         setReportData(response.data)
@@ -62,7 +62,7 @@ const DonationReport = () => {
       <Card sx={{ mb: 2, border: 'solid 2px #008a7cdc' }}>
         <CardContent>
           {/* Display Claim Information */}
-          <>{renderClaimInfo(reportData.data.claim)}</>
+          <RenderClaimInfo claim={reportData.data.claim} />
           <Typography variant='body1'>
             <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
               Link:{' '}
@@ -85,7 +85,7 @@ const DonationReport = () => {
               <Card>
                 <CardContent color={'white'}>
                   {/* Display Attestation Information */}
-                  {renderClaimInfo(attestation)}
+                  <RenderClaimInfo claim={attestation} />
                 </CardContent>
               </Card>
             </Grid>
@@ -104,7 +104,7 @@ const DonationReport = () => {
               <Card>
                 <CardContent color={'white'}>
                   {/* Display Attestation Information */}
-                  {renderClaimInfo(attestation)}
+                  <RenderClaimInfo claim={attestation} />
                 </CardContent>
               </Card>
             </Grid>

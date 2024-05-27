@@ -1,8 +1,9 @@
-import { Chip, Typography, Box, Link } from '@mui/material'
+import { Chip, Typography, Box, Link, Dialog } from '@mui/material'
 import { CERAMIC_URL } from '../../utils/settings'
+import React, { useState } from 'react'
+import { Close } from '@mui/icons-material'
 
-// Helper functions for rendering claim and attestation info
-export const renderClaimInfo = (claim: { [ky: string]: string }) => {
+const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
   const excludedKeys = [
     'id',
     'issuerId',
@@ -13,7 +14,7 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
     'lastUpdatedAt',
     'claim_id',
     'thumbnail',
-    'image',
+    'image'
   ]
   const chipKeys = [
     'aspect',
@@ -27,6 +28,7 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
     'name'
   ] // Keys to display as chips
   const claimEntries = Object.entries(claim).filter(([key]) => !excludedKeys.includes(key))
+  const [openD, setOpenD] = useState(false)
 
   // Separate the entries into chips and others for different rendering strategies
   const chipEntries = claimEntries.filter(([key]) => chipKeys.includes(key))
@@ -34,6 +36,45 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
 
   return (
     <>
+      {/* Render the image */}
+      {claim.image && (
+        <img
+          src={claim.image}
+          style={{
+            width: '200px',
+            maxHeight: '300px',
+            cursor: 'pointer'
+          }}
+          onClick={() => setOpenD(true)}
+          alt='claim image'
+        />
+      )}
+      {openD && (
+        <Dialog open={openD} onClose={() => setOpenD(false)}>
+          <Close
+            sx={{
+              position: 'absolute',
+              top: '0px',
+              right: '0px',
+              cursor: 'pointer',
+              color: 'white',
+              backgroundColor: '#333',
+              borderRadius: '50%',
+              padding: '0.2rem',
+              margin: '0.2rem'
+            }}
+            onClick={() => setOpenD(false)}
+          />
+          <img
+            src={claim.image}
+            style={{
+              width: '100%',
+              maxHeight: '100%'
+            }}
+            alt='claim image'
+          />
+        </Dialog>
+      )}
       <Box
         sx={{
           display: 'flex',
@@ -43,23 +84,11 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
           },
           flexDirection: {
             xs: 'column',
-            md: 'row',
+            md: 'row'
           },
-          gap: 2,
+          gap: 2
         }}
       >
-        {/* Render the image */}
-        {claim.image && (
-          <img src={claim.image}
-               style={{
-                 width: '4rem',
-                 height: '4rem',
-                 objectFit: 'contain',
-                 aspectRatio: '1/1'
-               }}
-               alt='claim image' />
-        )}
-
         {/* Render chips in a row at the top */}
         <Box
           sx={{
@@ -73,7 +102,7 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
               value = new Date(value).toLocaleDateString()
             } else if (key === 'amt' && value) {
               value = `$${value}`
-            } else if (key == 'aspect' && value) {
+            } else if (key === 'aspect' && value) {
               //"impact:educational" => "Impact: Educational"
               value = value
                 .split(':')
@@ -101,7 +130,11 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
       {/* Render other claim information */}
       {otherEntries.map(([key, value]) => {
         // Handle date formatting
-        const refLink = value ? value.toString().startsWith("http") ? value.toString() : CERAMIC_URL + 'api/v0/streams/' + value.toString() : ''
+        const refLink = value
+          ? value.toString().startsWith('http')
+            ? value.toString()
+            : CERAMIC_URL + 'api/v0/streams/' + value.toString()
+          : ''
         return (
           value && (
             <Typography key={key} variant='body1'>
@@ -110,12 +143,8 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
                   <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
                     {formatClaimKey(key)}:{' '}
                   </Typography>
-                  <Link
-                    href={refLink}
-                    style={{ color: '#1976d2' }}
-                    target='_blank'
-                  >
-                   {refLink}
+                  <Link href={refLink} style={{ color: '#1976d2' }} target='_blank'>
+                    {refLink}
                   </Link>
                 </>
               ) : (
@@ -134,13 +163,15 @@ export const renderClaimInfo = (claim: { [ky: string]: string }) => {
   )
 }
 
+export default RenderClaimInfo
+
 // Helper function to format claim keys into readable text
-export const formatClaimKey = (key: string) => {
-  if (key == 'effective_date') {
+const formatClaimKey = (key: string) => {
+  if (key === 'effective_date') {
     return 'Date'
-  } else if (key == 'sourceURI') {
+  } else if (key === 'sourceURI') {
     return 'From'
-  } else if (key == 'amt') {
+  } else if (key === 'amt') {
     return 'Amount'
   }
   return key.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
