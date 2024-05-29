@@ -1,6 +1,6 @@
 const styles = {
   container: {
-    backgroundColor: 'white'
+    backgroundColor: '#1E1E1E'
   },
   cy: {
     width: '100vw',

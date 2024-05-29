@@ -109,31 +109,43 @@ const getNodeData = (node: any) => {
     label = ''
   }
 
+  const calculatedWidth = label.length < 17 ? 72 : 'label'
+
   const nodeData: NodeData = {
     data: {
       id: node.id.toString(),
-      label: label,
-      raw: node
-    }
-  }
-  if (node.entType === 'CLAIM') {
-    nodeData.style = {
-      shape: 'square'
-    }
-  } else {
-    nodeData.style = {
-      shape: 'circle'
+      label: label.substring(0, 42),
+      raw: undefined
+    },
+    style: {
+      shape: 'round-rectangle',
+      'background-color': '#3E5348',
+      width: calculatedWidth,
+      height: 72,
+      color: '#ecf0f1',
+      'font-weight': 'bold',
+      'text-halign': 'center',
+      'text-valign': 'center',
+      'text-wrap': 'wrap',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      'padding-bottom': '10px',
+      'border-width': '2px',
+      'border-color': '#3E5348'
     }
   }
 
   if (node.image) {
     nodeData.style = {
+      ...nodeData.style,
       'background-image': [node.image.replace(/\?.+$/, '')],
       'background-fit': 'cover cover',
       'background-image-opacity': 1.0
     }
   } else if (node.thumbnail) {
     nodeData.style = {
+      ...nodeData.style,
       'background-image': [node.thumbnail.replace(/\?.+$/, '')],
       'background-fit': 'cover cover',
       'background-image-opacity': 0.4
