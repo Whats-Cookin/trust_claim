@@ -25,6 +25,7 @@ import Loader from '../../components/Loader'
 import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
 import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import OverlayModal from '../../components/OverLayModal/OverlayModal' // Import the modal component
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -123,6 +124,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   return (
     <>
+      <OverlayModal />
       {claims && claims.length > 0 ? (
         <Box
           sx={{
@@ -135,7 +137,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           }}
         >
           {!isMediumScreen && <AlwaysOpenSidebar isAuth={isAuth} />}
-          {claims.map((claim: any, index: number) => (
+          {claims.map((claim: any) => (
             <Box key={claim.id}>
               <Card
                 sx={{
@@ -145,8 +147,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   borderRadius: '20px',
                   display: 'flex',
                   flexDirection: isSmallScreen ? 'column' : 'row',
-                  backgroundColor: selectedIndex === index ? '#2d3838' : '#172d2d',
-                  filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
+                  backgroundColor: selectedIndex === claim.id ? '#2d3838' : '#172d2d',
+                  filter: selectedIndex === claim.id ? 'blur(0.8px)' : 'none',
                   color: '#ffffff'
                 }}
               >
@@ -269,7 +271,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                       color: '#ffffff',
                       cursor: 'pointer'
                     }}
-                    onClick={event => handleMenuClick(event, index)}
+                    onClick={event => handleMenuClick(event, claim.id)}
                   >
                     <span
                       style={{
@@ -285,7 +287,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   </IconButton>
                   <Menu
                     anchorEl={anchorEl}
-                    open={Boolean(anchorEl && selectedIndex === index)}
+                    open={Boolean(anchorEl && selectedIndex === claim.id)}
                     onClose={handleClose}
                     anchorOrigin={{
                       vertical: 'top',
