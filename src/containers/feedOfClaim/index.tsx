@@ -134,7 +134,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             flexDirection: 'column'
           }}
         >
-          {!isMediumScreen && <AlwaysOpenSidebar isAuth={isAuth} />}
+          {!isMediumScreen && <AlwaysOpenSidebar />}
           {claims.map((claim: any, index: number) => (
             <Box key={claim.id}>
               <Card
