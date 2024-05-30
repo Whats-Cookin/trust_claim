@@ -46,7 +46,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             cursor: 'pointer'
           }}
           onClick={() => setOpenD(true)}
-          alt='claim image'
+          alt='claim'
         />
       )}
       {openD && (
@@ -71,7 +71,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               width: '100%',
               maxHeight: '100%'
             }}
-            alt='claim image'
+            alt='claim'
           />
         </Dialog>
       )}

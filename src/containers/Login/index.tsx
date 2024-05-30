@@ -14,8 +14,7 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme } from '@mui/material'
-import { TextField } from '@mui/material'
+import { useTheme, TextField } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -29,9 +28,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     handleSubmit,
     formState: { errors }
   } = useForm()
-
-  const loginButton = document.getElementById('loginButton')
-  const metamaskLink = document.getElementById('metamaskLink')
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
     console.log('in handle auth, You have a token: ' + accessToken)

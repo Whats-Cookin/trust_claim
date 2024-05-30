@@ -20,7 +20,7 @@ export function useCreateClaim() {
       if (!ceramic.did) {
         try {
           const session = await authenticateCeramic(ceramic, composeClient)
-          console.log(`Session: ${session}`)
+          console.log(`Session: ${JSON.stringify(session)}`)
         } catch (error) {
           console.log(`Error authenticating ceramic instance: Error message: ${error}`)
         }

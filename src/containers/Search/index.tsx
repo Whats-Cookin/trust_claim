@@ -25,13 +25,17 @@ const Search = (homeProps: IHomeProps) => {
   const isArange = useMediaQuery('(min-width:700px) and (max-width:800px)')
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const special = useMediaQuery('(width:540px)')
-
+  const getPadding = () => {
+    if (isSmallScreen) {
+      return special ? 90 : 10
+    }
+    return 70
+  }
   const runCy = () => {
     if (!cy) return
     cy.layout({
       name: 'circle',
-      // name: 'breadthfirst',
-      padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
+      padding: isArange ? 110 : getPadding(),
       animate: true,
       animationDuration: 1000
     }).run()

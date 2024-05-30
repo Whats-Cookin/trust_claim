@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import Modal from './index'
-import { describe, vi, test, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 
 describe('Modal component', () => {
   // Redefine the function

@@ -6,18 +6,15 @@ import IRegisterProps from './types'
 import styles from './styles'
 import { TextField, Box, Button } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
-import { useTheme } from '@mui/material'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm()
 
   const navigate = useNavigate()
-  const theme = useTheme()
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     try {

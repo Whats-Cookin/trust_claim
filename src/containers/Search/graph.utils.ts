@@ -1,5 +1,5 @@
 const isValidUrl = (urlString: string) => {
-  var inputElement = document.createElement('input')
+  let inputElement = document.createElement('input')
   inputElement.type = 'url'
   inputElement.value = urlString
 

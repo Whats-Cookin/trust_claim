@@ -41,7 +41,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
-  const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'FIRST_HAND'
+  const howknown = (queryParams.get('how_known') ?? '').replace(/_/g, ' ') || 'FIRST_HAND'
   console.log('how known: ' + howknown)
   const toggleExpansion = () => {
     setExpanded(!expanded)
@@ -54,7 +54,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   if (subject) {
     const parts = subject.split('/')
-    var number = parts[parts.length - 1] || undefined
+    let number = parts[parts.length - 1] || undefined
   }
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        var res = await axios.get(`/api/claim/${number}`)
+        let res = await axios.get(`/api/claim/${Number}`)
         console.log(res.data)
         setSubjectValue(res.data.subject)
         setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
@@ -90,20 +90,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     }
 
     fetchData()
-  }, [number])
+  }, [Number])
 
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    watch,
-    control,
-    setValue
-  } = useForm({
+  const { register, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
       subject: subject as string,
       statement: '' as string,
@@ -275,9 +267,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </Typography>
                   <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
                     {expanded ? (
-                      <>
-                        <ExpandLessIcon />
-                      </>
+                      <ExpandLessIcon />
                     ) : (
                       <Box style={{ display: 'flex', alignItems: 'center' }}>
                         <ExpandMoreIcon />
