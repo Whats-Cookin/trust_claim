@@ -58,7 +58,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               right: '0px',
               cursor: 'pointer',
               color: 'white',
-              backgroundColor: '#333',
+              backgroundColor: '#333333',
               borderRadius: '50%',
               padding: '0.2rem',
               margin: '0.2rem'
@@ -116,7 +116,6 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                   label={`${formatClaimKey(key)}: ${value}`}
                   color='primary'
                   sx={{
-                    backgroundColor: '#008a7cdc',
                     color: 'white',
                     m: '0.2rem 0.2rem 0.2rem 0.2rem'
                   }}

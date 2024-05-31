@@ -28,8 +28,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
       style={{
         width: '25vw',
         height: '100vh',
-        backgroundColor: '#0A1C1D',
-        color: '#fff',
+        backgroundColor: '#0a1c1d',
+        color: '#ffffff',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -42,21 +42,21 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
     >
       <List sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
         <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={() => navigate('/feed')}>
-          <Home sx={{ color: '#fff' }} />
+          <Home sx={{ color: '#ffffff' }} />
           <ListItemText primary='Home' />
         </ListItemButton>
         <ListItemButton
           sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }}
           onClick={() => navigate('/search')}
         >
-          <Search sx={{ color: '#fff' }} />
+          <Search sx={{ color: '#ffffff' }} />
           <ListItemText primary='Search' />
         </ListItemButton>
         {isAuth ? (
           <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={handleLogout}>
             <Button
               sx={{
-                color: '#fff',
+                color: '#ffffff',
                 width: '100%',
                 maxWidth: '16vw',
                 backgroundColor: 'primary.main',
@@ -76,7 +76,7 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
             >
               <Button
                 sx={{
-                  color: '#fff',
+                  color: '#ffffff',
                   width: '100%',
                   maxWidth: '16vw',
                   backgroundColor: 'primary.main',
@@ -94,7 +94,7 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
             >
               <Button
                 sx={{
-                  color: '#fff',
+                  color: '#ffffff',
                   width: '100%',
                   maxWidth: '16vw',
                   backgroundColor: 'primary.main',

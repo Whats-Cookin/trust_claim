@@ -68,7 +68,7 @@ const App = () => {
         main: '#009688'
       },
       secondary: {
-        main: '#FFFFFF'
+        main: '#ffffff'
       }
     },
     breakpoints: {

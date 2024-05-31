@@ -38,7 +38,7 @@ const SearchBar = () => {
         width: '100%',
         maxWidth: isSmallScreen ? '80vw' : '23vw',
         borderRadius: '50px',
-        backgroundColor: '#2b4745',
+        backgroundColor: '#2b4746',
         padding: '0 8px',
         boxShadow: 'none'
       }}
@@ -52,10 +52,15 @@ const SearchBar = () => {
         sx={{
           ml: 1,
           flex: 1,
-          color: '#DFDFDF'
+          color: '#ffffff',
+          fontWeight: '600',
+          fontSize: '14px',
+          fontFamily: 'Roboto',
+          lineHeight: '16.41px'
         }}
       />
-      <IconButton type='button' sx={{ p: '10px', color: '#DFDFDF' }} aria-label='search' onClick={handleSearch}>
+
+      <IconButton type='button' sx={{ p: '10px', color: '#ffffff' }} aria-label='search' onClick={handleSearch}>
         <SearchIcon />
       </IconButton>
     </Paper>

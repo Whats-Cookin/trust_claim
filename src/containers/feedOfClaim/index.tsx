@@ -145,7 +145,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   borderRadius: '20px',
                   display: 'flex',
                   flexDirection: isSmallScreen ? 'column' : 'row',
-                  backgroundColor: selectedIndex === index ? '#2d3838' : '#172d2d',
+                  backgroundColor: selectedIndex === index ? '#43434380' : '#172d2d',
                   filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
                   color: '#ffffff'
                 }}

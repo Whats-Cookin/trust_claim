@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
         textAlign: 'center',
         alignItems: 'center',
         gap: '1rem',
-        backgroundColor: '#1a1a1a00',
+        backgroundColor: '#1a1a1a',
         color: '#ffffff',
         bottom: 0,
         width: '100%'

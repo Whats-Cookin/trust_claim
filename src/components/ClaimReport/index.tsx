@@ -59,7 +59,7 @@ const DonationReport = () => {
           {reportData.data.claim.subject}
         </Typography>
       </Typography>
-      <Card sx={{ mb: 2, border: 'solid 2px #008a7cdc' }}>
+      <Card sx={{ mb: 2 }}>
         <CardContent>
           {/* Display Claim Information */}
           <RenderClaimInfo claim={reportData.data.claim} />

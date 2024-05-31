@@ -11,7 +11,7 @@ const FeedFooter: React.FC = () => {
         position: 'fixed',
         right: 0,
         bottom: 0,
-        backgroundColor: '#0A1C1D00',
+        backgroundColor: '#0a1c1d',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
