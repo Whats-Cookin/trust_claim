@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import Link from '@mui/material/Link'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
@@ -34,7 +35,12 @@ const DonationReport = () => {
     return (
       <Container
         maxWidth='sm'
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
       >
         <CircularProgress />
       </Container>
@@ -53,36 +59,34 @@ const DonationReport = () => {
 
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-      <Typography variant='h4' gutterBottom color={'white'}>
-        Report for{' '}
-        <Typography variant='inherit' component='span' color='primary.main'>
-          {reportData.data.claim.subject}
-        </Typography>
+      <Typography
+        variant='h6'
+        gutterBottom
+        color={'white'}
+        style={{
+          textAlign: 'center',
+          fontWeight: 600,
+          borderBottom: '3px solid #008a7cdc',
+          marginInline: 'auto',
+          width: 'fit-content',
+          marginBottom: '2rem'
+        }}
+      >
+        Report
       </Typography>
-      <Card sx={{ mb: 2, border: 'solid 2px #008a7cdc' }}>
+      <Card sx={{ mb: 2 }} style={{ backgroundColor: '#4C726F33' }}>
         <CardContent>
-          {/* Display Claim Information */}
           <RenderClaimInfo claim={reportData.data.claim} />
-          <Typography variant='body1'>
-            <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
-              Link:{' '}
-            </Typography>
-            <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: '#1976d2' }}>
-              https://live.linkedtrust.us/claims/{claimId}
-            </Link>
-          </Typography>
         </CardContent>
       </Card>
       {/* Placeholder for additional data section */}
-      <Typography variant='h6' gutterBottom sx={{ mt: 4 }} color={'white'}>
-        Validations:
-      </Typography>
+      <Ribbon>Validations</Ribbon>
       {/* Customize this section with additional information as needed */}
       {reportData.data.validations.length > 0 ? (
         <Grid container spacing={2}>
           {reportData.data.validations.map((attestation: any, index: number) => (
             <Grid item xs={12} key={index}>
-              <Card>
+              <Card style={{ backgroundColor: '#4C726F33' }}>
                 <CardContent color={'white'}>
                   {/* Display Attestation Information */}
                   <RenderClaimInfo claim={attestation} />
@@ -94,14 +98,12 @@ const DonationReport = () => {
       ) : (
         <Typography color={'white'}>No Validations found.</Typography>
       )}
-      <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={'white'}>
-        Related Attestations:
-      </Typography>
+      <Ribbon>Related Attestations</Ribbon>
       {reportData.data.attestations.length > 0 ? (
         <Grid container spacing={2}>
           {reportData.data.attestations.map((attestation: any, index: number) => (
             <Grid item xs={12} key={index}>
-              <Card>
+              <Card style={{ backgroundColor: '#4C726F33' }}>
                 <CardContent color={'white'}>
                   {/* Display Attestation Information */}
                   <RenderClaimInfo claim={attestation} />
@@ -117,3 +119,33 @@ const DonationReport = () => {
   )
 }
 export default DonationReport
+
+const Ribbon = styled(Box)(() => ({
+  position: 'relative',
+  display: 'block',
+  backgroundColor: '#57726e',
+  width: 'fit-content',
+  marginInline: 'auto',
+  marginBlock: '2rem',
+  color: 'white',
+  padding: '0.3rem 2rem',
+  textAlign: 'center',
+  fontSize: '1rem',
+  fontWeight: 'bold',
+  '&::before, &::after': {
+    content: '""',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    border: '1rem solid transparent',
+    zIndex: 1
+  },
+  '&::before': {
+    right: 0,
+    borderRightColor: '#0a1c1d'
+  },
+  '&::after': {
+    left: 0,
+    borderLeftColor: '#0a1c1d'
+  }
+}))

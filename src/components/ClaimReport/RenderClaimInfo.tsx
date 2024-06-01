@@ -1,7 +1,13 @@
-import { Chip, Typography, Box, Link, Dialog } from '@mui/material'
-import { CERAMIC_URL } from '../../utils/settings'
 import React, { useState } from 'react'
+import { Typography, Box, Link, Dialog, Rating } from '@mui/material'
 import { Close } from '@mui/icons-material'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+
+import { CERAMIC_URL } from '../../utils/settings'
 
 const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
   const excludedKeys = [
@@ -25,31 +31,224 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
     'effectiveDate',
     'effective_date',
     'link',
-    'name'
+    'name',
+    'stars'
   ] // Keys to display as chips
   const claimEntries = Object.entries(claim).filter(([key]) => !excludedKeys.includes(key))
   const [openD, setOpenD] = useState(false)
 
+  // Options for the claim menu
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  const options = [
+    {
+      label: 'From',
+      value: claim.author || 'Not provided',
+      sourceURI: claim.sourceURI || 'Not provided'
+    },
+    { label: 'How Known', value: claim.howKnown || 'Not provided' },
+    { label: 'Aspect', value: claim.claim || 'Not provided' },
+    { label: 'Confidence', value: claim.confidence || 'Not provided' },
+    { label: 'Link', value: claim.subject || 'Not provided' }
+  ]
+
   // Separate the entries into chips and others for different rendering strategies
-  const chipEntries = claimEntries.filter(([key]) => chipKeys.includes(key))
+  // const chipEntries = claimEntries.filter(([key]) => chipKeys.includes(key))
   const otherEntries = claimEntries.filter(([key]) => !chipKeys.includes(key))
 
   return (
     <>
-      {/* Render the image */}
-      {claim.image && (
-        <img
-          src={claim.image}
-          style={{
-            width: '200px',
-            maxHeight: '300px',
-            cursor: 'pointer'
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: {
+            xs: 'column',
+            sm: 'row'
+          }
+        }}
+      >
+        {/* Render the image */}
+        <Box
+          sx={{
+            marginInline: {
+              xs: 'auto',
+              sm: 0
+            }
           }}
-          onClick={() => setOpenD(true)}
-          alt='claim image'
-        />
-      )}
-      {openD && (
+        >
+          <img
+            src={
+              claim.image
+                ? claim.image
+                : 'https://conference.nbasbl.org/wp-content/uploads/2022/05/placeholder-image-1.png'
+            }
+            style={{
+              width: '60px',
+              height: '60px',
+              cursor: 'pointer',
+              borderRadius: '50%'
+            }}
+            onClick={() => setOpenD(true)}
+            alt='claim image'
+          />
+        </Box>
+
+        {/* Render other claim information */}
+        <Box style={{ paddingInline: '10px' }}>
+          {claim.subject && (
+            <Link
+              href={claim.subject}
+              target='_blank'
+              style={{
+                color: 'white',
+                flexGrow: 1,
+                fontSize: 24,
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none'
+              }}
+            >
+              {claim.subject} {/* TODO: Claim Title */}
+              <OpenInNewIcon
+                sx={{
+                  marginLeft: '5px',
+                  color: '#ffffff',
+                  fontSize: '1.5rem'
+                }}
+              />
+            </Link>
+          )}
+
+          <Typography
+            variant='body1'
+            sx={{
+              color: 'white',
+              fontWeight: 500,
+              marginBottom: '1rem'
+            }}
+          >
+            {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </Typography>
+          {otherEntries.map(([key, value]) => {
+            // Handle date formatting
+            const refLink = value
+              ? value.toString().startsWith('http')
+                ? value.toString()
+                : CERAMIC_URL + 'api/v0/streams/' + value.toString()
+              : ''
+            return (
+              value && (
+                <Typography key={key} variant='body1'>
+                  <Typography
+                    variant='inherit'
+                    component='span'
+                    sx={{
+                      color: 'white',
+                      fontWeight: 600
+                    }}
+                  >
+                    {value}
+                  </Typography>
+                </Typography>
+              )
+            )
+          })}
+
+          {/* Render Rating */}
+          {claim.stars && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                marginTop: '1rem'
+              }}
+            >
+              <Rating name='size-medium' defaultValue={parseInt(claim.stars)} style={{ color: '#009688' }} readOnly />
+            </Box>
+          )}
+        </Box>
+
+        {/* Render popup */}
+        <Box style={{ flexShrink: 0 }}>
+          <IconButton onClick={handleClick}>
+            <MoreHorizIcon style={{ color: 'white' }} />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              style: {
+                maxHeight: 200,
+                width: '21rem',
+                backgroundColor: '#172D2D',
+                color: 'white'
+              }
+            }}
+          >
+            {options.map(option => (
+              <MenuItem key={option.label} onClick={handleClose}>
+                {option.label === 'Link' ? (
+                  option.value !== 'Not provided' ? (
+                    <a
+                      href={option.value}
+                      target='_blank'
+                      style={{
+                        color: 'inherit',
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                      }}
+                    >
+                      {option.label}: <OpenInNewIcon />
+                    </a>
+                  ) : (
+                    'Link: Not provided'
+                  )
+                ) : option.label === 'From' ? (
+                  <>
+                    {`${option.label}: ${option.value}`}
+                    {option.sourceURI && (
+                      <a
+                        href={option.sourceURI}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        style={{
+                          color: 'inherit',
+                          textDecoration: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          marginLeft: '0.5rem'
+                        }}
+                      >
+                        <OpenInNewIcon />
+                      </a>
+                    )}
+                  </>
+                ) : (
+                  `${option.label}: ${option.value}`
+                )}
+              </MenuItem>
+            ))}
+          </Menu>
+        </Box>
+      </Box>
+
+      {openD && claim.image && (
         <Dialog open={openD} onClose={() => setOpenD(false)}>
           <Close
             sx={{
@@ -75,106 +274,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
           />
         </Dialog>
       )}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: {
-            xs: 'center',
-            md: 'flex-start'
-          },
-          flexDirection: {
-            xs: 'column',
-            md: 'row'
-          },
-          gap: 2
-        }}
-      >
-        {/* Render chips in a row at the top */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            mb: 1
-          }}
-        >
-          {chipEntries.map(([key, value]) => {
-            if (key === 'effectiveDate' && value) {
-              value = new Date(value).toLocaleDateString()
-            } else if (key === 'amt' && value) {
-              value = `$${value}`
-            } else if (key === 'aspect' && value) {
-              //"impact:educational" => "Impact: Educational"
-              value = value
-                .split(':')
-                .map(s => s.charAt(0).toUpperCase() + s.slice(1))
-                .join(':')
-            }
-            return (
-              value && (
-                <Chip
-                  key={key}
-                  label={`${formatClaimKey(key)}: ${value}`}
-                  color='primary'
-                  sx={{
-                    backgroundColor: '#008a7cdc',
-                    color: 'white',
-                    m: '0.2rem 0.2rem 0.2rem 0.2rem'
-                  }}
-                />
-              )
-            )
-          })}
-        </Box>
-      </Box>
-
-      {/* Render other claim information */}
-      {otherEntries.map(([key, value]) => {
-        // Handle date formatting
-        const refLink = value
-          ? value.toString().startsWith('http')
-            ? value.toString()
-            : CERAMIC_URL + 'api/v0/streams/' + value.toString()
-          : ''
-        return (
-          value && (
-            <Typography key={key} variant='body1'>
-              {key.includes('URI') || key.split('_').includes('link') ? (
-                <>
-                  <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
-                    {formatClaimKey(key)}:{' '}
-                  </Typography>
-                  <Link href={refLink} style={{ color: '#1976d2' }} target='_blank'>
-                    {refLink}
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
-                    {formatClaimKey(key)}:
-                  </Typography>{' '}
-                  {value}
-                </>
-              )}
-            </Typography>
-          )
-        )
-      })}
     </>
   )
 }
 
 export default RenderClaimInfo
-
-// Helper function to format claim keys into readable text
-const formatClaimKey = (key: string) => {
-  if (key === 'effective_date') {
-    return 'Date'
-  } else if (key === 'sourceURI') {
-    return 'From'
-  } else if (key === 'amt') {
-    return 'Amount'
-  }
-  return key.replace(/([A-Z])/g, ' $1').replace(/^./, function (str) {
-    return str.toUpperCase()
-  })
-}
