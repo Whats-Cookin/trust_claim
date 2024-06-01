@@ -1,9 +1,11 @@
+import { useTheme } from '@mui/material/styles'
 import { Chip, Typography, Box, Link, Dialog } from '@mui/material'
 import { CERAMIC_URL } from '../../utils/settings'
 import React, { useState } from 'react'
 import { Close } from '@mui/icons-material'
 
 const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
+  const theme = useTheme()
   const excludedKeys = [
     'id',
     'issuerId',
@@ -57,8 +59,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               top: '0px',
               right: '0px',
               cursor: 'pointer',
-              color: 'white',
-              backgroundColor: '#333',
+              color: theme.palette.texts,
+              backgroundColor: theme.palette.dialogBackground,
               borderRadius: '50%',
               padding: '0.2rem',
               margin: '0.2rem'
@@ -114,10 +116,9 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                 <Chip
                   key={key}
                   label={`${formatClaimKey(key)}: ${value}`}
-                  color='primary'
                   sx={{
-                    backgroundColor: '#008a7cdc',
-                    color: 'white',
+                    backgroundColor: theme.palette.chipColor,
+                    color: theme.palette.texts,
                     m: '0.2rem 0.2rem 0.2rem 0.2rem'
                   }}
                 />
@@ -140,16 +141,16 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             <Typography key={key} variant='body1'>
               {key.includes('URI') || key.split('_').includes('link') ? (
                 <>
-                  <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
+                  <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
                     {formatClaimKey(key)}:{' '}
                   </Typography>
-                  <Link href={refLink} style={{ color: '#1976d2' }} target='_blank'>
+                  <Link href={refLink} style={{ color: theme.palette.link }} target='_blank'>
                     {refLink}
                   </Link>
                 </>
               ) : (
                 <>
-                  <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
+                  <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
                     {formatClaimKey(key)}:
                   </Typography>{' '}
                   {value}
