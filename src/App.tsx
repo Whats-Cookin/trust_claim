@@ -98,7 +98,7 @@ const App = () => {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          backgroundColor: theme => theme.palette.formBackground,
+          backgroundColor: theme => theme.palette.pageBackground,
           width: '100%',
           fontSize: 'calc(3px + 2vmin)',
           overflow: 'hidden'

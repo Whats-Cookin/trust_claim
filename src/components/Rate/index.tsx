@@ -112,8 +112,8 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
           padding: '2rem',
           maxWidth: '430px',
           marginTop: { xs: 15, md: 8 },
-          background: theme.palette.textc,
-          boxShadow: '0px 1px 20px #00000040',
+          background: theme.palette.texts,
+          boxShadow: '0px 1px 20px theme.palette.shadows',
           zIndex: 20,
           borderRadius: '10px',
           margin: '0'
@@ -238,10 +238,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             ml: 1,
             mr: 1,
             width: '50%',
-            bgcolor: 'praimary.main',
+            bgcolor: theme.palette.buttons,
             margin: '0 auto',
             '&:hover': {
-              backgroundColor: theme.palette.button
+              backgroundColor: theme.palette.buttonHover
             }
           }}
         >

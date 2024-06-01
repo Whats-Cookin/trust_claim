@@ -55,7 +55,7 @@ const SearchBar = () => {
         sx={{
           ml: 1,
           flex: 1,
-          color: theme.palette.textc,
+          color: theme.palette.searchBarText,
           fontWeight: '600',
           fontSize: '14px',
           fontFamily: 'Roboto',
@@ -65,7 +65,7 @@ const SearchBar = () => {
 
       <IconButton
         type='button'
-        sx={{ p: '10px', color: theme.palette.textc }}
+        sx={{ p: '10px', color: theme.palette.icons }}
         aria-label='search'
         onClick={handleSearch}
       >

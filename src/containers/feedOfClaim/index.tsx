@@ -50,9 +50,9 @@ const ClaimName = ({ claim }: { claim: LocalClaim }) => {
   const theme = useTheme()
 
   return (
-    <Typography variant='h6' sx={{ marginBottom: '10px', color: theme.palette.textc }} fontWeight='bold'>
+    <Typography variant='h6' sx={{ marginBottom: '10px', color: theme.palette.texts }} fontWeight='bold'>
       {displayName}
-      <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.textc, fontSize: '1rem' }} />
+      <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
     </Typography>
   )
 }
@@ -62,7 +62,7 @@ const SourceLink = ({ claim }: { claim: LocalClaim }) => {
   const theme = useTheme()
 
   return (
-    <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+    <Typography variant='body2' sx={{ color: theme.palette.texts }}>
       From: {displayLink}
     </Typography>
   )
@@ -149,10 +149,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   borderRadius: '20px',
                   display: 'flex',
                   flexDirection: isSmallScreen ? 'column' : 'row',
-                  backgroundColor: selectedIndex === index ? '#43434380' : theme.palette.menuBackground,
+                  backgroundColor:
+                    selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
                   backgroundImage: 'none',
                   filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
-                  color: theme.palette.textc
+                  color: theme.palette.texts
                 }}
               >
                 <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
@@ -173,7 +174,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           padding: '5px 1 1 5px',
                           wordBreak: 'break-word',
                           marginBottom: '1px',
-                          color: theme.palette.textc
+                          color: theme.palette.texts
                         }}
                       >
                         {claim.statement}
@@ -200,10 +201,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         fontWeight: 'bold',
                         marginRight: '10px',
                         p: '4px',
-                        color: theme.palette.textc,
+                        color: theme.palette.buttontext,
                         '&:hover': {
-                          backgroundColor: theme.palette.button,
-                          color: theme.palette.textc
+                          backgroundColor: theme.palette.buttonHover,
+                          color: theme.palette.buttontext
                         }
                       }}
                     >
@@ -217,10 +218,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           fontWeight: 'bold',
                           marginRight: '10px',
                           p: '4px',
-                          color: theme.palette.textc,
+                          color: theme.palette.buttontext,
                           '&:hover': {
-                            backgroundColor: theme.palette.button,
-                            color: theme.palette.textc
+                            backgroundColor: theme.palette.buttonHover,
+                            color: theme.palette.buttontext
                           }
                         }}
                       >
@@ -235,10 +236,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         fontWeight: 'bold',
                         marginRight: '10px',
                         p: '4px',
-                        color: theme.palette.textc,
+                        color: theme.palette.buttontext,
                         '&:hover': {
-                          backgroundColor: theme.palette.button,
-                          color: theme.palette.textc
+                          backgroundColor: theme.palette.buttonHover,
+                          color: theme.palette.buttontext
                         }
                       }}
                     >
@@ -276,7 +277,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                       position: 'absolute',
                       top: '10px',
                       right: '10px',
-                      color: theme.palette.textc,
+                      color: theme.palette.texts,
                       cursor: 'pointer'
                     }}
                     onClick={event => handleMenuClick(event, index)}
@@ -287,7 +288,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         transform: 'rotate(90deg)',
-                        color: theme.palette.date
+                        color: theme.palette.smallButton
                       }}
                     >
                       <MoreVertIcon />
@@ -310,13 +311,13 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     sx={{
                       '& .MuiPaper-root': {
                         backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       }
                     }}
                   >
                     {claim.source_link && (
                       <MenuItem onClick={() => window.open(claim.source_link, '_blank')}>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           <SourceLink claim={claim} />
                         </Typography>
                         <OpenInNewIcon style={{ marginLeft: '5px' }} />
@@ -324,42 +325,42 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     )}
                     {claim.how_known && (
                       <MenuItem>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           How Known: {claim.how_known}
                         </Typography>
                       </MenuItem>
                     )}
                     {claim.aspect && (
                       <MenuItem>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           Aspect: {claim.aspect}
                         </Typography>
                       </MenuItem>
                     )}
                     {claim.confidence !== 0 && (
                       <MenuItem>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           Confidence: {claim.confidence}
                         </Typography>
                       </MenuItem>
                     )}
                     {claim.stars && (
                       <MenuItem>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           Rating as Stars: {claim.stars}
                         </Typography>
                       </MenuItem>
                     )}
                     {claim.score && (
                       <MenuItem>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           Rating as Score: {claim.score}
                         </Typography>
                       </MenuItem>
                     )}
                     {claim.amt && (
                       <MenuItem>
-                        <Typography variant='body2' sx={{ color: theme.palette.textc }}>
+                        <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                           Amount of claim: $ {claim.amt}
                         </Typography>
                       </MenuItem>
@@ -372,7 +373,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           <Box
             sx={{
               width: '30%',
-              bgcolor: theme.palette.formBackground
+              bgcolor: theme.palette.footerBackground
             }}
           >
             {!isMediumScreen && <FeedFooter />}

@@ -26,6 +26,7 @@ import Loader from '../Loader'
 import axios from '../../axiosInstance'
 import BackgroundImages from '../../containers/BackgroundImags'
 
+// TODO make these shared in settings across app
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
 const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
@@ -212,7 +213,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           maxWidth: '830px',
           marginTop: { xs: 15, md: 8 },
           backgroundColor: theme.palette.formBackground,
-          boxShadow: '0px 1px 20px #00000040',
+          boxShadow: '0px 1px 20px theme.pallete.shadows',
           zIndex: 20,
           borderRadius: '10px',
           margin: '0 auto'
@@ -224,7 +225,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             sx={{
               textAlign: 'center',
               fontSize: '20px',
-              color: theme.palette.icons,
+              color: theme.palette.maintext,
               fontWeight: 'bold'
             }}
           >
@@ -238,7 +239,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               sx={{
                 textAlign: 'center',
                 fontSize: '20px',
-                color: theme.palette.icons,
+                color: theme.palette.maintext,
                 fontWeight: 'bold',
                 mb: '20px',
                 mt: '20px'
@@ -259,12 +260,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 variant='h5'
                 style={{
                   fontWeight: 'bold',
-                  color: theme.palette.textc,
+                  color: theme.palette.texts,
                   maxWidth: '100%',
                   overflowWrap: 'break-word'
                 }}
               >{`${subjectValue}`}</Typography>
-              <Typography variant='h5' style={{ color: theme.palette.icons }}>{`${claimVerbValue}`}</Typography>
+              <Typography variant='h5' style={{ color: theme.palette.maintext }}>{`${claimVerbValue}`}</Typography>
               {statementValue && (
                 <Box sx={{ display: 'flex', margin: '0' }}>
                   <Typography
@@ -272,7 +273,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     borderColor='primary.main'
                     sx={{
                       p: '6px 8px 0',
-                      color: theme.palette.textc,
+                      color: theme.palette.texts,
                       borderRadius: 1,
                       border: 1,
                       fontSize: '11pt',
@@ -298,12 +299,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </Box>
                 </Box>
               )}
-              {objectValue && <Typography variant='h5'>{`to: ${objectValue}`}</Typography>}
+              {objectValue && (
+                <Typography variant='h5' style={{ color: theme.palette.maintext }}>{`to: ${objectValue}`}</Typography>
+              )}
               {amtValue && (
-                <Typography variant='h5' style={{ color: theme.palette.textc }}>{`worth: ${amtValue}`}</Typography>
+                <Typography variant='h5' style={{ color: theme.palette.maintext }}>{`worth: ${amtValue}`}</Typography>
               )}
               {effectiveDateValue && (
-                <Typography style={{ color: theme.palette.textc }}>{`as of: ${effectiveDateValue}`}</Typography>
+                <Typography style={{ color: theme.palette.texts }}>{`as of: ${effectiveDateValue}`}</Typography>
               )}
             </Box>
           </Box>
@@ -312,7 +315,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               sx={{
                 textAlign: 'center',
                 fontSize: '20px',
-                color: theme.palette.icons,
+                color: theme.palette.maintext,
                 fontWeight: 'bold',
                 mt: '10px'
               }}
@@ -327,16 +330,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     mr: 1,
                     width: '22ch',
                     '& .MuiInputBase-input': {
-                      color: theme.palette.textc
+                      color: theme.palette.texts
                     },
                     '& .MuiInputLabel-root': {
-                      color: theme.palette.textc
+                      color: theme.palette.texts
                     },
                     '& .MuiFormHelperText-root': {
-                      color: theme.palette.textc
+                      color: theme.palette.texts
                     },
                     '& .MuiSvgIcon-root': {
-                      color: theme.palette.textc
+                      color: theme.palette.icons
                     }
                   }}
                   select
@@ -352,7 +355,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     <MenuItem
                       sx={{
                         backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.textc,
+                        color: theme.palette.texts,
                         '&:hover': {
                           backgroundColor: theme.palette.formBackground
                         },
@@ -402,16 +405,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   width: '95%',
                   mb: '20px',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.icons
                   }
                 }}
                 {...register('statement')}
@@ -438,16 +441,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       mr: 1,
                       width: '95%',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       },
                       '& .MuiFormHelperText-root': {
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       },
                       '& .MuiSvgIcon-root': {
-                        color: theme.palette.textc
+                        color: theme.palette.icons
                       }
                     }}
                     variant='filled'
@@ -479,10 +482,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             ml: 1,
             mr: 1,
             width: '50%',
-            bgcolor: theme.palette.icons,
+            bgcolor: theme.palette.buttons,
+            color: theme.palette.buttontext,
             margin: '0 auto',
             '&:hover': {
-              backgroundColor: theme.palette.button
+              backgroundColor: theme.palette.buttonHover
             }
           }}
         >

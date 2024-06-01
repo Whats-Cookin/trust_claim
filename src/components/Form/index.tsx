@@ -228,7 +228,7 @@ export const Form = ({
             mb: 3,
             textAlign: 'center',
             fontSize: '20px',
-            color: theme.palette.icons,
+            color: theme.palette.maintext,
             textTransform: 'uppercase',
             fontWeight: 'bold'
           }}
@@ -248,7 +248,7 @@ export const Form = ({
               title='You should put the link to the site or social media account where the claim was created  '
               placement='right'
               arrow
-              sx={{ backgroundColor: theme.palette.icons }}
+              sx={{ backgroundColor: theme.palette.maintext }}
             >
               <TextField
                 {...register('subject', { required: { value: true, message: 'subject is required' } })}
@@ -257,16 +257,16 @@ export const Form = ({
                   mr: 1,
                   width: '22ch',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.icons
                   }
                 }}
                 margin='dense'
@@ -290,16 +290,16 @@ export const Form = ({
                   mr: 1,
                   width: '22ch',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   }
                 }}
                 margin='dense'
@@ -312,7 +312,7 @@ export const Form = ({
                   <MenuItem
                     sx={{
                       backgroundColor: theme.palette.menuBackground,
-                      color: theme.palette.textc,
+                      color: theme.palette.texts,
                       '&:hover': {
                         backgroundColor: theme.palette.formBackground
                       },
@@ -349,16 +349,16 @@ export const Form = ({
                   mr: 1,
                   width: '22ch',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.icons
                   }
                 }}
                 margin='dense'
@@ -369,7 +369,7 @@ export const Form = ({
                   <MenuItem
                     sx={{
                       backgroundColor: theme.palette.menuBackground,
-                      color: theme.palette.textc,
+                      color: theme.palette.texts,
                       '&:hover': {
                         backgroundColor: theme.palette.formBackground
                       },
@@ -404,16 +404,16 @@ export const Form = ({
                   mr: 1,
                   width: '22ch',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.icons
                   }
                 }}
                 margin='dense'
@@ -434,16 +434,16 @@ export const Form = ({
                   mr: 1,
                   width: '22ch',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.icons
                   }
                 }}
                 margin='dense'
@@ -466,16 +466,16 @@ export const Form = ({
                   mr: 1,
                   width: '22ch',
                   '& .MuiInputBase-input': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.texts
                   },
                   '& .MuiSvgIcon-root': {
-                    color: theme.palette.textc
+                    color: theme.palette.icons
                   }
                 }}
                 margin='dense'
@@ -506,16 +506,16 @@ export const Form = ({
                           mr: 1,
                           width: '22ch',
                           '& .MuiInputBase-input': {
-                            color: theme.palette.textc
+                            color: theme.palette.texts
                           },
                           '& .MuiInputLabel-root': {
-                            color: theme.palette.textc
+                            color: theme.palette.texts
                           },
                           '& .MuiFormHelperText-root': {
-                            color: theme.palette.textc
+                            color: theme.palette.texts
                           },
                           '& .MuiSvgIcon-root': {
-                            color: theme.palette.textc
+                            color: theme.palette.icons
                           }
                         }}
                         margin='dense'
@@ -526,7 +526,7 @@ export const Form = ({
                           <MenuItem
                             sx={{
                               backgroundColor: theme.palette.menuBackground,
-                              color: theme.palette.textc,
+                              color: theme.palette.texts,
                               '&:hover': {
                                 backgroundColor: theme.palette.formBackground
                               },
@@ -561,7 +561,7 @@ export const Form = ({
                       render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <Tooltip title='A rating associated with the claim' placement='right' arrow>
                           <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                            <Typography sx={{ mb: 1, color: theme.palette.textc }}>Review Rating</Typography>
+                            <Typography sx={{ mb: 1, color: theme.palette.texts }}>Review Rating</Typography>
                             <Rating
                               name='stars'
                               value={value}
@@ -602,16 +602,16 @@ export const Form = ({
                           mr: 1,
                           width: '22ch',
                           '& .MuiInputBase-input': {
-                            color: theme.palette.textc
+                            color: theme.palette.texts
                           },
                           '& .MuiInputLabel-root': {
-                            color: theme.palette.textc
+                            color: theme.palette.texts
                           },
                           '& .MuiFormHelperText-root': {
-                            color: theme.palette.textc
+                            color: theme.palette.texts
                           },
                           '& .MuiSvgIcon-root': {
-                            color: theme.palette.textc
+                            color: theme.palette.icons
                           }
                         }}
                         margin='dense'
@@ -642,16 +642,16 @@ export const Form = ({
                       mr: 1,
                       width: '100%',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       },
                       '& .MuiFormHelperText-root': {
-                        color: theme.palette.textc
+                        color: theme.palette.texts
                       },
                       '& .MuiSvgIcon-root': {
-                        color: theme.palette.textc
+                        color: theme.palette.icons
                       }
                     }}
                     variant='standard'
@@ -671,10 +671,10 @@ export const Form = ({
             ml: 1,
             mr: 1,
             width: '50%',
-            bgcolor: theme.palette.icons,
+            bgcolor: theme.palette.buttons,
             margin: '0 auto',
             '&:hover': {
-              backgroundColor: theme.palette.button
+              backgroundColor: theme.palette.buttonHover
             }
           }}
         >

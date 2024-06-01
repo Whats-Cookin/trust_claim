@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
 import Sidebar from '../Sidebar'
-import ThemeToggleButton from '../ThemedComponents/ThemeToggleButton' // Import the ThemeToggleButton component
+import ThemeToggleButton from '../ThemedComponents/ThemeToggleButton'
 
 interface NavbarProps {
   isAuth: boolean
@@ -54,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
     <Box sx={{ display: 'flex' }}>
       <AppBar
         position='fixed'
-        sx={{ backgroundColor: theme.palette.formBackground, color: theme.palette.textc, backgroundImage: 'none' }}
+        sx={{ backgroundColor: theme.palette.footerBackground, color: theme.palette.texts, backgroundImage: 'none' }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -67,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
               variant='h6'
               component='div'
               sx={{
-                color: theme.palette.icons,
+                color: theme.palette.maintext,
                 fontWeight: 'bold',
                 cursor: 'pointer',
                 width: isSmallScreen ? '100%' : '23vw'
@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
               variant='h6'
               component='div'
               sx={{
-                color: theme.palette.icons,
+                color: theme.palette.maintext,
                 textAlign: 'center',
                 flexGrow: isSmallScreen ? 1 : 0
               }}
@@ -91,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
               <Box
                 sx={{
                   height: '4px',
-                  backgroundColor: theme.palette.icons,
+                  backgroundColor: theme.palette.maintext,
                   marginTop: '4px',
                   borderRadius: '2px',
                   width: '100%'

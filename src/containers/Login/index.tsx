@@ -160,8 +160,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             padding: '2rem',
             maxWidth: '430px',
             marginTop: { xs: 15, md: 8 },
-            background: theme.palette.menuBackground,
-            boxShadow: '0px 1px 20px #00000040',
+            background: theme.palette.pageBackground,
+            boxShadow: '0px 1px 20px theme.pallete.shadows',
             zIndex: 20,
             borderRadius: '10px'
           }}
@@ -173,7 +173,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}
-            sx={{ color: theme.palette.textc }}
+            sx={{ color: theme.palette.maintext }}
           >
             Login
           </Typography>
@@ -194,19 +194,19 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 backgroundColor: theme.palette.formBackground
               },
               '& .MuiInputLabel-root': {
-                color: theme.palette.textc
+                color: theme.palette.texts
               },
               '& .MuiFilledInput-input': {
-                color: theme.palette.textc
+                color: theme.palette.texts
               },
               '& .MuiFilledInput-underline:before': {
-                borderBottomColor: theme.palette.textc
+                borderBottomColor: theme.palette.texts
               },
               '& .MuiFilledInput-underline:after': {
-                borderBottomColor: theme.palette.textc
+                borderBottomColor: theme.palette.texts
               },
               '& .MuiFormHelperText-root': {
-                color: theme.palette.textc
+                color: theme.palette.texts
               }
             }}
             variant='filled'
@@ -214,6 +214,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             helperText={(errors.email?.message as string) || ''}
             error={!!errors.email}
           />
+
           <TextField
             {...register('password', {
               required: 'Password is required'
@@ -227,19 +228,19 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 backgroundColor: theme.palette.formBackground
               },
               '& .MuiInputLabel-root': {
-                color: theme.palette.textc
+                color: theme.palette.texts
               },
               '& .MuiFilledInput-input': {
-                color: theme.palette.textc
+                color: theme.palette.texts
               },
               '& .MuiFilledInput-underline:before': {
-                borderBottomColor: theme.palette.textc
+                borderBottomColor: theme.palette.texts
               },
               '& .MuiFilledInput-underline:after': {
-                borderBottomColor: theme.palette.textc
+                borderBottomColor: theme.palette.texts
               },
               '& .MuiFormHelperText-root': {
-                color: theme.palette.textc
+                color: theme.palette.texts
               }
             }}
             variant='filled'
@@ -248,7 +249,17 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             error={!!errors.password}
           />
           <Box>
-            <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
+            <Button
+              sx={{
+                width: '100%',
+                color: theme.palette.buttontext,
+                backgroundColor: theme.palette.buttons,
+                '&:hover': { backgroundColor: theme.palette.buttonHover }
+              }}
+              type='submit'
+              variant='contained'
+              size='medium'
+            >
               Login
             </Button>
           </Box>
@@ -262,8 +273,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               href={githubUrl}
               sx={{
                 ...styles.authLinkButton,
-                backgroundColor: theme.palette.button,
-                color: theme.palette.textc,
+                backgroundColor: theme.palette.buttons,
+                color: theme.palette.buttontext,
                 '&:hover': {
                   backgroundColor: theme.palette.buttonHover
                 }
@@ -276,8 +287,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           <Box
             sx={{
               ...styles.ETHButton,
-              backgroundColor: theme.palette.button,
-              color: theme.palette.textc,
+              backgroundColor: theme.palette.buttons,
+              color: theme.palette.buttontext,
               '&:hover': {
                 backgroundColor: theme.palette.buttonHover
               }
@@ -291,7 +302,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             <Typography
               component='span'
               onClick={() => navigate('/register')}
-              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+              sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer' }}
             >
               Register
             </Typography>

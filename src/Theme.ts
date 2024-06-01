@@ -3,9 +3,9 @@ import { createTheme } from '@mui/material/styles'
 declare module '@mui/material/styles' {
   interface Palette {
     formBackground: string
-    textc: string
+    texts: string
     icons: string
-    button: string
+    buttons: string
     date: string
     menuBackground: string
     link: string
@@ -16,12 +16,24 @@ declare module '@mui/material/styles' {
     searchBarBackground: string
     stars: string
     chipColor: string
+    smallButton: string
+    buttontext: string
+    footerText: string
+    pageBackground: string
+    formMainText: string
+    cardBackground: string
+    searchBarText: string
+    maintext: string
+    cardBackgroundBlur: string
+    borderColor: string
+    shadows: string
   }
+
   interface PaletteOptions {
     formBackground?: string
-    textc?: string
+    texts?: string
     icons?: string
-    button?: string
+    buttons?: string
     date?: string
     menuBackground?: string
     link?: string
@@ -30,8 +42,19 @@ declare module '@mui/material/styles' {
     dialogBackground?: string
     footerBackground?: string
     searchBarBackground?: string
-    stars: string
-    chipColor: string
+    stars?: string
+    chipColor?: string
+    smallButton?: string
+    buttontext?: string
+    footerText?: string
+    pageBackground?: string
+    formMainText?: string
+    cardBackground?: string
+    searchBarText?: string
+    maintext?: string
+    cardBackgroundBlur?: string
+    borderColor?: string
+    shadows?: string
   }
 
   interface TypographyVariants {
@@ -58,49 +81,32 @@ declare module '@mui/material/Typography' {
 const darkModeTheme = createTheme({
   palette: {
     mode: 'dark',
-    formBackground: '#0A1C1D',
-    textc: '#ffffff',
+    buttons: '#009688',
+    smallButton: '#4C726F',
+    buttonHover: '#00695f',
+    buttontext: '#ffffff',
+    maintext: '#009688',
     icons: '#009688',
-    button: '#00695f',
-    date: '#4C726F',
+    stars: '#009688',
+    footerBackground: '#0A1C1D',
+    footerText: '#ffffff',
     menuBackground: '#172d2d',
+    pageBackground: '#0A1C1D',
+    formBackground: '#0A1C1D',
+    formMainText: '#ffffff',
+    cardBackground: '#4C726F33',
+    cardBackgroundBlur: '#43434380',
+    texts: '#ffffff',
+    date: '#4C726F',
     link: '#1976d2',
-    buttonHover: '#00796b',
     profileButton: '#2f0101',
     dialogBackground: '#333333',
-    footerBackground: '#1a1a1a',
-    searchBarBackground: '#2b4746',
-    stars: '#009688',
-    chipColor: '#239a8e'
+    searchBarBackground: '#4C726F80',
+    searchBarText: '#DFDFDF',
+    chipColor: '#4C726F',
+    borderColor: '#008a7cdc',
+    shadows: '#00000040'
   },
-  // typography: {
-  //   fontFamily: 'Lato, Roboto, Inter, Poppins',
-  //   customFormTextStep: {
-  //     color: '#ffffff',
-  //     textAlign: 'center',
-  //     fontSize: '24px',
-  //     fontStyle: 'normal',
-  //     fontWeight: 400,
-  //     lineHeight: 'normal',
-  //     padding: '0 50px'
-  //   },
-  //   customSuccessText: {
-  //     color: '#ffffff',
-  //     textAlign: 'center',
-  //     fontSize: '16px',
-  //     fontStyle: 'italic',
-  //     fontWeight: 500,
-  //     lineHeight: 'normal'
-  //   },
-  //   customNoteText: {
-  //     color: '#ffffff',
-  //     textAlign: 'center',
-  //     fontSize: '16px',
-  //     fontStyle: 'italic',
-  //     fontWeight: 400,
-  //     lineHeight: 'normal'
-  //   }
-  // },
   breakpoints: {
     values: {
       xs: 0,
@@ -115,49 +121,32 @@ const darkModeTheme = createTheme({
 const lightModeTheme = createTheme({
   palette: {
     mode: 'light',
-    formBackground: '#ffffff',
-    textc: '#000000',
-    icons: '#009688',
-    button: '#1976d2',
-    date: '#4C726F',
-    menuBackground: '#f5f5f5',
-    link: '#1976d2',
-    buttonHover: '#00796b',
-    profileButton: '#2f0101',
-    dialogBackground: '#333333',
-    footerBackground: '#fefefe',
-    searchBarBackground: '#ffffff',
+    buttons: '#00796B',
+    smallButton: '#B2DFDB',
+    buttonHover: '#004D40',
+    buttontext: '#000000',
+    maintext: '#00796B',
+    icons: '#00796B',
     stars: '#FFD700',
-    chipColor: '#239a8e'
+    footerBackground: '#E0F2F1',
+    footerText: '#000000',
+    menuBackground: '#B2DFDB',
+    pageBackground: '#E0F2F1',
+    formBackground: '#E0F2F1',
+    formMainText: '#000000',
+    cardBackground: '#B2DFDB99',
+    cardBackgroundBlur: '#DDDDDD80',
+    texts: '#000000',
+    date: '#80CBC4',
+    link: '#1565C0',
+    profileButton: '#D32F2F',
+    dialogBackground: '#F5F5F5',
+    searchBarBackground: '#B2DFDB80',
+    searchBarText: '#1B1B1B',
+    chipColor: '#B2DFDB',
+    borderColor: '#00796B80',
+    shadows: '#00000020'
   },
-  // typography: {
-  //   fontFamily: 'Lato, Roboto, Inter, Poppins',
-  //   customFormTextStep: {
-  //     color: '#000000',
-  //     textAlign: 'center',
-  //     fontSize: '24px',
-  //     fontStyle: 'normal',
-  //     fontWeight: 400,
-  //     lineHeight: 'normal',
-  //     padding: '0 50px'
-  //   },
-  //   customSuccessText: {
-  //     color: '#000000',
-  //     textAlign: 'center',
-  //     fontSize: '16px',
-  //     fontStyle: 'italic',
-  //     fontWeight: 500,
-  //     lineHeight: 'normal'
-  //   },
-  //   customNoteText: {
-  //     color: '#000000',
-  //     textAlign: 'center',
-  //     fontSize: '16px',
-  //     fontStyle: 'italic',
-  //     fontWeight: 400,
-  //     lineHeight: 'normal'
-  //   }
-  // },
   breakpoints: {
     values: {
       xs: 0,

@@ -28,8 +28,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
       style={{
         width: '25vw',
         height: '100vh',
-        backgroundColor: theme.palette.formBackground,
-        color: theme.palette.textc,
+        backgroundColor: theme.palette.footerBackground,
+        color: theme.palette.texts,
         position: 'fixed',
         top: 0,
         left: 0,
@@ -42,14 +42,14 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
     >
       <List sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
         <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={() => navigate('/feed')}>
-          <Home sx={{ color: theme.palette.textc }} />
+          <Home sx={{ color: theme.palette.texts }} />
           <ListItemText primary='Home' />
         </ListItemButton>
         <ListItemButton
           sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }}
           onClick={() => navigate('/search')}
         >
-          <Search sx={{ color: theme.palette.textc }} />
+          <Search sx={{ color: theme.palette.texts }} />
           <ListItemText primary='Search' />
         </ListItemButton>
         {isAuth ? (
@@ -57,8 +57,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
             <Button
               variant='contained'
               sx={{
-                backgroundColor: theme.palette.icons,
-                color: theme.palette.textc,
+                backgroundColor: theme.palette.buttons,
+                color: theme.palette.buttontext,
                 width: '100%',
                 maxWidth: '16vw',
                 '&:hover': {
@@ -78,8 +78,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
               <Button
                 variant='contained'
                 sx={{
-                  backgroundColor: theme.palette.icons,
-                  color: theme.palette.textc,
+                  backgroundColor: theme.palette.buttons,
+                  color: theme.palette.buttontext,
                   width: '100%',
                   maxWidth: '16vw',
                   '&:hover': {
@@ -97,8 +97,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
               <Button
                 variant='contained'
                 sx={{
-                  backgroundColor: theme.palette.icons,
-                  color: theme.palette.textc,
+                  backgroundColor: theme.palette.buttons,
+                  color: theme.palette.buttontext,
                   width: '100%',
                   maxWidth: '16vw',
                   gap: '1rem',
@@ -120,8 +120,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
             startIcon={<CreateIcon />}
             onClick={() => navigate('/')}
             sx={{
-              backgroundColor: theme.palette.icons,
-              color: theme.palette.textc,
+              backgroundColor: theme.palette.buttons,
+              color: theme.palette.buttontext,
               borderRadius: '30px',
               width: '16vw',
               maxWidth: isSmallScreen ? '16vw' : '100%',

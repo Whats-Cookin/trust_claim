@@ -127,10 +127,10 @@ const ProfileDropdown = ({ isAuth }: any) => {
             color='error'
             size='large'
             sx={{
-              backgroundColor: 'primary.main',
-              color: theme.palette.textc,
+              backgroundColor: theme.palette.buttons,
+              color: theme.palette.buttontext,
               '&:hover': {
-                backgroundColor: theme.palette.button
+                backgroundColor: theme.palette.buttonHover
               }
             }}
           >

@@ -59,7 +59,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               top: '0px',
               right: '0px',
               cursor: 'pointer',
-              color: theme.palette.textc,
+              color: theme.palette.texts,
               backgroundColor: theme.palette.dialogBackground,
               borderRadius: '50%',
               padding: '0.2rem',
@@ -118,7 +118,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                   label={`${formatClaimKey(key)}: ${value}`}
                   sx={{
                     backgroundColor: theme.palette.chipColor,
-                    color: theme.palette.textc,
+                    color: theme.palette.texts,
                     m: '0.2rem 0.2rem 0.2rem 0.2rem'
                   }}
                 />
@@ -141,7 +141,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             <Typography key={key} variant='body1'>
               {key.includes('URI') || key.split('_').includes('link') ? (
                 <>
-                  <Typography variant='inherit' component='span' sx={{ color: theme.palette.icons }}>
+                  <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
                     {formatClaimKey(key)}:{' '}
                   </Typography>
                   <Link href={refLink} style={{ color: theme.palette.link }} target='_blank'>
@@ -150,7 +150,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                 </>
               ) : (
                 <>
-                  <Typography variant='inherit' component='span' sx={{ color: theme.palette.icons }}>
+                  <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
                     {formatClaimKey(key)}:
                   </Typography>{' '}
                   {value}

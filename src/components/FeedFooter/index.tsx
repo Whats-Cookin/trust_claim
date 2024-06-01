@@ -13,7 +13,7 @@ const FeedFooter: React.FC = () => {
         position: 'fixed',
         right: 0,
         bottom: 0,
-        backgroundColor: theme.palette.formBackground,
+        backgroundColor: theme.palette.footerBackground,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -29,22 +29,22 @@ const FeedFooter: React.FC = () => {
           alignItems: 'center',
           width: '90%',
           maxWidth: '23vw',
-          color: theme.palette.textc,
+          color: theme.palette.texts,
           textAlign: 'center'
         }}
       >
         <Typography>
-          <Link to='/terms' style={{ color: theme.palette.textc, textDecoration: 'none' }}>
+          <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
             Terms of Service
           </Link>
         </Typography>
         <Typography>
-          <Link to='/privacy' style={{ color: theme.palette.textc, textDecoration: 'none' }}>
+          <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
             Privacy Policy
           </Link>
         </Typography>
         <Typography>
-          <Link to='/cookie' style={{ color: theme.palette.textc, textDecoration: 'none' }}>
+          <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
             Cookie Policy
           </Link>
         </Typography>

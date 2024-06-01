@@ -6,14 +6,10 @@ import { useTheme } from '@mui/material/styles'
 const Privacy: React.FC = () => {
   const theme = useTheme()
   return (
-    <Box sx={{ padding: '2rem', color: theme.palette.textc }}>
+    <Box sx={{ padding: '2rem', color: theme.palette.maintext }}>
       <PrivacyTipOutlined sx={{ fontSize: '2rem' }} />
-      <Typography sx={{ padding: '2rem', color: theme.palette.textc }} variant='h4'>
-        Privacy Policy
-      </Typography>
-      <Typography sx={{ padding: '2rem', color: theme.palette.textc }} variant='body1'>
-        Privacy Policy content
-      </Typography>
+      <Typography variant='h4'>Privacy Policy</Typography>
+      <Typography variant='body1'>Privacy Policy content</Typography>
     </Box>
   )
 }

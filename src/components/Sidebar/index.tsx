@@ -32,30 +32,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         '& .MuiDrawer-paper': {
           width: 240,
           boxSizing: 'border-box',
-          backgroundColor: theme.palette.formBackground,
-          color: theme.palette.textc,
+          backgroundColor: theme.palette.footerBackground,
+          color: theme.palette.texts,
           marginTop: '64px'
         }
       }}
     >
       <List>
         <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
-          <Home sx={{ color: theme.palette.textc }} />
-          <ListItemText primary='Home' />
+          <Home sx={{ color: theme.palette.icons }} />
+          <ListItemText primary='Home' sx={{ color: theme.palette.buttontext }} />
         </ListItemButton>
         <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
-          <Search sx={{ color: theme.palette.textc }} />
-          <ListItemText primary='Search' />
+          <Search sx={{ color: theme.palette.icons }} />
+          <ListItemText primary='Search' sx={{ color: theme.palette.buttontext }} />
         </ListItemButton>
         {isAuth ? (
           <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
             <Button
               sx={{
                 width: '100%',
-                color: theme.palette.textc,
-                backgroundColor: 'primary.main',
+                color: theme.palette.buttontext,
+                backgroundColor: theme.palette.buttons,
                 '&:hover': {
-                  backgroundColor: theme.palette.button
+                  backgroundColor: theme.palette.buttonHover
                 }
               }}
             >
@@ -67,11 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
               <Button
                 variant='contained'
-                color='primary'
-                component='button'
                 onClick={() => navigate('/')}
                 sx={{
-                  backgroundColor: theme.palette.icons,
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
                   borderRadius: '30px',
                   width: '100%',
                   maxwidth: isSmallScreen ? '100%' : '16vw',
@@ -86,11 +85,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
               <Button
                 variant='contained'
-                color='primary'
-                component='button'
                 onClick={() => navigate('/')}
                 sx={{
-                  backgroundColor: theme.palette.icons,
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
                   borderRadius: '30px',
                   width: '100%',
                   maxwidth: isSmallScreen ? '100%' : '16vw',
@@ -109,12 +107,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         <Box sx={{ p: 2, mt: 'auto', mb: '64px', display: 'flex', justifyContent: 'center' }}>
           <Button
             variant='contained'
-            color='primary'
-            component='button'
             startIcon={<Create />}
             onClick={() => navigate('/')}
             sx={{
-              backgroundColor: theme.palette.icons,
+              color: theme.palette.buttontext,
+              backgroundColor: theme.palette.buttons,
               borderRadius: '30px',
               width: '100%',
               maxwidth: isSmallScreen ? '16vw' : '100%',

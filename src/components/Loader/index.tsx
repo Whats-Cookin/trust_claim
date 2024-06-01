@@ -8,7 +8,7 @@ const Loader = ({ open }: ILoaderTypes) => {
   const theme = useTheme()
   return (
     <div>
-      <Backdrop sx={{ color: theme.palette.textc, zIndex: theme => theme.zIndex.drawer + 1 }} open={open}>
+      <Backdrop sx={{ color: theme.palette.texts, zIndex: theme => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color='inherit' data-testid='loader' />
       </Backdrop>
     </div>
