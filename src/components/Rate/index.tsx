@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -19,6 +20,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
   const subject = queryParams.get('subject')
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+  const theme = useTheme()
 
   const {
     register,
@@ -110,7 +112,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
           padding: '2rem',
           maxWidth: '430px',
           marginTop: { xs: 15, md: 8 },
-          background: '#ffffff',
+          background: theme.palette.textc,
           boxShadow: '0px 1px 20px #00000040',
           zIndex: 20,
           borderRadius: '10px',
@@ -187,6 +189,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                           value={value}
                           onChange={(e, newValue) => onChange(newValue)}
                           precision={1}
+                          sx={{
+                            color: theme.palette.stars,
+                            '& .MuiRating-icon': { color: theme.palette.stars }
+                          }}
                           size='large'
                         />
 
@@ -235,7 +241,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             bgcolor: 'praimary.main',
             margin: '0 auto',
             '&:hover': {
-              backgroundColor: '#00695f'
+              backgroundColor: theme.palette.button
             }
           }}
         >

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
+import { CssBaseline, ThemeProvider, GlobalStyles, Box } from '@mui/material'
+import { darkModeTheme, lightModeTheme } from './Theme'
 import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
 import Navbar from './components/Navbar'
@@ -7,9 +9,6 @@ import Login from './containers/Login'
 import Register from './containers/Register'
 import Form from './containers/Form'
 import Search from './containers/Search'
-import './App.css'
-import { CssBaseline, ThemeProvider, createTheme, GlobalStyles } from '@mui/material'
-import Box from '@mui/material/Box'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
@@ -18,6 +17,7 @@ import Footer from './components/Footer'
 import Terms from './containers/Terms'
 import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
+import './App.css'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -25,6 +25,7 @@ const App = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [metaNav, setMetaNav] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [isDarkMode, setIsDarkMode] = useState(true)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -51,7 +52,11 @@ const App = () => {
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  }, [location.pathname, navigate])
+
+  const toggleTheme = () => {
+    setIsDarkMode(prevMode => !prevMode)
+  }
 
   const commonProps = {
     toggleSnackbar,
@@ -59,28 +64,10 @@ const App = () => {
     setLoading,
     setMetaNav
   }
+
   const isLoginPage = window.location.pathname === '/login'
   const isRegisterPage = window.location.pathname === '/register'
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#009688'
-      },
-      secondary: {
-        main: '#ffffff'
-      }
-    },
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 800,
-        lg: 1280,
-        xl: 1920
-      }
-    }
-  })
   const globalStyles = (
     <GlobalStyles
       styles={{
@@ -99,20 +86,21 @@ const App = () => {
   const showFooter = location.pathname !== '/feed' || windowWidth < 800
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
       <CssBaseline />
       {globalStyles}
 
-      {!isLoginPage && !isRegisterPage && <Navbar isAuth={checkAuth()} />}
+      {!isLoginPage && !isRegisterPage && (
+        <Navbar isAuth={checkAuth()} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+      )}
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          backgroundColor: '#0a1c1d',
+          backgroundColor: theme => theme.palette.formBackground,
           width: '100%',
           fontSize: 'calc(3px + 2vmin)',
-          color: 'rgb(37, 3, 3)',
           overflow: 'hidden'
         }}
       >

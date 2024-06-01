@@ -28,8 +28,8 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
       style={{
         width: '25vw',
         height: '100vh',
-        backgroundColor: '#0a1c1d',
-        color: '#ffffff',
+        backgroundColor: theme.palette.formBackground,
+        color: theme.palette.textc,
         position: 'fixed',
         top: 0,
         left: 0,
@@ -42,26 +42,27 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
     >
       <List sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
         <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={() => navigate('/feed')}>
-          <Home sx={{ color: '#ffffff' }} />
+          <Home sx={{ color: theme.palette.textc }} />
           <ListItemText primary='Home' />
         </ListItemButton>
         <ListItemButton
           sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }}
           onClick={() => navigate('/search')}
         >
-          <Search sx={{ color: '#ffffff' }} />
+          <Search sx={{ color: theme.palette.textc }} />
           <ListItemText primary='Search' />
         </ListItemButton>
         {isAuth ? (
           <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={handleLogout}>
             <Button
+              variant='contained'
               sx={{
-                color: '#ffffff',
+                backgroundColor: theme.palette.icons,
+                color: theme.palette.textc,
                 width: '100%',
                 maxWidth: '16vw',
-                backgroundColor: 'primary.main',
                 '&:hover': {
-                  backgroundColor: '#00695f'
+                  backgroundColor: theme.palette.buttonHover
                 }
               }}
             >
@@ -75,13 +76,14 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
               onClick={() => navigate('/login')}
             >
               <Button
+                variant='contained'
                 sx={{
-                  color: '#ffffff',
+                  backgroundColor: theme.palette.icons,
+                  color: theme.palette.textc,
                   width: '100%',
                   maxWidth: '16vw',
-                  backgroundColor: 'primary.main',
                   '&:hover': {
-                    backgroundColor: '#00695f'
+                    backgroundColor: theme.palette.buttonHover
                   }
                 }}
               >
@@ -93,13 +95,15 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
               onClick={() => navigate('/register')}
             >
               <Button
+                variant='contained'
                 sx={{
-                  color: '#ffffff',
+                  backgroundColor: theme.palette.icons,
+                  color: theme.palette.textc,
                   width: '100%',
                   maxWidth: '16vw',
-                  backgroundColor: 'primary.main',
+                  gap: '1rem',
                   '&:hover': {
-                    backgroundColor: '#00695f'
+                    backgroundColor: theme.palette.buttonHover
                   }
                 }}
               >
@@ -113,18 +117,17 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
         <Box sx={{ p: 2, mt: 'auto', mb: '64px', display: 'flex', justifyContent: 'center' }}>
           <Button
             variant='contained'
-            color='primary'
-            component='button'
             startIcon={<CreateIcon />}
             onClick={() => navigate('/')}
             sx={{
-              backgroundColor: '#009688',
+              backgroundColor: theme.palette.icons,
+              color: theme.palette.textc,
               borderRadius: '30px',
               width: '16vw',
-              maxwidth: isSmallScreen ? '16vw' : '100%',
+              maxWidth: isSmallScreen ? '16vw' : '100%',
               gap: '1rem',
               '&:hover': {
-                backgroundColor: '#00796b'
+                backgroundColor: theme.palette.buttonHover
               }
             }}
           >

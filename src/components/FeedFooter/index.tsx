@@ -1,9 +1,11 @@
+import { useTheme } from '@mui/material/styles'
 import React from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
 
 const FeedFooter: React.FC = () => {
+  const theme = useTheme()
   return (
     <Box
       sx={{
@@ -11,7 +13,7 @@ const FeedFooter: React.FC = () => {
         position: 'fixed',
         right: 0,
         bottom: 0,
-        backgroundColor: '#0a1c1d',
+        backgroundColor: theme.palette.formBackground,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -27,22 +29,22 @@ const FeedFooter: React.FC = () => {
           alignItems: 'center',
           width: '90%',
           maxWidth: '23vw',
-          color: '#ffffff',
+          color: theme.palette.textc,
           textAlign: 'center'
         }}
       >
         <Typography>
-          <Link to='/terms' style={{ color: '#ffffff', textDecoration: 'none' }}>
+          <Link to='/terms' style={{ color: theme.palette.textc, textDecoration: 'none' }}>
             Terms of Service
           </Link>
         </Typography>
         <Typography>
-          <Link to='/privacy' style={{ color: '#ffffff', textDecoration: 'none' }}>
+          <Link to='/privacy' style={{ color: theme.palette.textc, textDecoration: 'none' }}>
             Privacy Policy
           </Link>
         </Typography>
         <Typography>
-          <Link to='/cookie' style={{ color: '#ffffff', textDecoration: 'none' }}>
+          <Link to='/cookie' style={{ color: theme.palette.textc, textDecoration: 'none' }}>
             Cookie Policy
           </Link>
         </Typography>

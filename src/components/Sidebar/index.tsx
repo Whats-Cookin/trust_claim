@@ -32,19 +32,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         '& .MuiDrawer-paper': {
           width: 240,
           boxSizing: 'border-box',
-          backgroundColor: '#0a1c1d',
-          color: '#ffffff',
+          backgroundColor: theme.palette.formBackground,
+          color: theme.palette.textc,
           marginTop: '64px'
         }
       }}
     >
       <List>
         <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
-          <Home sx={{ color: '#ffffff' }} />
+          <Home sx={{ color: theme.palette.textc }} />
           <ListItemText primary='Home' />
         </ListItemButton>
         <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
-          <Search sx={{ color: '#ffffff' }} />
+          <Search sx={{ color: theme.palette.textc }} />
           <ListItemText primary='Search' />
         </ListItemButton>
         {isAuth ? (
@@ -52,10 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             <Button
               sx={{
                 width: '100%',
-                color: '#ffffff',
+                color: theme.palette.textc,
                 backgroundColor: 'primary.main',
                 '&:hover': {
-                  backgroundColor: '#00695f'
+                  backgroundColor: theme.palette.button
                 }
               }}
             >
@@ -71,12 +71,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
                 component='button'
                 onClick={() => navigate('/')}
                 sx={{
-                  backgroundColor: '#009688',
+                  backgroundColor: theme.palette.icons,
                   borderRadius: '30px',
                   width: '100%',
                   maxwidth: isSmallScreen ? '100%' : '16vw',
                   '&:hover': {
-                    backgroundColor: '#00796b'
+                    backgroundColor: theme.palette.buttonHover
                   }
                 }}
               >
@@ -90,12 +90,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
                 component='button'
                 onClick={() => navigate('/')}
                 sx={{
-                  backgroundColor: '#009688',
+                  backgroundColor: theme.palette.icons,
                   borderRadius: '30px',
                   width: '100%',
                   maxwidth: isSmallScreen ? '100%' : '16vw',
                   '&:hover': {
-                    backgroundColor: '#00796b'
+                    backgroundColor: theme.palette.buttonHover
                   }
                 }}
               >
@@ -114,13 +114,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             startIcon={<Create />}
             onClick={() => navigate('/')}
             sx={{
-              backgroundColor: '#009688',
+              backgroundColor: theme.palette.icons,
               borderRadius: '30px',
               width: '100%',
               maxwidth: isSmallScreen ? '16vw' : '100%',
               gap: '1rem',
               '&:hover': {
-                backgroundColor: '#00796b'
+                backgroundColor: theme.palette.buttonHover
               }
             }}
           >

@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const hexColorRegex = /#([a-fA-F0-9]{6}|[a-fA-F0-9]{8}|[a-fA-F0-9]{3})\b/g
+
+// Updated regex to match hex color codes with or without quotes
+const hexColorRegex = /#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})\b/g
 
 function findFilesInDir(startPath, filter) {
   let results = []
@@ -14,6 +16,7 @@ function findFilesInDir(startPath, filter) {
     const filename = path.join(startPath, file)
     const stat = fs.lstatSync(filename)
     if (stat.isDirectory()) {
+      // Skip the node_modules directory
       if (file === 'node_modules') {
         continue
       }

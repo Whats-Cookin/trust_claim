@@ -14,8 +14,7 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme } from '@mui/material'
-import { TextField } from '@mui/material'
+import { useTheme, TextField } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -161,7 +160,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             padding: '2rem',
             maxWidth: '430px',
             marginTop: { xs: 15, md: 8 },
-            background: '#ffffff',
+            background: theme.palette.menuBackground,
             boxShadow: '0px 1px 20px #00000040',
             zIndex: 20,
             borderRadius: '10px'
@@ -174,7 +173,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               fontWeight: 'bold',
               fontSize: '2.5rem'
             }}
-            sx={{ color: 'primary.main' }}
+            sx={{ color: theme.palette.textc }}
           >
             Login
           </Typography>
@@ -188,7 +187,28 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             })}
             fullWidth
             label='Email'
-            sx={styles.inputField}
+            sx={{
+              ...styles.inputField,
+              backgroundColor: theme.palette.formBackground,
+              '& .MuiFilledInput-root': {
+                backgroundColor: theme.palette.formBackground
+              },
+              '& .MuiInputLabel-root': {
+                color: theme.palette.textc
+              },
+              '& .MuiFilledInput-input': {
+                color: theme.palette.textc
+              },
+              '& .MuiFilledInput-underline:before': {
+                borderBottomColor: theme.palette.textc
+              },
+              '& .MuiFilledInput-underline:after': {
+                borderBottomColor: theme.palette.textc
+              },
+              '& .MuiFormHelperText-root': {
+                color: theme.palette.textc
+              }
+            }}
             variant='filled'
             type='email'
             helperText={(errors.email?.message as string) || ''}
@@ -200,7 +220,28 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             })}
             fullWidth
             label='Password'
-            sx={styles.inputField}
+            sx={{
+              ...styles.inputField,
+              backgroundColor: theme.palette.formBackground,
+              '& .MuiFilledInput-root': {
+                backgroundColor: theme.palette.formBackground
+              },
+              '& .MuiInputLabel-root': {
+                color: theme.palette.textc
+              },
+              '& .MuiFilledInput-input': {
+                color: theme.palette.textc
+              },
+              '& .MuiFilledInput-underline:before': {
+                borderBottomColor: theme.palette.textc
+              },
+              '& .MuiFilledInput-underline:after': {
+                borderBottomColor: theme.palette.textc
+              },
+              '& .MuiFormHelperText-root': {
+                color: theme.palette.textc
+              }
+            }}
             variant='filled'
             type='password'
             helperText={(errors.password?.message as string) || ''}
@@ -219,14 +260,29 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           <Box>
             <MuiLink
               href={githubUrl}
-              sx={styles.authLinkButton}
-              style={{ border: `1px solid ${theme.palette.primary.main}` }}
+              sx={{
+                ...styles.authLinkButton,
+                backgroundColor: theme.palette.button,
+                color: theme.palette.textc,
+                '&:hover': {
+                  backgroundColor: theme.palette.buttonHover
+                }
+              }}
             >
               <GitHubIcon sx={styles.authIcon} />
               Github
             </MuiLink>
           </Box>
-          <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
+          <Box
+            sx={{
+              ...styles.ETHButton,
+              backgroundColor: theme.palette.button,
+              color: theme.palette.textc,
+              '&:hover': {
+                backgroundColor: theme.palette.buttonHover
+              }
+            }}
+          >
             {ethLoginOpt}
           </Box>
 
