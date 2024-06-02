@@ -67,7 +67,7 @@ const DonationReport: React.FC = () => {
 
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-     <ExportComponent elementId='report-container' />
+      <ExportComponent elementId='report-container' />
       <Box id='report-container'>
         <Typography variant='h4' gutterBottom color={theme.palette.texts}>
           Report for{' '}
@@ -94,10 +94,10 @@ const DonationReport: React.FC = () => {
           Validations:
         </Typography>
         {/* Customize this section with additional information as needed */}
-        {reportData.data.validations.length > 0 ? (
+        {reportData.validations.length > 0 ? (
           <Grid container spacing={2}>
-            {reportData.data.validations.map((attestation: any, index: number) => (
-              <Grid item xs={12} key={index}>
+            {reportData.validations.map((attestation: Claim, index: number) => (
+              <Grid item xs={12} key={attestation.subject}>
                 <Card>
                   <CardContent sx={{ color: theme.palette.texts }}>
                     {/* Display Attestation Information */}
@@ -116,7 +116,7 @@ const DonationReport: React.FC = () => {
         {reportData.attestations.length > 0 ? (
           <Grid container spacing={2}>
             {reportData.attestations.map((attestation: Claim, index: number) => (
-              <Grid item xs={12} key={index}>
+              <Grid item xs={12} key={attestation.subject}>
                 <Card sx={{ mb: 2, border: `solid 2px ${theme.palette.divider}` }}>
                   <CardContent>
                     {/* Display Attestation Information */}

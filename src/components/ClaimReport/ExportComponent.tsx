@@ -42,7 +42,7 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
       img.onload = () => {
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')
-        if (!ctx) return reject('Failed to get canvas context')
+        if (!ctx) return reject(new Error('Failed to get canvas context'))
 
         canvas.width = img.width
         canvas.height = img.height
@@ -64,7 +64,7 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
 
         resolve(canvas.toDataURL())
       }
-      img.onerror = () => reject('Failed to load image')
+      img.onerror = () => reject(new Error('Failed to load image'))
     })
   }
 
@@ -91,42 +91,41 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
     }
   }
 
-  //   Needs more work in formatting the pdf export will be added later, for now just use the image export untill it is ready or the design changes.
-  //   const exportAsPdf = async () => {
-  //     const node = document.getElementById(elementId)
-  //     if (node) {
-  //       setLoadingPdf(true)
-  //       try {
-  //         let dataUrl = await toPng(node, { cacheBust: true })
-  //         dataUrl = await addWatermark(dataUrl)
-  //         const pdf = new jsPDF('p', 'mm', 'a4')
-  //         const imgProps = pdf.getImageProperties(dataUrl)
-  //         const pdfWidth = pdf.internal.pageSize.getWidth()
-  //         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+  const exportAsPdf = async () => {
+    const node = document.getElementById(elementId)
+    if (node) {
+      setLoadingPdf(true)
+      try {
+        let dataUrl = await toPng(node, { cacheBust: true })
+        dataUrl = await addWatermark(dataUrl)
+        const pdf = new jsPDF('p', 'mm', 'a4')
+        const imgProps = pdf.getImageProperties(dataUrl)
+        const pdfWidth = pdf.internal.pageSize.getWidth()
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
 
-  //         let yOffset = 0
-  //         const pageHeight = pdf.internal.pageSize.getHeight()
+        let yOffset = 0
+        const pageHeight = pdf.internal.pageSize.getHeight()
 
-  //         while (yOffset < pdfHeight) {
-  //           pdf.addImage(dataUrl, 'PNG', 0, -yOffset, pdfWidth, pdfHeight)
-  //           yOffset += pageHeight
-  //           if (yOffset < pdfHeight) {
-  //             pdf.addPage()
-  //           }
-  //         }
+        while (yOffset < pdfHeight) {
+          pdf.addImage(dataUrl, 'PNG', 0, -yOffset, pdfWidth, pdfHeight)
+          yOffset += pageHeight
+          if (yOffset < pdfHeight) {
+            pdf.addPage()
+          }
+        }
 
-  //         pdf.save('report.pdf')
-  //       } catch (error) {
-  //         console.error('Failed to export as PDF:', error)
-  //       } finally {
-  //         setLoadingPdf(false)
-  //         handleClose()
-  //       }
-  //     } else {
-  //       console.error('Element not found for export as PDF')
-  //       handleClose()
-  //     }
-  //   }
+        pdf.save('report.pdf')
+      } catch (error) {
+        console.error('Failed to export as PDF:', error)
+      } finally {
+        setLoadingPdf(false)
+        handleClose()
+      }
+    } else {
+      console.error('Element not found for export as PDF')
+      handleClose()
+    }
+  }
 
   const printDocument = () => {
     const printContents = document.getElementById(elementId)?.innerHTML
@@ -151,10 +150,9 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
         <MenuItem onClick={exportAsImage} disabled={loadingImage || loadingPdf}>
           {loadingImage ? <CircularProgress size={24} /> : 'Export as Image'}
         </MenuItem>
-        {/* <MenuItem onClick={exportAsPdf} disabled={loadingImage || loadingPdf}>
+        <MenuItem onClick={exportAsPdf} disabled={loadingImage || loadingPdf}>
           {loadingPdf ? <CircularProgress size={24} /> : 'Export as PDF'}
-        </MenuItem> */}
-        {/* Needs more work in formatting the pdf export will be added later, for now just use the image export untill it is ready or the design changes. */}
+        </MenuItem>
         <MenuItem onClick={printDocument}>Print to PDF</MenuItem>
         <MenuItem onClick={handleShareLink}>Copy Link</MenuItem>
       </Menu>
