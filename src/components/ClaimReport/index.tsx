@@ -69,9 +69,9 @@ const DonationReport: React.FC = () => {
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
       <ExportComponent elementId='report-container' />
       <Box id='report-container'>
-        <Typography variant='h4' gutterBottom color={theme.palette.text.primary}>
-          Report for{' '}
-          <Typography variant='inherit' component='span' color={theme.palette.primary.main}>
+        <Typography variant='h4' gutterBottom color={theme.palette.texts}>
+        Report for{' '}
+        <Typography variant='inherit' component='span' color={theme.palette.maintext}>
             {reportData.claim.subject}
           </Typography>
         </Typography>
@@ -80,26 +80,26 @@ const DonationReport: React.FC = () => {
             {/* Display Claim Information */}
             <RenderClaimInfo claim={reportData.claim} />
             <Typography variant='body1'>
-              <Typography variant='inherit' component='span' sx={{ color: theme.palette.primary.main }}>
+            <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
                 Link:{' '}
               </Typography>
-              <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: theme.palette.primary.main }}>
+            <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: theme.palette.link }}>
                 https://live.linkedtrust.us/claims/{claimId}
               </Link>
             </Typography>
           </CardContent>
         </Card>
         {/* Placeholder for additional data section */}
-        <Typography variant='h6' gutterBottom sx={{ mt: 4 }} color={theme.palette.text.primary}>
+        <Typography variant='h6' gutterBottom sx={{ mt: 4 }} color={theme.palette.texts}>
           Validations:
         </Typography>
         {/* Customize this section with additional information as needed */}
-        {reportData.validations.length > 0 ? (
-          <Grid container spacing={2}>
-            {reportData.validations.map((attestation: Claim, index: number) => (
-              <Grid item xs={12} key={index}>
-                <Card sx={{ mb: 2, border: `solid 2px ${theme.palette.divider}` }}>
-                  <CardContent>
+        {reportData.data.validations.length > 0 ? (
+        <Grid container spacing={2}>
+          {reportData.data.validations.map((attestation: any, index: number) => (
+            <Grid item xs={12} key={index}>
+              <Card>
+                <CardContent sx={{ color: theme.palette.texts }}>
                     {/* Display Attestation Information */}
                     <RenderClaimInfo claim={attestation} />
                   </CardContent>
@@ -108,9 +108,9 @@ const DonationReport: React.FC = () => {
             ))}
           </Grid>
         ) : (
-          <Typography color={theme.palette.text.primary}>No Validations found.</Typography>
+          <Typography color={theme.palette.texts}>No Validations found.</Typography>
         )}
-        <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={theme.palette.text.primary}>
+        <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={theme.palette.texts}>
           Related Attestations:
         </Typography>
         {reportData.attestations.length > 0 ? (
@@ -127,7 +127,7 @@ const DonationReport: React.FC = () => {
             ))}
           </Grid>
         ) : (
-          <Typography color={theme.palette.text.primary}>No independent related attestations found.</Typography>
+          <Typography color={theme.palette.texts}>No independent related attestations found.</Typography>
         )}
       </Box>
     </Container>
