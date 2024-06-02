@@ -67,11 +67,11 @@ const DonationReport: React.FC = () => {
 
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-      <ExportComponent elementId='report-container' />
+     <ExportComponent elementId='report-container' />
       <Box id='report-container'>
         <Typography variant='h4' gutterBottom color={theme.palette.texts}>
-        Report for{' '}
-        <Typography variant='inherit' component='span' color={theme.palette.maintext}>
+          Report for{' '}
+          <Typography variant='inherit' component='span' color={theme.palette.maintext}>
             {reportData.claim.subject}
           </Typography>
         </Typography>
@@ -80,10 +80,10 @@ const DonationReport: React.FC = () => {
             {/* Display Claim Information */}
             <RenderClaimInfo claim={reportData.claim} />
             <Typography variant='body1'>
-            <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
+              <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
                 Link:{' '}
               </Typography>
-            <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: theme.palette.link }}>
+              <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: theme.palette.link }}>
                 https://live.linkedtrust.us/claims/{claimId}
               </Link>
             </Typography>
@@ -95,11 +95,11 @@ const DonationReport: React.FC = () => {
         </Typography>
         {/* Customize this section with additional information as needed */}
         {reportData.data.validations.length > 0 ? (
-        <Grid container spacing={2}>
-          {reportData.data.validations.map((attestation: any, index: number) => (
-            <Grid item xs={12} key={index}>
-              <Card>
-                <CardContent sx={{ color: theme.palette.texts }}>
+          <Grid container spacing={2}>
+            {reportData.data.validations.map((attestation: any, index: number) => (
+              <Grid item xs={12} key={index}>
+                <Card>
+                  <CardContent sx={{ color: theme.palette.texts }}>
                     {/* Display Attestation Information */}
                     <RenderClaimInfo claim={attestation} />
                   </CardContent>
