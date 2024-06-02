@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles'
 import React, { useEffect, useState } from 'react'
 import { Menu, IconButton, Button, Box, Fade, Tooltip } from '@mui/material'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
@@ -9,6 +10,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const openMenu = Boolean(anchorEl)
+  const theme = useTheme()
 
   const handleNavigate = (path: string) => {
     setOpen(false)
@@ -80,7 +82,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: theme.palette.profileButton,
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
@@ -96,7 +98,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: theme.palette.profileButton,
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
@@ -108,7 +110,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
             sx={{
               width: '85%',
               marginBottom: '1em',
-              color: '#2f0101',
+              color: theme.palette.profileButton,
               backgroundColor: 'FAFAFA',
               boxShadow: 'none',
               border: 'none'
@@ -125,10 +127,10 @@ const ProfileDropdown = ({ isAuth }: any) => {
             color='error'
             size='large'
             sx={{
-              backgroundColor: 'primary.main',
-              color: '#fff',
+              backgroundColor: theme.palette.buttons,
+              color: theme.palette.buttontext,
               '&:hover': {
-                backgroundColor: '#00695f'
+                backgroundColor: theme.palette.buttonHover
               }
             }}
           >

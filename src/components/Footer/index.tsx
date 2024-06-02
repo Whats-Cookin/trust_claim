@@ -15,28 +15,28 @@ const Footer: React.FC = () => {
         textAlign: 'center',
         alignItems: 'center',
         gap: '1rem',
-        backgroundColor: '#1a1a1a00',
-        color: '#ffffff',
+        backgroundColor: theme.palette.footerBackground,
+        color: theme.palette.footerText,
         bottom: 0,
         width: '100%'
       }}
     >
-      <Link to='/' style={{ color: '#ffffff', textDecoration: 'none' }}>
+      <Link to='/' style={{ color: theme.palette.maintext, textDecoration: 'none' }}>
         <Typography>© {new Date().getFullYear()} LinkedTrust</Typography>
       </Link>
       <Box sx={{ display: 'flex', gap: '1rem' }}>
         <Typography>
-          <Link to='/terms' style={{ color: '#ffffff', textDecoration: 'none' }}>
+          <Link to='/terms' style={{ color: theme.palette.footerText, textDecoration: 'none' }}>
             Terms of Service
           </Link>
         </Typography>
         <Typography>
-          <Link to='/privacy' style={{ color: '#ffffff', textDecoration: 'none' }}>
+          <Link to='/privacy' style={{ color: theme.palette.footerText, textDecoration: 'none' }}>
             Privacy Policy
           </Link>
         </Typography>
         <Typography>
-          <Link to='/cookie' style={{ color: '#ffffff', textDecoration: 'none' }}>
+          <Link to='/cookie' style={{ color: theme.palette.footerText, textDecoration: 'none' }}>
             Cookie Policy
           </Link>
         </Typography>
