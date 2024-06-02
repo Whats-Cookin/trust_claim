@@ -32,30 +32,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         '& .MuiDrawer-paper': {
           width: 240,
           boxSizing: 'border-box',
-          backgroundColor: '#0a1c1d',
-          color: '#fff',
+          backgroundColor: theme.palette.footerBackground,
+          color: theme.palette.texts,
           marginTop: '64px'
         }
       }}
     >
       <List>
         <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
-          <Home sx={{ color: '#fff' }} />
-          <ListItemText primary='Home' />
+          <Home sx={{ color: theme.palette.icons }} />
+          <ListItemText primary='Home' sx={{ color: theme.palette.buttontext }} />
         </ListItemButton>
         <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
-          <Search sx={{ color: '#fff' }} />
-          <ListItemText primary='Search' />
+          <Search sx={{ color: theme.palette.icons }} />
+          <ListItemText primary='Search' sx={{ color: theme.palette.buttontext }} />
         </ListItemButton>
         {isAuth ? (
           <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
             <Button
               sx={{
                 width: '100%',
-                color: '#fff',
-                backgroundColor: 'primary.main',
+                color: theme.palette.buttontext,
+                backgroundColor: theme.palette.buttons,
                 '&:hover': {
-                  backgroundColor: '#00695f'
+                  backgroundColor: theme.palette.buttonHover
                 }
               }}
             >
@@ -67,16 +67,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
               <Button
                 variant='contained'
-                color='primary'
-                component='button'
                 onClick={() => navigate('/')}
                 sx={{
-                  backgroundColor: '#009688',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
                   borderRadius: '30px',
                   width: '100%',
                   maxwidth: isSmallScreen ? '100%' : '16vw',
                   '&:hover': {
-                    backgroundColor: '#00796b'
+                    backgroundColor: theme.palette.buttonHover
                   }
                 }}
               >
@@ -86,16 +85,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
             <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
               <Button
                 variant='contained'
-                color='primary'
-                component='button'
                 onClick={() => navigate('/')}
                 sx={{
-                  backgroundColor: '#009688',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
                   borderRadius: '30px',
                   width: '100%',
                   maxwidth: isSmallScreen ? '100%' : '16vw',
                   '&:hover': {
-                    backgroundColor: '#00796b'
+                    backgroundColor: theme.palette.buttonHover
                   }
                 }}
               >
@@ -109,18 +107,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
         <Box sx={{ p: 2, mt: 'auto', mb: '64px', display: 'flex', justifyContent: 'center' }}>
           <Button
             variant='contained'
-            color='primary'
-            component='button'
             startIcon={<Create />}
             onClick={() => navigate('/')}
             sx={{
-              backgroundColor: '#009688',
+              color: theme.palette.buttontext,
+              backgroundColor: theme.palette.buttons,
               borderRadius: '30px',
               width: '100%',
               maxwidth: isSmallScreen ? '16vw' : '100%',
               gap: '1rem',
               '&:hover': {
-                backgroundColor: '#00796b'
+                backgroundColor: theme.palette.buttonHover
               }
             }}
           >
