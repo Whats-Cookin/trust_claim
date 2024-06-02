@@ -1,9 +1,5 @@
-import { useTheme } from '@mui/material'
-import React, { useEffect } from 'react'
-import Box from '@mui/material/Box'
-import { useNavigate } from 'react-router-dom'
-import Typography from '@mui/material/Typography'
 import {
+  useTheme,
   TextField,
   Button,
   FormControl,
@@ -17,6 +13,11 @@ import {
   Rating,
   FormHelperText
 } from '@mui/material'
+import React, { useEffect } from 'react'
+import Box from '@mui/material/Box'
+import { useNavigate } from 'react-router-dom'
+import Typography from '@mui/material/Typography'
+
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import IHomeProps from '../../containers/Form/types'
@@ -671,6 +672,7 @@ export const Form = ({
             ml: 1,
             mr: 1,
             width: '50%',
+            color: theme.palette.buttontext,
             bgcolor: theme.palette.buttons,
             margin: '0 auto',
             '&:hover': {

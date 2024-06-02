@@ -68,7 +68,7 @@ const SourceLink = ({ claim }: { claim: LocalClaim }) => {
   )
 }
 
-const FeedClaim: React.FC<IHomeProps> = () => {
+const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
   const [isAuth, setIsAuth] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -138,7 +138,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             backgroundColor: theme.palette.formBackground
           }}
         >
-          {!isMediumScreen && <AlwaysOpenSidebar isAuth={isAuth} />}
+          {!isMediumScreen && <AlwaysOpenSidebar isAuth={isAuth} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
           {claims.map((claim: any, index: number) => (
             <Box key={claim.id}>
               <Card
@@ -201,10 +201,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         fontWeight: 'bold',
                         marginRight: '10px',
                         p: '4px',
-                        color: theme.palette.buttontext,
+                        color: theme.palette.cardsbuttons,
                         '&:hover': {
                           backgroundColor: theme.palette.buttonHover,
-                          color: theme.palette.buttontext
+                          color: theme.palette.cardsbuttons
                         }
                       }}
                     >
@@ -218,10 +218,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           fontWeight: 'bold',
                           marginRight: '10px',
                           p: '4px',
-                          color: theme.palette.buttontext,
+                          color: theme.palette.cardsbuttons,
                           '&:hover': {
                             backgroundColor: theme.palette.buttonHover,
-                            color: theme.palette.buttontext
+                            color: theme.palette.cardsbuttons
                           }
                         }}
                       >
@@ -236,10 +236,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         fontWeight: 'bold',
                         marginRight: '10px',
                         p: '4px',
-                        color: theme.palette.buttontext,
+                        color: theme.palette.cardsbuttons,
                         '&:hover': {
                           backgroundColor: theme.palette.buttonHover,
-                          color: theme.palette.buttontext
+                          color: theme.palette.cardsbuttons
                         }
                       }}
                     >

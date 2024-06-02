@@ -297,7 +297,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             {ethLoginOpt}
           </Box>
 
-          <Typography variant='body1' style={{ color: 'black' }}>
+          <Typography variant='body1' style={{ color: theme.palette.texts }}>
             Click here to{' '}
             <Typography
               component='span'

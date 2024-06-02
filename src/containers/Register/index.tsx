@@ -3,16 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
-import styles from './styles'
-import { TextField, Box, Button } from '@mui/material'
+import { TextField, Box, Button, useTheme } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
-import { useTheme } from '@mui/material'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm()
 
@@ -38,12 +35,35 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
       console.error('err', err.response.data.message)
     }
   })
+
   return (
     <>
       <BackgroundImages />
       <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
-        <Box sx={styles.authContainer}>
-          <Typography variant='h5' style={{ textAlign: 'center' }} sx={{ color: 'primary.main' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: 2,
+            width: '100%',
+            padding: '2rem',
+            maxWidth: '430px',
+            marginTop: { xs: 15, md: 8 },
+            background: theme.palette.pageBackground,
+            boxShadow: '0px 1px 20px theme.pallete.shadows',
+            zIndex: 20,
+            borderRadius: '10px'
+          }}
+        >
+          <Typography
+            variant='h5'
+            style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: '2.5rem'
+            }}
+            sx={{ color: theme.palette.maintext }}
+          >
             Register
           </Typography>
           <TextField
@@ -56,6 +76,27 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             })}
             fullWidth
             label='Email'
+            sx={{
+              backgroundColor: theme.palette.formBackground,
+              '& .MuiFilledInput-root': {
+                backgroundColor: theme.palette.formBackground
+              },
+              '& .MuiInputLabel-root': {
+                color: theme.palette.texts
+              },
+              '& .MuiFilledInput-input': {
+                color: theme.palette.texts
+              },
+              '& .MuiFilledInput-underline:before': {
+                borderBottomColor: theme.palette.texts
+              },
+              '& .MuiFilledInput-underline:after': {
+                borderBottomColor: theme.palette.texts
+              },
+              '& .MuiFormHelperText-root': {
+                color: theme.palette.texts
+              }
+            }}
             variant='filled'
             type='email'
             helperText={(errors.email?.message as string) || ''}
@@ -67,21 +108,52 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             })}
             fullWidth
             label='Password'
+            sx={{
+              backgroundColor: theme.palette.formBackground,
+              '& .MuiFilledInput-root': {
+                backgroundColor: theme.palette.formBackground
+              },
+              '& .MuiInputLabel-root': {
+                color: theme.palette.texts
+              },
+              '& .MuiFilledInput-input': {
+                color: theme.palette.texts
+              },
+              '& .MuiFilledInput-underline:before': {
+                borderBottomColor: theme.palette.texts
+              },
+              '& .MuiFilledInput-underline:after': {
+                borderBottomColor: theme.palette.texts
+              },
+              '& .MuiFormHelperText-root': {
+                color: theme.palette.texts
+              }
+            }}
             variant='filled'
             type='password'
             helperText={(errors.password?.message as string) || ''}
             error={!!errors.password}
           />
           <Box>
-            <Button type='submit' variant='contained' size='medium' sx={styles.submitButton}>
+            <Button
+              type='submit'
+              variant='contained'
+              size='medium'
+              sx={{
+                width: '100%',
+                color: theme.palette.buttontext,
+                backgroundColor: theme.palette.buttons,
+                '&:hover': { backgroundColor: theme.palette.buttonHover }
+              }}
+            >
               Register
             </Button>
           </Box>
-          <Typography variant='body1' style={{ color: 'black' }}>
+          <Typography variant='body1' style={{ color: theme.palette.texts }}>
             Click here to{' '}
             <Typography
               onClick={() => navigate('/login')}
-              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+              sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer' }}
             >
               Login
             </Typography>

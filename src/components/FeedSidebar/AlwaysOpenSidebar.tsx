@@ -1,14 +1,15 @@
 import React from 'react'
-import { List, ListItemText, ListItemButton, Button, Box, useMediaQuery, useTheme } from '@mui/material'
-import { Home, Search } from '@mui/icons-material'
-import CreateIcon from '@mui/icons-material/Create'
+import { List, ListItemText, ListItemButton, Button, Box, useMediaQuery, useTheme, IconButton } from '@mui/material'
+import { Home, Search, Brightness7, DarkMode, Create } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 
 interface SidebarProps {
   isAuth: boolean
+  toggleTheme: () => void
+  isDarkMode: boolean
 }
 
-const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
+const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
   const theme = useTheme()
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -51,6 +52,12 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
         >
           <Search sx={{ color: theme.palette.texts }} />
           <ListItemText primary='Search' />
+        </ListItemButton>
+        <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={toggleTheme}>
+          <IconButton sx={{ color: theme.palette.texts }} aria-label='toggle theme'>
+            {isDarkMode ? <Brightness7 /> : <DarkMode />}
+          </IconButton>
+          <ListItemText primary={isDarkMode ? 'Light' : 'Dark'} />
         </ListItemButton>
         {isAuth ? (
           <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={handleLogout}>
@@ -117,7 +124,7 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
         <Box sx={{ p: 2, mt: 'auto', mb: '64px', display: 'flex', justifyContent: 'center' }}>
           <Button
             variant='contained'
-            startIcon={<CreateIcon />}
+            startIcon={<Create />}
             onClick={() => navigate('/')}
             sx={{
               backgroundColor: theme.palette.buttons,
@@ -125,6 +132,7 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
               borderRadius: '30px',
               width: '16vw',
               maxWidth: isSmallScreen ? '16vw' : '100%',
+              minWidth: '175px',
               gap: '1rem',
               '&:hover': {
                 backgroundColor: theme.palette.buttonHover
