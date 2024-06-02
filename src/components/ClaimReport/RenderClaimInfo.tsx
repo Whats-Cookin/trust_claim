@@ -68,6 +68,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
+          gap: '20px',
           flexDirection: {
             xs: 'column',
             sm: 'row'
@@ -77,8 +78,13 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
         {/* Render the image */}
         <Box
           sx={{
+            flexShrink: 0,
             marginInline: {
               xs: 'auto',
+              sm: 0
+            },
+            order: {
+              xs: 2,
               sm: 0
             }
           }}
@@ -101,14 +107,22 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
         </Box>
 
         {/* Render other claim information */}
-        <Box style={{ paddingInline: '10px' }}>
+        <Box
+          sx={{
+            paddingInline: '10px',
+            flexGrow: 1,
+            order: {
+              xs: 3,
+              sm: 0
+            }
+          }}
+        >
           {claim.subject && (
             <Link
               href={claim.subject}
               target='_blank'
               style={{
                 color: 'white',
-                flexGrow: 1,
                 fontSize: 24,
                 display: 'flex',
                 alignItems: 'center',
@@ -155,7 +169,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                     component='span'
                     sx={{
                       color: 'white',
-                      fontWeight: 600
+                      fontWeight: 600,
+                      textAlign: 'left'
                     }}
                   >
                     {value}
@@ -164,26 +179,22 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               )
             )
           })}
-
-          {/* Render Rating */}
-          {claim.stars && (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                marginTop: '1rem'
-              }}
-            >
-              <Rating name='size-medium' defaultValue={parseInt(claim.stars)} style={{ color: '#009688' }} readOnly />
-            </Box>
-          )}
         </Box>
 
         {/* Render popup */}
-        <Box style={{ flexShrink: 0 }}>
+        <Box
+          sx={{
+            flexShrink: 0,
+            marginInline: 'auto',
+            marginRight: 0,
+            order: {
+              xs: 1,
+              sm: 0
+            }
+          }}
+        >
           <IconButton onClick={handleClick}>
-            <MoreHorizIcon style={{ color: 'white' }} />
+            <MoreHorizIcon style={{ color: '#4C726F' }} />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -247,6 +258,20 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
           </Menu>
         </Box>
       </Box>
+
+      {/* Render Rating */}
+      {claim.stars && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            marginTop: '1rem'
+          }}
+        >
+          <Rating name='size-medium' defaultValue={parseInt(claim.stars)} style={{ color: '#009688' }} readOnly />
+        </Box>
+      )}
 
       {openD && claim.image && (
         <Dialog open={openD} onClose={() => setOpenD(false)}>

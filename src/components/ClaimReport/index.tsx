@@ -79,41 +79,41 @@ const DonationReport = () => {
           <RenderClaimInfo claim={reportData.data.claim} />
         </CardContent>
       </Card>
-      {/* Placeholder for additional data section */}
-      <Ribbon>Validations</Ribbon>
       {/* Customize this section with additional information as needed */}
-      {reportData.data.validations.length > 0 ? (
-        <Grid container spacing={2}>
-          {reportData.data.validations.map((attestation: any, index: number) => (
-            <Grid item xs={12} key={index}>
-              <Card style={{ backgroundColor: '#4C726F33' }}>
-                <CardContent color={'white'}>
-                  {/* Display Attestation Information */}
-                  <RenderClaimInfo claim={attestation} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Typography color={'white'}>No Validations found.</Typography>
+      {reportData.data.validations.length > 0 && (
+        <>
+          <Ribbon>Validations</Ribbon>
+          <Grid container spacing={2}>
+            {reportData.data.validations.map((attestation: any, index: number) => (
+              <Grid item xs={12} key={index}>
+                <Card style={{ backgroundColor: '#4C726F33' }}>
+                  <CardContent color={'white'}>
+                    {/* Display Attestation Information */}
+                    <RenderClaimInfo claim={attestation} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
-      <Ribbon>Related Attestations</Ribbon>
-      {reportData.data.attestations.length > 0 ? (
-        <Grid container spacing={2}>
-          {reportData.data.attestations.map((attestation: any, index: number) => (
-            <Grid item xs={12} key={index}>
-              <Card style={{ backgroundColor: '#4C726F33' }}>
-                <CardContent color={'white'}>
-                  {/* Display Attestation Information */}
-                  <RenderClaimInfo claim={attestation} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Typography color={'white'}>No independent related attestations found.</Typography>
+
+      {reportData.data.attestations.length > 0 && (
+        <>
+          <Ribbon>Related Attestations</Ribbon>
+          <Grid container spacing={2}>
+            {reportData.data.attestations.map((attestation: any, index: number) => (
+              <Grid item xs={12} key={index}>
+                <Card style={{ backgroundColor: '#4C726F33' }}>
+                  <CardContent color={'white'}>
+                    {/* Display Attestation Information */}
+                    <RenderClaimInfo claim={attestation} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
     </Container>
   )
