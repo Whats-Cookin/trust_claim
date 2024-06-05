@@ -22,33 +22,36 @@ const FeedFooter: React.FC = () => {
         zIndex: 1000
       }}
     >
+      <Typography sx={{ color: theme.palette.maintext, marginBottom: '0.5rem' }}>
+        © {new Date().getFullYear()} LinkedTrust
+      </Typography>
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'column-reverse',
+          flexDirection: 'row',
           alignItems: 'center',
-          width: '90%',
+          justifyContent: 'center',
+          width: '100%',
           maxWidth: '23vw',
           color: theme.palette.texts,
           textAlign: 'center'
         }}
       >
-        <Typography>
+        <Typography sx={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>
           <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
             Terms of Service
           </Link>
         </Typography>
-        <Typography>
+        <Typography sx={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>
           <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
             Privacy Policy
           </Link>
         </Typography>
-        <Typography>
+        <Typography sx={{ marginLeft: '0.5rem', marginRight: '0.5rem' }}>
           <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
             Cookie Policy
           </Link>
         </Typography>
-        <Typography sx={{ marginTop: '0.5rem' }}>© {new Date().getFullYear()} LinkedTrust</Typography>
       </Box>
     </Box>
   )

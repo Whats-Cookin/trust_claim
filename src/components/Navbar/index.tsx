@@ -87,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
               variant='h6'
               component='div'
               sx={{
-                color: theme.palette.maintext,
+                color: theme.palette.texts,
                 textAlign: 'center',
                 flexGrow: isSmallScreen ? 1 : 0
               }}

@@ -221,7 +221,14 @@ export const Form = ({
   }
   const theme = useTheme()
   return (
-    <Box sx={{ backgroundColor: theme.palette.formBackground }}>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.formBackground,
+        boxShadow: `0 0 30px ${theme.palette.shadows}`,
+        borderRadius: '10px',
+        border: `1px solid ${theme.palette.borderColor}`
+      }}
+    >
       <DialogTitle>
         <Typography
           variant='h4'

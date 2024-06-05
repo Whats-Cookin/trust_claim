@@ -213,9 +213,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           maxWidth: '830px',
           marginTop: { xs: 15, md: 8 },
           backgroundColor: theme.palette.formBackground,
-          boxShadow: '0px 1px 20px theme.pallete.shadows',
-          zIndex: 20,
+          boxShadow: `0 0 30px ${theme.palette.shadows}`,
           borderRadius: '10px',
+          border: `1px solid ${theme.palette.borderColor}`,
+          zIndex: 20,
           margin: '0 auto'
         }}
       >

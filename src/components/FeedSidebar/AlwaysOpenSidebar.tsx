@@ -53,8 +53,27 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDark
           <Search sx={{ color: theme.palette.texts }} />
           <ListItemText primary='Search' />
         </ListItemButton>
-        <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={toggleTheme}>
-          <IconButton sx={{ color: theme.palette.texts }} aria-label='toggle theme'>
+        <ListItemButton
+          sx={{
+            gap: '1rem',
+            width: '100%',
+            justifyContent: 'center',
+            '&:hover': {
+              backgroundColor: theme.palette.action.hover
+            }
+          }}
+          onClick={toggleTheme}
+        >
+          <IconButton
+            sx={{
+              color: theme.palette.texts,
+              '&:hover': {
+                backgroundColor: 'transparent'
+              }
+            }}
+            aria-label='toggle theme'
+            disableRipple
+          >
             {isDarkMode ? <Brightness7 /> : <DarkMode />}
           </IconButton>
           <ListItemText primary={isDarkMode ? 'Light' : 'Dark'} />
