@@ -25,6 +25,7 @@ import Loader from '../../components/Loader'
 import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
 import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -67,6 +68,15 @@ const SourceLink = ({ claim }: { claim: LocalClaim }) => {
     </Typography>
   )
 }
+const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClaim> => {
+  const uniqueClaimsMap = new Map<number, ImportedClaim>()
+
+  claims.forEach(claim => {
+    uniqueClaimsMap.set(claim.claim_id, claim)
+  })
+
+  return Array.from(uniqueClaimsMap.values())
+}
 
 const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
@@ -85,7 +95,8 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, { timeout: 60000 })
       .then(res => {
         console.log(res.data)
-        setClaims(res.data)
+        const filteredClaims = filterDuplicateClaims(res.data)
+        setClaims(filteredClaims)
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
@@ -125,6 +136,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   return (
     <>
+      <OverlayModal />
       {claims && claims.length > 0 ? (
         <Box
           sx={{
@@ -139,6 +151,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
           }}
         >
           {!isMediumScreen && <AlwaysOpenSidebar isAuth={isAuth} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
+
           {claims.map((claim: any, index: number) => (
             <Box key={claim.id}>
               <Card

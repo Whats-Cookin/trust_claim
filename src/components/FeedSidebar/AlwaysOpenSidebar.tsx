@@ -2,6 +2,7 @@ import React from 'react'
 import { List, ListItemText, ListItemButton, Button, Box, useMediaQuery, useTheme, IconButton } from '@mui/material'
 import { Home, Search, Brightness7, DarkMode, Create } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
+import { checkAuth } from '../../utils/authUtils'
 
 interface SidebarProps {
   isAuth: boolean
@@ -11,10 +12,9 @@ interface SidebarProps {
 
 const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
   const theme = useTheme()
-
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   const navigate = useNavigate()
+  const isAuth = checkAuth()
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
