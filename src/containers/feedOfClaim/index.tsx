@@ -25,6 +25,7 @@ import Loader from '../../components/Loader'
 import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
 import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -135,6 +136,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   return (
     <>
+      <OverlayModal />
       {claims && claims.length > 0 ? (
         <Box
           sx={{
