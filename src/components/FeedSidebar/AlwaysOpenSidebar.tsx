@@ -5,12 +5,11 @@ import { useNavigate } from 'react-router-dom'
 import { checkAuth } from '../../utils/authUtils'
 
 interface SidebarProps {
-  isAuth: boolean
   toggleTheme: () => void
   isDarkMode: boolean
 }
 
-const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
+const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ toggleTheme, isDarkMode }) => {
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const navigate = useNavigate()
