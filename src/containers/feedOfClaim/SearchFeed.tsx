@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TextField, Box, useMediaQuery, useTheme } from '@mui/material'
+import { Box, InputBase, useMediaQuery, useTheme, Paper, Typography } from '@mui/material'
 import RenderClaims from './RenderClaims'
 import { ImportedClaim } from './types'
 
@@ -31,24 +31,50 @@ const SearchFeed = ({
           mt: '20px'
         }}
       >
-        <TextField
-          variant='outlined'
-          placeholder='Search claims...'
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          sx={{ width: isMediumScreen ? '100%' : '50%' }}
-        />
+        <Paper
+          component='div'
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '45px',
+            width: '100%',
+            maxWidth: isMediumScreen ? '80vw' : '50%',
+            borderRadius: '25px',
+            backgroundColor: theme.palette.searchBarBackground,
+            padding: '0 8px',
+            boxShadow: theme.shadows[1]
+          }}
+        >
+          <InputBase
+            type='search'
+            value={search}
+            placeholder='Search claims...'
+            onChange={e => setSearch(e.target.value)}
+            sx={{
+              ml: 1,
+              flex: 1,
+              color: theme.palette.searchBarText,
+              fontFamily: 'Roboto'
+            }}
+          />
+        </Paper>
       </Box>
-      <RenderClaims
-        claims={filteredClaims}
-        search={search}
-        handleValidation={handleValidation}
-        handleMenuClick={handleMenuClick}
-        handleClose={handleClose}
-        anchorEl={anchorEl}
-        selectedIndex={selectedIndex}
-        handleschema={handleschema}
-      />
+      {filteredClaims.length > 0 ? (
+        <RenderClaims
+          claims={filteredClaims}
+          search={search}
+          handleValidation={handleValidation}
+          handleMenuClick={handleMenuClick}
+          handleClose={handleClose}
+          anchorEl={anchorEl}
+          selectedIndex={selectedIndex}
+          handleschema={handleschema}
+        />
+      ) : (
+        <Typography variant='h6' sx={{ textAlign: 'center', mt: '20px', color: theme.palette.texts }}>
+          No results found for "{search}"
+        </Typography>
+      )}
     </Box>
   )
 }
