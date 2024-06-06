@@ -73,3 +73,7 @@ export type Claim = {
   }[]
   edgesTo: never[]
 }
+export type ImportedClaim = {}
+export type LocalClaim = {
+  name: string
+}
