@@ -150,7 +150,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
             backgroundColor: theme.palette.formBackground
           }}
         >
-          {!isMediumScreen && <AlwaysOpenSidebar isAuth={isAuth} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
+          {!isMediumScreen && <AlwaysOpenSidebar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
 
           {claims.map((claim: any, index: number) => (
             <Box key={claim.id}>
