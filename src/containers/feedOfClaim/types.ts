@@ -9,6 +9,7 @@ export interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 export type Claim = {
+  claim_id: number
   id: number
   nodeUri: string
   name: string

@@ -3,17 +3,13 @@ import { List, ListItemText, ListItemButton, Button, Box, useMediaQuery, useThem
 import { Home, Search } from '@mui/icons-material'
 import CreateIcon from '@mui/icons-material/Create'
 import { useNavigate } from 'react-router-dom'
+import { checkAuth } from '../../utils/authUtils'
 
-interface SidebarProps {
-  isAuth: boolean
-}
-
-const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ isAuth }) => {
+const AlwaysOpenSidebar = () => {
   const theme = useTheme()
-
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-
   const navigate = useNavigate()
+  const isAuth = checkAuth()
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken')
