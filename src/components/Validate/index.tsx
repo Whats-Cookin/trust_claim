@@ -18,7 +18,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import Tooltip from '@mui/material/Tooltip'
 import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { useQueryParams } from '../../hooks'
@@ -48,7 +48,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
   const subject = queryParams.get('subject')
-  const howknown = (queryParams.get('how_known') || '').replace(/_/g, ' ') || 'FIRST_HAND'
+  const howknown = (queryParams.get('how_known') ?? '').replace(/_/g, ' ') || 'FIRST_HAND'
   console.log('how known: ' + howknown)
   const toggleExpansion = () => {
     setExpanded(!expanded)
@@ -59,9 +59,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     setHowknownInputValue(selectedValue)
   }
 
+  let number: string | undefined
   if (subject) {
     const parts = subject.split('/')
-    var number = parts[parts.length - 1] || undefined
+    number = parts[parts.length - 1] || undefined
   }
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        var res = await axios.get(`/api/claim/${number}`)
+        let res = await axios.get(`/api/claim/${number}`)
         console.log(res.data)
         setSubjectValue(res.data.subject)
         setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
@@ -105,10 +106,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
     reset,
     watch,
-    control,
     setValue
   } = useForm({
     defaultValues: {
@@ -289,9 +289,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </Typography>
                   <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
                     {expanded ? (
-                      <>
-                        <ExpandLessIcon />
-                      </>
+                      <ExpandLessIcon />
                     ) : (
                       <Box style={{ display: 'flex', alignItems: 'center' }}>
                         <ExpandMoreIcon />

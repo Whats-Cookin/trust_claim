@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Button, Typography, Checkbox, FormControlLabel } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 const OverlayModal: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
   const [dontShowAgain, setDontShowAgain] = useState(false)
-
+  const theme = useTheme()
   useEffect(() => {
     const dontShowOverlay = localStorage.getItem('dontShowOverlay')
     const lastShown = localStorage.getItem('lastShownOverlay')
@@ -46,20 +47,22 @@ const OverlayModal: React.FC = () => {
     >
       <Box
         sx={{
-          backgroundColor: '#fff',
+          backgroundColor: theme.palette.pageBackground,
           padding: 3,
           borderRadius: 2,
           textAlign: 'center',
           width: '75%'
         }}
       >
-        <Typography variant='h6'>Welcome to LinkedTrust! 🎉</Typography>
-        <Typography sx={{ margin: '10px 0' }}>
+        <Typography variant='h6' sx={{ color: theme.palette.maintext }}>
+          Welcome to LinkedTrust! 🎉
+        </Typography>
+        <Typography sx={{ margin: '10px 0', color: theme.palette.texts }}>
           LinkedTrust is a platform that allows you to create and share trustable claims or attestations about anything
           with a URI address. Imagine being able to verify or vouch for things, such as someone's skills, achievements,
           or content, in a decentralized and secure way.
         </Typography>
-        <Typography sx={{ margin: '10px 0', textAlign: 'left' }}>
+        <Typography sx={{ margin: '10px 0', textAlign: 'left', color: theme.palette.texts }}>
           <strong>How It Works:</strong>
           <ul>
             <li>
@@ -84,19 +87,21 @@ const OverlayModal: React.FC = () => {
           </ul>
         </Typography>
         <FormControlLabel
-          control={<Checkbox checked={dontShowAgain} onChange={handleCheckboxChange} />}
+          control={
+            <Checkbox checked={dontShowAgain} onChange={handleCheckboxChange} sx={{ color: theme.palette.texts }} />
+          }
           label="Don't show again"
         />
         <Button
           variant='contained'
           onClick={handleClose}
           sx={{
-            color: '#fff',
+            color: theme.palette.buttontext,
             width: '100%',
             maxWidth: '16vw',
-            backgroundColor: 'primary.main',
+            backgroundColor: theme.palette.buttons,
             '&:hover': {
-              backgroundColor: '#00695f'
+              backgroundColor: theme.palette.buttonHover
             }
           }}
         >

@@ -135,7 +135,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                 fontWeight: 1000
               }}
             >
-              {`${subject || 'this company'}`}
+              {`${subject ?? 'this company'}`}
             </strong>
           </Typography>
         </Box>
