@@ -6,10 +6,21 @@ import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-
+import { useTheme } from '@mui/system'
 import { CERAMIC_URL } from '../../utils/settings'
 
-const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
+const RenderClaimInfo = ({
+  claim,
+  index,
+  setSelectedIndex,
+  handleMenuClose
+}: {
+  claim: { [key: string]: string }
+  index: number
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
+  handleMenuClose: () => void
+}) => {
+  const theme = useTheme()
   const excludedKeys = [
     'id',
     'issuerId',
@@ -42,9 +53,11 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
+    setSelectedIndex(index)
   }
   const handleClose = () => {
     setAnchorEl(null)
+    handleMenuClose()
   }
   const options = [
     {
@@ -102,7 +115,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               borderRadius: '50%'
             }}
             onClick={() => setOpenD(true)}
-            alt='claim image'
+            alt='claim'
           />
         </Box>
 
@@ -122,7 +135,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               href={claim.subject}
               target='_blank'
               style={{
-                color: 'white',
+                color: theme.palette.texts,
                 fontSize: 24,
                 display: 'flex',
                 alignItems: 'center',
@@ -133,7 +146,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               <OpenInNewIcon
                 sx={{
                   marginLeft: '5px',
-                  color: '#ffffff',
+                  color: theme.palette.texts,
                   fontSize: '1.5rem'
                 }}
               />
@@ -143,7 +156,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
           <Typography
             variant='body1'
             sx={{
-              color: 'white',
+              color: theme.palette.date,
               fontWeight: 500,
               marginBottom: '1rem'
             }}
@@ -168,7 +181,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                     variant='inherit'
                     component='span'
                     sx={{
-                      color: 'white',
+                      color: theme.palette.texts,
                       fontWeight: 600,
                       textAlign: 'left'
                     }}
@@ -194,18 +207,24 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
           }}
         >
           <IconButton onClick={handleClick}>
-            <MoreHorizIcon style={{ color: '#4C726F' }} />
+            <MoreHorizIcon style={{ color: theme.palette.smallButton }} />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: 200,
-                width: '21rem',
-                backgroundColor: '#172D2D',
-                color: 'white'
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+            sx={{
+              '& .MuiPaper-root': {
+                backgroundColor: theme.palette.menuBackground,
+                color: theme.palette.texts
               }
             }}
           >
@@ -269,7 +288,12 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             marginTop: '1rem'
           }}
         >
-          <Rating name='size-medium' defaultValue={parseInt(claim.stars)} style={{ color: '#009688' }} readOnly />
+          <Rating
+            name='size-medium'
+            defaultValue={parseInt(claim.stars)}
+            style={{ color: theme.palette.stars }}
+            readOnly
+          />
         </Box>
       )}
 
@@ -281,8 +305,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               top: '0px',
               right: '0px',
               cursor: 'pointer',
-              color: 'white',
-              backgroundColor: '#333',
+              color: theme.palette.texts,
+              backgroundColor: theme.palette.dialogBackground,
               borderRadius: '50%',
               padding: '0.2rem',
               margin: '0.2rem'
@@ -295,7 +319,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               width: '100%',
               maxHeight: '100%'
             }}
-            alt='claim image'
+            alt='claim'
           />
         </Dialog>
       )}
