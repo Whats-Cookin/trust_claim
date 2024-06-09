@@ -66,7 +66,6 @@ const Search = (homeProps: IHomeProps) => {
     setLoading(true)
     try {
       const res = await axios.get(`/api/node/${id}?page=${page}&limit=5`)
-
       if (res.data) {
         let newNodes: any[] = []
         let newEdges: any[] = []
@@ -97,11 +96,8 @@ const Search = (homeProps: IHomeProps) => {
 
       if (currentClaim) {
         setSelectedClaim(currentClaim)
-        setOpenNewClaim(true)
+        fetchRelatedClaims(event.target.data('id'), page.current)
       }
-    } else {
-      await fetchRelatedClaims(event.target.data('id'), page.current)
-      //page.current = page.current + 1
     }
   }
 
@@ -133,7 +129,6 @@ const Search = (homeProps: IHomeProps) => {
     event.preventDefault()
     const claim = event.target
     const currentClaim = claim.data('raw')
-    console.log('plaaaaaaaay', currentClaim)
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
