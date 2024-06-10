@@ -54,12 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
     <Box sx={{ display: 'flex' }}>
       <AppBar
         position='fixed'
-        sx={{
-          backgroundColor: theme.palette.footerBackground,
-          color: theme.palette.texts,
-          backgroundImage: 'none',
-          boxShadow: 'none'
-        }}
+        sx={{ backgroundColor: theme.palette.footerBackground, color: theme.palette.texts, backgroundImage: 'none' }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
