@@ -20,9 +20,15 @@ describe('Sidebar component', () => {
 
     render(
       <MemoryRouter>
-        <Sidebar isAuth={true} isOpen={true} toggleSidebar={toggleSidebar} toggleTheme={function (): void {
-          throw new Error('Function not implemented.')
-        } } isDarkMode={false} />
+        <Sidebar
+          isAuth={true}
+          isOpen={true}
+          toggleSidebar={toggleSidebar}
+          toggleTheme={function (): void {
+            throw new Error('Function not implemented.')
+          }}
+          isDarkMode={false}
+        />
       </MemoryRouter>
     )
 
@@ -51,9 +57,15 @@ describe('Sidebar component', () => {
 
     render(
       <MemoryRouter>
-        <Sidebar isAuth={false} isOpen={true} toggleSidebar={toggleSidebar} toggleTheme={function (): void {
-          throw new Error('Function not implemented.')
-        } } isDarkMode={false} />
+        <Sidebar
+          isAuth={false}
+          isOpen={true}
+          toggleSidebar={toggleSidebar}
+          toggleTheme={function (): void {
+            throw new Error('Function not implemented.')
+          }}
+          isDarkMode={false}
+        />
       </MemoryRouter>
     )
 
@@ -79,9 +91,15 @@ describe('Sidebar component', () => {
   it('should call toggleSidebar when ArrowBack button is clicked', () => {
     render(
       <MemoryRouter>
-        <Sidebar isAuth={false} isOpen={true} toggleSidebar={toggleSidebar} toggleTheme={function (): void {
-          throw new Error('Function not implemented.')
-        } } isDarkMode={false} />
+        <Sidebar
+          isAuth={false}
+          isOpen={true}
+          toggleSidebar={toggleSidebar}
+          toggleTheme={function (): void {
+            throw new Error('Function not implemented.')
+          }}
+          isDarkMode={false}
+        />
       </MemoryRouter>
     )
 
