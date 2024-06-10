@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -15,7 +15,8 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
-  FormHelperText
+  FormHelperText,
+  Tooltip
 } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -23,11 +24,12 @@ import IHomeProps from '../../containers/Form/types'
 import styles from '../../containers/Form/styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
-import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
+import FileUploadDialog from './FileUploadDialog'
+
 const tooltips = {
   claim: [
-    'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
+    'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
     'Denotes a claim indicating that the subject created a positive impact to others',
     'Report about the subject, generally about negative or problematic behavior',
     'Indicates a relationship between the subject and some other entity.'
@@ -73,10 +75,13 @@ export const Form = ({
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null,
-      amt: null as number | null
+      amt: null as number | null,
+      image: null
     }
   })
 
+  const [uploadedImagePath, setUploadedImagePath] = useState<string | null>(null)
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false)
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
@@ -138,7 +143,8 @@ export const Form = ({
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
           amt: amtAsNumber,
-          issuerId: did
+          issuerId: did,
+          image: uploadedImagePath
         }
 
         setLoading(true)
@@ -199,7 +205,7 @@ export const Form = ({
       'quality:fun',
       'quality:literary',
       'quality:relevance',
-      'quality:self-improvment',
+      'quality:self-improvement',
       'quality:historical',
       'quality:theological',
       'quality:adventure',
@@ -659,6 +665,20 @@ export const Form = ({
                 )}
               />
             </LocalizationProvider>
+            <Button
+              variant='outlined'
+              onClick={() => setIsUploadDialogOpen(true)}
+              sx={{
+                ml: 1,
+                mr: 1,
+                width: '22ch',
+                '&:hover': { backgroundColor: theme.palette.buttonHover },
+                color: theme.palette.buttontext,
+                backgroundColor: theme.palette.buttons
+              }}
+            >
+              Upload Image
+            </Button>
           </Box>
         </form>
       </DialogContent>
@@ -672,6 +692,7 @@ export const Form = ({
             mr: 1,
             width: '50%',
             bgcolor: theme.palette.buttons,
+            color: theme.palette.buttontext,
             margin: '0 auto',
             '&:hover': {
               backgroundColor: theme.palette.buttonHover
@@ -682,6 +703,16 @@ export const Form = ({
         </Button>
         {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
       </DialogActions>
+      <FileUploadDialog
+        open={isUploadDialogOpen}
+        onClose={() => setIsUploadDialogOpen(false)}
+        claimId={selectedClaim?.nodeUri || ''}
+        onUploadSuccess={(imagePaths: string[]) => setUploadedImagePath(imagePaths[0])}
+        onUploadError={(message: string) => {
+          setSnackbarMessage(message)
+          toggleSnackbar(true)
+        }}
+      />
     </Box>
   )
 }
