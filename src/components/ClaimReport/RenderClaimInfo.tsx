@@ -103,8 +103,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               borderRadius: '50%'
             }}
             onClick={() => setOpenD(true)}
-            alt='claim image'
-          />
+            alt='claim'
+            />
         </Box>
 
         {/* Render other claim information */}
@@ -296,8 +296,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               width: '100%',
               maxHeight: '100%'
             }}
-            alt='claim image'
-          />
+            alt='claim'
+            />
         </Dialog>
       )}
     </>

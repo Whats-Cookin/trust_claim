@@ -27,6 +27,7 @@ declare module '@mui/material/styles' {
     cardBackgroundBlur: string
     borderColor: string
     shadows: string
+    cardsbuttons: string
   }
 
   interface PaletteOptions {
@@ -55,6 +56,7 @@ declare module '@mui/material/styles' {
     cardBackgroundBlur?: string
     borderColor?: string
     shadows?: string
+    cardsbuttons?: string
   }
 
   interface TypographyVariants {
@@ -82,6 +84,7 @@ const darkModeTheme = createTheme({
   palette: {
     mode: 'dark',
     buttons: '#009688',
+    cardsbuttons: '#ffffff',
     smallButton: '#4C726F',
     buttonHover: '#00695f',
     buttontext: '#ffffff',
@@ -121,28 +124,29 @@ const darkModeTheme = createTheme({
 const lightModeTheme = createTheme({
   palette: {
     mode: 'light',
-    buttons: '#00796B',
-    smallButton: '#B2DFDB',
-    buttonHover: '#004D40',
-    buttontext: '#000000',
+    buttons: '#009688',
+    smallButton: '#797979',
+    buttonHover: '#00695f',
+    buttontext: '#ffffff',
+    cardsbuttons: '#0A1C1D',
     maintext: '#00796B',
     icons: '#00796B',
-    stars: '#FFD700',
-    footerBackground: '#E0F2F1',
-    footerText: '#000000',
-    menuBackground: '#B2DFDB',
-    pageBackground: '#E0F2F1',
-    formBackground: '#E0F2F1',
+    stars: '#009688',
+    footerBackground: '#ffffff',
+    footerText: '#0A1C1D',
+    menuBackground: '#ffffff',
+    pageBackground: '#ffffff',
+    formBackground: '#ffffff',
     formMainText: '#000000',
-    cardBackground: '#B2DFDB99',
-    cardBackgroundBlur: '#DDDDDD80',
+    cardBackground: '#ffffff',
+    cardBackgroundBlur: '#79797933',
     texts: '#000000',
-    date: '#80CBC4',
+    date: '#797979B2',
     link: '#1565C0',
     profileButton: '#D32F2F',
-    dialogBackground: '#F5F5F5',
-    searchBarBackground: '#B2DFDB80',
-    searchBarText: '#1B1B1B',
+    dialogBackground: '#ffffff',
+    searchBarBackground: '#79797933',
+    searchBarText: '#797979',
     chipColor: '#B2DFDB',
     borderColor: '#00796B80',
     shadows: '#00000020'

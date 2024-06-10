@@ -1,15 +1,28 @@
 import React from 'react'
-import { Drawer, List, ListItemText, ListItemButton, Button, Box, useMediaQuery, useTheme } from '@mui/material'
-import { Home, Create, Search } from '@mui/icons-material'
+import {
+  Drawer,
+  List,
+  ListItemText,
+  ListItemButton,
+  Button,
+  Box,
+  useMediaQuery,
+  useTheme,
+  IconButton,
+  Grow
+} from '@mui/material'
+import { Home, Create, Search, Brightness7, DarkMode } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 
 interface SidebarProps {
   isAuth: boolean
   isOpen: boolean
   toggleSidebar: () => void
+  toggleTheme: () => void
+  isDarkMode: boolean
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar, toggleTheme, isDarkMode }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -39,67 +52,105 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
       }}
     >
       <List>
-        <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
-          <Home sx={{ color: theme.palette.icons }} />
-          <ListItemText primary='Home' sx={{ color: theme.palette.buttontext }} />
-        </ListItemButton>
-        <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
-          <Search sx={{ color: theme.palette.icons }} />
-          <ListItemText primary='Search' sx={{ color: theme.palette.buttontext }} />
-        </ListItemButton>
-        {isAuth ? (
-          <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
-            <Button
+        <Grow in={isOpen} timeout={600}>
+          <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
+            <Home sx={{ color: theme.palette.texts }} />
+            <ListItemText primary='Home' sx={{ color: theme.palette.texts }} />
+          </ListItemButton>
+        </Grow>
+        <Grow in={isOpen} timeout={700}>
+          <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/search')}>
+            <Search sx={{ color: theme.palette.texts }} />
+            <ListItemText primary='Search' sx={{ color: theme.palette.texts }} />
+          </ListItemButton>
+        </Grow>
+        <Grow in={isOpen} timeout={800}>
+          <ListItemButton
+            sx={{
+              gap: '1rem',
+              width: '100%',
+              justifyContent: 'center',
+              '&:hover': {
+                backgroundColor: theme.palette.action.hover
+              }
+            }}
+            onClick={toggleTheme}
+          >
+            <IconButton
               sx={{
-                width: '100%',
-                color: theme.palette.buttontext,
+                color: theme.palette.texts,
                 backgroundColor: theme.palette.buttons,
                 '&:hover': {
-                  backgroundColor: theme.palette.buttonHover
+                  backgroundColor: 'transparent'
                 }
               }}
+              aria-label='toggle theme'
+              disableRipple
             >
-              Logout
-            </Button>
+              {isDarkMode ? <Brightness7 /> : <DarkMode />}
+            </IconButton>
+            <ListItemText primary={isDarkMode ? 'Light' : 'Dark'} />
           </ListItemButton>
+        </Grow>
+        {isAuth ? (
+          <Grow in={isOpen} timeout={900}>
+            <ListItemButton sx={{ gap: '1rem' }} onClick={handleLogout}>
+              <Button
+                sx={{
+                  width: '100%',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
+                  '&:hover': {
+                    backgroundColor: theme.palette.buttonHover
+                  }
+                }}
+              >
+                Logout
+              </Button>
+            </ListItemButton>
+          </Grow>
         ) : (
           <>
-            <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
-              <Button
-                variant='contained'
-                onClick={() => navigate('/')}
-                sx={{
-                  color: theme.palette.buttontext,
-                  backgroundColor: theme.palette.buttons,
-                  borderRadius: '30px',
-                  width: '100%',
-                  maxwidth: isSmallScreen ? '100%' : '16vw',
-                  '&:hover': {
-                    backgroundColor: theme.palette.buttonHover
-                  }
-                }}
-              >
-                Login
-              </Button>
-            </ListItemButton>
-            <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
-              <Button
-                variant='contained'
-                onClick={() => navigate('/')}
-                sx={{
-                  color: theme.palette.buttontext,
-                  backgroundColor: theme.palette.buttons,
-                  borderRadius: '30px',
-                  width: '100%',
-                  maxwidth: isSmallScreen ? '100%' : '16vw',
-                  '&:hover': {
-                    backgroundColor: theme.palette.buttonHover
-                  }
-                }}
-              >
-                Register
-              </Button>
-            </ListItemButton>
+            <Grow in={isOpen} timeout={1000}>
+              <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/login')}>
+                <Button
+                  variant='contained'
+                  onClick={() => navigate('/')}
+                  sx={{
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.buttons,
+                    borderRadius: '30px',
+                    width: '100%',
+                    maxWidth: isSmallScreen ? '100%' : '16vw',
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  Login
+                </Button>
+              </ListItemButton>
+            </Grow>
+            <Grow in={isOpen} timeout={1100}>
+              <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/register')}>
+                <Button
+                  variant='contained'
+                  onClick={() => navigate('/')}
+                  sx={{
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.buttons,
+                    borderRadius: '30px',
+                    width: '100%',
+                    maxWidth: isSmallScreen ? '100%' : '16vw',
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  Register
+                </Button>
+              </ListItemButton>
+            </Grow>
           </>
         )}
       </List>
@@ -114,7 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar }) => {
               backgroundColor: theme.palette.buttons,
               borderRadius: '30px',
               width: '100%',
-              maxwidth: isSmallScreen ? '16vw' : '100%',
+              maxWidth: isSmallScreen ? '16vw' : '100%',
+              minWidth: '175px',
               gap: '1rem',
               '&:hover': {
                 backgroundColor: theme.palette.buttonHover

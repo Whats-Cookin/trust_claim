@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
-import { TextField, Box, Button } from '@mui/material'
+import { TextField, Box, Button, useTheme } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
-import { useTheme } from '@mui/material'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterProps) => {
   const {
@@ -47,16 +46,25 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               display: 'flex',
               flexDirection: 'column',
               rowGap: 2,
+              width: '100%',
               padding: '2rem',
               maxWidth: '430px',
-              margin: '0 auto',
-              marginTop: 2,
-              boxShadow: '0px 1px 20px #00000040',
+              marginTop: { xs: 15, md: 8 },
+              background: theme.palette.pageBackground,
+              boxShadow: '0px 1px 20px theme.pallete.shadows',
               zIndex: 20,
               borderRadius: '10px'
             }}
           >
-            <Typography variant='h5' align='center' sx={{ color: theme.palette.maintext }}>
+            <Typography
+              variant='h5'
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: '2.5rem'
+              }}
+              sx={{ color: theme.palette.maintext }}
+            >
               Register
             </Typography>
             <TextField
@@ -74,7 +82,6 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               helperText={(errors.email?.message as string) || ''}
               error={!!errors.email}
               sx={{
-                bgcolor: '#fff',
                 backgroundColor: theme.palette.formBackground,
                 '& .MuiFilledInput-root': {
                   backgroundColor: theme.palette.formBackground
@@ -107,7 +114,6 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
               helperText={(errors.password?.message as string) || ''}
               error={!!errors.password}
               sx={{
-                bgcolor: '#fff',
                 backgroundColor: theme.palette.formBackground,
                 '& .MuiFilledInput-root': {
                   backgroundColor: theme.palette.formBackground
@@ -136,17 +142,15 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
                 size='medium'
                 sx={{
                   width: '100%',
-                  backgroundColor: theme.palette.buttons,
                   color: theme.palette.buttontext,
-                  '&:hover': {
-                    backgroundColor: theme.palette.buttonHover
-                  }
+                  backgroundColor: theme.palette.buttons,
+                  '&:hover': { backgroundColor: theme.palette.buttonHover }
                 }}
               >
                 Register
               </Button>
             </Box>
-            <Typography variant='body1' sx={{ color: '#fff', marginTop: 2 }}>
+            <Typography variant='body1' style={{ color: theme.palette.texts }}>
               Click here to
               <Typography
                 onClick={() => navigate('/login')}

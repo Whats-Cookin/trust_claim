@@ -303,7 +303,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               {ethLoginOpt}
             </Box>
 
-            <Typography variant='body1' style={{ color: '#fff' }}>
+            <Typography variant='body1' style={{ color: theme.palette.texts }}>
               Click here to
               <Typography
                 component='span'

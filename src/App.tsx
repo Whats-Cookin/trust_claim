@@ -62,8 +62,10 @@ const App = () => {
     toggleSnackbar,
     setSnackbarMessage,
     setLoading,
-    setMetaNav
-  }
+    setMetaNav,
+    toggleTheme,
+    isDarkMode
+    }
 
   const isLoginPage = window.location.pathname === '/login'
   const isRegisterPage = window.location.pathname === '/register'
