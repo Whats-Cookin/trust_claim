@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
-import { Menu, IconButton, Button, Box, Fade, Tooltip } from '@mui/material'
+import { Menu, IconButton, Button, Box, Fade, Tooltip, Paper } from '@mui/material'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 
 const Responsive = () => {
@@ -19,12 +19,15 @@ const Responsive = () => {
   useEffect(() => {
     setDisableTooltip(openMenu)
   }, [openMenu, setDisableTooltip])
+
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
+
   useEffect(() => {
     if (disableTooltip) {
       setOpen(false)
@@ -32,7 +35,7 @@ const Responsive = () => {
   }, [disableTooltip])
 
   return (
-    <Box id='menu'>
+    <Paper id='menu' elevation={0}>
       <Tooltip
         title={<h2>menu</h2>}
         disableFocusListener
@@ -97,7 +100,7 @@ const Responsive = () => {
           </Button>
         </Box>
       </Menu>
-    </Box>
+    </Paper>
   )
 }
 

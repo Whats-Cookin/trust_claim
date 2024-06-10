@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
-import { useMediaQuery, useTheme } from '@mui/material'
+import { Paper, useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
 import Sidebar from '../Sidebar'
 import ThemeToggleButton from '../ThemedComponents/ThemeToggleButton'
@@ -53,6 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar
+        elevation={0}
         position='fixed'
         sx={{ backgroundColor: theme.palette.footerBackground, color: theme.palette.texts, backgroundImage: 'none' }}
       >
