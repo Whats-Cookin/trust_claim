@@ -104,7 +104,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             }}
             onClick={() => setOpenD(true)}
             alt='claim'
-            />
+          />
         </Box>
 
         {/* Render other claim information */}
@@ -297,7 +297,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               maxHeight: '100%'
             }}
             alt='claim'
-            />
+          />
         </Dialog>
       )}
     </>
