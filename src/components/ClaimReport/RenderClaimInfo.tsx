@@ -89,8 +89,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             }
           }}
         >
-          <Box
-            component='img'
+          <img
             src={
               claim.image
                 ? claim.image
@@ -213,7 +212,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               <MenuItem key={option.label} onClick={handleClose}>
                 {option.label === 'Link' ? (
                   option.value !== 'Not provided' ? (
-                    <Link
+                    <a
                       href={option.value}
                       target='_blank'
                       style={{
@@ -225,7 +224,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                       }}
                     >
                       {option.label}: <OpenInNewIcon />
-                    </Link>
+                    </a>
                   ) : (
                     'Link: Not provided'
                   )
@@ -233,7 +232,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                   <>
                     {`${option.label}: ${option.value}`}
                     {option.sourceURI && (
-                      <Link
+                      <a
                         href={option.sourceURI}
                         target='_blank'
                         rel='noopener noreferrer'
@@ -247,7 +246,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                         }}
                       >
                         <OpenInNewIcon />
-                      </Link>
+                      </a>
                     )}
                   </>
                 ) : (
@@ -289,8 +288,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             }}
             onClick={() => setOpenD(false)}
           />
-          <Box
-            component='img'
+          <img
             src={claim.image}
             style={{
               width: '100%',

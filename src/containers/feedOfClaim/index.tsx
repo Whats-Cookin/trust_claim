@@ -212,7 +212,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             alignItems: 'center',
             height: '45px',
             width: '100%',
-            mt: 2,
             maxWidth: isMediumScreen ? '80vw' : '48%',
             borderRadius: '25px',
             backgroundColor: theme.palette.searchBarBackground,
@@ -270,14 +269,14 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   >
                     <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                       <CardContent>
-                        <Link
-                          to={claim.link}
+                        <a
+                          href={claim.link}
                           target='_blank'
                           rel='noopener noreferrer'
                           style={{ textDecoration: 'none' }}
                         >
                           <ClaimName claim={claim} searchTerm={searchTerm} />
-                        </Link>
+                        </a>
                         <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
                           {new Date(claim.effective_date).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -407,7 +406,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         }}
                         onClick={event => handleMenuClick(event, index)}
                       >
-                        <Box
+                        <span
                           style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -417,7 +416,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           }}
                         >
                           <MoreVertIcon />
-                        </Box>
+                        </span>
                       </IconButton>
                       <Menu
                         anchorEl={anchorEl}

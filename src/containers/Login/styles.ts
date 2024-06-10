@@ -27,6 +27,7 @@ const styles = {
   ETHButton: {
     width: '100%',
     borderRadius: '7px',
+    padding: '0.5rem',
     fontSize: '16px'
   },
   authLinkButton: {

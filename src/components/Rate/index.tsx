@@ -130,14 +130,13 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             }}
           >
             {`Welcome!  Rate your experience with `}
-            <Typography
-              component='strong'
-              sx={{
-                fontWeight: 'bold' // Material-UI uses string values for font weights
+            <strong
+              style={{
+                fontWeight: 1000
               }}
             >
               {`${subject || 'this company'}`}
-            </Typography>
+            </strong>
           </Typography>
         </Box>
         <form onSubmit={onSubmit}>
