@@ -15,7 +15,7 @@ export type Claim = {
   source_link: string
   claim_id: number
   statement: string
-  source_link : string
+  source_link: string
   id: number
   nodeUri: string
   name: string
