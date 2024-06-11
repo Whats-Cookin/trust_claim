@@ -163,4 +163,5 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
     </>
   )
 }
+
 export default Register

@@ -1,14 +1,13 @@
-import { useTheme } from '@mui/material/styles'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import Link from '@mui/material/Link'
+import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const DonationReport = () => {
-  const theme = useTheme()
   const { claimId } = useParams()
   const [reportData, setReportData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -36,7 +35,12 @@ const DonationReport = () => {
     return (
       <Container
         maxWidth='sm'
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
       >
         <CircularProgress />
       </Container>
@@ -55,67 +59,93 @@ const DonationReport = () => {
 
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-      <Typography variant='h4' gutterBottom color={theme.palette.texts}>
-        Report for{' '}
-        <Typography variant='inherit' component='span' color={theme.palette.maintext}>
-          {reportData.data.claim.subject}
-        </Typography>
+      <Typography
+        variant='h6'
+        gutterBottom
+        color='ffffff'
+        style={{
+          textAlign: 'center',
+          fontWeight: 600,
+          borderBottom: '3px solid #008a7cdc',
+          marginInline: 'auto',
+          width: 'fit-content',
+          marginBottom: '2rem'
+        }}
+      >
+        Report
       </Typography>
-      <Card sx={{ mb: 2, border: `solid 2px ${theme.palette.borderColor}` }}>
+      <Card sx={{ mb: 2 }} style={{ backgroundColor: '#4C726F33' }}>
         <CardContent>
-          {/* Display Claim Information */}
           <RenderClaimInfo claim={reportData.data.claim} />
-          <Typography variant='body1'>
-            <Typography variant='inherit' component='span' sx={{ color: theme.palette.maintext }}>
-              Link:{' '}
-            </Typography>
-            <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: theme.palette.link }}>
-              https://live.linkedtrust.us/claims/{claimId}
-            </Link>
-          </Typography>
         </CardContent>
       </Card>
-      {/* Placeholder for additional data section */}
-      <Typography variant='h6' gutterBottom sx={{ mt: 4 }} color={theme.palette.texts}>
-        Validations:
-      </Typography>
       {/* Customize this section with additional information as needed */}
-      {reportData.data.validations.length > 0 ? (
-        <Grid container spacing={2}>
-          {reportData.data.validations.map((attestation: any, index: number) => (
-            <Grid item xs={12} key={index}>
-              <Card>
-                <CardContent sx={{ color: theme.palette.texts }}>
-                  {/* Display Attestation Information */}
-                  <RenderClaimInfo claim={attestation} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Typography color={theme.palette.texts}>No Validations found.</Typography>
+      {reportData.data.validations.length > 0 && (
+        <>
+          <Ribbon>Validations</Ribbon>
+          <Grid container spacing={2}>
+            {reportData.data.validations.map((attestation: any, index: number) => (
+              <Grid item xs={12} key={index}>
+                <Card style={{ backgroundColor: '#4C726F33' }}>
+                  <CardContent color='ffffff'>
+                    {/* Display Attestation Information */}
+                    <RenderClaimInfo claim={attestation} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
-      <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={theme.palette.texts}>
-        Related Attestations:
-      </Typography>
-      {reportData.data.attestations.length > 0 ? (
-        <Grid container spacing={2}>
-          {reportData.data.attestations.map((attestation: any, index: number) => (
-            <Grid item xs={12} key={index}>
-              <Card>
-                <CardContent sx={{ color: theme.palette.texts }}>
-                  {/* Display Attestation Information */}
-                  <RenderClaimInfo claim={attestation} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      ) : (
-        <Typography color={theme.palette.texts}>No independent related attestations found.</Typography>
+
+      {reportData.data.attestations.length > 0 && (
+        <>
+          <Ribbon>Related Attestations</Ribbon>
+          <Grid container spacing={2}>
+            {reportData.data.attestations.map((attestation: any, index: number) => (
+              <Grid item xs={12} key={index}>
+                <Card style={{ backgroundColor: '#4C726F33' }}>
+                  <CardContent color='ffffff'>
+                    {/* Display Attestation Information */}
+                    <RenderClaimInfo claim={attestation} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
       )}
     </Container>
   )
 }
 export default DonationReport
+
+const Ribbon = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  display: 'block',
+  backgroundColor: '#4C726F33',
+  width: 'fit-content',
+  marginInline: 'auto',
+  marginBlock: '2rem',
+  color: 'ffffff',
+  padding: '0.3rem 2rem',
+  textAlign: 'center',
+  fontSize: '1rem',
+  fontWeight: 'bold',
+  '&::before, &::after': {
+    content: '""',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    border: '1rem solid transparent',
+    zIndex: 1
+  },
+  '&::before': {
+    right: 0,
+    borderRightColor: theme.palette.pageBackground
+  },
+  '&::after': {
+    left: 0,
+    borderLeftColor: theme.palette.pageBackground
+  }
+}))

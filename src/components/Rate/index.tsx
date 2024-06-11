@@ -130,13 +130,14 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             }}
           >
             {`Welcome!  Rate your experience with `}
-            <strong
-              style={{
-                fontWeight: 1000
+            <Typography
+              component='strong'
+              sx={{
+                fontWeight: 'bold'
               }}
             >
               {`${subject ?? 'this company'}`}
-            </strong>
+            </Typography>
           </Typography>
         </Box>
         <form onSubmit={onSubmit}>
