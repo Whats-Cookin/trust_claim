@@ -11,8 +11,6 @@ export interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 export type Claim = {
-  statement: string
-  source_link: string
   claim_id: number
   statement: string
   source_link: string
