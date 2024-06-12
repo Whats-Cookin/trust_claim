@@ -29,8 +29,8 @@ const Search = (homeProps: IHomeProps) => {
   const runCy = () => {
     if (!cy) return
     cy.layout({
-      name: 'circle',
-      // name: 'breadthfirst',
+      // name: 'circle',
+      name: 'breadthfirst',
       padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
       animate: true,
       animationDuration: 1000

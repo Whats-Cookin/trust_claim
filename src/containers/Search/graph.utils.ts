@@ -1,5 +1,5 @@
 const isValidUrl = (urlString: string) => {
-  var inputElement = document.createElement('input')
+  let inputElement = document.createElement('input')
   inputElement.type = 'url'
   inputElement.value = urlString
 
@@ -108,32 +108,77 @@ const getNodeData = (node: any) => {
     console.log('Node name is ' + node.name)
     label = ''
   }
-
+  const calculatedWidth = label.length < 17 ? 72 : 'label'
   const nodeData: NodeData = {
     data: {
       id: node.id.toString(),
       label: label,
       raw: node
+    },
+    style: {
+      shape: 'round-rectangle',
+      'background-color': '#3E5348',
+      width: calculatedWidth,
+      height: 72,
+      color: '#ecf0f1',
+      'font-weight': 'bold',
+      'text-halign': 'center',
+      'text-valign': 'center',
+      'text-wrap': 'wrap',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      'padding-bottom': '10px',
+      'border-width': '2px',
+      'border-color': '#3E5348'
     }
   }
   if (node.entType === 'CLAIM') {
     nodeData.style = {
-      shape: 'square'
+      shape: 'square',
+      width: calculatedWidth,
+      height: 72,
+      color: '#ecf0f1',
+      'font-weight': 'bold',
+      'text-halign': 'center',
+      'text-valign': 'center',
+      'text-wrap': 'wrap',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      'padding-bottom': '10px',
+      'border-width': '2px',
+      'border-color': '#3E5348'
     }
   } else {
     nodeData.style = {
-      shape: 'circle'
+      shape: 'circle',
+      width: calculatedWidth,
+      height: 72,
+      color: '#ecf0f1',
+      'font-weight': 'bold',
+      'text-halign': 'center',
+      'text-valign': 'center',
+      'text-wrap': 'wrap',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      'padding-bottom': '10px',
+      'border-width': '2px',
+      'border-color': '#3E5348'
     }
   }
 
   if (node.image) {
     nodeData.style = {
+      ...node.style,
       'background-image': [node.image.replace(/\?.+$/, '')],
       'background-fit': 'cover cover',
       'background-image-opacity': 1.0
     }
   } else if (node.thumbnail) {
     nodeData.style = {
+      ...nodeData.style,
       'background-image': [node.thumbnail.replace(/\?.+$/, '')],
       'background-fit': 'cover cover',
       'background-image-opacity': 0.4
