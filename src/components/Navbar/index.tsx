@@ -53,6 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar
+        elevation={0}
         position='fixed'
         sx={{
           backgroundColor: theme.palette.footerBackground,
