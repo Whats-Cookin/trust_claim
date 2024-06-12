@@ -114,7 +114,7 @@ const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClai
 }
 
 // Main FeedClaim component
-const FeedClaim: React.FC<IHomeProps> = () => {
+const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
   const [filteredClaims, setFilteredClaims] = useState<Array<ImportedClaim>>([])
   const [isAuth, setIsAuth] = useState(false)
@@ -250,7 +250,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 backgroundColor: theme.palette.formBackground
               }}
             >
-              {!isMediumScreen && <AlwaysOpenSidebar />}
+              {!isMediumScreen && <AlwaysOpenSidebar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
               {filteredClaims.map((claim: any, index: number) => (
                 <Box key={claim.id}>
                   <Card
@@ -321,15 +321,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         <Button
                           onClick={() => handleValidation(claim.link, claim.claim_id)}
                           startIcon={<CheckCircleIcon />}
+                          variant='text'
                           sx={{
                             fontSize: '10px',
                             fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
-                            color: theme.palette.buttontext,
+                            color: theme.palette.texts,
                             '&:hover': {
-                              backgroundColor: theme.palette.buttonHover,
-                              color: theme.palette.buttontext
+                              backgroundColor: theme.palette.cardsbuttons
                             }
                           }}
                         >
@@ -338,15 +338,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         <Link to={'/report/' + claim.claim_id}>
                           <Button
                             startIcon={<AssessmentIcon />}
+                            variant='text'
                             sx={{
                               fontSize: '10px',
                               fontWeight: 'bold',
                               marginRight: '10px',
                               p: '4px',
-                              color: theme.palette.buttontext,
+                              color: theme.palette.texts,
                               '&:hover': {
-                                backgroundColor: theme.palette.buttonHover,
-                                color: theme.palette.buttontext
+                                backgroundColor: theme.palette.cardsbuttons
                               }
                             }}
                           >
@@ -356,15 +356,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         <Button
                           startIcon={<SchemaIcon />}
                           onClick={() => handleschema(claim.link)}
+                          variant='text'
                           sx={{
                             fontSize: '10px',
                             fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
-                            color: theme.palette.buttontext,
+                            color: theme.palette.texts,
                             '&:hover': {
-                              backgroundColor: theme.palette.buttonHover,
-                              color: theme.palette.buttontext
+                              backgroundColor: theme.palette.cardsbuttons
                             }
                           }}
                         >
@@ -408,7 +408,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         onClick={event => handleMenuClick(event, index)}
                       >
                         <Box
-                          style={{
+                          sx={{
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -445,7 +445,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                               <SourceLink claim={claim} searchTerm={searchTerm} />
                             </Typography>
-                            <OpenInNewIcon style={{ marginLeft: '5px' }} />
+                            <OpenInNewIcon sx={{ marginLeft: '5px' }} />
                           </MenuItem>
                         )}
                         {claim.how_known && (

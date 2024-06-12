@@ -174,12 +174,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
           >
             <Typography
               variant='h5'
-              style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: '2.5rem'
-              }}
-              sx={{ color: theme.palette.maintext }}
+              sx={{ color: theme.palette.maintext, textAlign: 'center', fontWeight: 'bold', fontSize: '2.5rem' }}
             >
               Login
             </Typography>
@@ -270,9 +265,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               </Button>
             </Box>
             <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
-              <Box sx={{ height: '1px', width: '100px', backgroundColor: 'black' }}></Box>
-              <Typography>Or, login with </Typography>
-              <Box sx={{ height: '1px', width: '100px', backgroundColor: 'black' }}></Box>
+              <Box sx={{ height: '1px', width: '100px', backgroundColor: theme.palette.divider }}></Box>
+              <Typography sx={{ color: theme.palette.texts }}>Or, login with </Typography>
+              <Box sx={{ height: '1px', width: '100px', backgroundColor: theme.palette.divider }}></Box>
             </Box>
             <Box>
               <MuiLink
@@ -303,8 +298,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               {ethLoginOpt}
             </Box>
 
-            <Typography variant='body1' style={{ color: '#fff' }}>
-              Click here to
+            <Typography variant='body1' sx={{ color: theme.palette.texts }}>
+              Click here to{' '}
               <Typography
                 component='span'
                 onClick={() => navigate('/register')}
@@ -319,4 +314,5 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
     </>
   )
 }
+
 export default Login

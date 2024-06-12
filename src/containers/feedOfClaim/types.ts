@@ -4,14 +4,16 @@ export interface IHomeProps {
   toggleSnackbar: (toggle: boolean) => void
   setSnackbarMessage: (message: string) => void
   setLoading: (isLoading: boolean) => void
+  toggleTheme: () => void
+  isDarkMode: boolean
 }
 export interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 export type Claim = {
+  claim_id: number
   statement: string
   source_link: string
-  claim_id: number
   id: number
   nodeUri: string
   name: string
