@@ -27,7 +27,7 @@ import Loader from '../../components/Loader'
 import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
 import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-// import OverlayModal from '../../components/OverLayModal/OverlayModal'
+import OverlayModal from '../../components/OverLayModal/OverlayModal'
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
 interface LocalClaim {
@@ -195,7 +195,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   return (
     <>
-      {/* <OverlayModal /> */}
+      <OverlayModal />
       <Box
         sx={{
           display: 'flex',
