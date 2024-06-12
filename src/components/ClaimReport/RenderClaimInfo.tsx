@@ -6,10 +6,21 @@ import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import { useTheme } from '@mui/system'
+import placeHolder from '../../assets/No-Image-Placeholder.svg'
 
-import { CERAMIC_URL } from '../../utils/settings'
-
-const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
+const RenderClaimInfo = ({
+  claim,
+  index,
+  setSelectedIndex,
+  handleMenuClose
+}: {
+  claim: { [key: string]: string }
+  index: number
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
+  handleMenuClose: () => void
+}) => {
+  const theme = useTheme()
   const excludedKeys = [
     'id',
     'issuerId',
@@ -42,9 +53,11 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
+    setSelectedIndex(index)
   }
   const handleClose = () => {
     setAnchorEl(null)
+    handleMenuClose()
   }
   const options = [
     {
@@ -89,22 +102,23 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             }
           }}
         >
-          <Box
-            component='img'
-            src={
-              claim.image
-                ? claim.image
-                : 'https://conference.nbasbl.org/wp-content/uploads/2022/05/placeholder-image-1.png'
-            }
-            style={{
-              width: '60px',
-              height: '60px',
-              cursor: 'pointer',
+          <IconButton
+            onClick={() => setOpenD(true)}
+            sx={{
+              padding: 0,
               borderRadius: '50%'
             }}
-            onClick={() => setOpenD(true)}
-            alt='claim image'
-          />
+          >
+            <img
+              src={claim.image ? claim.image : placeHolder}
+              style={{
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%'
+              }}
+              alt='claim'
+            />
+          </IconButton>
         </Box>
 
         {/* Render other claim information */}
@@ -122,8 +136,8 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             <Link
               href={claim.subject}
               target='_blank'
-              color='inherit'
-              style={{
+              sx={{
+                color: theme.palette.texts,
                 fontSize: 24,
                 display: 'flex',
                 alignItems: 'center',
@@ -134,6 +148,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               <OpenInNewIcon
                 sx={{
                   marginLeft: '5px',
+                  color: theme.palette.texts,
                   fontSize: '1.5rem'
                 }}
               />
@@ -143,7 +158,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
           <Typography
             variant='body1'
             sx={{
-              color: '#4C726F',
+              color: theme.palette.date,
               fontWeight: 500,
               marginBottom: '1rem'
             }}
@@ -154,21 +169,15 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               day: 'numeric'
             })}
           </Typography>
-          {otherEntries.map(([key, value]) => {
-            // Handle date formatting
-            const refLink = value
-              ? value.toString().startsWith('http')
-                ? value.toString()
-                : CERAMIC_URL + 'api/v0/streams/' + value.toString()
-              : ''
-            return (
+          {otherEntries.map(
+            ([key, value]) =>
               value && (
                 <Typography key={key} variant='body1'>
                   <Typography
                     variant='inherit'
                     component='span'
                     sx={{
-                      color: 'ffffff',
+                      color: theme.palette.texts,
                       fontWeight: 600,
                       textAlign: 'left'
                     }}
@@ -177,8 +186,7 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
                   </Typography>
                 </Typography>
               )
-            )
-          })}
+          )}
         </Box>
 
         {/* Render popup */}
@@ -194,67 +202,83 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
           }}
         >
           <IconButton onClick={handleClick}>
-            <MoreHorizIcon style={{ color: '#4C726F' }} />
+            <MoreHorizIcon sx={{ color: theme.palette.smallButton }} />
           </IconButton>
           <Menu
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: 200,
-                width: '21rem',
-                backgroundColor: '#172D2D',
-                color: 'white'
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+            sx={{
+              '& .MuiPaper-root': {
+                backgroundColor: theme.palette.menuBackground,
+                color: theme.palette.texts
               }
             }}
           >
-            {options.map(option => (
-              <MenuItem key={option.label} onClick={handleClose}>
-                {option.label === 'Link' ? (
-                  option.value !== 'Not provided' ? (
-                    <Link
-                      href={option.value}
-                      target='_blank'
-                      style={{
-                        color: 'inherit',
-                        textDecoration: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      {option.label}: <OpenInNewIcon />
-                    </Link>
-                  ) : (
-                    'Link: Not provided'
-                  )
-                ) : option.label === 'From' ? (
-                  <>
-                    {`${option.label}: ${option.value}`}
-                    {option.sourceURI && (
+            {options.map(option => {
+              if (option.label === 'Link') {
+                return (
+                  <MenuItem key={option.label} onClick={handleClose}>
+                    {option.value !== 'Not provided' ? (
                       <Link
-                        href={option.sourceURI}
+                        href={option.value}
                         target='_blank'
-                        rel='noopener noreferrer'
-                        style={{
+                        sx={{
                           color: 'inherit',
                           textDecoration: 'none',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '0.5rem',
-                          marginLeft: '0.5rem'
+                          gap: '0.5rem'
                         }}
                       >
-                        <OpenInNewIcon />
+                        {option.label}: <OpenInNewIcon />
                       </Link>
+                    ) : (
+                      'Link: Not provided'
                     )}
-                  </>
-                ) : (
-                  `${option.label}: ${option.value}`
-                )}
-              </MenuItem>
-            ))}
+                  </MenuItem>
+                )
+              } else if (option.label === 'From') {
+                return (
+                  <MenuItem key={option.label} onClick={handleClose}>
+                    <>
+                      {`${option.label}: ${option.value}`}
+                      {option.sourceURI && (
+                        <Link
+                          href={option.sourceURI}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          sx={{
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            marginLeft: '0.5rem'
+                          }}
+                        >
+                          <OpenInNewIcon />
+                        </Link>
+                      )}
+                    </>
+                  </MenuItem>
+                )
+              } else {
+                return (
+                  <MenuItem key={option.label} onClick={handleClose}>
+                    {`${option.label}: ${option.value}`}
+                  </MenuItem>
+                )
+              }
+            })}
           </Menu>
         </Box>
       </Box>
@@ -269,7 +293,12 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
             marginTop: '1rem'
           }}
         >
-          <Rating name='size-medium' defaultValue={parseInt(claim.stars)} style={{ color: '#009688' }} readOnly />
+          <Rating
+            name='size-medium'
+            defaultValue={parseInt(claim.stars)}
+            sx={{ color: theme.palette.stars }}
+            readOnly
+          />
         </Box>
       )}
 
@@ -281,22 +310,21 @@ const RenderClaimInfo = ({ claim }: { claim: { [ky: string]: string } }) => {
               top: '0px',
               right: '0px',
               cursor: 'pointer',
-              color: 'white',
-              backgroundColor: '#333',
+              color: theme.palette.texts,
+              backgroundColor: theme.palette.dialogBackground,
               borderRadius: '50%',
               padding: '0.2rem',
               margin: '0.2rem'
             }}
             onClick={() => setOpenD(false)}
           />
-          <Box
-            component='img'
+          <img
             src={claim.image}
             style={{
               width: '100%',
               maxHeight: '100%'
             }}
-            alt='claim image'
+            alt='claim'
           />
         </Dialog>
       )}

@@ -4,7 +4,7 @@ interface IDropdownProps {
   setter: (value: string) => void
   options: string[]
   sx?: any
-  variant?: 'filled' | 'standard' | 'outlined' | undefined
+  variant?: 'filled' | 'standard' | 'outlined'
 }
 
 export default IDropdownProps

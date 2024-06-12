@@ -1,9 +1,5 @@
-import { useTheme } from '@mui/material'
-import React, { useEffect } from 'react'
-import Box from '@mui/material/Box'
-import { useNavigate } from 'react-router-dom'
-import Typography from '@mui/material/Typography'
 import {
+  useTheme,
   TextField,
   Button,
   FormControl,
@@ -17,6 +13,10 @@ import {
   Rating,
   FormHelperText
 } from '@mui/material'
+import React, { useEffect } from 'react'
+import Box from '@mui/material/Box'
+import { useNavigate } from 'react-router-dom'
+import Typography from '@mui/material/Typography'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import IHomeProps from '../../containers/Form/types'
@@ -27,7 +27,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
 const tooltips = {
   claim: [
-    'Indicates a claim about rating or evaluating a subject based on based on specific criteria or aspects',
+    'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
     'Denotes a claim indicating that the subject created a positive impact to others',
     'Report about the subject, generally about negative or problematic behavior',
     'Indicates a relationship between the subject and some other entity.'
@@ -218,9 +218,21 @@ export const Form = ({
     ],
     howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
+  let titleText = 'Enter a Claim'
+
+  if (selectedClaim) {
+    titleText = selectedClaim.entType === 'CLAIM' ? 'do you want to validate ?' : 'what do you have to say about'
+  }
   const theme = useTheme()
   return (
-    <Box sx={{ backgroundColor: theme.palette.formBackground }}>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.formBackground,
+        boxShadow: `0 0 30px ${theme.palette.shadows}`,
+        borderRadius: '10px',
+        border: `1px solid ${theme.palette.borderColor}`
+      }}
+    >
       <DialogTitle>
         <Typography
           variant='h4'
@@ -233,11 +245,7 @@ export const Form = ({
             fontWeight: 'bold'
           }}
         >
-          {selectedClaim
-            ? selectedClaim?.entType === 'CLAIM'
-              ? 'do you want to validate ?'
-              : 'what do you have to say about'
-            : 'Enter a Claim'}
+          {titleText}
         </Typography>
         {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
       </DialogTitle>
@@ -492,9 +500,9 @@ export const Form = ({
               />
             </Tooltip>
 
-            {!(selectedClaim?.entType === 'CLAIM') && (
+            {selectedClaim?.entType !== 'CLAIM' && (
               <>
-                {watchClaim === 'rated' ? (
+                {watchClaim === 'rated' && (
                   <>
                     <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
                       <TextField
@@ -580,52 +588,47 @@ export const Form = ({
                       )}
                     />
                   </>
-                ) : watchClaim === 'impact' ? (
-                  <>
-                    <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
-                      <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                      <OutlinedInput
-                        {...register('amt')}
-                        id='outlined-adornment-amount'
-                        startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                        label='Amount'
-                      />
-                    </FormControl>
-                  </>
-                ) : watchClaim === 'related' ? (
-                  <>
-                    <Tooltip title='What entity is the subject related to?' placement='right' arrow>
-                      <TextField
-                        {...register('object')}
-                        sx={{
-                          ml: 1,
-                          mr: 1,
-                          width: '22ch',
-                          '& .MuiInputBase-input': {
-                            color: theme.palette.texts
-                          },
-                          '& .MuiInputLabel-root': {
-                            color: theme.palette.texts
-                          },
-                          '& .MuiFormHelperText-root': {
-                            color: theme.palette.texts
-                          },
-                          '& .MuiSvgIcon-root': {
-                            color: theme.palette.icons
-                          }
-                        }}
-                        margin='dense'
-                        variant='standard'
-                        fullWidth
-                        label='Object'
-                        key='object'
-                        type='text'
-                      />
-                    </Tooltip>
-                  </>
-                ) : (
-                  // default case
-                  <></>
+                )}
+                {watchClaim === 'impact' && (
+                  <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
+                    <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
+                    <OutlinedInput
+                      {...register('amt')}
+                      id='outlined-adornment-amount'
+                      startAdornment={<InputAdornment position='start'>$</InputAdornment>}
+                      label='Amount'
+                    />
+                  </FormControl>
+                )}
+                {watchClaim === 'related' && (
+                  <Tooltip title='What entity is the subject related to?' placement='right' arrow>
+                    <TextField
+                      {...register('object')}
+                      sx={{
+                        ml: 1,
+                        mr: 1,
+                        width: '22ch',
+                        '& .MuiInputBase-input': {
+                          color: theme.palette.texts
+                        },
+                        '& .MuiInputLabel-root': {
+                          color: theme.palette.texts
+                        },
+                        '& .MuiFormHelperText-root': {
+                          color: theme.palette.texts
+                        },
+                        '& .MuiSvgIcon-root': {
+                          color: theme.palette.icons
+                        }
+                      }}
+                      margin='dense'
+                      variant='standard'
+                      fullWidth
+                      label='Object'
+                      key='object'
+                      type='text'
+                    />
+                  </Tooltip>
                 )}
               </>
             )}
@@ -671,6 +674,7 @@ export const Form = ({
             ml: 1,
             mr: 1,
             width: '50%',
+            color: theme.palette.buttontext,
             bgcolor: theme.palette.buttons,
             margin: '0 auto',
             '&:hover': {

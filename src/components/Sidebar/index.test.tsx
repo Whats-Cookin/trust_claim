@@ -9,6 +9,7 @@ vi.mock('react-router-dom', () => ({
 
 describe('Sidebar component', () => {
   const toggleSidebar = vi.fn()
+  const toggleTheme = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -20,21 +21,24 @@ describe('Sidebar component', () => {
 
     render(
       <MemoryRouter>
-        <Sidebar isAuth={true} isOpen={true} toggleSidebar={toggleSidebar} />
+        <Sidebar
+          isAuth={true}
+          isOpen={true}
+          toggleSidebar={toggleSidebar}
+          toggleTheme={toggleTheme}
+          isDarkMode={true}
+        />
       </MemoryRouter>
     )
 
     const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
-    const exploreButton = screen.getByText('Explore')
-    expect(exploreButton).toBeInTheDocument()
+    const searchButton = screen.getByText('Search')
+    expect(searchButton).toBeInTheDocument()
 
     const createButton = screen.getByText('Create Claim')
     expect(createButton).toBeInTheDocument()
-
-    const searchButton = screen.getByText('Search')
-    expect(searchButton).toBeInTheDocument()
 
     const logoutButton = screen.getByText('Logout')
     expect(logoutButton).toBeInTheDocument()
@@ -49,15 +53,21 @@ describe('Sidebar component', () => {
 
     render(
       <MemoryRouter>
-        <Sidebar isAuth={false} isOpen={true} toggleSidebar={toggleSidebar} />
+        <Sidebar
+          isAuth={false}
+          isOpen={true}
+          toggleSidebar={toggleSidebar}
+          toggleTheme={toggleTheme}
+          isDarkMode={true}
+        />
       </MemoryRouter>
     )
 
     const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
-    const exploreButton = screen.getByText('Explore')
-    expect(exploreButton).toBeInTheDocument()
+    const searchButton = screen.getByText('Search')
+    expect(searchButton).toBeInTheDocument()
 
     const loginButton = screen.getByText('Login')
     expect(loginButton).toBeInTheDocument()
@@ -75,7 +85,13 @@ describe('Sidebar component', () => {
   it('should call toggleSidebar when ArrowBack button is clicked', () => {
     render(
       <MemoryRouter>
-        <Sidebar isAuth={false} isOpen={true} toggleSidebar={toggleSidebar} />
+        <Sidebar
+          isAuth={false}
+          isOpen={true}
+          toggleSidebar={toggleSidebar}
+          toggleTheme={toggleTheme}
+          isDarkMode={true}
+        />
       </MemoryRouter>
     )
 

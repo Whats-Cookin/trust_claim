@@ -9,7 +9,6 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
 import Sidebar from '../Sidebar'
-import ThemeToggleButton from '../ThemedComponents/ThemeToggleButton'
 
 interface NavbarProps {
   isAuth: boolean
@@ -30,7 +29,13 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
   }
 
   const getPageName = () => {
-    switch (location.pathname) {
+    const path = location.pathname
+
+    if (/^\/report\/\d+$/.test(path)) {
+      return 'Claim Report'
+    }
+
+    switch (path) {
       case '/feed':
         return 'Feed of Claims'
       case '/':
@@ -87,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
               variant='h6'
               component='div'
               sx={{
-                color: theme.palette.maintext,
+                color: theme.palette.texts,
                 textAlign: 'center',
                 flexGrow: isSmallScreen ? 1 : 0
               }}
@@ -105,12 +110,17 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', width: isSmallScreen ? '23%' : '23vw' }}>
-            <ThemeToggleButton toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
             <SearchBar />
           </Box>
         </Toolbar>
       </AppBar>
-      <Sidebar isAuth={isAuth} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar
+        isAuth={isAuth}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        toggleTheme={toggleTheme}
+        isDarkMode={isDarkMode}
+      />
     </Box>
   )
 }

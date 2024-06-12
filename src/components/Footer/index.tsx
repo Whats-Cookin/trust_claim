@@ -18,7 +18,8 @@ const Footer: React.FC = () => {
         backgroundColor: theme.palette.footerBackground,
         color: theme.palette.footerText,
         bottom: 0,
-        width: '100%'
+        width: '100%',
+        position: 'fixed'
       }}
     >
       <Link to='/' style={{ color: theme.palette.maintext, textDecoration: 'none' }}>

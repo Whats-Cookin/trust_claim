@@ -133,10 +133,10 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
             <Typography
               component='strong'
               sx={{
-                fontWeight: 'bold' // Material-UI uses string values for font weights
+                fontWeight: 'bold'
               }}
             >
-              {`${subject || 'this company'}`}
+              {`${subject ?? 'this company'}`}
             </Typography>
           </Typography>
         </Box>
