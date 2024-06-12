@@ -7,8 +7,8 @@ const styles = {
     maxWidth: '430px',
     margin: '0 auto',
     marginTop: 2,
-    background: '#FFFFFF',
-    boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
+    background: '#ffffff',
+    boxShadow: '0px 1px 20px #00000040',
     zIndex: 20,
     borderRadius: '10px'
   },

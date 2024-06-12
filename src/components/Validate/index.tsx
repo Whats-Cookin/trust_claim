@@ -1,25 +1,32 @@
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
-import { TextField, Button, MenuItem, FormControl, InputLabel, OutlinedInput, InputAdornment } from '@mui/material'
-import IHomeProps from '../../containers/Form/types'
-import { useForm } from 'react-hook-form'
-import { useCreateClaim } from '../../hooks/useCreateClaim'
-import Tooltip from '@mui/material/Tooltip'
-import { useQueryParams } from '../../hooks'
-import Dialog from '@mui/material/Dialog'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
-import Loader from '../Loader'
-import DialogContentText from '@mui/material/DialogContentText'
-import React, { useEffect, useState } from 'react'
+import {
+  TextField,
+  Button,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  Dialog,
+  DialogContentText,
+  useTheme
+} from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import Tooltip from '@mui/material/Tooltip'
+import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material'
+import { useForm, Controller } from 'react-hook-form'
+import IHomeProps from '../../containers/Form/types'
+import { useCreateClaim } from '../../hooks/useCreateClaim'
+import { useQueryParams } from '../../hooks'
+import Loader from '../Loader'
 import axios from '../../axiosInstance'
 import BackgroundImages from '../../containers/BackgroundImags'
 
 // TODO make these shared in settings across app
-
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
 const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
@@ -92,7 +99,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     fetchData()
   }, [number])
 
-  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false)
 
   const {
@@ -190,6 +197,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
     ]
   }
+  const theme = useTheme()
 
   return (
     <>
@@ -204,181 +212,268 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           padding: '2rem',
           maxWidth: '830px',
           marginTop: { xs: 15, md: 8 },
-          background: '#FFFFFF',
-          boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
+          backgroundColor: theme.palette.formBackground,
+          boxShadow: '0px 1px 20px theme.pallete.shadows',
           zIndex: 20,
           borderRadius: '10px',
-          margin: '0'
+          margin: '0 auto'
         }}
       >
-        <Box sx={{}}>
+        <Box>
           <Typography
             variant='h4'
             sx={{
               textAlign: 'center',
               fontSize: '20px',
-              color: 'primary.main',
+              color: theme.palette.maintext,
               fontWeight: 'bold'
             }}
           >
             {`Welcome!  We value your input, thank you for helping keep it real`}
           </Typography>
         </Box>
-        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'row', borderTop: '3px solid #009688' }}>
-          <Box sx={{ width: '50%', borderRight: '3px solid #009688' }}>
-            <Typography
-              variant='h4'
-              sx={{
-                textAlign: 'center',
-                fontSize: '20px',
-                color: 'primary.main',
-                fontWeight: 'bold',
-                mb: '20px',
-                mt: '20px'
-              }}
-            >
-              {`We have a claim that`}
-            </Typography>
-            <Box
-              sx={{
-                width: '100%',
-                color: 'primary.main',
-                fontSize: '20px',
-                fontWeight: 'bold',
-                '& > *': { margin: '12px 0' }
-              }}
-            >
+        <Box sx={{ display: 'flex', flexDirection: 'row', borderTop: '3px solid #009688' }}>
+          <form onSubmit={onSubmit}>
+            <Box sx={{ width: '50%', borderRight: '3px solid #009688', p: 2 }}>
               <Typography
-                variant='h5'
-                style={{ fontWeight: 'bold', color: '#003747', maxWidth: '100%', overflowWrap: 'break-word' }}
-              >{`${subjectValue}`}</Typography>
-              <Typography variant='h5' style={{ color: '#065465' }}>{`${claimVerbValue}`}</Typography>
-              {statementValue && (
-                <Box sx={{ display: 'flex', margin: '0' }}>
-                  <Typography
-                    variant='h5'
-                    borderColor='primary.main'
-                    sx={{
-                      p: '6px 8px 0',
-                      color: 'black',
-                      borderRadius: 1,
-                      border: 1,
-                      fontSize: '11pt',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: expanded ? 'unset' : 10,
-                      WebkitBoxOrient: 'vertical'
-                    }}
-                  >
-                    {statementValue}
-                  </Typography>
-                  <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
-                    {expanded ? (
-                      <>
-                        <ExpandLessIcon />
-                      </>
-                    ) : (
-                      <Box style={{ display: 'flex', alignItems: 'center' }}>
-                        <ExpandMoreIcon />
-                      </Box>
-                    )}
+                variant='h4'
+                sx={{
+                  textAlign: 'center',
+                  fontSize: '20px',
+                  color: theme.palette.maintext,
+                  fontWeight: 'bold',
+                  mb: '20px',
+                  mt: '20px'
+                }}
+              >
+                {`We have a claim that`}
+              </Typography>
+              <Box
+                sx={{
+                  width: '100%',
+                  color: 'primary.main',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  '& > *': { margin: '12px 0' }
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  style={{
+                    fontWeight: 'bold',
+                    color: theme.palette.texts,
+                    maxWidth: '100%',
+                    overflowWrap: 'break-word'
+                  }}
+                >{`${subjectValue}`}</Typography>
+                <Typography variant='h5' style={{ color: theme.palette.maintext }}>{`${claimVerbValue}`}</Typography>
+                {statementValue && (
+                  <Box sx={{ display: 'flex', margin: '0' }}>
+                    <Typography
+                      variant='h5'
+                      borderColor='primary.main'
+                      sx={{
+                        p: '6px 8px 0',
+                        color: theme.palette.texts,
+                        borderRadius: 1,
+                        border: 1,
+                        fontSize: '11pt',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: expanded ? 'unset' : 10,
+                        WebkitBoxOrient: 'vertical'
+                      }}
+                    >
+                      {statementValue}
+                    </Typography>
+                    <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
+                      {expanded ? (
+                        <>
+                          <ExpandLessIcon />
+                        </>
+                      ) : (
+                        <Box style={{ display: 'flex', alignItems: 'center' }}>
+                          <ExpandMoreIcon />
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
-                </Box>
-              )}
-              {objectValue && <Typography variant='h5'>{`to: ${objectValue}`}</Typography>}
-              {amtValue && <Typography variant='h5' style={{ color: '#065465' }}>{`worth: ${amtValue}`}</Typography>}
-              {effectiveDateValue && (
-                <Typography style={{ color: '#065465' }}>{`as of: ${effectiveDateValue}`}</Typography>
-              )}
+                )}
+                {objectValue && (
+                  <Typography variant='h5' style={{ color: theme.palette.maintext }}>{`to: ${objectValue}`}</Typography>
+                )}
+                {amtValue && (
+                  <Typography variant='h5' style={{ color: theme.palette.maintext }}>{`worth: ${amtValue}`}</Typography>
+                )}
+                {effectiveDateValue && (
+                  <Typography style={{ color: theme.palette.texts }}>{`as of: ${effectiveDateValue}`}</Typography>
+                )}
+              </Box>
             </Box>
-          </Box>
-          <Box sx={{ width: '50%', rowGap: 1, m: 1 }}>
-            <Typography
-              sx={{
-                textAlign: 'center',
-                fontSize: '20px',
-                color: 'primary.main',
-                fontWeight: 'bold',
-                mt: '10px'
-              }}
-            >
-              Do you know anything about this?
-            </Typography>
-            <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
-              <Tooltip title='How do you know about it?' placement='right' arrow>
+            <Box sx={{ width: '50%', rowGap: 1, m: 1 }}>
+              <Typography
+                sx={{
+                  textAlign: 'center',
+                  fontSize: '20px',
+                  color: theme.palette.maintext,
+                  fontWeight: 'bold',
+                  mt: '10px'
+                }}
+              >
+                Do you know anything about this?
+              </Typography>
+              <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
+                <Tooltip title='How do you know about it?' placement='right' arrow>
+                  <TextField
+                    sx={{
+                      ml: 1,
+                      mr: 1,
+                      width: '22ch',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    select
+                    label='How known'
+                    {...register('howKnown')}
+                    margin='dense'
+                    variant='outlined'
+                    fullWidth
+                    defaultValue={FIRST_HAND}
+                    onChange={handleHowKnownChange}
+                  >
+                    {inputOptions.howKnown.map(howKnownItem => (
+                      <MenuItem
+                        sx={{
+                          backgroundColor: theme.palette.menuBackground,
+                          color: theme.palette.texts,
+                          '&:hover': {
+                            backgroundColor: theme.palette.formBackground
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: theme.palette.formBackground,
+                            '&:hover': {
+                              backgroundColor: theme.palette.formBackground
+                            }
+                          },
+                          '&:active': {
+                            backgroundColor: theme.palette.formBackground
+                          },
+                          '::selection': {
+                            backgroundColor: theme.palette.formBackground
+                          }
+                        }}
+                        value={howKnownItem.value}
+                        key={howKnownItem.value}
+                      >
+                        <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Tooltip>
+                {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
+                  <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                    <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
+                    <OutlinedInput
+                      id='outlined-adornment-amount'
+                      startAdornment={<InputAdornment position='start'>$</InputAdornment>}
+                      label='Amount'
+                    />
+                  </FormControl>
+                )}
+                {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
+                  <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
+                    <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
+                    <OutlinedInput id='outlined-adornment-amount' label='Source' />
+                  </FormControl>
+                )}
+              </Box>
+              <Tooltip title='write more information here ' placement='right' arrow>
                 <TextField
-                  select
-                  label='How known'
-                  {...register('howKnown')}
+                  sx={{
+                    ml: 1,
+                    mr: 1,
+                    width: '95%',
+                    mb: '20px',
+                    '& .MuiInputBase-input': {
+                      color: theme.palette.texts
+                    },
+                    '& .MuiInputLabel-root': {
+                      color: theme.palette.texts
+                    },
+                    '& .MuiFormHelperText-root': {
+                      color: theme.palette.texts
+                    },
+                    '& .MuiSvgIcon-root': {
+                      color: theme.palette.icons
+                    }
+                  }}
+                  {...register('statement')}
+                  placeholder={''}
                   margin='dense'
                   variant='outlined'
                   fullWidth
-                  defaultValue={FIRST_HAND}
-                  onChange={handleHowKnownChange}
-                >
-                  {inputOptions.howKnown.map(howKnownItem => (
-                    <MenuItem value={howKnownItem.value} key={howKnownItem.value}>
-                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  label='explain here'
+                  key='statement'
+                  type='text'
+                  multiline={true}
+                  rows={4}
+                />
               </Tooltip>
-              {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
-                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                  <OutlinedInput
-                    id='outlined-adornment-amount'
-                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                    label='Amount'
-                  />
-                </FormControl>
-              )}
-              {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
-                <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
-                  <OutlinedInput id='outlined-adornment-amount' label='Source' />
-                </FormControl>
-              )}
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label='Effective Date'
+                  value={watchEffectiveDate}
+                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                  renderInput={(params: any) => (
+                    <TextField
+                      {...params}
+                      sx={{
+                        mr: 1,
+                        width: '95%',
+                        '& .MuiInputBase-input': {
+                          color: theme.palette.texts
+                        },
+                        '& .MuiInputLabel-root': {
+                          color: theme.palette.texts
+                        },
+                        '& .MuiFormHelperText-root': {
+                          color: theme.palette.texts
+                        },
+                        '& .MuiSvgIcon-root': {
+                          color: theme.palette.icons
+                        }
+                      }}
+                      variant='filled'
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+              <input type='hidden' value='first_hand' {...register('howKnown')} />
             </Box>
-            <Tooltip title='write more information here ' placement='right' arrow>
-              <TextField
-                {...register('statement')}
-                placeholder={''}
-                sx={{ mr: 1, width: '95%', mb: '20px' }}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='explain here'
-                key='statement'
-                type='text'
-                multiline={true}
-                rows={4}
-              />
-            </Tooltip>{' '}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='Effective Date'
-                value={watchEffectiveDate}
-                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                renderInput={(params: any) => <TextField {...params} sx={{ mr: 1, width: '95%' }} variant='filled' />}
-              />
-            </LocalizationProvider>
-            <input type='hidden' value='first_hand' {...register('howKnown')} />
-          </Box>
-          <Dialog
-            open={dialogOpen}
-            onClose={() => {
-              setDialogOpen(false)
-              if (isFormSubmitted) {
-                navigate('/feed')
-              }
-            }}
-          >
-            <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
-          </Dialog>
-        </form>
-
+            <Dialog
+              open={dialogOpen}
+              onClose={() => {
+                setDialogOpen(false)
+                if (isFormSubmitted) {
+                  navigate('/feed')
+                }
+              }}
+            >
+              <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
+            </Dialog>
+          </form>
+        </Box>
         <Button
           onClick={onSubmit}
           type='submit'
@@ -388,10 +483,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             ml: 1,
             mr: 1,
             width: '50%',
-            bgcolor: 'praimary.main',
+            bgcolor: theme.palette.buttons,
+            color: theme.palette.buttontext,
             margin: '0 auto',
             '&:hover': {
-              backgroundColor: '#00695f'
+              backgroundColor: theme.palette.buttonHover
             }
           }}
         >

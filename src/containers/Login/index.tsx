@@ -14,8 +14,7 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme } from '@mui/material'
-import { TextField } from '@mui/material'
+import { useTheme, TextField } from '@mui/material'
 import BackgroundImages from '../BackgroundImags'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -34,7 +33,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const metamaskLink = document.getElementById('metamaskLink')
 
   const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
-    console.log('in handle auth, You have a token: ' + accessToken)
     localStorage.setItem('accessToken', accessToken)
     localStorage.setItem('refreshToken', refreshToken)
     setLoading(false)
@@ -44,8 +42,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   const navigate = useNavigate()
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
-
-  console.log('Hi this is Login comonent')
 
   useEffect(() => {
     if (githubAuthCode) {
@@ -100,7 +96,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
-    console.log('You pressed submit, congratulations')
     try {
       if (!email || !password) {
         toggleSnackbar(true)
@@ -130,12 +125,21 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <button id='loginButton' onClick={handleMetamaskAuth} style={styles.authbtn}>
-        <span>
-          <img src={metaicon} alt='' style={{ width: '30px' }} />
-        </span>
-        Metamask{' '}
-      </button>
+      <Button
+        id='loginButton'
+        onClick={handleMetamaskAuth}
+        sx={{
+          ...styles.ETHButton,
+          backgroundColor: theme.palette.buttons,
+          color: theme.palette.buttontext,
+          '&:hover': {
+            backgroundColor: theme.palette.buttonHover
+          }
+        }}
+      >
+        <Box component='img' src={metaicon} alt='' sx={{ width: '30px' }} />
+        Metamask
+      </Button>
     )
   } else {
     ethLoginOpt = (
@@ -151,97 +155,167 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   return (
     <>
       <BackgroundImages />
-      <form onSubmit={onSubmit} style={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            rowGap: 2,
-            width: '100%',
-            padding: '2rem',
-            maxWidth: '430px',
-            marginTop: { xs: 15, md: 8 },
-            background: '#FFFFFF',
-            boxShadow: '0px 1px 20px rgba(0, 0, 0, 0.25)',
-            zIndex: 20,
-            borderRadius: '10px'
-          }}
-        >
-          <Typography
-            variant='h5'
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: '2.5rem'
+      <Box sx={{ zIndex: 2, width: '100%', maxWidth: '430px', margin: '0 auto' }}>
+        <form onSubmit={onSubmit}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: 2,
+              width: '100%',
+              padding: '2rem',
+              maxWidth: '430px',
+              marginTop: { xs: 15, md: 8 },
+              background: theme.palette.pageBackground,
+              boxShadow: '0px 1px 20px #00000040',
+              zIndex: 20,
+              borderRadius: '10px'
             }}
-            sx={{ color: 'primary.main' }}
           >
-            Login
-          </Typography>
-          <TextField
-            {...register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address'
-              }
-            })}
-            fullWidth
-            label='Email'
-            sx={styles.inputField}
-            variant='filled'
-            type='email'
-            helperText={(errors.email?.message as string) || ''}
-            error={!!errors.email}
-          />
-          <TextField
-            {...register('password', {
-              required: 'Password is required'
-            })}
-            fullWidth
-            label='Password'
-            sx={styles.inputField}
-            variant='filled'
-            type='password'
-            helperText={(errors.password?.message as string) || ''}
-            error={!!errors.password}
-          />
-          <Box>
-            <Button sx={{ width: '100%' }} type='submit' variant='contained' size='medium'>
-              Login
-            </Button>
-          </Box>
-          <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
-            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-            <Typography>Or, login with </Typography>
-            <span style={{ height: '1px', width: '100px', backgroundColor: 'black' }}></span>
-          </Box>
-          <Box>
-            <MuiLink
-              href={githubUrl}
-              sx={styles.authLinkButton}
-              style={{ border: `1px solid ${theme.palette.primary.main}` }}
-            >
-              <GitHubIcon sx={styles.authIcon} />
-              Github
-            </MuiLink>
-          </Box>
-          <Box sx={styles.ETHButton} style={{ border: `1px solid ${theme.palette.primary.main}` }}>
-            {ethLoginOpt}
-          </Box>
-
-          <Typography variant='body1' style={{ color: 'black' }}>
-            Click here to{' '}
             <Typography
-              component='span'
-              onClick={() => navigate('/register')}
-              sx={{ color: 'primary.main', display: 'inline', cursor: 'pointer' }}
+              variant='h5'
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: '2.5rem'
+              }}
+              sx={{ color: theme.palette.maintext }}
             >
-              Register
+              Login
             </Typography>
-          </Typography>
-        </Box>
-      </form>
+            <TextField
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+              fullWidth
+              label='Email'
+              sx={{
+                ...styles.inputField,
+                backgroundColor: theme.palette.formBackground,
+                '& .MuiFilledInput-root': {
+                  backgroundColor: theme.palette.formBackground
+                },
+                '& .MuiInputLabel-root': {
+                  color: theme.palette.texts
+                },
+                '& .MuiFilledInput-input': {
+                  color: theme.palette.texts
+                },
+                '& .MuiFilledInput-underline:before': {
+                  borderBottomColor: theme.palette.texts
+                },
+                '& .MuiFilledInput-underline:after': {
+                  borderBottomColor: theme.palette.texts
+                },
+                '& .MuiFormHelperText-root': {
+                  color: theme.palette.texts
+                }
+              }}
+              variant='filled'
+              type='email'
+              helperText={(errors.email?.message as string) || ''}
+              error={!!errors.email}
+            />
+
+            <TextField
+              {...register('password', {
+                required: 'Password is required'
+              })}
+              fullWidth
+              label='Password'
+              sx={{
+                ...styles.inputField,
+                backgroundColor: theme.palette.formBackground,
+                '& .MuiFilledInput-root': {
+                  backgroundColor: theme.palette.formBackground
+                },
+                '& .MuiInputLabel-root': {
+                  color: theme.palette.texts
+                },
+                '& .MuiFilledInput-input': {
+                  color: theme.palette.texts
+                },
+                '& .MuiFilledInput-underline:before': {
+                  borderBottomColor: theme.palette.texts
+                },
+                '& .MuiFilledInput-underline:after': {
+                  borderBottomColor: theme.palette.texts
+                },
+                '& .MuiFormHelperText-root': {
+                  color: theme.palette.texts
+                }
+              }}
+              variant='filled'
+              type='password'
+              helperText={(errors.password?.message as string) || ''}
+              error={!!errors.password}
+            />
+            <Box>
+              <Button
+                sx={{
+                  width: '100%',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
+                  '&:hover': { backgroundColor: theme.palette.buttonHover }
+                }}
+                type='submit'
+                variant='contained'
+                size='medium'
+              >
+                Login
+              </Button>
+            </Box>
+            <Box display='flex' justifyContent='center' alignItems='center' gap={2}>
+              <Box sx={{ height: '1px', width: '100px', backgroundColor: 'black' }}></Box>
+              <Typography>Or, login with </Typography>
+              <Box sx={{ height: '1px', width: '100px', backgroundColor: 'black' }}></Box>
+            </Box>
+            <Box>
+              <MuiLink
+                href={githubUrl}
+                sx={{
+                  ...styles.authLinkButton,
+                  backgroundColor: theme.palette.buttons,
+                  color: theme.palette.buttontext,
+                  '&:hover': {
+                    backgroundColor: theme.palette.buttonHover
+                  }
+                }}
+              >
+                <GitHubIcon sx={styles.authIcon} />
+                Github
+              </MuiLink>
+            </Box>
+            <Box
+              sx={{
+                ...styles.ETHButton,
+                backgroundColor: theme.palette.buttons,
+                color: theme.palette.buttontext,
+                '&:hover': {
+                  backgroundColor: theme.palette.buttonHover
+                }
+              }}
+            >
+              {ethLoginOpt}
+            </Box>
+
+            <Typography variant='body1' style={{ color: '#fff' }}>
+              Click here to
+              <Typography
+                component='span'
+                onClick={() => navigate('/register')}
+                sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer' }}
+              >
+                Register
+              </Typography>
+            </Typography>
+          </Box>
+        </form>
+      </Box>
     </>
   )
 }

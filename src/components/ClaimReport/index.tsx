@@ -1,29 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import Link from '@mui/material/Link'
+import { styled, useTheme } from '@mui/material/styles'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress, Box } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import ExportComponent from './ExportComponent'
 
-// Define the interfaces for the data structure
 interface Claim {
+  statement: string | null
   subject: string
-  [key: string]: any // Add other properties as necessary
+  [key: string]: any
 }
 
 interface ReportData {
-  claim: Claim
-  validations: Claim[]
-  attestations: Claim[]
+  data: {
+    claim: Claim
+    validations: Claim[]
+    attestations: Claim[]
+  }
 }
 
 const DonationReport: React.FC = () => {
+  const theme = useTheme()
   const { claimId } = useParams<{ claimId: string }>()
   const [reportData, setReportData] = useState<ReportData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
 
   const url = `${BACKEND_BASE_URL}/api/report/${claimId}`
 
@@ -32,10 +35,11 @@ const DonationReport: React.FC = () => {
       setIsLoading(true)
       try {
         const response = await axios.get(url)
-        setReportData(response.data.data)
-        console.log(response.data)
+        setReportData(response.data)
+        console.log('Fetched report data:', response.data)
       } catch (err) {
         setError('Failed to fetch report data')
+        console.error('Error fetching report data:', err)
       } finally {
         setIsLoading(false)
       }
@@ -43,11 +47,20 @@ const DonationReport: React.FC = () => {
     fetchReportData()
   }, [claimId])
 
+  const handleMenuClose = () => {
+    setSelectedIndex(null)
+  }
+
   if (isLoading) {
     return (
       <Container
         maxWidth='sm'
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
       >
         <CircularProgress />
       </Container>
@@ -57,76 +70,138 @@ const DonationReport: React.FC = () => {
   if (error || !reportData) {
     return (
       <Container maxWidth='sm' sx={{ mt: 50 }}>
-        <Typography variant='body1' color='error'>
+        <Typography variant='body1' sx={{ color: theme.palette.texts }}>
           {error || 'Report data is not available.'}
         </Typography>
       </Container>
     )
   }
 
+  const Ribbon = styled(Box)(() => ({
+    position: 'relative',
+    display: 'block',
+    backgroundColor: theme.palette.smallButton,
+    width: 'fit-content',
+    marginInline: 'auto',
+    marginBlock: '2rem',
+    color: theme.palette.buttontext,
+    padding: '0.3rem 2rem',
+    textAlign: 'center',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    '&::before, &::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      border: '1rem solid transparent',
+      zIndex: 1
+    },
+    '&::before': {
+      right: 0,
+      borderRightColor: theme.palette.pageBackground
+    },
+    '&::after': {
+      left: 0,
+      borderLeftColor: theme.palette.pageBackground
+    }
+  }))
+
+  const validValidations = reportData.data.validations.filter((validation: Claim) => validation.statement !== null)
+  const validAttestations = reportData.data.attestations.filter((attestation: Claim) => attestation.statement !== null)
+
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-      <ExportComponent elementId='report-container' />
       <Box id='report-container'>
-        <Typography variant='h4' gutterBottom color={'#239a8e'}>
-          Report for{' '}
-          <Typography variant='inherit' component='span' color='primary.main'>
-            {reportData.claim.subject}
-          </Typography>
-        </Typography>
-        <Card sx={{ mb: 2, border: 'solid 2px #008a7cdc' }}>
+        <Card
+          sx={{
+            maxWidth: 'fit',
+            height: 'fit',
+            mt: '15px',
+            borderRadius: '20px',
+            backgroundColor: selectedIndex === -1 ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
+            backgroundImage: 'none',
+            filter: selectedIndex === -1 ? 'blur(0.8px)' : 'none',
+            color: theme.palette.texts
+          }}
+        >
           <CardContent>
-            {/* Display Claim Information */}
-            <RenderClaimInfo claim={reportData.claim} />
-            <Typography variant='body1'>
-              <Typography variant='inherit' component='span' sx={{ color: 'primary.main' }}>
-                Link:{' '}
-              </Typography>
-              <Link href={`https://live.linkedtrust.us/claims/${claimId}`} sx={{ color: '#1976d2' }}>
-                https://live.linkedtrust.us/claims/{claimId}
-              </Link>
-            </Typography>
+            <RenderClaimInfo
+              claim={reportData.data.claim}
+              index={-1}
+              setSelectedIndex={setSelectedIndex}
+              handleMenuClose={handleMenuClose}
+            />
           </CardContent>
         </Card>
-        {/* Placeholder for additional data section */}
-        <Typography variant='h6' gutterBottom sx={{ mt: 4 }} color={'#239a8e'}>
-          Validations:
-        </Typography>
-        {/* Customize this section with additional information as needed */}
-        {reportData.validations.length > 0 ? (
-          <Grid container spacing={2}>
-            {reportData.validations.map((attestation: Claim, index: number) => (
-              <Grid item xs={12} key={index}>
-                <Card sx={{ mb: 2, border: 'solid 2px #008a7cdc' }}>
-                  <CardContent>
-                    {/* Display Attestation Information */}
-                    <RenderClaimInfo claim={attestation} />
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <Typography color={'#239a8e'}>No Validations found.</Typography>
+        {validValidations.length > 0 && (
+          <>
+            <Ribbon>Validations</Ribbon>
+            <Grid container spacing={2}>
+              {validValidations.map((validation: Claim, index: number) => (
+                <Grid item xs={12} key={index}>
+                  <Card
+                    sx={{
+                      maxWidth: 'fit',
+                      height: 'fit',
+                      mt: '15px',
+                      borderRadius: '20px',
+                      backgroundColor:
+                        selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
+                      backgroundImage: 'none',
+                      filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
+                      color: theme.palette.texts
+                    }}
+                  >
+                    <CardContent sx={{ color: theme.palette.texts }}>
+                      <RenderClaimInfo
+                        claim={validation}
+                        index={index}
+                        setSelectedIndex={setSelectedIndex}
+                        handleMenuClose={handleMenuClose}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </>
         )}
-        <Typography variant='h6' gutterBottom sx={{ mt: 2 }} color={'#239a8e'}>
-          Related Attestations:
-        </Typography>
-        {reportData.attestations.length > 0 ? (
-          <Grid container spacing={2}>
-            {reportData.attestations.map((attestation: Claim, index: number) => (
-              <Grid item xs={12} key={index}>
-                <Card sx={{ mb: 2, border: 'solid 2px #008a7cdc' }}>
-                  <CardContent>
-                    {/* Display Attestation Information */}
-                    <RenderClaimInfo claim={attestation} />
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        ) : (
-          <Typography color={'#239a8e'}>No independent related attestations found.</Typography>
+
+        {validAttestations.length > 0 && (
+          <>
+            <Ribbon>Related Attestations</Ribbon>
+            <Grid container spacing={2}>
+              {validAttestations.map((attestation: Claim, index: number) => (
+                <Grid item xs={12} key={index}>
+                  <Card
+                    sx={{
+                      maxWidth: 'fit',
+                      height: 'fit',
+                      mt: '15px',
+                      borderRadius: '20px',
+                      backgroundColor:
+                        selectedIndex === index + validValidations.length
+                          ? theme.palette.cardBackgroundBlur
+                          : theme.palette.cardBackground,
+                      backgroundImage: 'none',
+                      filter: selectedIndex === index + validValidations.length ? 'blur(0.8px)' : 'none',
+                      color: theme.palette.texts
+                    }}
+                  >
+                    <CardContent sx={{ color: theme.palette.texts }}>
+                      <RenderClaimInfo
+                        claim={attestation}
+                        index={index + validValidations.length}
+                        setSelectedIndex={setSelectedIndex}
+                        handleMenuClose={handleMenuClose}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </>
         )}
       </Box>
     </Container>

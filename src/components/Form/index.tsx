@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material'
 import React, { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
@@ -217,9 +218,9 @@ export const Form = ({
     ],
     howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
-
+  const theme = useTheme()
   return (
-    <>
+    <Box sx={{ backgroundColor: theme.palette.formBackground }}>
       <DialogTitle>
         <Typography
           variant='h4'
@@ -227,7 +228,7 @@ export const Form = ({
             mb: 3,
             textAlign: 'center',
             fontSize: '20px',
-            color: 'primary.main',
+            color: theme.palette.maintext,
             textTransform: 'uppercase',
             fontWeight: 'bold'
           }}
@@ -247,13 +248,29 @@ export const Form = ({
               title='You should put the link to the site or social media account where the claim was created  '
               placement='right'
               arrow
-              sx={{ backgroundColor: '#009688' }}
+              sx={{ backgroundColor: theme.palette.maintext }}
             >
               <TextField
                 {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.icons
+                  }
+                }}
                 margin='dense'
-                variant='outlined'
+                variant='standard'
                 fullWidth
                 label='Subject'
                 key='subject'
@@ -268,15 +285,53 @@ export const Form = ({
                 select
                 label='Claim'
                 {...register('claim', { required: { value: true, message: 'claim is required' } })}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.texts
+                  }
+                }}
                 margin='dense'
-                variant='outlined'
+                variant='standard'
                 fullWidth
                 error={Boolean(errors.claim)}
                 helperText={errors.claim?.message}
               >
                 {inputOptions.claim.map((claimText: string, index: number) => (
-                  <MenuItem value={claimText} key={claimText}>
+                  <MenuItem
+                    sx={{
+                      backgroundColor: theme.palette.menuBackground,
+                      color: theme.palette.texts,
+                      '&:hover': {
+                        backgroundColor: theme.palette.formBackground
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: theme.palette.formBackground,
+                        '&:hover': {
+                          backgroundColor: theme.palette.formBackground
+                        }
+                      },
+                      '&:active': {
+                        backgroundColor: theme.palette.formBackground
+                      },
+                      '::selection': {
+                        backgroundColor: theme.palette.formBackground
+                      }
+                    }}
+                    value={claimText}
+                    key={claimText}
+                  >
                     <Tooltip title={tooltips.claim[index]} placement='right' arrow>
                       <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
                     </Tooltip>
@@ -289,13 +344,51 @@ export const Form = ({
                 select
                 label='How Known'
                 {...register('howKnown')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.icons
+                  }
+                }}
                 margin='dense'
-                variant='outlined'
+                variant='standard'
                 fullWidth
               >
                 {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                  <MenuItem value={howKnownMapping[howKnownText]}>
+                  <MenuItem
+                    sx={{
+                      backgroundColor: theme.palette.menuBackground,
+                      color: theme.palette.texts,
+                      '&:hover': {
+                        backgroundColor: theme.palette.formBackground
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: theme.palette.formBackground,
+                        '&:hover': {
+                          backgroundColor: theme.palette.formBackground
+                        }
+                      },
+                      '&:active': {
+                        backgroundColor: theme.palette.formBackground
+                      },
+                      '::selection': {
+                        backgroundColor: theme.palette.formBackground
+                      }
+                    }}
+                    value={howKnownMapping[howKnownText]}
+                    key={howKnownText}
+                  >
                     <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
                       <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
                     </Tooltip>
@@ -306,9 +399,25 @@ export const Form = ({
             <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
               <TextField
                 {...register('statement')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.icons
+                  }
+                }}
                 margin='dense'
-                variant='outlined'
+                variant='standard'
                 fullWidth
                 label='Statement'
                 key='statement'
@@ -320,9 +429,25 @@ export const Form = ({
             <Tooltip title='You should put your site here' placement='right' arrow>
               <TextField
                 {...register('sourceURI')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.icons
+                  }
+                }}
                 margin='dense'
-                variant='outlined'
+                variant='standard'
                 fullWidth
                 label='Source URI'
                 key='sourceURI'
@@ -336,9 +461,25 @@ export const Form = ({
             >
               <TextField
                 {...register('confidence')}
-                sx={{ ml: 1, mr: 1, width: '22ch' }}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.icons
+                  }
+                }}
                 margin='dense'
-                variant='outlined'
+                variant='standard'
                 fullWidth
                 label='Confidence'
                 key='confidence'
@@ -360,13 +501,51 @@ export const Form = ({
                         select
                         label='Aspect'
                         {...register('aspect')}
-                        sx={{ ml: 1, mr: 1, width: '22ch' }}
+                        sx={{
+                          ml: 1,
+                          mr: 1,
+                          width: '22ch',
+                          '& .MuiInputBase-input': {
+                            color: theme.palette.texts
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: theme.palette.texts
+                          },
+                          '& .MuiFormHelperText-root': {
+                            color: theme.palette.texts
+                          },
+                          '& .MuiSvgIcon-root': {
+                            color: theme.palette.icons
+                          }
+                        }}
                         margin='dense'
-                        variant='outlined'
+                        variant='standard'
                         fullWidth
                       >
                         {inputOptions.aspect.map((aspectText: string, index: number) => (
-                          <MenuItem value={aspectText} key={aspectText}>
+                          <MenuItem
+                            sx={{
+                              backgroundColor: theme.palette.menuBackground,
+                              color: theme.palette.texts,
+                              '&:hover': {
+                                backgroundColor: theme.palette.formBackground
+                              },
+                              '&.Mui-selected': {
+                                backgroundColor: theme.palette.formBackground,
+                                '&:hover': {
+                                  backgroundColor: theme.palette.formBackground
+                                }
+                              },
+                              '&:active': {
+                                backgroundColor: theme.palette.formBackground
+                              },
+                              '::selection': {
+                                backgroundColor: theme.palette.formBackground
+                              }
+                            }}
+                            value={aspectText}
+                            key={aspectText}
+                          >
                             <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
                               <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
                             </Tooltip>
@@ -382,12 +561,16 @@ export const Form = ({
                       render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <Tooltip title='A rating associated with the claim' placement='right' arrow>
                           <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
-                            <Typography>Review Rating</Typography>
+                            <Typography sx={{ mb: 1, color: theme.palette.texts }}>Review Rating</Typography>
                             <Rating
                               name='stars'
                               value={value}
                               onChange={(e, newValue) => onChange(newValue)}
                               precision={1}
+                              sx={{
+                                color: theme.palette.stars,
+                                '& .MuiRating-icon': { color: theme.palette.stars }
+                              }}
                               size='large'
                             />
 
@@ -414,9 +597,25 @@ export const Form = ({
                     <Tooltip title='What entity is the subject related to?' placement='right' arrow>
                       <TextField
                         {...register('object')}
-                        sx={{ ml: 1, mr: 1, width: '22ch' }}
+                        sx={{
+                          ml: 1,
+                          mr: 1,
+                          width: '22ch',
+                          '& .MuiInputBase-input': {
+                            color: theme.palette.texts
+                          },
+                          '& .MuiInputLabel-root': {
+                            color: theme.palette.texts
+                          },
+                          '& .MuiFormHelperText-root': {
+                            color: theme.palette.texts
+                          },
+                          '& .MuiSvgIcon-root': {
+                            color: theme.palette.icons
+                          }
+                        }}
                         margin='dense'
-                        variant='outlined'
+                        variant='standard'
                         fullWidth
                         label='Object'
                         key='object'
@@ -436,7 +635,27 @@ export const Form = ({
                 value={watchEffectiveDate}
                 onChange={(newValue: any) => setValue('effectiveDate', newValue)}
                 renderInput={(params: any) => (
-                  <TextField {...params} sx={{ ml: 1, mr: 1, width: '100%' }} variant='filled' />
+                  <TextField
+                    {...params}
+                    sx={{
+                      ml: 1,
+                      mr: 1,
+                      width: '100%',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    variant='standard'
+                  />
                 )}
               />
             </LocalizationProvider>
@@ -452,10 +671,10 @@ export const Form = ({
             ml: 1,
             mr: 1,
             width: '50%',
-            bgcolor: 'praimary.main',
+            bgcolor: theme.palette.buttons,
             margin: '0 auto',
             '&:hover': {
-              backgroundColor: '#00695f'
+              backgroundColor: theme.palette.buttonHover
             }
           }}
         >
@@ -463,6 +682,6 @@ export const Form = ({
         </Button>
         {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
       </DialogActions>
-    </>
+    </Box>
   )
 }

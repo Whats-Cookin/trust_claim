@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
 .app {
   position: relative;
   background-color: #eeeeee;
@@ -7,7 +9,7 @@
   flex-direction: column;
   align-items: center;
   font-size: calc(3px + 2vmin);
-  color: rgb(37, 3, 3);
+  color: #250303;
   overflow: hidden;
 }
 

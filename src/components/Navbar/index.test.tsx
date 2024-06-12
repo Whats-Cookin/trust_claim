@@ -14,7 +14,15 @@ describe('Navbar component', () => {
     ;(useNavigate as jest.Mock).mockReturnValue(navigate)
     ;(useLocation as jest.Mock).mockReturnValue({ search: '' })
 
-    render(<Navbar isAuth={true} />)
+    render(
+      <Navbar
+        isAuth={true}
+        toggleTheme={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+        isDarkMode={false}
+      />
+    )
     const trustClaimsText = screen.getByText('Trust Claims')
     expect(trustClaimsText).toBeInTheDocument()
 
@@ -33,7 +41,15 @@ describe('Navbar component', () => {
     ;(useNavigate as jest.Mock).mockReturnValue(navigate)
     ;(useLocation as jest.Mock).mockReturnValue({ search: '' })
 
-    render(<Navbar isAuth={false} />)
+    render(
+      <Navbar
+        isAuth={false}
+        toggleTheme={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+        isDarkMode={false}
+      />
+    )
 
     const trustClaimsText = screen.getAllByText(/trust claims/i)
     expect(trustClaimsText.length).toBeGreaterThan(0)
