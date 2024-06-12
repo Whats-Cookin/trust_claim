@@ -5,7 +5,6 @@ import { styled, useTheme } from '@mui/material/styles'
 import { Container, Typography, Card, CardContent, Grid, CircularProgress, Box } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import ExportComponent from './ExportComponent'
 
 interface Claim {
   statement: string | null
@@ -113,7 +112,6 @@ const DonationReport: React.FC = () => {
 
   return (
     <Container maxWidth='md' sx={{ marginBlock: '8rem 3rem' }}>
-      <ExportComponent elementId='report-container' />
       <Box id='report-container'>
         <Card
           sx={{
