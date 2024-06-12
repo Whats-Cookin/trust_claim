@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { toPng } from 'html-to-image'
 import jsPDF from 'jspdf'
-import { Button, Menu, MenuItem, CircularProgress } from '@mui/material'
+import { Button, Menu, MenuItem, CircularProgress, Box } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import Logo from '../../assets/logolinkedtrust.svg'
 
 interface ExportComponentProps {
@@ -13,6 +14,7 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
   const [loadingImage, setLoadingImage] = useState(false)
   const [loadingPdf, setLoadingPdf] = useState(false)
   const [watermark, setWatermark] = useState<HTMLImageElement | null>(null)
+  const theme = useTheme()
 
   useEffect(() => {
     const img = new Image()
@@ -142,8 +144,16 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-      <Button variant='contained' color='primary' onClick={handleClick}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+      <Button
+        variant='contained'
+        sx={{
+          color: theme.palette.buttontext,
+          backgroundColor: theme.palette.buttons,
+          '&:hover': { backgroundColor: theme.palette.buttonHover }
+        }}
+        onClick={handleClick}
+      >
         Export Report
       </Button>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
@@ -156,7 +166,7 @@ const ExportComponent: React.FC<ExportComponentProps> = ({ elementId }) => {
         <MenuItem onClick={printDocument}>Print to PDF</MenuItem>
         <MenuItem onClick={handleShareLink}>Copy Link</MenuItem>
       </Menu>
-    </div>
+    </Box>
   )
 }
 
