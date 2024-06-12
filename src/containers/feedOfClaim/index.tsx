@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import SchemaIcon from '@mui/icons-material/Schema'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -18,9 +18,7 @@ import {
   Button,
   Menu,
   MenuItem,
-  Grow,
-  InputBase,
-  Paper
+  Grow
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
@@ -123,6 +121,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const isMediumScreen = useMediaQuery(theme.breakpoints.down(800))
@@ -147,6 +146,12 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       setIsAuth(false)
     }
   }, [])
+
+  // Updates the search term based on the URL query parameter
+  useEffect(() => {
+    const search = new URLSearchParams(location.search).get('query')
+    setSearchTerm(search ?? '')
+  }, [location.search])
 
   // Filters claims based on the search term
   useEffect(() => {
@@ -204,36 +209,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
           position: 'relative',
           mt: isSmallScreen ? '8vh' : '8vh  '
         }}
-      >
-        <Paper
-          component='div'
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '45px',
-            width: '100%',
-            mt: 2,
-            maxWidth: isMediumScreen ? '80vw' : '48%',
-            borderRadius: '25px',
-            backgroundColor: theme.palette.searchBarBackground,
-            padding: '0 8px',
-            boxShadow: theme.shadows[1]
-          }}
-        >
-          <InputBase
-            type='search'
-            value={searchTerm}
-            placeholder='Search claims...'
-            onChange={e => setSearchTerm(e.target.value)}
-            sx={{
-              ml: 1,
-              flex: 1,
-              color: theme.palette.searchBarText,
-              fontFamily: 'Roboto'
-            }}
-          />
-        </Paper>
-      </Box>
+      ></Box>
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (

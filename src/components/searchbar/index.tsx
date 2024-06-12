@@ -1,29 +1,47 @@
 import { useTheme } from '@mui/material/styles'
 import { Paper, InputBase, IconButton, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const SearchBar = () => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const search = useLocation().search
+  const location = useLocation()
+  const search = location.search
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query ?? '')
 
   const isSmallScreen = useMediaQuery('(max-width: 600px)')
 
-  const handleSearch = async () => {
-    window.localStorage.removeItem('claims')
-    if (searchVal.trim() !== '') {
+  useEffect(() => {
+    if (location.pathname === '/feed') {
       navigate({
-        pathname: '/search',
+        pathname: '/feed',
         search: `?query=${searchVal}`
       })
     }
+  }, [searchVal, navigate, location.pathname])
+
+  const handleSearch = () => {
+    window.localStorage.removeItem('claims')
+    if (searchVal.trim() !== '') {
+      if (location.pathname === '/feed') {
+        // Custom search handling for /feed path
+        navigate({
+          pathname: '/feed',
+          search: `?query=${searchVal}`
+        })
+      } else {
+        navigate({
+          pathname: '/search',
+          search: `?query=${searchVal}`
+        })
+      }
+    }
   }
 
-  const handleSearchKeypress = async (event: any) => {
+  const handleSearchKeypress = (event: any) => {
     if (event.key === 'Enter') {
       handleSearch()
     }
