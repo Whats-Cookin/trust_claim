@@ -26,18 +26,10 @@ const SearchBar = () => {
   const handleSearch = () => {
     window.localStorage.removeItem('claims')
     if (searchVal.trim() !== '') {
-      if (location.pathname === '/feed') {
-        // Custom search handling for /feed path
-        navigate({
-          pathname: '/feed',
-          search: `?query=${searchVal}`
-        })
-      } else {
-        navigate({
-          pathname: '/search',
-          search: `?query=${searchVal}`
-        })
-      }
+      navigate({
+        pathname: '/search',
+        search: `?query=${searchVal}`
+      })
     }
   }
 
