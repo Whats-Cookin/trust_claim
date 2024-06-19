@@ -22,7 +22,7 @@ const SearchBar = () => {
     }
   }, [searchVal, navigate, location.pathname])
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     window.localStorage.removeItem('claims')
     if (searchVal.trim() !== '') {
       navigate({
