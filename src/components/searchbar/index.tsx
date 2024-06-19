@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material/styles'
 import { Paper, InputBase, IconButton, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const SearchBar = () => {
@@ -13,6 +13,15 @@ const SearchBar = () => {
 
   const isSmallScreen = useMediaQuery('(max-width: 600px)')
 
+  useEffect(() => {
+    if (location.pathname === '/feed') {
+      navigate({
+        pathname: '/feed',
+        search: `?query=${searchVal}`
+      })
+    }
+  }, [searchVal, navigate, location.pathname])
+
   const handleSearch = async () => {
     window.localStorage.removeItem('claims')
     if (searchVal.trim() !== '') {
@@ -23,7 +32,7 @@ const SearchBar = () => {
     }
   }
 
-  const handleSearchKeypress = async (event: any) => {
+  const handleSearchKeypress = (event: any) => {
     if (event.key === 'Enter') {
       handleSearch()
     }
