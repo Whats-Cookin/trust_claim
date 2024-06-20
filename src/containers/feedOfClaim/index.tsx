@@ -174,6 +174,14 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   // Handles graph navigation
   const handleschema = async (nodeUri: string) => {
+    if (nodeUri.includes('linkedin.com')) {
+      const profileName = extractProfileName(nodeUri)
+      navigate({
+        pathname: '/search',
+        search: `?query=${profileName}`
+      })
+      return
+    }
     const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/, '')
     navigate({
       pathname: '/search',
