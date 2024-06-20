@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar, toggle
     >
       <List>
         <Grow in={isOpen} timeout={600}>
-          <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/feed')}>
+          <ListItemButton sx={{ gap: '1rem' }} onClick={toggleSidebar} onClickCapture={() => navigate('/')}>
             <Home sx={{ color: theme.palette.texts }} />
             <ListItemText primary='Home' sx={{ color: theme.palette.texts }} />
           </ListItemButton>
@@ -158,7 +158,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, isOpen, toggleSidebar, toggle
           <Button
             variant='contained'
             startIcon={<Create />}
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/claim')}
             sx={{
               color: theme.palette.buttontext,
               backgroundColor: theme.palette.buttons,

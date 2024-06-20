@@ -27,7 +27,7 @@ describe('ProfileDropdown component', () => {
     const createClaimButton = getByText(/Create Claim/i)
     expect(createClaimButton).toBeInTheDocument()
     fireEvent.click(createClaimButton)
-    expect(navigate).toHaveBeenCalledWith('/')
+    expect(navigate).toHaveBeenCalledWith('/claim')
 
     const logoutButton = getByText(/Logout/i)
     expect(logoutButton).toBeInTheDocument()

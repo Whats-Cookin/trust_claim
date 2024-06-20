@@ -72,7 +72,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         setIsFormSubmitted(true)
         setTimeout(() => {
           setDialogOpen(false)
-          navigate('/feed')
+          navigate('/')
         }, 3000)
         reset()
       } else {
@@ -203,7 +203,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                           onClose={() => {
                             setDialogOpen(false)
                             if (isFormSubmitted) {
-                              navigate('/feed')
+                              navigate('/')
                             }
                           }}
                         >
