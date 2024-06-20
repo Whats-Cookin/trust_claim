@@ -12,8 +12,10 @@ const OverlayModal: React.FC = () => {
     const now = new Date().getTime()
 
     if (!dontShowOverlay && (!lastShown || now - parseInt(lastShown) > 300000)) {
-      setShowModal(true)
-      localStorage.setItem('lastShownOverlay', now.toString())
+      setTimeout(() => {
+        setShowModal(true)
+        localStorage.setItem('lastShownOverlay', now.toString())
+      }, 7000) // Show modal after 5 seconds
     }
   }, [])
 
