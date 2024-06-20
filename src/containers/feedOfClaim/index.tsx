@@ -173,13 +173,21 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }
 
   // Handles graph navigation
-  const handleNavigationToGraph = async (claimId: string) => {
+  const handleschema = async (nodeUri: string) => {
+    if (nodeUri.includes('linkedin.com')) {
+      const profileName = extractProfileName(nodeUri)
+      navigate({
+        pathname: '/search',
+        search: `?query=${profileName}`
+      })
+      return
+    }
+    const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/, '')
     navigate({
       pathname: '/search',
-      search: `?query=${claimId}`
+      search: `?query=${domain}`
     })
   }
-
   // Handles menu click
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
     setAnchorEl(event.currentTarget)
@@ -354,7 +362,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                         </Link>
                         <Button
                           startIcon={<SchemaIcon />}
-                          onClick={() => handleNavigationToGraph(claim.claim_id)}
+                          onClick={() => handleschema(claim.name)}
                           variant='text'
                           sx={{
                             fontSize: '10px',
