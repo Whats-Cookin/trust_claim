@@ -362,7 +362,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                         </Link>
                         <Button
                           startIcon={<SchemaIcon />}
-                          onClick={() => handleschema(claim.name)}
+                          onClick={() => handleschema(claim.link)}
                           variant='text'
                           sx={{
                             fontSize: '10px',
