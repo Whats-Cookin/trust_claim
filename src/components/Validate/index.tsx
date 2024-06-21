@@ -165,7 +165,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         setIsFormSubmitted(true)
         setTimeout(() => {
           setDialogOpen(false)
-          navigate('/feed')
+          navigate('/')
         }, 3000)
         reset()
       } else {
@@ -455,7 +455,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             onClose={() => {
               setDialogOpen(false)
               if (isFormSubmitted) {
-                navigate('/feed')
+                navigate('/')
               }
             }}
           >

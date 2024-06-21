@@ -36,9 +36,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
     }
 
     switch (path) {
-      case '/feed':
-        return 'Feed of Claims'
       case '/':
+        return 'Feed of Claims'
+      case '/claim':
         return 'Create Claims'
       case '/explore':
         return 'Explore'
@@ -68,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {(location.pathname !== '/feed' || isMediumScreen) && (
+            {(location.pathname !== '/' || isMediumScreen) && (
               <IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
                 <MenuIcon />
               </IconButton>
@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
                 cursor: 'pointer',
                 width: isSmallScreen ? '100%' : '23vw'
               }}
-              onClick={() => navigate('/feed')}
+              onClick={() => navigate('/')}
             >
               Trust Claims
             </Typography>

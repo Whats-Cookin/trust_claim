@@ -87,14 +87,14 @@ const ProfileDropdown = ({ isAuth }: any) => {
               boxShadow: 'none',
               border: 'none'
             }}
-            onClick={() => handleNavigate('/feed')}
+            onClick={() => handleNavigate('/')}
           >
             Feed of claims
           </Button>
           <Button
             disableRipple={true}
             color='inherit'
-            onClick={() => handleNavigate('/')}
+            onClick={() => handleNavigate('/claim')}
             sx={{
               width: '85%',
               marginBottom: '1em',

@@ -41,7 +41,7 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/feed')
+      navigate('/')
     }
 
     const handleResize = () => {
@@ -85,7 +85,7 @@ const App = () => {
     />
   )
 
-  const showFooter = location.pathname !== '/feed' || windowWidth < 800
+  const showFooter = location.pathname !== '/' || windowWidth < 800
 
   return (
     <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
@@ -120,10 +120,10 @@ const App = () => {
           }}
         >
           <Routes>
-            <Route path='feed' element={<FeedClaim {...commonProps} />} />
+            <Route path='/' element={<FeedClaim {...commonProps} />} />
             <Route path='report/:claimId' element={<ClaimReport />} />
             <Route path='search' element={<Search {...commonProps} />} />
-            <Route path='/' element={<Form {...commonProps} />} />
+            <Route path='/claim' element={<Form {...commonProps} />} />
             <Route path='register' element={<Register {...commonProps} />} />
             <Route path='login' element={<Login {...commonProps} />} />
             <Route path='terms' element={<Terms />} />
