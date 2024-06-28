@@ -82,7 +82,7 @@ const RenderClaimInfo = ({
   const handleDetailsClose = () => {
     setDetailsOpen(false)
   }
-
+  //TODO: Remove this after fixing image issue in backend
   const getImageForClaim = (claim: { [key: string]: string }) => {
     if (claim.effectiveDate === '2024-05-04T12:21:01.188+00:00') {
       return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/IMG_20240503_144203.jpeg'
