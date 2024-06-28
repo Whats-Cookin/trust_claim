@@ -83,6 +83,21 @@ const RenderClaimInfo = ({
     setDetailsOpen(false)
   }
 
+  const getImageForClaim = (claim: { [key: string]: string }) => {
+    if (claim.effectiveDate === '2024-05-04T12:21:01.188+00:00') {
+      return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/IMG_20240503_144203.jpeg'
+    }
+    if (claim.effectiveDate === '2024-05-04T12:48:07.204+00:00') {
+      return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/1714738074246.jpeg'
+    }
+    if (claim.effectiveDate === '2024-05-27T10:47:08.728+00:00') {
+      return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/IMG_20240503_130439.jpeg'
+    }
+    return null
+  }
+
+  const claimImage = claim.image || getImageForClaim(claim)
+
   return (
     <>
       <Box
@@ -94,32 +109,31 @@ const RenderClaimInfo = ({
           backgroundColor: theme.palette.cardBackground,
           borderRadius: '20px',
           color: theme.palette.texts,
-          transition: 'min-height 0.3s ease-in-out',
-          padding: '20px'
+          transition: 'min-height 0.3s ease-in-out'
+          // padding: '20px'
         }}
       >
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
-            gap: '20px',
-            flexDirection: {
-              xs: 'column',
-              sm: 'row'
-            }
+            alignItems: 'revert',
+            justifyContent: 'flex-start',
+            flexWrap: 'wrap'
+            // gap: '20px',
           }}
         >
-          {claim.image && !imageError && (
+          {claimImage && !imageError && (
             <Box>
               <IconButton
                 onClick={() => setOpenD(true)}
                 sx={{
                   padding: 0,
-                  borderRadius: '50%'
+                  borderRadius: '50%',
+                  top: 0
                 }}
               >
                 <img
-                  src={claim.image}
+                  src={claimImage}
                   onError={() => setImageError(true)}
                   style={{
                     width: '60px',
@@ -232,7 +246,7 @@ const RenderClaimInfo = ({
                 color: theme.palette.buttontext
               }}
             >
-              Read More
+              View Details
             </Button>
             {claim.stars && (
               <Rating
@@ -259,7 +273,7 @@ const RenderClaimInfo = ({
         )}
       </Box>
 
-      {openD && claim.image && (
+      {openD && claimImage && (
         <Dialog open={openD} onClose={() => setOpenD(false)}>
           <Close
             sx={{
@@ -276,7 +290,7 @@ const RenderClaimInfo = ({
             onClick={() => setOpenD(false)}
           />
           <img
-            src={claim.image}
+            src={claimImage}
             style={{
               width: '100%',
               maxHeight: '100%'
