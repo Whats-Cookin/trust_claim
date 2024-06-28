@@ -1,18 +1,18 @@
 import { useTheme } from '@mui/material/styles'
-import { Paper, InputBase, IconButton, useMediaQuery } from '@mui/material'
+import { Box, InputBase, IconButton, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const SearchBar = () => {
   const theme = useTheme()
   const navigate = useNavigate()
-  const search = useLocation().search
+  const location = useLocation()
+  const search = location.search
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query ?? '')
 
   const isSmallScreen = useMediaQuery('(max-width: 600px)')
-
   useEffect(() => {
     if (location.pathname === '/feed') {
       navigate({
@@ -39,48 +39,42 @@ const SearchBar = () => {
   }
 
   return (
-    <Paper
+    <Box
       component='div'
       sx={{
         display: 'flex',
-        zIndex: 1,
         alignItems: 'center',
         height: '45px',
         width: '100%',
         maxWidth: isSmallScreen ? '80vw' : '23vw',
-        borderRadius: '50px',
-        backgroundColor: theme.palette.searchBarBackground,
-        backgroundImage: 'none',
-        padding: '0 8px',
-        boxShadow: 'none'
+        borderBottom: `2px solid ${theme.palette.searchBarText}`,
+        backgroundColor: 'transparent',
+        padding: '0 8px'
       }}
     >
       <InputBase
         type='search'
         value={searchVal}
-        placeholder='Search'
+        placeholder='Type to search...'
         onChange={e => setSearchVal(e.target.value)}
         onKeyUp={handleSearchKeypress}
         sx={{
           ml: 1,
           flex: 1,
           color: theme.palette.searchBarText,
-          fontWeight: '600',
-          fontSize: '14px',
-          fontFamily: 'Roboto',
-          lineHeight: '16.41px'
+          fontSize: '17px'
         }}
       />
 
       <IconButton
         type='button'
-        sx={{ p: '10px', color: theme.palette.icons }}
+        sx={{ p: '10px', color: theme.palette.searchBarText }}
         aria-label='search'
         onClick={handleSearch}
       >
         <SearchIcon />
       </IconButton>
-    </Paper>
+    </Box>
   )
 }
 

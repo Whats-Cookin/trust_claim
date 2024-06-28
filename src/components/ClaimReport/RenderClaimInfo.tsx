@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
-import { Typography, Box, Link, Dialog, Rating } from '@mui/material'
+import React, { useState, useEffect, useRef } from 'react'
+import {
+  Typography,
+  Box,
+  Link as MuiLink,
+  Dialog,
+  Rating,
+  Button,
+  DialogContent,
+  DialogTitle,
+  IconButton
+} from '@mui/material'
 import { Close } from '@mui/icons-material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { useTheme } from '@mui/system'
-import placeHolder from '../../assets/No-Image-Placeholder.svg'
 
 const RenderClaimInfo = ({
   claim,
@@ -47,260 +52,193 @@ const RenderClaimInfo = ({
   ] // Keys to display as chips
   const claimEntries = Object.entries(claim).filter(([key]) => !excludedKeys.includes(key))
   const [openD, setOpenD] = useState(false)
+  const [imageError, setImageError] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const cardRef = useRef<HTMLDivElement | null>(null)
 
-  // Options for the claim menu
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-    setSelectedIndex(index)
-  }
-  const handleClose = () => {
-    setAnchorEl(null)
-    handleMenuClose()
-  }
-  const options = [
-    {
-      label: 'From',
-      value: claim.author || 'Not provided',
-      sourceURI: claim.sourceURI || 'Not provided'
-    },
-    { label: 'How Known', value: claim.howKnown || 'Not provided' },
-    { label: 'Aspect', value: claim.claim || 'Not provided' },
-    { label: 'Confidence', value: claim.confidence || 'Not provided' },
-    { label: 'Link', value: claim.subject || 'Not provided' }
-  ]
+  const otherEntries = claimEntries.filter(([key]) => !chipKeys.includes(key) && key !== 'statement' && claim[key])
+  const hasExtraDetails = otherEntries.length > 0
 
-  // Separate the entries into chips and others for different rendering strategies
-  // const chipEntries = claimEntries.filter(([key]) => chipKeys.includes(key))
-  const otherEntries = claimEntries.filter(([key]) => !chipKeys.includes(key))
+  const truncateText = (text: string, length: number) => {
+    if (text.length <= length) return text
+    return `${text.substring(0, length)}...`
+  }
+
+  const handleToggleExpand = () => {
+    setIsExpanded(!isExpanded)
+  }
+
+  useEffect(() => {
+    if (cardRef.current) {
+      cardRef.current.style.minHeight = isExpanded ? `${cardRef.current.scrollHeight}px` : '200px'
+    }
+  }, [isExpanded])
+
+  const handleDetailsOpen = () => {
+    setDetailsOpen(true)
+  }
+
+  const handleDetailsClose = () => {
+    setDetailsOpen(false)
+  }
 
   return (
     <>
       <Box
+        ref={cardRef}
         sx={{
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'space-between',
-          gap: '20px',
-          flexDirection: {
-            xs: 'column',
-            sm: 'row'
-          }
+          backgroundColor: theme.palette.cardBackground,
+          borderRadius: '20px',
+          color: theme.palette.texts,
+          transition: 'min-height 0.3s ease-in-out',
+          padding: '20px'
         }}
       >
-        {/* Render the image */}
-        <Box
-          sx={{
-            flexShrink: 0,
-            marginInline: {
-              xs: 'auto',
-              sm: 0
-            },
-            order: {
-              xs: 2,
-              sm: 0
-            }
-          }}
-        >
-          <IconButton
-            onClick={() => setOpenD(true)}
-            sx={{
-              padding: 0,
-              borderRadius: '50%'
-            }}
-          >
-            <img
-              src={claim.image ? claim.image : placeHolder}
-              style={{
-                width: '60px',
-                height: '60px',
-                borderRadius: '50%'
-              }}
-              alt='claim'
-            />
-          </IconButton>
-        </Box>
-
-        {/* Render other claim information */}
-        <Box
-          sx={{
-            paddingInline: '10px',
-            flexGrow: 1,
-            order: {
-              xs: 3,
-              sm: 0
-            }
-          }}
-        >
-          {claim.subject && (
-            <Link
-              href={claim.subject}
-              target='_blank'
-              sx={{
-                color: theme.palette.texts,
-                fontSize: 24,
-                display: 'flex',
-                alignItems: 'center',
-                textDecoration: 'none'
-              }}
-            >
-              {claim.subject} {/* TODO: Claim Title */}
-              <OpenInNewIcon
-                sx={{
-                  marginLeft: '5px',
-                  color: theme.palette.texts,
-                  fontSize: '1.5rem'
-                }}
-              />
-            </Link>
-          )}
-
-          <Typography
-            variant='body1'
-            sx={{
-              color: theme.palette.date,
-              fontWeight: 500,
-              marginBottom: '1rem'
-            }}
-          >
-            {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </Typography>
-          {otherEntries.map(
-            ([key, value]) =>
-              value && (
-                <Typography key={key} variant='body1'>
-                  <Typography
-                    variant='inherit'
-                    component='span'
-                    sx={{
-                      color: theme.palette.texts,
-                      fontWeight: 600,
-                      textAlign: 'left'
-                    }}
-                  >
-                    {value}
-                  </Typography>
-                </Typography>
-              )
-          )}
-        </Box>
-
-        {/* Render popup */}
-        <Box
-          sx={{
-            flexShrink: 0,
-            marginInline: 'auto',
-            marginRight: 0,
-            order: {
-              xs: 1,
-              sm: 0
-            }
-          }}
-        >
-          <IconButton onClick={handleClick}>
-            <MoreHorizIcon sx={{ color: theme.palette.smallButton }} />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
-            sx={{
-              '& .MuiPaper-root': {
-                backgroundColor: theme.palette.menuBackground,
-                color: theme.palette.texts
-              }
-            }}
-          >
-            {options.map(option => {
-              if (option.label === 'Link') {
-                return (
-                  <MenuItem key={option.label} onClick={handleClose}>
-                    {option.value !== 'Not provided' ? (
-                      <Link
-                        href={option.value}
-                        target='_blank'
-                        sx={{
-                          color: 'inherit',
-                          textDecoration: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem'
-                        }}
-                      >
-                        {option.label}: <OpenInNewIcon />
-                      </Link>
-                    ) : (
-                      'Link: Not provided'
-                    )}
-                  </MenuItem>
-                )
-              } else if (option.label === 'From') {
-                return (
-                  <MenuItem key={option.label} onClick={handleClose}>
-                    <>
-                      {`${option.label}: ${option.value}`}
-                      {option.sourceURI && (
-                        <Link
-                          href={option.sourceURI}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          sx={{
-                            color: 'inherit',
-                            textDecoration: 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            marginLeft: '0.5rem'
-                          }}
-                        >
-                          <OpenInNewIcon />
-                        </Link>
-                      )}
-                    </>
-                  </MenuItem>
-                )
-              } else {
-                return (
-                  <MenuItem key={option.label} onClick={handleClose}>
-                    {`${option.label}: ${option.value}`}
-                  </MenuItem>
-                )
-              }
-            })}
-          </Menu>
-        </Box>
-      </Box>
-
-      {/* Render Rating */}
-      {claim.stars && (
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            marginTop: '1rem'
+            justifyContent: 'space-between',
+            gap: '20px',
+            flexDirection: {
+              xs: 'column',
+              sm: 'row'
+            }
           }}
         >
-          <Rating
-            name='size-medium'
-            defaultValue={parseInt(claim.stars)}
-            sx={{ color: theme.palette.stars }}
-            readOnly
-          />
+          {claim.image && !imageError && (
+            <Box>
+              <IconButton
+                onClick={() => setOpenD(true)}
+                sx={{
+                  padding: 0,
+                  borderRadius: '50%'
+                }}
+              >
+                <img
+                  src={claim.image}
+                  onError={() => setImageError(true)}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%'
+                  }}
+                  alt='claim'
+                />
+              </IconButton>
+            </Box>
+          )}
+          <Box
+            sx={{
+              paddingInline: '10px',
+              flexGrow: 1,
+              order: {
+                xs: 3,
+                sm: 0
+              }
+            }}
+          >
+            {claim.subject && (
+              <MuiLink
+                href={claim.subject}
+                target='_blank'
+                sx={{
+                  color: theme.palette.texts,
+                  fontSize: 24,
+                  display: 'flex',
+                  alignItems: 'center',
+                  textDecoration: 'none'
+                }}
+              >
+                {claim.subject}
+                <OpenInNewIcon
+                  sx={{
+                    marginLeft: '5px',
+                    color: theme.palette.texts,
+                    fontSize: '1.5rem'
+                  }}
+                />
+              </MuiLink>
+            )}
+
+            <Typography
+              variant='body1'
+              sx={{
+                color: theme.palette.date,
+                fontWeight: 500,
+                marginBottom: '1rem'
+              }}
+            >
+              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </Typography>
+            {claim.statement && (
+              <Typography variant='body1'>
+                <Typography
+                  variant='inherit'
+                  component='span'
+                  sx={{
+                    color: theme.palette.texts,
+                    fontWeight: 600,
+                    textAlign: 'left'
+                  }}
+                >
+                  {claim.statement.length > 500 ? (
+                    <>
+                      {isExpanded ? claim.statement : truncateText(claim.statement, 500)}
+                      <MuiLink
+                        onClick={handleToggleExpand}
+                        sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
+                      >
+                        {isExpanded ? 'Show Less' : 'See More'}
+                      </MuiLink>
+                    </>
+                  ) : (
+                    claim.statement
+                  )}
+                </Typography>
+              </Typography>
+            )}
+          </Box>
         </Box>
-      )}
+
+        {hasExtraDetails && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '20px',
+              position: 'relative'
+            }}
+          >
+            <Button
+              onClick={handleDetailsOpen}
+              variant='contained'
+              sx={{
+                backgroundColor: theme.palette.buttons,
+                color: theme.palette.buttontext
+              }}
+            >
+              Read More
+            </Button>
+            {claim.stars && (
+              <Rating
+                name='size-medium'
+                defaultValue={parseInt(claim.stars)}
+                sx={{ color: theme.palette.stars, position: 'absolute', right: 0 }}
+                readOnly
+              />
+            )}
+          </Box>
+        )}
+      </Box>
 
       {openD && claim.image && (
         <Dialog open={openD} onClose={() => setOpenD(false)}>
@@ -328,6 +266,33 @@ const RenderClaimInfo = ({
           />
         </Dialog>
       )}
+
+      <Dialog open={detailsOpen} onClose={handleDetailsClose}>
+        <DialogTitle>Claim Details</DialogTitle>
+        <DialogContent>
+          {Object.entries(claim)
+            .filter(
+              ([key, value]) => value && !excludedKeys.includes(key) && !chipKeys.includes(key) && key !== 'statement'
+            )
+            .map(([key, value]) => (
+              <Typography key={key} variant='body1' sx={{ display: 'flex', alignItems: 'center' }}>
+                <strong>{key}:</strong>&nbsp;
+                {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
+                  <MuiLink
+                    href={value}
+                    target='_blank'
+                    sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: theme.palette.link }}
+                  >
+                    {value}
+                    <OpenInNewIcon sx={{ marginLeft: '5px' }} />
+                  </MuiLink>
+                ) : (
+                  value
+                )}
+              </Typography>
+            ))}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

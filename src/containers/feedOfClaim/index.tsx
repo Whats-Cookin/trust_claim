@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import SchemaIcon from '@mui/icons-material/Schema'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import AssessmentIcon from '@mui/icons-material/Assessment'
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
+import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import { IHomeProps, Claim as ImportedClaim } from './types'
 import {
   Box,
@@ -18,14 +19,14 @@ import {
   Button,
   Menu,
   MenuItem,
-  Grow
+  Grow,
+  Fab
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
-import AlwaysOpenSidebar from '../../components/FeedSidebar/AlwaysOpenSidebar'
-import FeedFooter from '../../components/FeedFooter'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import OverlayModal from '../../components/OverLayModal/OverlayModal'
+// import OverlayModal from '../../components/OverLayModal/OverlayModal'
+
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
 interface LocalClaim {
@@ -33,21 +34,18 @@ interface LocalClaim {
   source_link: string
 }
 
-// Extracts the profile name from a LinkedIn URL
 const extractProfileName = (url: string) => {
   const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
   const match = regex.exec(url)
   return match ? match[1].replace(/-/g, ' ') : url
 }
 
-// Extracts the source name from a LinkedIn URL
 const extractSourceName = (url: string) => {
   const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
   const match = regex.exec(url)
   return match ? match[1].replace(/\./g, ' ') : url
 }
 
-// Renders the claim name with highlighting for the search term
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   const displayName = extractProfileName(claim.name)
   const theme = useTheme()
@@ -66,7 +64,6 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
   )
 }
 
-// Renders the source link with highlighting for the search term
 const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   const displayLink = extractSourceName(claim.source_link)
   const theme = useTheme()
@@ -84,7 +81,6 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-// Filters duplicate claims from the list by statement and claim_id, keeping the preferred one
 const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClaim> => {
   const uniqueClaimsMap = new Map<string, ImportedClaim>()
 
@@ -93,17 +89,14 @@ const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClai
       const key = `${claim.statement}_${claim.claim_id}`
       const existingClaim = uniqueClaimsMap.get(key)
 
-      // Skip claims with source_link containing 'https://live.linkedtrust.us/claims'
       if (claim.source_link.includes('https://live.linkedtrust.us/claims')) {
         return
       }
 
-      // Skip claims with name 'Trust Claims' if there is a duplicate
       if (claim.name === 'Trust Claims' && existingClaim) {
         return
       }
 
-      // Set or update the claim in the map
       uniqueClaimsMap.set(key, claim)
     }
   })
@@ -111,22 +104,21 @@ const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClai
   return Array.from(uniqueClaimsMap.values())
 }
 
-// Main FeedClaim component
 const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
   const [filteredClaims, setFilteredClaims] = useState<Array<ImportedClaim>>([])
+  const [visibleClaims, setVisibleClaims] = useState<Array<ImportedClaim>>([])
+  const location = useLocation()
   const [isAuth, setIsAuth] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [showScrollButton, setShowScrollButton] = useState(false) // state for scroll button visibility
   const navigate = useNavigate()
-  const location = useLocation()
   const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down(800))
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  // Fetches claims data from the backend and sets initial states
   useEffect(() => {
     setIsLoading(true)
     axios
@@ -136,6 +128,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
         const filteredClaims = filterDuplicateClaims(res.data)
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
+        setVisibleClaims(filteredClaims.slice(0, 4))
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
@@ -146,13 +139,10 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       setIsAuth(false)
     }
   }, [])
-
   useEffect(() => {
     const search = new URLSearchParams(location.search).get('query')
     setSearchTerm(search ?? '')
   }, [location.search])
-
-  // Filters claims based on the search term
   useEffect(() => {
     if (searchTerm) {
       const results = claims.filter(
@@ -162,12 +152,28 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
           claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFilteredClaims(results)
+      setVisibleClaims(results.slice(0, 4))
     } else {
       setFilteredClaims(claims)
+      setVisibleClaims(claims.slice(0, 4))
     }
   }, [searchTerm, claims])
 
-  // Navigates to the validation page for a claim
+  // Effect to track scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowScrollButton(true)
+      } else {
+        setShowScrollButton(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   const handleValidation = (subject: any, id: number) => {
     console.log(subject, 'and', id)
     navigate({
@@ -176,7 +182,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     })
   }
 
-  // Handles graph navigation
   const handleschema = async (nodeUri: string) => {
     const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/, '')
     navigate({
@@ -185,30 +190,28 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     })
   }
 
-  // Handles menu click
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
     setAnchorEl(event.currentTarget)
     setSelectedIndex(index)
   }
 
-  // Handles menu close
   const handleClose = () => {
     setAnchorEl(null)
     setSelectedIndex(null)
   }
 
+  const handleSeeMore = () => {
+    const newVisibleCount = visibleClaims.length + 4
+    setVisibleClaims(filteredClaims.slice(0, newVisibleCount))
+  }
+
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <>
-      <OverlayModal />
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-          position: 'relative',
-          mt: isSmallScreen ? '8vh' : '8vh  '
-        }}
-      ></Box>
+      {/* <OverlayModal /> */}
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
@@ -217,25 +220,49 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
             <Box
               sx={{
                 display: 'flex',
-                position: 'center',
                 justifyContent: 'center',
-                width: isMediumScreen ? '100%' : '50%',
-                p: '0 10px',
+                position: 'relative',
+                mt: '8vh',
+                mb: '1vh',
+                width: isMediumScreen ? '97%' : '95%',
                 flexDirection: 'column',
-                backgroundColor: theme.palette.formBackground
+                backgroundColor: theme.palette.menuBackground,
+                borderRadius: '20px',
+                padding: '20px'
               }}
             >
-              {!isMediumScreen && <AlwaysOpenSidebar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />}
-              {filteredClaims.map((claim: any, index: number) => (
-                <Box key={claim.id}>
+              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '40px' }}>
+                <Typography
+                  variant='h6'
+                  component='div'
+                  sx={{
+                    color: theme.palette.texts,
+                    textAlign: 'center',
+                    marginLeft: isMediumScreen ? '0' : '1rem',
+                    fontSize: '23px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Related Attestations
+                  <Box
+                    sx={{
+                      height: '4px',
+                      backgroundColor: theme.palette.maintext,
+                      marginTop: '4px',
+                      borderRadius: '2px',
+                      width: '80%'
+                    }}
+                  />
+                </Typography>
+              </Box>{' '}
+              {visibleClaims.map((claim: any, index: number) => (
+                <Box key={claim.id} sx={{ marginBottom: '15px' }}>
                   <Card
                     sx={{
                       maxWidth: 'fit',
                       height: 'fit',
-                      mt: '15px',
                       borderRadius: '20px',
-                      display: 'flex',
-                      flexDirection: isSmallScreen ? 'column' : 'row',
+                      display: isMediumScreen ? 'column' : 'row',
                       backgroundColor:
                         selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
                       backgroundImage: 'none',
@@ -295,7 +322,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                       >
                         <Button
                           onClick={() => handleValidation(claim.link, claim.claim_id)}
-                          startIcon={<CheckCircleIcon />}
+                          startIcon={<VerifiedOutlinedIcon />}
                           variant='text'
                           sx={{
                             fontSize: '10px',
@@ -312,7 +339,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                         </Button>
                         <Link to={'/report/' + claim.claim_id}>
                           <Button
-                            startIcon={<AssessmentIcon />}
+                            startIcon={<FeedOutlinedIcon />}
                             variant='text'
                             sx={{
                               fontSize: '10px',
@@ -329,7 +356,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           </Button>
                         </Link>
                         <Button
-                          startIcon={<SchemaIcon />}
+                          startIcon={<ShareOutlinedIcon />}
                           onClick={() => handleschema(claim.link)}
                           variant='text'
                           sx={{
@@ -470,14 +497,51 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   </Card>
                 </Box>
               ))}
-              <Box
-                sx={{
-                  width: '30%',
-                  bgcolor: theme.palette.footerBackground
-                }}
-              >
-                {!isMediumScreen && <FeedFooter />}
-              </Box>
+              {visibleClaims.length < filteredClaims.length && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                  <Button
+                    variant='contained'
+                    onClick={handleSeeMore}
+                    sx={{
+                      backgroundColor: theme.palette.buttons,
+                      color: theme.palette.buttontext,
+                      borderRadius: '91px',
+                      fontWeight: 'bold',
+                      fontSize: '22px',
+                      width: '13.3vw',
+                      maxWidth: '192px',
+                      minWidth: '158px',
+                      '&:hover': {
+                        backgroundColor: theme.palette.buttonHover
+                      }
+                    }}
+                  >
+                    See More
+                  </Button>
+                </Box>
+              )}
+              <Grow in={showScrollButton}>
+                <Fab
+                  aria-label='scroll to top'
+                  onClick={handleScrollToTop}
+                  sx={{
+                    position: 'fixed',
+                    bottom: 84,
+                    right: 36,
+                    color: theme.palette.buttontext,
+                    width: '5.486vw',
+                    height: '5.486vw',
+                    maxWidth: '79px',
+                    maxHeight: '79px',
+                    backgroundColor: theme.palette.buttons,
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  <ArrowUpwardIcon />
+                </Fab>
+              </Grow>
             </Box>
           ) : (
             <Box sx={{ textAlign: 'center', mt: '20px' }}>

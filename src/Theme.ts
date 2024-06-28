@@ -87,7 +87,7 @@ const darkModeTheme = createTheme({
     buttons: '#009688',
     buttonHover: '#00695f',
     buttontext: '#ffffff',
-    cardsbuttons: '#4C726F33',
+    cardsbuttons: '#223B3A',
     maintext: '#009688',
     icons: '#009688',
     stars: '#009688',
@@ -97,10 +97,10 @@ const darkModeTheme = createTheme({
     pageBackground: '#0A1C1D',
     formBackground: '#0A1C1D',
     formMainText: '#ffffff',
-    cardBackground: '#4C726F33',
+    cardBackground: '#223B3A',
     cardBackgroundBlur: '#43434380',
     texts: '#ffffff',
-    date: '#4C726F',
+    date: '#96B1AC',
     link: '#1976d2',
     profileButton: '#2f0101',
     dialogBackground: '#333333',
@@ -114,7 +114,7 @@ const darkModeTheme = createTheme({
     values: {
       xs: 0,
       sm: 600,
-      md: 800,
+      md: 900,
       lg: 1280,
       xl: 1920
     }
@@ -132,7 +132,7 @@ const lightModeTheme = createTheme({
     maintext: '#00796B',
     icons: '#00796B',
     stars: '#009688',
-    footerBackground: '#ffffff',
+    footerBackground: '#43434380',
     footerText: '#0A1C1D',
     menuBackground: '#ffffff',
     pageBackground: '#ffffff',
@@ -141,7 +141,7 @@ const lightModeTheme = createTheme({
     cardBackground: '#ffffff',
     cardBackgroundBlur: '#79797933',
     texts: '#000000',
-    date: '#797979B2',
+    date: '#96B1AC',
     link: '#1565C0',
     profileButton: '#D32F2F',
     dialogBackground: '#ffffff',
@@ -155,7 +155,7 @@ const lightModeTheme = createTheme({
     values: {
       xs: 0,
       sm: 600,
-      md: 800,
+      md: 900,
       lg: 1280,
       xl: 1920
     }
