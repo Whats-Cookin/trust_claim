@@ -3,14 +3,14 @@
 }
 .app {
   position: relative;
-  background-color: #eeeeee;
+  /* background-color: #eeeeee; */
   min-height: 100vh;
   display: flex;
   width: 100%;
   flex-direction: column;
   align-items: center;
-  font-size: calc(3px + 2vmin);
-  color: #250303;
+  /* font-size: calc(3px + 2vmin); */
+  /* color: #250303; */
   overflow: hidden;
   font-family: 'Montserrat', sans-serif;
 }

@@ -148,6 +148,8 @@ const RenderClaimInfo = ({
                 sx={{
                   color: theme.palette.texts,
                   fontSize: 24,
+                  flexWrap: 'wrap',
+                  fontWeight: 700,
                   display: 'flex',
                   alignItems: 'center',
                   textDecoration: 'none'
@@ -212,6 +214,10 @@ const RenderClaimInfo = ({
           <Box
             sx={{
               display: 'flex',
+              flexDirection: {
+                xs: 'column',
+                sm: 'row'
+              },
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: '20px',
@@ -232,7 +238,20 @@ const RenderClaimInfo = ({
               <Rating
                 name='size-medium'
                 defaultValue={parseInt(claim.stars)}
-                sx={{ color: theme.palette.stars, position: 'absolute', right: 0 }}
+                sx={{
+                  color: theme.palette.stars,
+                  marginTop: {
+                    xs: '10px',
+                    sm: '0'
+                  },
+                  position: {
+                    xs: 'static',
+                    sm: 'absolute'
+                  },
+                  right: {
+                    sm: 0
+                  }
+                }}
                 readOnly
               />
             )}
@@ -267,15 +286,15 @@ const RenderClaimInfo = ({
         </Dialog>
       )}
 
-      <Dialog open={detailsOpen} onClose={handleDetailsClose}>
+      <Dialog open={detailsOpen} onClose={handleDetailsClose} fullWidth>
         <DialogTitle>Claim Details</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem' }}>
           {Object.entries(claim)
             .filter(
               ([key, value]) => value && !excludedKeys.includes(key) && !chipKeys.includes(key) && key !== 'statement'
             )
             .map(([key, value]) => (
-              <Typography key={key} variant='body1' sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography key={key} variant='body1' sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                 <strong>{key}:</strong>&nbsp;
                 {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
                   <MuiLink

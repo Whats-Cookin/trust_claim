@@ -530,6 +530,8 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     right: 36,
                     color: theme.palette.buttontext,
                     width: '5.486vw',
+                    minWidth: '35px',
+                    minHeight: '35px',
                     height: '5.486vw',
                     maxWidth: '79px',
                     maxHeight: '79px',

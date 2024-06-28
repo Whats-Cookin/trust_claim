@@ -17,38 +17,34 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSidebarOpen, setIsNavbarVisible }) => {
-  const location = useLocation()
+  // const location = useLocation();
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollTop, setLastScrollTop] = useState(0)
 
-  const getPageName = () => {
-    const path = location.pathname
+  // const getPageName = () => {
+  //   const path = location.pathname
 
-    if (/^\/report\/\d+$/.test(path)) {
-      return 'Claim Report'
-    }
-
-    switch (path) {
-      case '/':
-        return 'Create Claims'
-      case '/explore':
-        return 'Explore'
-      case '/search':
-        return 'Search claims'
-      case '/terms':
-        return 'Terms of Service'
-      case '/privacy':
-        return 'Privacy policy'
-      case '/cookie':
-        return 'Cookies policy'
-      case '/validate':
-        return 'Validate Claim'
-      default:
-        return ''
-    }
-  }
+  //   switch (path) {
+  //     case '/':
+  //       return 'Create Claims'
+  //     case '/explore':
+  //       return 'Explore'
+  //     case '/search':
+  //       return 'Search claims'
+  //     case '/terms':
+  //       return 'Terms of Service'
+  //     case '/privacy':
+  //       return 'Privacy policy'
+  //     case '/cookie':
+  //       return 'Cookies policy'
+  //     case '/validate':
+  //       return 'Validate Claim'
+  //     default:
+  //       return ''
+  //   }
+  // }
 
   const handleScroll = () => {
     const currentScrollTop = window.scrollY || document.documentElement.scrollTop
@@ -90,26 +86,26 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '8px' }} />
           <Typography
-            variant='h6'
-            component='div'
             sx={{
               color: theme.palette.maintext,
               fontWeight: 'bold',
-              fontSize: '30px',
+              flexWrap: 'nowrap',
+              fontSize: isSmallScreen ? '20px' : '30px',
               transition: 'opacity 0.3s'
             }}
           >
             Trust Claims
           </Typography>
         </Box>
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+        {/* <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
           <Typography
             variant='h6'
             component='div'
             sx={{
               color: theme.palette.texts,
               textAlign: 'center',
-              marginLeft: isSmallScreen ? '0' : '1rem'
+              marginLeft: isSmallScreen ? '0' : '1rem',
+              fontSize: isSmallScreen ? '14px' : '18px'
             }}
           >
             {getPageName()}
@@ -123,8 +119,8 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
               }}
             />
           </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', width: '25%' }}>
+        </Box> */}
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
           <SearchBar />
         </Box>
       </Toolbar>

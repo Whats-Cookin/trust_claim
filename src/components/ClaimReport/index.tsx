@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
-import { Container, Typography, Card, CardContent, Grid, CircularProgress, Box } from '@mui/material'
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
+  CircularProgress,
+  Box,
+  useTheme,
+  useMediaQuery
+} from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { useTheme, useMediaQuery } from '@mui/material'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
