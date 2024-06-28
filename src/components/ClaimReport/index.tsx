@@ -120,7 +120,7 @@ const DonationReport: React.FC = () => {
           padding: '20px'
         }}
       >
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '40px' }}>
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
           <Typography
             variant='h6'
             component='div'
@@ -172,7 +172,7 @@ const DonationReport: React.FC = () => {
                   flexGrow: 1,
                   display: 'flex',
                   justifyContent: 'left',
-                  mb: '40px'
+                  mb: '20px'
                 }}
               >
                 <Typography
@@ -235,7 +235,7 @@ const DonationReport: React.FC = () => {
                   flexGrow: 1,
                   display: 'flex',
                   justifyContent: 'left',
-                  mb: '40px'
+                  mb: '20px'
                 }}
               >
                 <Typography

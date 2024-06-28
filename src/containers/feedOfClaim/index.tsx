@@ -231,7 +231,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                 padding: '20px'
               }}
             >
-              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '40px' }}>
+              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
                   variant='h6'
                   component='div'
