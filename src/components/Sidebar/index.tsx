@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.texts, width: '28px', height: '28px' }
+  const iconStyle = { color: theme.palette.sidecolor, width: '28px', height: '28px' }
 
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.footerBackground : 'transparent',
@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           minWidth: isOpen ? 200 : 40,
           boxSizing: 'border-box',
           backgroundColor: theme.palette.menuBackground,
-          color: theme.palette.texts,
+          color: theme.palette.sidecolor,
           transition: 'width 0.3s, opacity 0.3s, margin-top 0.3s',
           display: 'flex',
           flexDirection: 'column',

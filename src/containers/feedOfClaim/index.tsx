@@ -325,11 +325,11 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           startIcon={<VerifiedOutlinedIcon />}
                           variant='text'
                           sx={{
-                            fontSize: '10px',
+                            fontSize: isMediumScreen ? '8px' : '16px',
                             fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
-                            color: theme.palette.texts,
+                            color: theme.palette.sidecolor,
                             '&:hover': {
                               backgroundColor: theme.palette.cardsbuttons
                             }
@@ -342,11 +342,11 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                             startIcon={<FeedOutlinedIcon />}
                             variant='text'
                             sx={{
-                              fontSize: '10px',
+                              fontSize: isMediumScreen ? '8px' : '16px',
                               fontWeight: 'bold',
                               marginRight: '10px',
                               p: '4px',
-                              color: theme.palette.texts,
+                              color: theme.palette.sidecolor,
                               '&:hover': {
                                 backgroundColor: theme.palette.cardsbuttons
                               }
@@ -360,11 +360,11 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           onClick={() => handleschema(claim.link)}
                           variant='text'
                           sx={{
-                            fontSize: '10px',
+                            fontSize: isMediumScreen ? '8px' : '16px',
                             fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
-                            color: theme.palette.texts,
+                            color: theme.palette.sidecolor,
                             '&:hover': {
                               backgroundColor: theme.palette.cardsbuttons
                             }

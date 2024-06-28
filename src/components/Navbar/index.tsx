@@ -17,7 +17,6 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSidebarOpen, setIsNavbarVisible }) => {
-  // const location = useLocation();
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const [isVisible, setIsVisible] = useState(true)
@@ -25,7 +24,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
 
   // const getPageName = () => {
   //   const path = location.pathname
-
   //   switch (path) {
   //     case '/':
   //       return 'Create Claims'
@@ -49,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
   const handleScroll = () => {
     const currentScrollTop = window.scrollY || document.documentElement.scrollTop
 
-    if (currentScrollTop > lastScrollTop && currentScrollTop > 100) {
+    if (currentScrollTop > lastScrollTop && currentScrollTop > 100 && isSmallScreen) {
       setIsVisible(false)
       setIsNavbarVisible(false)
     } else {
@@ -66,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [lastScrollTop])
+  }, [lastScrollTop, isSmallScreen])
 
   return (
     <AppBar
@@ -79,7 +77,8 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         width: '100%',
         zIndex: 1400,
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
-        transition: 'transform 0.3s ease-in-out'
+        transition: 'transform 0.3s ease-in-out',
+        display: isSmallScreen ? (isVisible ? 'block' : 'none') : 'block'
       }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

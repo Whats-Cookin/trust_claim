@@ -3,6 +3,7 @@ import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 import { Home, Search, AddCircleOutlineOutlined, LightModeOutlined, DarkMode, Logout, Login } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import { color } from '@mui/system'
 
 interface BottomNavProps {
   isAuth: boolean
@@ -39,6 +40,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
         height: '60px',
         width: '100%',
         backgroundColor: theme.palette.menuBackground,
+        color: theme.palette.sidecolor,
         zIndex: 10,
         display: 'flex',
         justifyContent: 'space-around'
@@ -49,39 +51,52 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
         label='Home'
         icon={<Home />}
         onClick={() => navigate('/feed')}
-        sx={getActiveStyle('/feed')}
+        sx={{ ...getActiveStyle('/feed'), color: theme.palette.sidecolor }}
       />
       <BottomNavigationAction
         label='Search'
         icon={<Search />}
         onClick={() => navigate('/search')}
-        sx={getActiveStyle('/search')}
+        sx={{ ...getActiveStyle('/search'), color: theme.palette.sidecolor }}
       />
       <BottomNavigationAction
         label='Claim'
         icon={<AddCircleOutlineOutlined />}
         onClick={() => navigate('/')}
-        sx={getActiveStyle('/')}
+        sx={{ ...getActiveStyle('/'), color: theme.palette.sidecolor }}
       />
       <BottomNavigationAction
         label={isDarkMode ? 'Light' : 'Dark'}
         icon={isDarkMode ? <LightModeOutlined /> : <DarkMode />}
         onClick={toggleTheme}
-        sx={{ transition: 'background-color 0.3s', maxWidth: '52px', marginBottom: '4px' }}
+        sx={{
+          transition: 'background-color 0.3s',
+          maxWidth: '52px',
+          marginBottom: '4px',
+          color: theme.palette.sidecolor
+        }}
       />
       {isAuth ? (
         <BottomNavigationAction
           label='Logout'
           icon={<Logout />}
           onClick={handleLogout}
-          sx={{ transition: 'background-color 0.3s', maxWidth: '52px', marginBottom: '4px' }}
+          sx={{
+            transition: 'background-color 0.3s',
+            maxWidth: '52px',
+            marginBottom: '4px',
+            color: theme.palette.sidecolor
+          }}
         />
       ) : (
         <BottomNavigationAction
           label='Login'
           icon={<Login />}
           onClick={() => navigate('/login')}
-          sx={getActiveStyle('/login')}
+          sx={{
+            ...getActiveStyle('/login'),
+            color: theme.palette.sidecolor
+          }}
         />
       )}
     </BottomNavigation>
