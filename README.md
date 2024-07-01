@@ -2,7 +2,7 @@
 
 See [Use Cases](https://docs.google.com/document/d/1iWRypT4aHS67MJhuCZj7e5gzcCr3HuKG0lO0g045ueY/edit) and related docs
 
-To enter data, visit [pro](http://trustclaims.whatscookin.us)
+To enter data, visit [production](http://trustclaims.whatscookin.us)
 
 <a name="deploy"></a>To deploy latest code, pull directly on server
 
