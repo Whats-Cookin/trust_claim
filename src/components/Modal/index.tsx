@@ -18,18 +18,20 @@ const Modal = ({ open, setOpen, selectedClaim }: any) => {
           Claim
         </Typography>
         {selectedClaim &&
-          Object.keys(selectedClaim).map((key: string) =>
-            excludedFields.includes(key) ? null : (
+          Object.keys(selectedClaim).map((key: string) => {
+            const value = selectedClaim[key]
+            if (excludedFields.includes(key) || value == null || value === '') return null
+            return (
               <Box sx={styles.detailField} key={key}>
                 <Typography component='h2' sx={{ fontWeight: 'bold' }}>
                   {camelCaseToSimpleString(key)}
                 </Typography>
                 <Typography component='p' sx={styles.fieldContent}>
-                  {selectedClaim[key]}
+                  {value}
                 </Typography>
               </Box>
             )
-          )}
+          })}
       </Box>
     </MUIModal>
   )
