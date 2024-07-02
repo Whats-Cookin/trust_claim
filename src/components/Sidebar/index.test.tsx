@@ -27,6 +27,7 @@ describe('Sidebar component', () => {
           toggleSidebar={toggleSidebar}
           toggleTheme={toggleTheme}
           isDarkMode={true}
+          isNavbarVisible={true}
         />
       </MemoryRouter>
     )
@@ -37,10 +38,10 @@ describe('Sidebar component', () => {
     const searchButton = screen.getByText('Search')
     expect(searchButton).toBeInTheDocument()
 
-    const createButton = screen.getByText('Create Claim')
+    const createButton = screen.getByText('Claim')
     expect(createButton).toBeInTheDocument()
 
-    const logoutButton = screen.getByText('Logout')
+    const logoutButton = screen.getByText('Log out')
     expect(logoutButton).toBeInTheDocument()
 
     fireEvent.click(logoutButton)
@@ -59,6 +60,7 @@ describe('Sidebar component', () => {
           toggleSidebar={toggleSidebar}
           toggleTheme={toggleTheme}
           isDarkMode={true}
+          isNavbarVisible={true}
         />
       </MemoryRouter>
     )
@@ -91,11 +93,12 @@ describe('Sidebar component', () => {
           toggleSidebar={toggleSidebar}
           toggleTheme={toggleTheme}
           isDarkMode={true}
+          isNavbarVisible={true}
         />
       </MemoryRouter>
     )
 
-    const arrowBackButton = screen.getByRole('button', { name: /arrowback/i })
+    const arrowBackButton = screen.getByRole('button', { name: /keyboarddoublearrowleft/i })
     expect(arrowBackButton).toBeInTheDocument()
 
     fireEvent.click(arrowBackButton)

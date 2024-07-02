@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
-import { CssBaseline, ThemeProvider, GlobalStyles, Box } from '@mui/material'
+import { CssBaseline, ThemeProvider, GlobalStyles, Box, useTheme, useMediaQuery } from '@mui/material'
 import { darkModeTheme, lightModeTheme } from './Theme'
 import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
@@ -13,7 +13,7 @@ import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
-import Footer from './components/Footer'
+import Sidebar from './components/Sidebar'
 import Terms from './containers/Terms'
 import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
@@ -23,12 +23,15 @@ const App = () => {
   const [loading, setLoading] = useState(false)
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
-  const [metaNav, setMetaNav] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true)
 
   const location = useLocation()
   const navigate = useNavigate()
+  const theme = useTheme()
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const checkAuth = () => {
     const accessToken = localStorage.getItem('accessToken')
@@ -41,7 +44,7 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/')
+      navigate('/feed')
     }
 
     const handleResize = () => {
@@ -62,7 +65,6 @@ const App = () => {
     toggleSnackbar,
     setSnackbarMessage,
     setLoading,
-    setMetaNav,
     toggleTheme,
     isDarkMode
   }
@@ -85,69 +87,84 @@ const App = () => {
     />
   )
 
-  const showFooter = location.pathname !== '/' || windowWidth < 800
-
   return (
     <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
       <CssBaseline />
       {globalStyles}
 
       {!isLoginPage && !isRegisterPage && (
-        <Navbar isAuth={checkAuth()} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+        <Navbar
+          isAuth={checkAuth()}
+          toggleTheme={toggleTheme}
+          isDarkMode={isDarkMode}
+          isSidebarOpen={isSidebarOpen}
+          setIsNavbarVisible={setIsNavbarVisible}
+        />
       )}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-          backgroundColor: theme => theme.palette.pageBackground,
-          width: '100%',
-          fontSize: 'calc(3px + 2vmin)',
-          overflow: 'hidden'
-        }}
-      >
-        <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
-        <Loader open={loading} />
+      <Box sx={{ display: 'flex' }}>
+        <Sidebar
+          isAuth={checkAuth()}
+          isOpen={isSidebarOpen}
+          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          toggleTheme={toggleTheme}
+          isDarkMode={isDarkMode}
+          isNavbarVisible={isNavbarVisible}
+        />
         <Box
           sx={{
-            flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            paddingBottom: '5.5rem'
+            minHeight: '100vh',
+            backgroundColor: theme => theme.palette.pageBackground,
+            fontSize: 'calc(3px + 2vmin)',
+            overflow: 'hidden',
+            marginLeft: isMediumScreen ? '0' : isSidebarOpen ? '19.6vw' : '4.8vw',
+            width: isMediumScreen ? '100%' : `calc(100% - ${isSidebarOpen ? '19.6vw' : '4.8vw'})`,
+            transition: 'margin-left 0.3s, width 0.3s',
+            marginBottom: isMediumScreen ? '60px' : '0'
           }}
         >
-          <Routes>
-            <Route path='/' element={<FeedClaim {...commonProps} />} />
-            <Route path='report/:claimId' element={<ClaimReport />} />
-            <Route path='search' element={<Search {...commonProps} />} />
-            <Route path='/claim' element={<Form {...commonProps} />} />
-            <Route path='register' element={<Register {...commonProps} />} />
-            <Route path='login' element={<Login {...commonProps} />} />
-            <Route path='terms' element={<Terms />} />
-            <Route path='privacy' element={<Privacy />} />
-            <Route path='cookie' element={<Cookie />} />
-            <Route
-              path='/rate'
-              element={
-                checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
-              }
-            />
-            <Route
-              path='/validate'
-              element={
-                checkAuth() ? (
-                  <Validate {...commonProps} />
-                ) : (
-                  <Navigate to='/login' replace state={{ from: location }} />
-                )
-              }
-            />
-          </Routes>
+          <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
+          <Loader open={loading} />
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%'
+            }}
+          >
+            <Routes>
+              <Route path='feed' element={<FeedClaim {...commonProps} />} />
+              <Route path='report/:claimId' element={<ClaimReport />} />
+              <Route path='search' element={<Search {...commonProps} />} />
+              <Route path='/' element={<Form {...commonProps} />} />
+              <Route path='register' element={<Register {...commonProps} />} />
+              <Route path='login' element={<Login {...commonProps} />} />
+              <Route path='terms' element={<Terms />} />
+              <Route path='privacy' element={<Privacy />} />
+              <Route path='cookie' element={<Cookie />} />
+              <Route
+                path='/rate'
+                element={
+                  checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                }
+              />
+              <Route
+                path='/validate'
+                element={
+                  checkAuth() ? (
+                    <Validate {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
+                }
+              />
+            </Routes>
+          </Box>
         </Box>
-        {showFooter && <Footer />}
       </Box>
     </ThemeProvider>
   )
