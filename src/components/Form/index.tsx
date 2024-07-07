@@ -11,7 +11,8 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
-  FormHelperText
+  FormHelperText,
+  Divider
 } from '@mui/material'
 import React, { useEffect } from 'react'
 import Box from '@mui/material/Box'
@@ -227,28 +228,30 @@ export const Form = ({
   return (
     <Box
       sx={{
+        maxWidth: '200vh',
+        padding: '1.6rem',
         backgroundColor: theme.palette.formBackground,
-        boxShadow: `0 0 30px ${theme.palette.shadows}`,
-        borderRadius: '10px',
-        border: `1px solid ${theme.palette.borderColor}`
+        boxShadow: `0 0 30px ${theme.palette.shadows}`
       }}
     >
       <DialogTitle>
         <Typography
           variant='h4'
           sx={{
-            mb: 3,
+          
+            m: 3,
             textAlign: 'center',
             fontSize: '20px',
-            color: theme.palette.maintext,
+            color: theme.palette.texts,
             textTransform: 'uppercase',
             fontWeight: 'bold'
           }}
         >
           {titleText}
         </Typography>
-        {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
+        <Divider variant="middle" sx={{display: 'flex', borderColor: ' #009688', width: '40%', justifyContent: 'center' ,m: 'auto'}} />
       </DialogTitle>
+
       <DialogContent>
         <form onSubmit={onSubmit}>
           <Box sx={styles.inputFieldWrap}>
@@ -671,12 +674,12 @@ export const Form = ({
           variant='contained'
           size='large'
           sx={{
-            ml: 1,
-            mr: 1,
-            width: '50%',
+            mb: 5,
+            width: '25%',
             color: theme.palette.buttontext,
             bgcolor: theme.palette.buttons,
             margin: '0 auto',
+            borderRadius: '30px',
             '&:hover': {
               backgroundColor: theme.palette.buttonHover
             }
@@ -684,7 +687,6 @@ export const Form = ({
         >
           Submit
         </Button>
-        {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
       </DialogActions>
     </Box>
   )

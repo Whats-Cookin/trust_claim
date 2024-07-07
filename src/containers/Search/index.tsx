@@ -9,6 +9,8 @@ import { useState, useRef, useEffect } from 'react'
 import NewClaim from '../../components/NewClaim/AddNewClaim'
 import { parseSingleNode, parseMultipleNodes } from './graph.utils'
 import { useTheme, useMediaQuery, Container, Box } from '@mui/material'
+import OverlayModal from '../../components/OverLayModal/OverlayModal'
+import GraphinfButton from './GraphInfButton'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -26,11 +28,11 @@ const Search = (homeProps: IHomeProps) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const special = useMediaQuery('(width:540px)')
 
+  const containerRef = special ? undefined : undefined
   const runCy = () => {
     if (!cy) return
     cy.layout({
       name: 'circle',
-      // name: 'breadthfirst',
       padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
       animate: true,
       animationDuration: 1000
@@ -89,9 +91,6 @@ const Search = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      // Your shift + click logic goes here...
-      // TODO refactor with handleMouseRightClick
-      // const claim = event.target
       const currentClaim = event.target.data('raw')
 
       if (currentClaim) {
@@ -175,19 +174,40 @@ const Search = (homeProps: IHomeProps) => {
   }, [])
 
   return (
-    <Container sx={styles.container} maxWidth={false}>
-      <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
-      <NewClaim
-        open={openNewClaim}
-        setOpen={setOpenNewClaim}
-        selectedClaim={selectedClaim}
-        setLoading={setLoading}
-        setSnackbarMessage={setSnackbarMessage}
-        toggleSnackbar={toggleSnackbar}
-      />
+    <>
+      <OverlayModal />
+      <Container
+        sx={{
+          backgroundColor: 'menuBackground',
+          boxShadow: `0 0 30px ${theme.palette.shadows}`,
+          borderRadius: '10px',
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          position: 'relative',
+          mt: isSmallScreen ? '8vh' : '8vh'
+        }}
+        maxWidth={false}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+          <Box>
+            <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
+            <NewClaim
+              open={openNewClaim}
+              setOpen={setOpenNewClaim}
+              selectedClaim={selectedClaim}
+              setLoading={setLoading}
+              setSnackbarMessage={setSnackbarMessage}
+              toggleSnackbar={toggleSnackbar}
+            />
 
-      <Box ref={ref} sx={styles.cy} />
-    </Container>
+            <Box ref={ref} sx={styles.cy} />
+          </Box>
+        </Box>
+   
+      </Container>
+      <GraphinfButton />
+    </>
   )
 }
 

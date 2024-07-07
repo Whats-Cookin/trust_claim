@@ -1,3 +1,5 @@
+
+
 const cyConfig = (containerRef: any) => {
   return {
     container: containerRef || undefined,
@@ -7,34 +9,32 @@ const cyConfig = (containerRef: any) => {
       {
         selector: 'node',
         style: {
-          height: 300,
-          width: 300,
-          borderColor: '#00695f',
-          borderWidth: '10px',
-          borderOpacity: 0.5,
-          backgroundColor: '#009688',
+          backgroundColor: '#4C726F',
+          width: '900rem',
+          height: '300rem',
+          borderRadius: '30px',
+          backgroundImage: 'data(image)',
           color: '#ffffff',
           fontWeight: 'bold',
-          fontSize: 25,
+          fontSize: '50.2rem',
           textHalign: 'center',
           textValign: 'center',
-          textWrap: 'wrap',
-          textMaxWidth: 100,
           content: 'data(label)'
         }
       },
       {
         selector: 'edge',
         style: {
-          width: 6,
-          fontSize: 20,
+          width: "10.5rem",
+          fontSize: '50rem',
           targetArrowShape: 'triangle-cross',
-          lineColor: '#006400',
-          targetArrowColor: '#006400',
-          curveStyle: 'bezier',
+          lineColor: 'theme.footerText',
+          targetArrowColor: 'theme.footerText',
           controlPointWeights: '0.5 0.2 0.8',
-          textRotation: 'autorotate',
+          textRotation: 'autoroute',
+          curveStyle: 'bezier',
           textMarginX: 30,
+          color: 'theme.footerText',
           content: 'data(relation)'
         }
       }
