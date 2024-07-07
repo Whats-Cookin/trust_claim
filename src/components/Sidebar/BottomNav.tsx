@@ -53,18 +53,20 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
         onClick={() => navigate('/feed')}
         sx={{ ...getActiveStyle('/feed'), color: theme.palette.sidecolor }}
       />
-      <BottomNavigationAction
+      {/* <BottomNavigationAction
         label='Search'
         icon={<Search />}
         onClick={() => navigate('/search')}
         sx={{ ...getActiveStyle('/search'), color: theme.palette.sidecolor }}
-      />
-      <BottomNavigationAction
-        label='Claim'
-        icon={<AddCircleOutlineOutlined />}
-        onClick={() => navigate('/')}
-        sx={{ ...getActiveStyle('/'), color: theme.palette.sidecolor }}
-      />
+      /> */}
+      {isAuth && (
+        <BottomNavigationAction
+          label='Claim'
+          icon={<AddCircleOutlineOutlined />}
+          onClick={() => navigate('/')}
+          sx={{ ...getActiveStyle('/'), color: theme.palette.sidecolor }}
+        />
+      )}
       <BottomNavigationAction
         label={isDarkMode ? 'Light' : 'Dark'}
         icon={isDarkMode ? <LightModeOutlined /> : <DarkMode />}
