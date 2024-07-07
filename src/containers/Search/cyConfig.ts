@@ -1,4 +1,4 @@
-const cyConfig = (containerRef: any) => {
+const cyConfig = (containerRef: any, theme: any) => {
   return {
     container: containerRef || undefined,
     boxSelectionEnabled: false,
@@ -9,11 +9,11 @@ const cyConfig = (containerRef: any) => {
         style: {
           height: 300,
           width: 300,
-          borderColor: '#00695f',
+          borderColor: theme.palette.primary.main,
           borderWidth: '10px',
           borderOpacity: 0.5,
-          backgroundColor: '#009688',
-          color: '#ffffff',
+          backgroundColor: theme.palette.secondary.main,
+          color: theme.palette.text.primary,
           fontWeight: 'bold',
           fontSize: 25,
           textHalign: 'center',
@@ -29,8 +29,8 @@ const cyConfig = (containerRef: any) => {
           width: 6,
           fontSize: 20,
           targetArrowShape: 'triangle-cross',
-          lineColor: '#006400',
-          targetArrowColor: '#006400',
+          lineColor: theme.palette.text.secondary,
+          targetArrowColor: theme.palette.success.main,
           curveStyle: 'bezier',
           controlPointWeights: '0.5 0.2 0.8',
           textRotation: 'autorotate',

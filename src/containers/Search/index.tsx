@@ -1,14 +1,16 @@
+import React, { useState, useRef, useEffect } from 'react'
 import styles from './styles'
 import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
+import cytoscapeHTML from 'cytoscape-html'
 import axios from '../../axiosInstance'
 import Modal from '../../components/Modal'
 import { useLocation } from 'react-router-dom'
-import { useState, useRef, useEffect } from 'react'
-import NewClaim from '../../components/NewClaim/AddNewClaim'
-import { parseSingleNode, parseMultipleNodes } from './graph.utils'
 import { useTheme, useMediaQuery, Container, Box } from '@mui/material'
+import GraphinfButton from './GraphInfButton'
+import NewClaim from './AddNewClaim'
+import { parseSingleNode, parseMultipleNodes } from './graph.utils'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -30,7 +32,6 @@ const Search = (homeProps: IHomeProps) => {
     if (!cy) return
     cy.layout({
       name: 'circle',
-      // name: 'breadthfirst',
       padding: isArange ? 110 : isSmallScreen ? (special ? 90 : 10) : 70,
       animate: true,
       animationDuration: 1000
@@ -89,9 +90,6 @@ const Search = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      // Your shift + click logic goes here...
-      // TODO refactor with handleMouseRightClick
-      // const claim = event.target
       const currentClaim = event.target.data('raw')
 
       if (currentClaim) {
@@ -162,11 +160,10 @@ const Search = (homeProps: IHomeProps) => {
 
   useEffect(() => {
     if (!cy) {
-      setCy(Cytoscape(cyConfig(ref.current)))
+      setCy(Cytoscape(cyConfig(ref.current, theme)))
     }
-  }, [])
+  }, [theme])
 
-  //remove contextmenu
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
     return () => {
@@ -175,19 +172,22 @@ const Search = (homeProps: IHomeProps) => {
   }, [])
 
   return (
-    <Container sx={styles.container} maxWidth={false}>
-      <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
-      <NewClaim
-        open={openNewClaim}
-        setOpen={setOpenNewClaim}
-        selectedClaim={selectedClaim}
-        setLoading={setLoading}
-        setSnackbarMessage={setSnackbarMessage}
-        toggleSnackbar={toggleSnackbar}
-      />
+    <>
+      <Container sx={styles.container} maxWidth={false}>
+        <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
+        <NewClaim
+          open={openNewClaim}
+          setOpen={setOpenNewClaim}
+          selectedClaim={selectedClaim}
+          setLoading={setLoading}
+          setSnackbarMessage={setSnackbarMessage}
+          toggleSnackbar={toggleSnackbar}
+        />
 
-      <Box ref={ref} sx={styles.cy} />
-    </Container>
+        <Box ref={ref} sx={styles.cy} />
+      </Container>
+      <GraphinfButton />
+    </>
   )
 }
 
