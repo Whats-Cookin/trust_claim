@@ -97,13 +97,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Home sx={iconStyle} />
             <ListItemText primary='Home' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
           </ListItemButton>
-          <ListItemButton
+          {/* <ListItemButton
             sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/search') }}
             onClick={() => navigate('/search')}
           >
             <Search sx={iconStyle} />
             <ListItemText primary='Search' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
-          </ListItemButton>
+          </ListItemButton> */}
           <ListItemButton
             sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/') }}
             onClick={() => navigate('/')}
