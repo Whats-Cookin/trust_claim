@@ -1,3 +1,4 @@
+import { minWidth } from "@mui/system"
 
 
 const cyConfig = (containerRef: any) => {
@@ -10,13 +11,13 @@ const cyConfig = (containerRef: any) => {
         selector: 'node',
         style: {
           backgroundColor: '#4C726F',
-          width: '900rem',
-          height: '300rem',
+          width: '160px',
+          height: '57rem',
           borderRadius: '30px',
           backgroundImage: 'data(image)',
           color: '#ffffff',
           fontWeight: 'bold',
-          fontSize: '50.2rem',
+          fontSize: '10px',
           textHalign: 'center',
           textValign: 'center',
           content: 'data(label)'
@@ -25,8 +26,8 @@ const cyConfig = (containerRef: any) => {
       {
         selector: 'edge',
         style: {
-          width: "10.5rem",
-          fontSize: '50rem',
+          width: "4",
+          fontSize: '8',
           targetArrowShape: 'triangle-cross',
           lineColor: 'theme.footerText',
           targetArrowColor: 'theme.footerText',
