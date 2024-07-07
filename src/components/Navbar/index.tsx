@@ -1,127 +1,129 @@
-import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
-import Sidebar from '../Sidebar'
+import Logo from '../../assets/logolinkedtrust.svg'
 
 interface NavbarProps {
   isAuth: boolean
   toggleTheme: () => void
   isDarkMode: boolean
+  isSidebarOpen: boolean
+  setIsNavbarVisible: (isVisible: boolean) => void
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const navigate = useNavigate()
-  const location = useLocation()
+const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSidebarOpen, setIsNavbarVisible }) => {
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down(800))
+  const [isVisible, setIsVisible] = useState(true)
+  const [lastScrollTop, setLastScrollTop] = useState(0)
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
+  // const getPageName = () => {
+  //   const path = location.pathname
+  //   switch (path) {
+  //     case '/':
+  //       return 'Create Claims'
+  //     case '/explore':
+  //       return 'Explore'
+  //     case '/search':
+  //       return 'Search claims'
+  //     case '/terms':
+  //       return 'Terms of Service'
+  //     case '/privacy':
+  //       return 'Privacy policy'
+  //     case '/cookie':
+  //       return 'Cookies policy'
+  //     case '/validate':
+  //       return 'Validate Claim'
+  //     default:
+  //       return ''
+  //   }
+  // }
 
-  const getPageName = () => {
-    const path = location.pathname
+  const handleScroll = () => {
+    const currentScrollTop = window.scrollY || document.documentElement.scrollTop
 
-    if (/^\/report\/\d+$/.test(path)) {
-      return 'Claim Report'
+    if (currentScrollTop > lastScrollTop && currentScrollTop > 100 && isSmallScreen) {
+      setIsVisible(false)
+      setIsNavbarVisible(false)
+    } else {
+      setIsVisible(true)
+      setIsNavbarVisible(true)
     }
 
-    switch (path) {
-      case '/feed':
-        return 'Feed of Claims'
-      case '/':
-        return 'Create Claims'
-      case '/explore':
-        return 'Explore'
-      case '/search':
-        return 'Search claims'
-      case '/terms':
-        return 'Terms of Service'
-      case '/privacy':
-        return 'Privacy policy'
-      case '/cookie':
-        return 'Cookies policy'
-      default:
-        return ''
-    }
+    setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop)
   }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [lastScrollTop, isSmallScreen])
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position='fixed'
-        sx={{
-          backgroundColor: theme.palette.footerBackground,
-          color: theme.palette.texts,
-          backgroundImage: 'none',
-          boxShadow: 'none'
-        }}
-      >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {(location.pathname !== '/feed' || isMediumScreen) && (
-              <IconButton edge='start' color='inherit' aria-label='menu' onClick={toggleSidebar}>
-                <MenuIcon />
-              </IconButton>
-            )}
-            <Typography
-              variant='h6'
-              component='div'
+    <AppBar
+      position='fixed'
+      sx={{
+        backgroundColor: theme.palette.pageBackground,
+        color: theme.palette.texts,
+        backgroundImage: 'none',
+        boxShadow: 'none',
+        width: '100%',
+        zIndex: 1400,
+        transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
+        transition: 'transform 0.3s ease-in-out',
+        display: isSmallScreen ? (isVisible ? 'block' : 'none') : 'block'
+      }}
+    >
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '8px' }} />
+          <Typography
+            sx={{
+              color: theme.palette.maintext,
+              fontWeight: 'bold',
+              flexWrap: 'nowrap',
+              fontSize: isSmallScreen ? '20px' : '30px',
+              transition: 'opacity 0.3s'
+            }}
+          >
+            Trust Claims
+          </Typography>
+        </Box>
+        {/* <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              color: theme.palette.texts,
+              textAlign: 'center',
+              marginLeft: isSmallScreen ? '0' : '1rem',
+              fontSize: isSmallScreen ? '14px' : '18px'
+            }}
+          >
+            {getPageName()}
+            <Box
               sx={{
-                color: theme.palette.maintext,
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                width: isSmallScreen ? '100%' : '23vw'
+                height: '4px',
+                backgroundColor: theme.palette.maintext,
+                marginTop: '4px',
+                borderRadius: '2px',
+                width: '100%'
               }}
-              onClick={() => navigate('/feed')}
-            >
-              Trust Claims
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography
-              variant='h6'
-              component='div'
-              sx={{
-                color: theme.palette.texts,
-                textAlign: 'center',
-                flexGrow: isSmallScreen ? 1 : 0
-              }}
-            >
-              {getPageName()}
-              <Box
-                sx={{
-                  height: '4px',
-                  backgroundColor: theme.palette.maintext,
-                  marginTop: '4px',
-                  borderRadius: '2px',
-                  width: '100%'
-                }}
-              />
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', width: isSmallScreen ? '23%' : '23vw' }}>
-            <SearchBar />
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Sidebar
-        isAuth={isAuth}
-        isOpen={isSidebarOpen}
-        toggleSidebar={toggleSidebar}
-        toggleTheme={toggleTheme}
-        isDarkMode={isDarkMode}
-      />
-    </Box>
+            />
+          </Typography>
+        </Box> */}
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+          <SearchBar />
+        </Box>
+      </Toolbar>
+    </AppBar>
   )
 }
 

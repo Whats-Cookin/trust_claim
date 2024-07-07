@@ -1,22 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
+* {
+  /* border: 1px solid red; */
+}
 .app {
   position: relative;
-  background-color: #eeeeee;
+  /* background-color: #eeeeee; */
   min-height: 100vh;
   display: flex;
   width: 100%;
   flex-direction: column;
   align-items: center;
-  font-size: calc(3px + 2vmin);
-  color: #250303;
+  /* font-size: calc(3px + 2vmin); */
+  /* color: #0A1C1D; */
   overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .App-link {
   color: #61dafb;
+  font-family: 'Montserrat', sans-serif;
 }
 
 button {
   font-size: calc(3px + 2vmin);
+  font-family: 'Montserrat', sans-serif;
+}
+.slick-prev:before,
+.slick-next:before {
+  color: #009688;
 }

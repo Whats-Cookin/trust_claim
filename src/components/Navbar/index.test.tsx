@@ -21,6 +21,8 @@ describe('Navbar component', () => {
           throw new Error('Function not implemented.')
         }}
         isDarkMode={false}
+        isSidebarOpen={false}
+        setIsNavbarVisible={jest.fn()}
       />
     )
     const trustClaimsText = screen.getByText('Trust Claims')
@@ -36,6 +38,7 @@ describe('Navbar component', () => {
 
     expect(navigate).toHaveBeenCalledWith('/login')
   })
+
   it('should render correctly when not authenticated', () => {
     const navigate = vi.fn()
     ;(useNavigate as jest.Mock).mockReturnValue(navigate)
@@ -48,6 +51,8 @@ describe('Navbar component', () => {
           throw new Error('Function not implemented.')
         }}
         isDarkMode={false}
+        isSidebarOpen={false}
+        setIsNavbarVisible={jest.fn()}
       />
     )
 
