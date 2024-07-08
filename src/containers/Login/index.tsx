@@ -193,13 +193,13 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               <Box
                 style={{
                   position: 'absolute',
-                  bottom: '0', // Adjust this value for positioning
-                  left: '0', // Adjust this value for positioning
-                  width: '140px', // Diameter of the circle
-                  height: '140px', // Diameter of the circle
-                  backgroundColor: '#172D2D', // Background color
-                  borderRadius: '0 304px 0 30px', // Quarter circle shape
-                  transform: 'rotate(0deg)' // Rotate to position correctly
+                  bottom: '0', 
+                  left: '0',
+                  width: '140px',
+                  height: '140px',
+                  backgroundColor: '#172D2D',
+                  borderRadius: '0 304px 0 30px',
+                  transform: 'rotate(0deg)'
                 }}
               />
               <img
