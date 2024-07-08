@@ -173,7 +173,7 @@ const Search = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <Container sx={styles.container} maxWidth={false}>
+      <Container sx={{backgroundColor: theme.palette.menuBackground ,borderRadius: 10 , minWidth: '600px' }}>
         <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
         <NewClaim
           open={openNewClaim}
@@ -185,8 +185,10 @@ const Search = (homeProps: IHomeProps) => {
         />
 
         <Box ref={ref} sx={styles.cy} />
+      
       </Container>
       <GraphinfButton />
+      
     </>
   )
 }

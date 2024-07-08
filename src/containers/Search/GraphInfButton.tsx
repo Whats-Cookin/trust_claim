@@ -20,7 +20,7 @@ export default function BasicModal() {
           position: 'fixed',
           top: '40%',
           right: '-30px',
-          zIndex: 2000,
+          zIndex: 999,
           backgroundColor: '#009688',
           color: '#fff',
           writingMode: 'vertical-lr',
@@ -40,7 +40,7 @@ export default function BasicModal() {
         }}
       >
         {' '}
-        <DensityMediumIcon  sx={{ fontSize: '1.2rem' , mb: 1 }}/>
+        <DensityMediumIcon sx={{ fontSize: '1.2rem', mb: 1 }} />
         <Box component='span' sx={{ fontSize: '0.6rem', display: 'flex', alignItems: 'left', justifyContent: 'left' }}>
           GRAPH INFO
         </Box>
@@ -54,22 +54,25 @@ export default function BasicModal() {
       >
         <Box
           sx={{
-            
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'fixed',
-            top: '20%',
-            right: '10px',
-            width: '40vh',
-            height: '60vh',
-            minHeight: '50vh',
+            top: '12.178vh',
+            right: '0px',
+            width: '36.528vw',
+            minWidth: '150px',
+            maxWidth: '530px',
+            height: '78.816vh',
+            minHeight: '720px',
+            maxHeight: '920px',
             zIndex: 1000,
             background: 'rgba(0, 0, 0, 0.55)',
             borderRadius: '16px',
             boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
             backdropFilter: 'blur(4.9px)',
             WebkitBackdropFilter: 'blur(4.9px)',
+            overflow: 'scroll'
           }}
         >
           <IconButton
@@ -79,8 +82,7 @@ export default function BasicModal() {
               position: 'absolute',
               top: '30px',
               right: '8px',
-              color: '#fff',
-              
+              color: '#fff'
             }}
           >
             <CloseIcon sx={{ fontSize: '20px' }} />
@@ -88,30 +90,33 @@ export default function BasicModal() {
           <Box
             sx={{
               zIndex: 1000,
-              Height: '50vh',
+              Height: '64.322vh',
+              minHeight: '480px',
+              maxHeight: '700px',
+              width: '31.111vw',
+              maxWidth: '450px',
               position: 'relative',
               margin: '35px',
-              width: '30vh',
               padding: '20px',
               borderRadius: '20px',
               backgroundColor: '#253939',
               color: '#fff',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
               lineHeight: '1.5',
-              fontFamily: 'Arial, sans-serif'
+              overflow: 'scroll'
             }}
           >
-            <Grid container spacing={2} alignItems='center'>
-              <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <svg width='70' height='70' viewBox='0 0 98 116' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <Grid container spacing={2} alignItems='center' >
+              <Grid item xs={5} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <svg width='90' height='90' viewBox='0 0 98 116' fill='none' xmlns='http://www.w3.org/2000/svg'>
                   <path
                     d='M97.0814 68.3796C97.2482 68.1092 97.2634 67.8084 97.1269 67.5329C99.0225 55.2923 93.0855 41.601 84.6235 32.449C55.0444 3.21871 17.1904 32.1002 18.1508 68.5894C19.915 127.116 89.7896 133.773 97.4681 74.3293C97.688 72.3478 97.645 69.9618 97.0814 68.3796ZM59.2956 34.0287C63.1399 35.2393 64.6513 38.4619 64.0144 42.1444C63.423 45.5969 63.9967 49.7193 62.7482 52.9671C61.0093 56.3615 55.7496 56.273 54.0182 52.919C52.9592 50.9602 53.4496 48.3013 53.1665 46.0873C52.8556 41.2674 51.5666 35.9394 57.4455 33.9554C57.8448 34.1171 58.7345 34.1298 59.2956 34.0287ZM55.325 25.2128C55.6308 25.1749 55.9265 25.1901 56.2323 25.1623C55.7066 27.3561 55.8077 29.5323 56.4017 31.6908C47.1536 33.4398 48.8218 43.0644 48.6019 50.1793C48.2227 54.8374 51.8118 59.3944 56.3688 60.365C55.8658 61.9497 55.7774 63.5496 56.1236 65.1394C45.1948 65.0964 34.266 65.4048 23.3397 66.1782C24.1536 46.8733 35.138 28.0284 55.325 25.2128ZM95.8177 69.1075C94.3947 80.4483 90.6919 92.8127 82.3538 100.971C56.2778 126.694 22.5587 101.366 23.2892 68.8143C47.4519 70.4243 71.6702 71.0385 95.8227 69.0898C95.8202 69.1 95.8202 69.1025 95.8177 69.1075ZM60.754 65.1748C61.1432 63.5446 61.0901 61.9017 60.5796 60.2715C67.0398 58.9167 68.7383 52.7573 68.1595 46.3324C68.6726 39.9986 67.8688 33.1036 60.5189 31.8323C61.1634 29.5854 61.0952 27.3233 60.4027 25.089C78.6864 26.0418 92.8555 43.9162 94.9912 61.75C95.1251 62.5639 95.4739 65.147 95.9289 66.7696C84.2418 65.7258 72.4714 65.3997 60.754 65.1748ZM36.9755 14.7238C35.2366 9.96961 35.2846 5.1396 37.0184 0.387936C37.1246 -0.0720647 38.9949 -0.360197 39.5788 0.938926C41.1711 5.3974 41.2368 9.97213 39.5029 14.7213C39.4018 14.9614 38.6461 15.4694 37.9485 15.434C37.3748 15.4087 37.0538 14.9134 36.9755 14.7238ZM23.6279 25.1117C18.8838 22.8269 15.363 19.2151 13.0782 14.4786C12.8128 14.0616 13.2222 12.0977 14.8651 12.6892C19.6092 14.974 23.1299 18.5883 25.4148 23.3223C25.6802 23.7393 25.2303 25.8371 23.6279 25.1117ZM15.0825 39.0685C10.3131 40.7998 5.45782 40.9085 0.678357 39.167C-0.542415 38.5908 0.155169 36.8342 0.678357 36.6396C5.44771 34.9082 10.303 34.7995 15.0825 36.541C16.278 37.14 15.5981 38.8738 15.0825 39.0685Z'
                     fill='white'
                   />
                 </svg>
               </Grid>
-              <Grid item xs={8} sx={{ padding: '30px' }}>
-                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Grid item xs={8} sx={{ padding: '2.5vh' }}>
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' , fontSize: '1.2rem' }}>
                   Left Click
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>
@@ -126,8 +131,8 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
-              <Grid item xs={8} sx={{ padding: '30px' }}>
-                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Grid item xs={8} sx={{ padding: '2.5vh' }}>
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' ,fontSize: '1.2rem'}}>
                   Right Click
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>
@@ -144,8 +149,8 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
-              <Grid item xs={8} sx={{ padding: '30px' }}>
-                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Grid item xs={8} sx={{ padding: '2.5vh' }}>
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' ,fontSize: '1.2rem' }}>
                   Middle Wheel
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>Zooms in or zoom out the graph.</Typography>
