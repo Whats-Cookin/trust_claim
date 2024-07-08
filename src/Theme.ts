@@ -97,7 +97,7 @@ const darkModeTheme = createTheme({
     footerText: '#ffffff',
     menuBackground: '#172d2d',
     pageBackground: '#0A1C1D',
-    formBackground: '#0A1C1D',
+    formBackground: '#172D2D',
     formMainText: '#ffffff',
     cardBackground: '#223B3A',
     cardBackgroundBlur: '#43434380',

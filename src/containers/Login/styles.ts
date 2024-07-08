@@ -44,7 +44,7 @@ const styles = {
     fontSize: '16px'
   },
   authIcon: {
-    marginLeft: '10px'
+    fontSize: '2rem'
   }
 }
 export default styles
