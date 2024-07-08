@@ -24,7 +24,6 @@
     "@mui/system": "^5.11.15",
     "@mui/x-date-pickers": "^5.0.0-alpha.5",
     "cytoscape": "^3.22.1",
-    "cytoscape-html": "^0.1.2",
     "date-fns": "^2.28.0",
     "did-session": "^1.0.0",
     "html-to-image": "^1.11.11",
@@ -37,7 +36,9 @@
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "source-map-support": "^0.5.21",
-    "update": "^0.7.4"
+    "update": "^0.7.4",
+    "styled-components": "^6.1.11",
+    "cytoscape-node-html-label": "^1.2.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

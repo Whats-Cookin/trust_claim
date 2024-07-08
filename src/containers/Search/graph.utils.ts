@@ -83,60 +83,25 @@ const parseMultipleNodes = (data: any) => {
 
 const getNodeData = (node: any) => {
   let uri = node.nodeUri
-  // could do this - if we used a trustclaims uri separate the path part
-  // not important - just here for reference from before
-  /*if (isValidUrl(uri)) {
-    let uriObj = new URL(node.nodeUri)
-    if (uriObj.hostname === 'trustclaims.whatscookin.us') {
-      let decodedUri = decodeURIComponent(uri.pathname.split('/').pop())
-      uri = decodedUri.pathname
-    }
-  }*/
-
-  interface NodeData {
-    data: {
-      id: string
-      label: string
-      raw: any
-    }
-    style?: {
-      [key: string]: any
-    }
-  }
   let label = node.name || uri
-  if (label == 'Not Acceptable!' || label == 'Not Acceptable') {
+  if (label === 'Not Acceptable!' || label === 'Not Acceptable') {
     console.log('Node name is ' + node.name)
     label = ''
   }
 
-  const nodeData: NodeData = {
+  let imageUrl = ''
+  if (node.image) {
+    imageUrl = node.image.replace(/\?.+$/, '')
+  } else if (node.thumbnail) {
+    imageUrl = node.thumbnail.replace(/\?.+$/, '')
+  }
+
+  const nodeData = {
     data: {
       id: node.id.toString(),
       label: label,
-      raw: node
-    }
-  }
-  if (node.entType === 'CLAIM') {
-    nodeData.style = {
-      shape: 'square'
-    }
-  } else {
-    nodeData.style = {
-      shape: 'circle'
-    }
-  }
-
-  if (node.image) {
-    nodeData.style = {
-      'background-image': [node.image.replace(/\?.+$/, '')],
-      'background-fit': 'cover cover',
-      'background-image-opacity': 1.0
-    }
-  } else if (node.thumbnail) {
-    nodeData.style = {
-      'background-image': [node.thumbnail.replace(/\?.+$/, '')],
-      'background-fit': 'cover cover',
-      'background-image-opacity': 0.4
+      raw: node,
+      image: imageUrl
     }
   }
   return nodeData

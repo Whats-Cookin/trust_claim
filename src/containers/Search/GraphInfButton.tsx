@@ -4,13 +4,20 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import DensityMediumIcon from '@mui/icons-material/DensityMedium'
-import { Grid, IconButton } from '@mui/material'
+import { Grid, IconButton, useMediaQuery, useTheme } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
 export default function BasicModal() {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.up('md'))
+
+  if (!matches) {
+    return null
+  }
 
   return (
     <>
@@ -115,8 +122,19 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
+<<<<<<< HEAD
               <Grid item xs={8} sx={{ padding: '2.5vh' }}>
                 <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' , fontSize: '1.2rem' }}>
+=======
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  padding: '2.5vh'
+                }}
+              >
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '1.2rem' }}>
+>>>>>>> 41bf06fc5a51afcfa46b3cf70943dab060397217
                   Left Click
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>
@@ -131,8 +149,19 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
+<<<<<<< HEAD
               <Grid item xs={8} sx={{ padding: '2.5vh' }}>
                 <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' ,fontSize: '1.2rem'}}>
+=======
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  padding: '2.5vh'
+                }}
+              >
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '1.2rem' }}>
+>>>>>>> 41bf06fc5a51afcfa46b3cf70943dab060397217
                   Right Click
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>
@@ -149,8 +178,19 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
+<<<<<<< HEAD
               <Grid item xs={8} sx={{ padding: '2.5vh' }}>
                 <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' ,fontSize: '1.2rem' }}>
+=======
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  padding: '2.5vh'
+                }}
+              >
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '1.2rem' }}>
+>>>>>>> 41bf06fc5a51afcfa46b3cf70943dab060397217
                   Middle Wheel
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>Zooms in or zoom out the graph.</Typography>
