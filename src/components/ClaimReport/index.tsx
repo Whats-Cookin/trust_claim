@@ -249,7 +249,7 @@ const DonationReport: React.FC = () => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Recent Attestations
+                  Related Attestations
                   <Box
                     sx={{
                       height: '4px',

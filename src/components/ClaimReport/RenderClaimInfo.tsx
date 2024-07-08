@@ -1,18 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {
-  Typography,
-  Box,
-  Link as MuiLink,
-  Dialog,
-  Rating,
-  Button,
-  DialogContent,
-  DialogTitle,
-  IconButton
-} from '@mui/material'
+import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { borderRadius, useTheme } from '@mui/system'
+import { useTheme } from '@mui/system'
 
 const RenderClaimInfo = ({
   claim,

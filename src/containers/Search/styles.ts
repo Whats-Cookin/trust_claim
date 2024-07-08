@@ -1,6 +1,9 @@
 const styles = {
   container: {
-    // backgroundColor: 'white'
+    padding: '0',
+    '@media (min-width: 600px)': {
+      padding: '0'
+    }
   },
   cy: {
     width: '100vw',

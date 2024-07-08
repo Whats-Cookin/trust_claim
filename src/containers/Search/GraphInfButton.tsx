@@ -4,13 +4,20 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import DensityMediumIcon from '@mui/icons-material/DensityMedium'
-import { Grid, IconButton } from '@mui/material'
+import { Grid, IconButton, useMediaQuery, useTheme } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
 export default function BasicModal() {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.up('md'))
+
+  if (!matches) {
+    return null
+  }
 
   return (
     <>
@@ -20,7 +27,7 @@ export default function BasicModal() {
           position: 'fixed',
           top: '40%',
           right: '-30px',
-          zIndex: 2000,
+          zIndex: 999,
           backgroundColor: '#009688',
           color: '#fff',
           writingMode: 'vertical-lr',
@@ -40,7 +47,7 @@ export default function BasicModal() {
         }}
       >
         {' '}
-        <DensityMediumIcon  sx={{ fontSize: '1.2rem' , mb: 1 }}/>
+        <DensityMediumIcon sx={{ fontSize: '1.2rem', mb: 1 }} />
         <Box component='span' sx={{ fontSize: '0.6rem', display: 'flex', alignItems: 'left', justifyContent: 'left' }}>
           GRAPH INFO
         </Box>
@@ -54,22 +61,25 @@ export default function BasicModal() {
       >
         <Box
           sx={{
-            
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'fixed',
-            top: '20%',
-            right: '10px',
-            width: '40vh',
-            height: '60vh',
-            minHeight: '50vh',
+            top: '12.178vh',
+            right: '0px',
+            width: '36.528vw',
+            minWidth: '150px',
+            maxWidth: '530px',
+            height: '78.816vh',
+            minHeight: '720px',
+            maxHeight: '920px',
             zIndex: 1000,
             background: 'rgba(0, 0, 0, 0.55)',
             borderRadius: '16px',
             boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
             backdropFilter: 'blur(4.9px)',
             WebkitBackdropFilter: 'blur(4.9px)',
+            overflow: 'scroll'
           }}
         >
           <IconButton
@@ -79,8 +89,7 @@ export default function BasicModal() {
               position: 'absolute',
               top: '30px',
               right: '8px',
-              color: '#fff',
-              
+              color: '#fff'
             }}
           >
             <CloseIcon sx={{ fontSize: '20px' }} />
@@ -88,17 +97,20 @@ export default function BasicModal() {
           <Box
             sx={{
               zIndex: 1000,
-              Height: '50vh',
+              Height: '64.322vh',
+              minHeight: '480px',
+              maxHeight: '700px',
+              width: '31.111vw',
+              maxWidth: '450px',
               position: 'relative',
               margin: '35px',
-              width: '30vh',
               padding: '20px',
               borderRadius: '20px',
               backgroundColor: '#253939',
               color: '#fff',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
               lineHeight: '1.5',
-              fontFamily: 'Arial, sans-serif'
+              overflow: 'scroll'
             }}
           >
             <Grid container spacing={2} alignItems='center'>
@@ -110,8 +122,14 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
-              <Grid item xs={8} sx={{ padding: '30px' }}>
-                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  padding: '2.5vh'
+                }}
+              >
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '1.2rem' }}>
                   Left Click
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>
@@ -126,8 +144,14 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
-              <Grid item xs={8} sx={{ padding: '30px' }}>
-                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  padding: '2.5vh'
+                }}
+              >
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '1.2rem' }}>
                   Right Click
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>
@@ -144,8 +168,14 @@ export default function BasicModal() {
                   />
                 </svg>
               </Grid>
-              <Grid item xs={8} sx={{ padding: '30px' }}>
-                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+              <Grid
+                item
+                xs={8}
+                sx={{
+                  padding: '2.5vh'
+                }}
+              >
+                <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '1.2rem' }}>
                   Middle Wheel
                 </Typography>
                 <Typography sx={{ fontSize: '0.6rem' }}>Zooms in or zoom out the graph.</Typography>
