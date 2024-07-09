@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import IHomeProps from '../../containers/Form/types'
-import styles from '../../containers/Form/styles'
+import styles from './styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
@@ -233,13 +233,14 @@ export const Form = ({
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '100%',
-        height: '800px',
-        maxHeight: '550px',
+        height: '780px',
+        maxHeight: '650px',
         backgroundColor: theme.palette.pageBackground,
         borderRadius: '30px',
-        p: 4,
+        p: 2,
         overflow: 'hidden',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        mb:0
       }}
       open={true}
       onClose={onCancel}
@@ -259,7 +260,7 @@ export const Form = ({
           <Typography
             variant='h4'
             sx={{
-              mb: 3,
+              m: 3,
               textAlign: 'center',
               fontSize: '20px',
               color: theme.palette.texts,
@@ -278,7 +279,8 @@ export const Form = ({
               mt: 1
             }}
           />{' '}
-          {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
+            
+        
         </DialogTitle>
         <DialogContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
           <form onSubmit={onSubmit}>
@@ -294,7 +296,7 @@ export const Form = ({
                   sx={{
                     ml: 1,
                     mr: 1,
-                    width: '22ch',
+                    width: '50ch',
                     '& .MuiInputBase-input': {
                       color: theme.palette.texts
                     },
@@ -327,7 +329,7 @@ export const Form = ({
                   sx={{
                     ml: 1,
                     mr: 1,
-                    width: '22ch',
+                    width: '50ch',
                     '& .MuiInputBase-input': {
                       color: theme.palette.texts
                     },
@@ -386,7 +388,7 @@ export const Form = ({
                   sx={{
                     ml: 1,
                     mr: 1,
-                    width: '22ch',
+                    width: '50ch',
                     '& .MuiInputBase-input': {
                       color: theme.palette.texts
                     },
@@ -441,7 +443,7 @@ export const Form = ({
                   sx={{
                     ml: 1,
                     mr: 1,
-                    width: '22ch',
+                    width: '50ch',
                     '& .MuiInputBase-input': {
                       color: theme.palette.texts
                     },
@@ -471,7 +473,7 @@ export const Form = ({
                   sx={{
                     ml: 1,
                     mr: 1,
-                    width: '22ch',
+                    width: '50ch',
                     '& .MuiInputBase-input': {
                       color: theme.palette.texts
                     },
@@ -503,7 +505,7 @@ export const Form = ({
                   sx={{
                     ml: 1,
                     mr: 1,
-                    width: '22ch',
+                    width: '50ch',
                     '& .MuiInputBase-input': {
                       color: theme.palette.texts
                     },
@@ -702,8 +704,7 @@ export const Form = ({
             variant='contained'
             size='large'
             sx={{
-              m: 1,
-              b: 1,
+              mb: 1,
               width: '15%',
               color: theme.palette.buttontext,
               borderRadius: '30px',
