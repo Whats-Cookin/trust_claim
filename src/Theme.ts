@@ -29,6 +29,7 @@ declare module '@mui/material/styles' {
     shadows: string
     cardsbuttons: string
     sidecolor: string
+    darkinputtext: string
   }
 
   interface PaletteOptions {
@@ -59,6 +60,7 @@ declare module '@mui/material/styles' {
     shadows?: string
     cardsbuttons?: string
     sidecolor?: string
+    darkinputtext?: string
   }
 
   interface TypographyVariants {
@@ -83,6 +85,21 @@ declare module '@mui/material/Typography' {
 }
 
 const darkModeTheme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 100px #172D2D inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      border-top-left-radius: initial !important;
+      border-top-right-radius: initial !important;
+      }
+      `
+    }
+  },
   palette: {
     mode: 'dark',
     smallButton: '#4C726F',
@@ -111,7 +128,8 @@ const darkModeTheme = createTheme({
     chipColor: '#4C726F',
     borderColor: '#008a7cdc',
     shadows: '#00000040',
-    sidecolor: '#ffffff'
+    sidecolor: '#ffffff',
+    darkinputtext: '#ffffff'
   },
   breakpoints: {
     values: {
@@ -125,6 +143,21 @@ const darkModeTheme = createTheme({
 })
 
 const lightModeTheme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 100px #172D2D inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      border-top-left-radius: initial !important;
+      border-top-right-radius: initial !important;
+      }
+      `
+    }
+  },
   palette: {
     mode: 'light',
     smallButton: '#797979',
@@ -153,7 +186,8 @@ const lightModeTheme = createTheme({
     chipColor: '#B2DFDB',
     borderColor: '#00796B80',
     shadows: '#00000020',
-    sidecolor: '#0A1C1D'
+    sidecolor: '#0A1C1D',
+    darkinputtext: '#0A1C1D'
   },
   breakpoints: {
     values: {

@@ -13,7 +13,7 @@ const styles = {
     borderRadius: '10px'
   },
   inputField: {
-    backgroundColor: 'white'
+    backgroundColor: '#00000000'
   },
   authbtn: {
     display: 'flex',

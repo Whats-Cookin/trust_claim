@@ -1,5 +1,4 @@
-import React from 'react'
-import { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import axios from '../../axiosInstance'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getAccountId } from '@didtools/pkh-ethereum'
@@ -16,15 +15,18 @@ import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme, TextField, IconButton } from '@mui/material'
-import EmailIcon from '@mui/icons-material/Email'
-import LockIcon from '@mui/icons-material/Lock'
-import BackgroundImages from '../BackgroundImags'
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+// import BackgroundImages from '../BackgroundImags'
 import CloseIcon from '@mui/icons-material/Close'
-import loginImage from '../../assets/images/login.png'
+import loginIllustration from '../../assets/images/loginIllustration.svg'
+import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
+import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
+import DayNightToggle from 'react-day-and-night-toggle'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
-const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) => {
+const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
   const location = useLocation()
 
@@ -149,17 +151,27 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   }
 
   return (
-    <>
+    <Box
+      sx={{
+        zIndex: 2,
+        width: '100%',
+        maxWidth: '1208px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh'
+      }}
+    >
       <Box
         sx={{
-          zIndex: 2,
-          width: '100%',
-          maxWidth: '750px',
-          margin: '0 auto',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '100vh'
+          margin: 'auto',
+          flexDirection: 'column',
+          // paddingRight: '171px',
+          paddingRight: '110px',
+          boxSizing: 'content-box'
         }}
       >
         <form onSubmit={onSubmit}>
@@ -168,63 +180,76 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               display: 'flex',
               flexDirection: 'column',
               rowGap: 2,
-              width: '800px',
-              hight: '658px',
-              background: '#172D2D',
-              boxShadow: '0px 1px 20px #00000040',
+              width: '71.528vw',
+              maxWidth: '1030px',
+              minWidth: '742.003px',
+              height: '64.258vh',
+              maxHeight: '658px',
+              minHeight: '600px',
               zIndex: 20,
               borderRadius: '10px',
-              position: 'relative'
+              position: 'relative',
+              backgroundImage: `url(${isDarkMode ? formBackgrounddark : formBackgroundlight})`,
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPositionY: 'center',
+              backgroundPositionX: 'center'
             }}
           >
             <Box
               sx={{
                 position: 'absolute',
-                width: '350px',
-                height: '400px',
-                top: '25px',
-                right: -150,
+                width: '28.889vw',
+                maxWidth: '416px',
+                minWidth: '300px',
+                height: '53.613vh',
+                maxHeight: '550px',
+                minHeight: '500px',
+                top: '8.359%',
+                right: '-16.893%',
                 borderRadius: '30px',
                 opacity: '1',
                 zIndex: 200,
-                background: '#009688'
+                backgroundImage: `url(${loginIllustration})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                backgroundPositionY: 'center',
+                backgroundPositionX: 'center'
               }}
             >
               <Box
-                style={{
+                sx={{
+                  display: 'flex',
+                  // gap: '5px',
+                  alignItems: 'center',
                   position: 'absolute',
-                  bottom: '0', 
-                  left: '0',
-                  width: '140px',
-                  height: '140px',
-                  backgroundColor: '#172D2D',
-                  borderRadius: '0 304px 0 30px',
-                  transform: 'rotate(0deg)'
+                  bottom: '20px',
+                  right: '30px'
                 }}
-              />
-              <img
-                src={loginImage}
-                alt='Logo Image'
-                style={{
-                  width: '100%',
-                  height: '85%',
-                  borderRadius: '30px'
-                }}
-              />
+              >
+                <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={35} />{' '}
+                {/* <Typography sx={{ color: 'theme.palette.texts', fontSize: '20px', fontWeight: 'bold' }}>
+                    {isDarkMode ? 'Dark' : 'Light'}
+                  </Typography> */}
+              </Box>
             </Box>
             <Box
               sx={{
-                width: '45px',
-                height: '45px',
-                background: '#009688',
+                width: '5.176vw',
+                minWidth: '45px',
+                maxWidth: '60px',
+                height: '5.176vw',
+                minHeight: '45px',
+                maxHeight: '60px',
+                background: theme.palette.stars,
                 zIndex: 20,
                 borderRadius: '50%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 position: 'absolute',
-                top: -15,
-                left: -15
+                top: -25,
+                left: -25
               }}
             >
               <Link to='/feed' style={{ textDecoration: 'none' }}>
@@ -243,16 +268,26 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                rowGap: 2,
-                width: '387px',
-                padding: '2rem',
+                rowGap: 4,
+                width: '37.573%',
+                minWidth: '300px',
+                maxWidth: '387px',
+                height: '77.508%',
+                minHeight: '470px',
+                maxHeight: '510px',
                 textAlign: 'center',
-                ml: '7em'
+                ml: '202px',
+                mt: '72px'
               }}
             >
               <Typography
                 variant='h5'
-                sx={{ color: '#fff', textAlign: 'center', fontWeight: 'bold', fontSize: '2.5rem' }}
+                sx={{
+                  color: theme.palette.darkinputtext,
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '2.5rem'
+                }}
               >
                 Sign in
               </Typography>
@@ -261,7 +296,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 sx={{
                   display: 'flex',
                   flexDirection: 'row',
-                  gap: 5,
+                  gap: '29px',
                   alignItems: 'center',
                   m: 'auto'
                 }}
@@ -269,7 +304,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 <MuiLink
                   href={githubUrl}
                   sx={{
-                    color: theme.palette.buttontext,
+                    color: theme.palette.texts,
+                    backgroundColor: theme.palette.formBackground,
                     m: 'auto'
                   }}
                 >
@@ -295,7 +331,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 })}
                 label={
                   <React.Fragment>
-                    <EmailIcon sx={{ mr: 1 }} />
+                    <EmailOutlinedIcon sx={{ mr: 1 }} />
                     Email
                   </React.Fragment>
                 }
@@ -312,19 +348,19 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                     backgroundColor: theme.palette.formBackground
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.texts
+                    color: theme.palette.darkinputtext
                   },
                   '& .MuiFilledInput-input': {
-                    color: theme.palette.texts
+                    color: theme.palette.darkinputtext
                   },
                   '& .MuiFilledInput-underline:before': {
-                    borderBottomColor: theme.palette.texts
+                    borderBottomColor: theme.palette.darkinputtext
                   },
                   '& .MuiFilledInput-underline:after': {
-                    borderBottomColor: theme.palette.texts
+                    borderBottomColor: theme.palette.darkinputtext
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.texts
+                    color: theme.palette.darkinputtext
                   }
                 }}
                 fullWidth
@@ -341,7 +377,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 fullWidth
                 label={
                   <React.Fragment>
-                    <LockIcon sx={{ mr: 1 }} />
+                    <LockOutlinedIcon sx={{ mr: 1 }} />
                     Password
                   </React.Fragment>
                 }
@@ -358,19 +394,19 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                     backgroundColor: theme.palette.formBackground
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.texts
+                    color: theme.palette.darkinputtext
                   },
                   '& .MuiFilledInput-input': {
-                    color: theme.palette.texts
+                    color: theme.palette.darkinputtext
                   },
                   '& .MuiFilledInput-underline:before': {
-                    borderBottomColor: theme.palette.texts
+                    borderBottomColor: theme.palette.darkinputtext
                   },
                   '& .MuiFilledInput-underline:after': {
-                    borderBottomColor: theme.palette.texts
+                    borderBottomColor: theme.palette.darkinputtext
                   },
                   '& .MuiFormHelperText-root': {
-                    color: theme.palette.texts
+                    color: theme.palette.darkinputtext
                   }
                 }}
                 variant='filled'
@@ -402,7 +438,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                 </Button>
               </Box>
 
-              <Typography variant='body1' sx={{ color: theme.palette.texts, mt: '5px' }}>
+              <Typography variant='body1' sx={{ color: theme.palette.texts }}>
                 Click here to
                 <Typography
                   component='span'
@@ -412,12 +448,18 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
                   Register
                 </Typography>
               </Typography>
+              <Typography
+                variant='body1'
+                sx={{ color: theme.palette.darkinputtext, textDecoration: 'underline', cursor: 'pointer' }}
+              >
+                forgot your password?
+              </Typography>
             </Box>
-            <BackgroundImages />
           </Box>
         </form>
+        {/* <BackgroundImages /> */}
       </Box>
-    </>
+    </Box>
   )
 }
 
