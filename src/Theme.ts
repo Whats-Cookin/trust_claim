@@ -150,8 +150,8 @@ const lightModeTheme = createTheme({
       input:-webkit-autofill:hover,
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 100px #172D2D inset !important;
-      -webkit-text-fill-color: #ffffff !important;
+      -webkit-box-shadow: 0 0 0 100px #ffffff inset !important;
+      -webkit-text-fill-color: #0A1C1D !important;
       border-top-left-radius: initial !important;
       border-top-right-radius: initial !important;
       }
