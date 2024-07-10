@@ -326,7 +326,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           variant='text'
                           sx={{
                             fontSize: isMediumScreen ? '8px' : '16px',
-                            fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
                             color: theme.palette.sidecolor,
@@ -335,7 +334,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                             }
                           }}
                         >
-                          VALIDATE
+                          Validate
                         </Button>
                         <Link to={'/report/' + claim.claim_id}>
                           <Button
@@ -343,7 +342,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                             variant='text'
                             sx={{
                               fontSize: isMediumScreen ? '8px' : '16px',
-                              fontWeight: 'bold',
                               marginRight: '10px',
                               p: '4px',
                               color: theme.palette.sidecolor,
@@ -361,7 +359,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           variant='text'
                           sx={{
                             fontSize: isMediumScreen ? '8px' : '16px',
-                            fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
                             color: theme.palette.sidecolor,

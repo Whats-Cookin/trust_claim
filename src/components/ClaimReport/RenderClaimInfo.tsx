@@ -152,9 +152,10 @@ const RenderClaimInfo = ({
                   variant='inherit'
                   component='span'
                   sx={{
-                    color: theme.palette.texts,
-                    fontWeight: 600,
-                    textAlign: 'left'
+                    padding: '5px 1 1 5px',
+                    wordBreak: 'break-word',
+                    marginBottom: '1px',
+                    color: theme.palette.texts
                   }}
                 >
                   {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 500)}

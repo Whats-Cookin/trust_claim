@@ -101,6 +101,7 @@ const DonationReport: React.FC = () => {
         justifyContent: 'center',
         position: 'relative',
         mt: '64px',
+        height: '100vh',
         width: isMediumScreen ? '97%' : '100%',
         flexDirection: 'column',
         backgroundColor: theme.palette.menuBackground,
