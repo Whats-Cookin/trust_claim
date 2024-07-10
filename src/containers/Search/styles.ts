@@ -11,14 +11,6 @@ const styles = {
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  inputFieldWrap: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    maxWidth: 1000,
-    rowGap: 4,
-    mb: 4
   }
 }
 

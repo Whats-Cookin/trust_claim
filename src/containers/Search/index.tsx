@@ -184,7 +184,7 @@ const Search = (homeProps: IHomeProps) => {
       <Container
         sx={{
           backgroundColor: theme.palette.menuBackground,
-          borderRadius: '30px 0 0 30px',
+          borderRadius: '10px 0 0 10px',
           marginTop: '64px'
         }}
         maxWidth={false}

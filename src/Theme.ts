@@ -87,6 +87,9 @@ declare module '@mui/material/Typography' {
 const darkModeTheme = createTheme({
   palette: {
     mode: 'dark',
+    background: {
+      default: '#0A1C1D'
+    },
     smallButton: '#4C726F',
     buttons: '#009688',
     buttonHover: '#00695f',
@@ -130,6 +133,9 @@ const darkModeTheme = createTheme({
 const lightModeTheme = createTheme({
   palette: {
     mode: 'light',
+    background: {
+      default: '#F2FAF9'
+    },
     smallButton: '#797979',
     buttons: '#009688',
     buttonHover: '#00695f',

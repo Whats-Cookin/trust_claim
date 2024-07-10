@@ -17,7 +17,8 @@ import {
   Tooltip,
   Box,
   Modal,
-  Divider
+  useMediaQuery,
+  Backdrop
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -225,6 +226,7 @@ export const Form = ({
     titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate?' : 'What do you have to say about'
   }
   const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   return (
     <Modal
       sx={{
@@ -245,6 +247,7 @@ export const Form = ({
       onClose={onCancel}
       aria-labelledby='form-modal-title'
       aria-describedby='form-modal-description'
+      BackdropComponent={() => <Backdrop open={false} />}
     >
       <Box
         sx={{
@@ -284,268 +287,301 @@ export const Form = ({
         </DialogTitle>
         <DialogContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
           <form onSubmit={onSubmit}>
-            <Box sx={styles.inputFieldWrap}>
-              <Tooltip
-                title='You should put the link to the site or social media account where the claim was created  '
-                placement='right'
-                arrow
-                sx={{ backgroundColor: theme.palette.maintext }}
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '16px',
+                width: isSmallScreen ? '100%' : 'auto'
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                  width: '100%'
+                }}
               >
-                <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '50ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Subject'
-                  key='subject'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject?.message}
-                />
-              </Tooltip>
-              <Tooltip title='For evaluation being made ' placement='right' arrow>
-                <TextField
-                  select
-                  label='Claim'
-                  {...register('claim', { required: { value: true, message: 'claim is required' } })}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '50ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.texts
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  error={Boolean(errors.claim)}
-                  helperText={errors.claim?.message}
+                <Tooltip
+                  title='You should put the link to the site or social media account where the claim was created  '
+                  placement='right'
+                  arrow
+                  sx={{ backgroundColor: theme.palette.maintext }}
                 >
-                  {inputOptions.claim.map((claimText: string, index: number) => (
-                    <MenuItem
-                      sx={{
-                        backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.texts,
-                        '&:hover': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: theme.palette.formBackground,
+                  <TextField
+                    {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                    sx={{
+                      flexGrow: 1,
+                      flexBasis: 'calc(50% - 16px)',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    margin='dense'
+                    variant='standard'
+                    fullWidth
+                    label='Subject'
+                    key='subject'
+                    disabled={!!selectedClaim?.nodeUri}
+                    type='text'
+                    error={Boolean(errors.subject)}
+                    helperText={errors.subject?.message}
+                  />
+                </Tooltip>
+                <Tooltip title='For evaluation being made ' placement='right' arrow>
+                  <TextField
+                    select
+                    label='Claim'
+                    {...register('claim', { required: { value: true, message: 'claim is required' } })}
+                    sx={{
+                      flexGrow: 1,
+                      flexBasis: 'calc(50% - 16px)',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.texts
+                      }
+                    }}
+                    margin='dense'
+                    variant='standard'
+                    fullWidth
+                    error={Boolean(errors.claim)}
+                    helperText={errors.claim?.message}
+                  >
+                    {inputOptions.claim.map((claimText: string, index: number) => (
+                      <MenuItem
+                        sx={{
+                          backgroundColor: theme.palette.menuBackground,
+                          color: theme.palette.texts,
                           '&:hover': {
                             backgroundColor: theme.palette.formBackground
-                          }
-                        },
-                        '&:active': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '::selection': {
-                          backgroundColor: theme.palette.formBackground
-                        }
-                      }}
-                      value={claimText}
-                      key={claimText}
-                    >
-                      <Tooltip title={tooltips.claim[index]} placement='right' arrow>
-                        <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
-                      </Tooltip>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-              <Tooltip title='The method or source of the claim ' placement='right' arrow>
-                <TextField
-                  select
-                  label='How Known'
-                  {...register('howKnown')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '50ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                >
-                  {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                    <MenuItem
-                      sx={{
-                        backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.texts,
-                        '&:hover': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: theme.palette.formBackground,
-                          '&:hover': {
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: theme.palette.formBackground,
+                            '&:hover': {
+                              backgroundColor: theme.palette.formBackground
+                            }
+                          },
+                          '&:active': {
+                            backgroundColor: theme.palette.formBackground
+                          },
+                          '::selection': {
                             backgroundColor: theme.palette.formBackground
                           }
-                        },
-                        '&:active': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '::selection': {
-                          backgroundColor: theme.palette.formBackground
-                        }
-                      }}
-                      value={howKnownMapping[howKnownText]}
-                      key={howKnownText}
-                    >
-                      <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
-                        <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
-                      </Tooltip>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-              <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
-                <TextField
-                  {...register('statement')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '50ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Statement'
-                  key='statement'
-                  type='text'
-                  multiline={true}
-                  maxRows={4}
-                />
-              </Tooltip>
-              <Tooltip title='You should put your site here' placement='right' arrow>
-                <TextField
-                  {...register('sourceURI')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '50ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Source URI'
-                  key='sourceURI'
-                  type='text'
-                />
-              </Tooltip>
-              <Tooltip
-                title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
-                placement='right'
-                arrow
+                        }}
+                        value={claimText}
+                        key={claimText}
+                      >
+                        <Tooltip title={tooltips.claim[index]} placement='right' arrow>
+                          <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
+                        </Tooltip>
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Tooltip>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                  width: '100%'
+                }}
               >
-                <TextField
-                  {...register('confidence')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '50ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Confidence'
-                  key='confidence'
-                  type='number'
-                  inputProps={{
-                    min: 0.0,
-                    max: 1.0,
-                    step: 0.1
-                  }}
-                />
-              </Tooltip>
-
+                <Tooltip title='The method or source of the claim ' placement='right' arrow>
+                  <TextField
+                    select
+                    label='How Known'
+                    {...register('howKnown')}
+                    sx={{
+                      flexGrow: 1,
+                      flexBasis: 'calc(50% - 16px)',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    margin='dense'
+                    variant='standard'
+                    fullWidth
+                  >
+                    {inputOptions.howKnown.map((howKnownText: string, index: number) => (
+                      <MenuItem
+                        sx={{
+                          backgroundColor: theme.palette.menuBackground,
+                          color: theme.palette.texts,
+                          '&:hover': {
+                            backgroundColor: theme.palette.formBackground
+                          },
+                          '&.Mui-selected': {
+                            backgroundColor: theme.palette.formBackground,
+                            '&:hover': {
+                              backgroundColor: theme.palette.formBackground
+                            }
+                          },
+                          '&:active': {
+                            backgroundColor: theme.palette.formBackground
+                          },
+                          '::selection': {
+                            backgroundColor: theme.palette.formBackground
+                          }
+                        }}
+                        value={howKnownMapping[howKnownText]}
+                        key={howKnownText}
+                      >
+                        <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
+                          <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
+                        </Tooltip>
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Tooltip>
+                <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
+                  <TextField
+                    {...register('statement')}
+                    sx={{
+                      flexGrow: 1,
+                      flexBasis: 'calc(50% - 16px)',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    margin='dense'
+                    variant='standard'
+                    fullWidth
+                    label='Statement'
+                    key='statement'
+                    type='text'
+                    multiline={true}
+                    maxRows={4}
+                  />
+                </Tooltip>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                  width: '100%'
+                }}
+              >
+                <Tooltip title='You should put your site here' placement='right' arrow>
+                  <TextField
+                    {...register('sourceURI')}
+                    sx={{
+                      flexGrow: 1,
+                      flexBasis: 'calc(50% - 16px)',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    margin='dense'
+                    variant='standard'
+                    fullWidth
+                    label='Source URI'
+                    key='sourceURI'
+                    type='text'
+                  />
+                </Tooltip>
+                <Tooltip
+                  title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
+                  placement='right'
+                  arrow
+                >
+                  <TextField
+                    {...register('confidence')}
+                    sx={{
+                      flexGrow: 1,
+                      flexBasis: 'calc(50% - 16px)',
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiFormHelperText-root': {
+                        color: theme.palette.texts
+                      },
+                      '& .MuiSvgIcon-root': {
+                        color: theme.palette.icons
+                      }
+                    }}
+                    margin='dense'
+                    variant='standard'
+                    fullWidth
+                    label='Confidence'
+                    key='confidence'
+                    type='number'
+                    inputProps={{
+                      min: 0.0,
+                      max: 1.0,
+                      step: 0.1
+                    }}
+                  />
+                </Tooltip>
+              </Box>
               {selectedClaim?.entType !== 'CLAIM' && (
                 <>
                   {watchClaim === 'rated' && (
-                    <>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '16px',
+                        width: '100%'
+                      }}
+                    >
                       <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
                         <TextField
                           select
                           label='Aspect'
                           {...register('aspect')}
                           sx={{
-                            ml: 1,
-                            mr: 1,
-                            width: '22ch',
+                            flexGrow: 1,
+                            flexBasis: 'calc(50% - 16px)',
                             '& .MuiInputBase-input': {
                               color: theme.palette.texts
                             },
@@ -601,7 +637,7 @@ export const Form = ({
                         rules={{ required: { value: true, message: 'rating is required' } }}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                           <Tooltip title='A rating associated with the claim' placement='right' arrow>
-                            <FormControl sx={{ ml: 1, mr: 1, width: '22ch' }} fullWidth error={!!error}>
+                            <FormControl sx={{ flexGrow: 1, flexBasis: 'calc(50% - 16px)' }} fullWidth error={!!error}>
                               <Typography sx={{ mb: 1, color: theme.palette.texts }}>Review Rating</Typography>
                               <Rating
                                 name='stars'
@@ -614,13 +650,12 @@ export const Form = ({
                                 }}
                                 size='large'
                               />
-
                               <FormHelperText>{error?.message}</FormHelperText>
                             </FormControl>
                           </Tooltip>
                         )}
                       />
-                    </>
+                    </Box>
                   )}
                   {watchClaim === 'impact' && (
                     <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
@@ -638,9 +673,8 @@ export const Form = ({
                       <TextField
                         {...register('object')}
                         sx={{
-                          ml: 1,
-                          mr: 1,
-                          width: '22ch',
+                          flexGrow: 1,
+                          flexBasis: 'calc(50% - 16px)',
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts
                           },
@@ -674,9 +708,8 @@ export const Form = ({
                     <TextField
                       {...params}
                       sx={{
-                        ml: 1,
-                        mr: 1,
-                        width: '50ch',
+                        flexGrow: 1,
+                        flexBasis: 'calc(100% - 16px)',
                         '& .MuiInputBase-input': {
                           color: theme.palette.texts
                         },
@@ -705,7 +738,12 @@ export const Form = ({
             size='large'
             sx={{
               mb: 1,
+              height: '8vh',
+              minHeight: '25px',
+              maxHeight: '63px',
               width: '15%',
+              minWidth: '100px',
+              maxWidth: '229px',
               color: theme.palette.buttontext,
               borderRadius: '30px',
               bgcolor: theme.palette.buttons,

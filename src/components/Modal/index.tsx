@@ -39,6 +39,7 @@ const Modal: React.FC<ModalProps> = ({ open, setOpen, selectedClaim }) => {
           height: 'auto',
           maxHeight: '58.233vh',
           backgroundColor: theme.palette.pageBackground,
+          color: theme.palette.texts,
           borderRadius: '30px 30px 0 0',
           padding: '3vh 3vw 3vh 3vw',
           overflow: 'auto'
@@ -51,7 +52,8 @@ const Modal: React.FC<ModalProps> = ({ open, setOpen, selectedClaim }) => {
             sx={{
               color: theme.palette.texts,
               textAlign: 'center',
-              fontSize: 'clamp(14px, 5vw, 32px)'
+              fontSize: 'clamp(14px, 5vw, 32px)',
+              fontWeight: 'bold'
             }}
           >
             Claim Details
