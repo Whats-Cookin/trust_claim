@@ -14,9 +14,9 @@ import {
 } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import StarIcon from '@mui/icons-material/Star'
 
 interface Claim {
   statement: string | null
@@ -144,155 +144,193 @@ const DonationReport: React.FC = () => {
             />
           </Typography>
         </Box>
-        <Card
-          sx={{
-            minHeight: '200px',
-            width: '100%',
-            borderRadius: '20px',
-            backgroundColor: theme.palette.cardBackground,
-            backgroundImage: 'none',
-            color: theme.palette.texts,
-            marginBottom: '2rem'
-          }}
-        >
+        <MyCard
+          data={reportData.data.claim}
+          theme={theme}
+          isLargeScreen={isLargeScreen}
+          setSelectedIndex={setSelectedIndex}
+          handleMenuClose={handleMenuClose}
+        />
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              color: theme.palette.texts,
+              textAlign: 'center',
+              marginLeft: isMediumScreen ? '0' : '1rem',
+              fontSize: '23px',
+              fontWeight: 'bold'
+            }}
+          >
+            Validations
+            <Box
+              sx={{
+                height: '4px',
+                backgroundColor: theme.palette.maintext,
+                marginTop: '4px',
+                borderRadius: '2px',
+                width: '80%'
+              }}
+            />
+          </Typography>
+        </Box>
+
+        {reportData.data.validations.map(
+          (validation: Claim, index: number) =>
+            validation.statement && (
+              <MyCard
+                key={index}
+                data={validation}
+                theme={theme}
+                isLargeScreen={isLargeScreen}
+                setSelectedIndex={setSelectedIndex}
+                handleMenuClose={handleMenuClose}
+              />
+            )
+        )}
+
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              color: theme.palette.texts,
+              textAlign: 'center',
+              marginLeft: isMediumScreen ? '0' : '1rem',
+              fontSize: '23px',
+              fontWeight: 'bold'
+            }}
+          >
+            Related Attestations
+            <Box
+              sx={{
+                height: '4px',
+                backgroundColor: theme.palette.maintext,
+                marginTop: '4px',
+                borderRadius: '2px',
+                width: '80%'
+              }}
+            />
+          </Typography>
+        </Box>
+
+        {reportData.data.attestations.map(
+          (attestation: Claim, index: number) =>
+            attestation.statement && (
+              <MyCard
+                key={index}
+                data={attestation}
+                theme={theme}
+                isLargeScreen={isLargeScreen}
+                setSelectedIndex={setSelectedIndex}
+                handleMenuClose={handleMenuClose}
+              />
+            )
+        )}
+      </Box>
+    </Container>
+  )
+}
+
+function MyCard({
+  data,
+  theme,
+  setSelectedIndex,
+  handleMenuClose,
+  isLargeScreen
+}: {
+  data: any
+  theme: any
+  setSelectedIndex: any
+  handleMenuClose: any
+  isLargeScreen: any
+}) {
+  return (
+    <Card
+      sx={{
+        minHeight: '200px',
+        width: '100%',
+        borderRadius: '20px',
+        backgroundColor: theme.palette.cardBackground,
+        backgroundImage: 'none',
+        color: theme.palette.texts,
+        marginBottom: '2rem'
+      }}
+    >
+      {data.image ? (
+        <Grid container spacing={isLargeScreen ? 4 : 2}>
+          <Grid item xs={12} md={6}>
+            <img src={data.image} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <CardContent>
+              <RenderClaimInfo
+                claim={data}
+                index={-1}
+                setSelectedIndex={setSelectedIndex}
+                handleMenuClose={handleMenuClose}
+              />
+            </CardContent>
+
+            {data.stars && <Stars stars={data.stars} theme={theme} />}
+          </Grid>
+        </Grid>
+      ) : (
+        <>
           <CardContent>
             <RenderClaimInfo
-              claim={reportData.data.claim}
+              claim={data}
               index={-1}
               setSelectedIndex={setSelectedIndex}
               handleMenuClose={handleMenuClose}
             />
           </CardContent>
-        </Card>
-        <Grid container spacing={isLargeScreen ? 4 : 2}>
-          <Grid item xs={12} md={6}>
-            {validValidations.length > 0 && (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  display: 'flex',
-                  justifyContent: 'left',
-                  mb: '20px'
-                }}
-              >
-                <Typography
-                  variant='h6'
-                  component='div'
-                  sx={{
-                    color: theme.palette.texts,
-                    textAlign: 'center',
-                    marginLeft: isMediumScreen ? '0' : '1rem',
-                    fontSize: '23px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Validations
-                  <Box
-                    sx={{
-                      height: '4px',
-                      backgroundColor: theme.palette.maintext,
-                      marginTop: '4px',
-                      borderRadius: '2px',
-                      width: '80%'
-                    }}
-                  />
-                </Typography>
-              </Box>
-            )}
-            {validValidations.length > 0 && (
-              <Card
-                sx={{
-                  borderRadius: '20px',
-                  backgroundColor: theme.palette.cardBackground,
-                  backgroundImage: 'none',
-                  color: theme.palette.texts,
-                  marginBottom: '1rem',
-                  overflow: 'visible'
-                }}
-              >
-                <CardContent>
-                  <Slider {...settings(validValidations.length)}>
-                    {validValidations.map((validation: Claim, index: number) => (
-                      <Box key={index} sx={{ height: '100%' }}>
-                        <RenderClaimInfo
-                          claim={validation}
-                          index={index}
-                          setSelectedIndex={setSelectedIndex}
-                          handleMenuClose={handleMenuClose}
-                        />
-                      </Box>
-                    ))}
-                  </Slider>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
+          {data.stars && <Stars stars={data.stars} theme={theme} />}
+        </>
+      )}
+    </Card>
+  )
+}
 
-          <Grid item xs={12} md={6}>
-            {validAttestations.length > 0 && (
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  display: 'flex',
-                  justifyContent: 'left',
-                  mb: '20px'
-                }}
-              >
-                <Typography
-                  variant='h6'
-                  component='div'
-                  sx={{
-                    color: theme.palette.texts,
-                    textAlign: 'center',
-                    marginLeft: isMediumScreen ? '0' : '1rem',
-                    fontSize: '23px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Related Attestations
-                  <Box
-                    sx={{
-                      height: '4px',
-                      backgroundColor: theme.palette.maintext,
-                      marginTop: '4px',
-                      borderRadius: '2px',
-                      width: '80%'
-                    }}
-                  />
-                </Typography>
-              </Box>
-            )}
-            {validAttestations.length > 0 && (
-              <Card
-                sx={{
-                  borderRadius: '20px',
-                  backgroundColor: theme.palette.cardBackground,
-                  backgroundImage: 'none',
-                  color: theme.palette.texts,
-                  marginBottom: '1rem',
-                  overflow: 'visible'
-                }}
-              >
-                <CardContent>
-                  <Slider {...settings(validAttestations.length)}>
-                    {validAttestations.map((attestation: Claim, index: number) => (
-                      <Box key={index} sx={{ height: '100%', minHeight: '200px' }}>
-                        <RenderClaimInfo
-                          claim={attestation}
-                          index={index + validValidations.length}
-                          setSelectedIndex={setSelectedIndex}
-                          handleMenuClose={handleMenuClose}
-                        />
-                      </Box>
-                    ))}
-                  </Slider>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
-        </Grid>
+function Stars({ stars, theme }: { stars: number; theme: any }) {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        position: 'relative',
+        mt: '10px',
+        mb: '10px',
+        pl: '20px',
+        pr: '20px'
+      }}
+    >
+      <Box sx={{ flexGrow: 1 }} />
+      <Box
+        sx={{
+          display: 'flex',
+          p: '4px',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-end'
+        }}
+      >
+        {Array.from({ length: stars }).map((_, index) => (
+          <StarIcon
+            key={index}
+            sx={{
+              color: theme.palette.stars,
+              width: '3vw',
+              height: '3vw',
+              fontSize: '3vw',
+              maxWidth: '24px',
+              maxHeight: '24px'
+            }}
+          />
+        ))}
       </Box>
-    </Container>
+    </Box>
   )
 }
 

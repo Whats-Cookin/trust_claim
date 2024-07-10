@@ -547,7 +547,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
             </Box>
           ) : (
             <Box sx={{ textAlign: 'center', mt: '20px' }}>
-              <Typography variant='h6'>No results found for "{searchTerm}"</Typography>
+              <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
             </Box>
           )}
         </>
