@@ -28,6 +28,8 @@ import styles from './styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
+import isSameDay from 'date-fns/fp/isSameDay'
+import { fontSize } from '@mui/system'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
@@ -269,7 +271,8 @@ export const Form = ({
                 color: theme.palette.texts,
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
-                fontSize: 'clamp(10px, 7vw, 26px)'
+                // fontSize: 'clamp(10px, 7vw, 26px)'
+                fontSize: isSmallScreen ? '10px' : '30px'
               }}
             >
               {titleText}
@@ -292,6 +295,7 @@ export const Form = ({
                 display: 'flex',
                 flexWrap: 'wrap',
                 gap: '16px',
+
                 width: isSmallScreen ? '100%' : 'auto'
               }}
             >
@@ -299,7 +303,8 @@ export const Form = ({
                 sx={{
                   display: 'flex',
                   flexWrap: 'wrap',
-                  gap: '16px',
+                  gap: isSmallScreen ? '30px' : '16px',
+                  // width: '100%'
                   width: '100%'
                 }}
               >
@@ -321,12 +326,14 @@ export const Form = ({
                         color: theme.palette.texts
                       },
                       '& .MuiFormHelperText-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize : "20px" ,
                       },
                       '& .MuiSvgIcon-root': {
                         color: theme.palette.icons
                       }
                     }}
+                    
                     margin='dense'
                     variant='standard'
                     fullWidth
@@ -401,7 +408,9 @@ export const Form = ({
                 sx={{
                   display: 'flex',
                   flexWrap: 'wrap',
-                  gap: '16px',
+                  // gap: '16px',
+                  // width: '100%'
+                  gap: isSmallScreen ? '20px' : '16px',
                   width: '100%'
                 }}
               >
@@ -495,8 +504,10 @@ export const Form = ({
                 sx={{
                   display: 'flex',
                   flexWrap: 'wrap',
-                  gap: '16px',
-                  width: '100%'
+                  // gap: '16px',
+                  // width: '100%'
+                  width: '100%',
+                  gap: isSmallScreen ? '20px' : '16px'
                 }}
               >
                 <Tooltip title='You should put your site here' placement='right' arrow>
@@ -738,10 +749,13 @@ export const Form = ({
             size='large'
             sx={{
               mb: 1,
-              height: '8vh',
+              // height: '8vh',
+              height: isSmallScreen ? '4vh' : '8vh',
               minHeight: '25px',
               maxHeight: '63px',
-              width: '15%',
+              // width: '15%',
+              fontSize: isSmallScreen ? '12px' : '16px',
+              width: isSmallScreen ? '6%' : '15%',
               minWidth: '100px',
               maxWidth: '229px',
               color: theme.palette.buttontext,
