@@ -1,24 +1,20 @@
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles'
 
-let theme = useTheme(); 
+let theme = useTheme()
 
 const styles = () => {
   return {
-    container: {
-      
-    },
-    detailField: {
-     
-    },
+    container: {},
+    detailField: {},
     fieldContent: {
       overflow: 'hidden',
-      overflowWrap: 'break-word',
+      overflowWrap: 'break-word'
     },
     createClaimBtn: {
       display: 'block',
-      margin: '20px 0 5px auto',
-    },
-  };
-};
+      margin: '20px 0 5px auto'
+    }
+  }
+}
 
-export default styles;
+export default styles
