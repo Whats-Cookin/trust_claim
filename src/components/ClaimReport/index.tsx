@@ -14,9 +14,8 @@ import {
 } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import StarIcon from '@mui/icons-material/Star'
+import { padding } from '@mui/system'
 
 interface Claim {
   statement: string | null
@@ -94,32 +93,21 @@ const DonationReport: React.FC = () => {
   const validValidations = reportData.data.validations.filter((validation: Claim) => validation.statement !== null)
   const validAttestations = reportData.data.attestations.filter((attestation: Claim) => attestation.statement !== null)
 
-  const settings = (itemsLength: number) => ({
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: true,
-    arrows: itemsLength > 1
-  })
-
   return (
-    <Container sx={{ marginBlock: '2rem' }}>
-      <Box
-        id='report-container'
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          position: 'relative',
-          mt: '5vh',
-          width: isMediumScreen ? '97%' : '95%',
-          flexDirection: 'column',
-          backgroundColor: theme.palette.menuBackground,
-          borderRadius: '20px',
-          padding: '20px'
-        }}
-      >
+    <Box
+      id='report-container'
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        position: 'relative',
+        mt: '64px',
+        width: isMediumScreen ? '97%' : '100%',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.menuBackground,
+        borderRadius: isMediumScreen ? '10px' : '10px 0px 0px 10px'
+      }}
+    >
+      <Box sx={{ padding: '20px' }}>
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
           <Typography
             variant='h6'
@@ -151,32 +139,33 @@ const DonationReport: React.FC = () => {
           setSelectedIndex={setSelectedIndex}
           handleMenuClose={handleMenuClose}
         />
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
-              fontWeight: 'bold'
-            }}
-          >
-            Validations
-            <Box
+        {validValidations.length > 0 && (
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+            <Typography
+              variant='h6'
+              component='div'
               sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
-                borderRadius: '2px',
-                width: '80%'
+                color: theme.palette.texts,
+                textAlign: 'center',
+                marginLeft: isMediumScreen ? '0' : '1rem',
+                fontSize: '23px',
+                fontWeight: 'bold'
               }}
-            />
-          </Typography>
-        </Box>
-
-        {reportData.data.validations.map(
+            >
+              Validations
+              <Box
+                sx={{
+                  height: '4px',
+                  backgroundColor: theme.palette.maintext,
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '80%'
+                }}
+              />
+            </Typography>
+          </Box>
+        )}
+        {validValidations.map(
           (validation: Claim, index: number) =>
             validation.statement && (
               <MyCard
@@ -190,32 +179,33 @@ const DonationReport: React.FC = () => {
             )
         )}
 
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
-              fontWeight: 'bold'
-            }}
-          >
-            Related Attestations
-            <Box
+        {validAttestations.length > 0 && (
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+            <Typography
+              variant='h6'
+              component='div'
               sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
-                borderRadius: '2px',
-                width: '80%'
+                color: theme.palette.texts,
+                textAlign: 'center',
+                marginLeft: isMediumScreen ? '0' : '1rem',
+                fontSize: '23px',
+                fontWeight: 'bold'
               }}
-            />
-          </Typography>
-        </Box>
-
-        {reportData.data.attestations.map(
+            >
+              Related Attestations
+              <Box
+                sx={{
+                  height: '4px',
+                  backgroundColor: theme.palette.maintext,
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '80%'
+                }}
+              />
+            </Typography>
+          </Box>
+        )}
+        {validAttestations.map(
           (attestation: Claim, index: number) =>
             attestation.statement && (
               <MyCard
@@ -229,7 +219,7 @@ const DonationReport: React.FC = () => {
             )
         )}
       </Box>
-    </Container>
+    </Box>
   )
 }
 
