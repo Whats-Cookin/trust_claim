@@ -327,13 +327,12 @@ export const Form = ({
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts,
-                        fontSize : "20px" ,
+                        fontSize: '20px'
                       },
                       '& .MuiSvgIcon-root': {
                         color: theme.palette.icons
                       }
                     }}
-                    
                     margin='dense'
                     variant='standard'
                     fullWidth
