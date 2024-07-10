@@ -228,19 +228,18 @@ export const Form = ({
   return (
     <Modal
       sx={{
-        position: 'absolute',
-        top: '70%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
+        position: 'fixed',
+        bottom: 0,
+        top: 'auto',
+        left: 'auto',
+        right: 'auto',
         width: '100%',
-        height: '780px',
-        maxHeight: '650px',
+        height: 'auto',
+        maxHeight: '58.233vh',
         backgroundColor: theme.palette.pageBackground,
-        borderRadius: '30px',
-        p: 2,
-        overflow: 'hidden',
-        overflowY: 'auto',
-        mb:0
+        borderRadius: '30px 30px 0 0',
+        // padding: '5.694vw 9.861vw 3.472vw 12.153vw',
+        overflow: 'auto'
       }}
       open={true}
       onClose={onCancel}
@@ -249,38 +248,39 @@ export const Form = ({
     >
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
           width: '100%'
         }}
       >
         <DialogTitle>
-          <Typography
-            variant='h4'
-            sx={{
-              m: 3,
-              textAlign: 'center',
-              fontSize: '20px',
-              color: theme.palette.texts,
-              textTransform: 'uppercase',
-              fontWeight: 'bold'
-            }}
-          >
-            {titleText}
-          </Typography>
-          <Divider
-            variant='middle'
-            sx={{
-              margin: 'auto', // لضمان التوسيط الأفقي
-              width: '10%',
-              bgcolor: '#009688',
-              mt: 1
-            }}
-          />{' '}
-            
-        
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+            <Typography
+              variant='h6'
+              component='div'
+              sx={{
+                m: 3,
+                textAlign: 'center',
+                color: theme.palette.texts,
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                fontSize: 'clamp(10px, 7vw, 26px)'
+              }}
+            >
+              {titleText}
+              <Box
+                sx={{
+                  height: '4px',
+                  backgroundColor: theme.palette.maintext,
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '100%'
+                }}
+              />
+            </Typography>
+          </Box>
         </DialogTitle>
         <DialogContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
           <form onSubmit={onSubmit}>
@@ -676,7 +676,7 @@ export const Form = ({
                       sx={{
                         ml: 1,
                         mr: 1,
-                        width: '100%',
+                        width: '50ch',
                         '& .MuiInputBase-input': {
                           color: theme.palette.texts
                         },

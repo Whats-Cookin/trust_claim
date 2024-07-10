@@ -254,7 +254,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     }}
                   />
                 </Typography>
-              </Box>{' '}
+              </Box>
               {visibleClaims.map((claim: any, index: number) => (
                 <Box key={claim.id} sx={{ marginBottom: '15px' }}>
                   <Card

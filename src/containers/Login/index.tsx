@@ -144,7 +144,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
   } else {
     ethLoginOpt = (
       <p id='metamaskLink'>
-        To login with Ethereum{' '}
+        To login with Ethereum
         <Link to='https://metamask.io/' target='_blank'>
           Install Metamask
         </Link>
@@ -299,7 +299,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading }: ILoginProps) 
             </Box>
 
             <Typography variant='body1' sx={{ color: theme.palette.texts }}>
-              Click here to{' '}
+              Click here to
               <Typography
                 component='span'
                 onClick={() => navigate('/register')}

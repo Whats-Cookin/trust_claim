@@ -181,7 +181,15 @@ const Search = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <Container sx={{backgroundColor: theme.palette.menuBackground ,borderRadius: 10 , minWidth: '600px' }}>
+      <Container
+        sx={{
+          backgroundColor: theme.palette.menuBackground,
+          borderRadius: '30px 0 0 30px',
+          marginTop: '64px'
+        }}
+        maxWidth={false}
+        disableGutters
+      >
         <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
         <NewClaim
           open={openNewClaim}
@@ -191,12 +199,9 @@ const Search = (homeProps: IHomeProps) => {
           setSnackbarMessage={setSnackbarMessage}
           toggleSnackbar={toggleSnackbar}
         />
-
         <Box ref={ref} sx={styles.cy} />
-      
       </Container>
       <GraphinfButton />
-      
     </>
   )
 }

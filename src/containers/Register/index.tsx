@@ -145,7 +145,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IRegisterP
             </Button>
           </Box>
           <Typography variant='body1' sx={{ color: theme.palette.texts }}>
-            Click here to{' '}
+            Click here to
             <Typography
               onClick={() => navigate('/login')}
               sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer' }}

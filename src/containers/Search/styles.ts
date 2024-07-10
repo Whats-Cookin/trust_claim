@@ -12,7 +12,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center'
   },
-   inputFieldWrap: {
+  inputFieldWrap: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
