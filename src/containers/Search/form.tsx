@@ -28,8 +28,6 @@ import styles from './styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
-import isSameDay from 'date-fns/fp/isSameDay'
-import { fontSize } from '@mui/system'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
@@ -50,7 +48,6 @@ const tooltips = {
     'The information is known through an integrated system or platform'
   ]
 }
-
 export const Form = ({
   toggleSnackbar,
   setSnackbarMessage,
@@ -81,11 +78,9 @@ export const Form = ({
       amt: null as number | null
     }
   })
-
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
-
   useEffect(() => {
     const QUERY = `
       query{
@@ -108,7 +103,6 @@ export const Form = ({
     }
     getData()
   }, [])
-
   const onSubmit = handleSubmit(
     async ({
       subject,
@@ -129,7 +123,6 @@ export const Form = ({
         const starsAsNumber = Number(stars)
         console.log('Normalizing to number amt: ' + amt)
         const amtAsNumber = Number(amt)
-
         const payload = {
           subject,
           claim,
@@ -144,11 +137,8 @@ export const Form = ({
           amt: amtAsNumber,
           issuerId: did
         }
-
         setLoading(true)
-
         const { message, isSuccess } = await createClaim(payload)
-
         setLoading(false)
         toggleSnackbar(true)
         setSnackbarMessage(message)
@@ -163,10 +153,8 @@ export const Form = ({
       }
     }
   )
-
   const watchClaim = watch('claim')
   const watchEffectiveDate = watch('effectiveDate')
-
   useEffect(() => {
     if (watchClaim === 'rated') {
       setValue('object', '')
@@ -175,14 +163,12 @@ export const Form = ({
       setValue('aspect', '')
     }
   }, [watchClaim, setValue])
-
   const howKnownMapping: { [key: string]: string } = {
     first_hand: 'FIRST_HAND',
     second_hand: 'SECOND_HAND',
     website: 'WEB_DOCUMENT',
     physical_document: 'PHYSICAL_DOCUMENT'
   }
-
   const inputOptions = {
     claim: selectedClaim?.entType === 'CLAIM' ? ['agree', 'disagree'] : ['rated', 'impact', 'report', 'related_to'],
     aspect: [
@@ -223,7 +209,6 @@ export const Form = ({
     howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
   let titleText = 'Enter a Claim'
-
   if (selectedClaim) {
     titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate?' : 'What do you have to say about'
   }
@@ -271,8 +256,7 @@ export const Form = ({
                 color: theme.palette.texts,
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
-                // fontSize: 'clamp(10px, 7vw, 26px)'
-                fontSize: isSmallScreen ? '10px' : '30px'
+                fontSize: 'clamp(16px, 4vw, 30px)'
               }}
             >
               {titleText}
@@ -288,23 +272,23 @@ export const Form = ({
             </Typography>
           </Box>
         </DialogTitle>
-        <DialogContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+        <DialogContent
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textWrap: 'nowrap', width: '100%' }}
+        >
           <form onSubmit={onSubmit}>
             <Box
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: '16px',
-
+                gap: 'clamp(55px, 6vh, 70px)',
                 width: isSmallScreen ? '100%' : 'auto'
               }}
             >
               <Box
                 sx={{
                   display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: isSmallScreen ? '30px' : '16px',
-                  // width: '100%'
+                  // flexWrap: 'wrap',
+                  gap: 'clamp(60px, 11.111vw, 160px)',
                   width: '100%'
                 }}
               >
@@ -326,8 +310,7 @@ export const Form = ({
                         color: theme.palette.texts
                       },
                       '& .MuiFormHelperText-root': {
-                        color: theme.palette.texts,
-                        fontSize: '20px'
+                        color: theme.palette.texts
                       },
                       '& .MuiSvgIcon-root': {
                         color: theme.palette.icons
@@ -406,10 +389,8 @@ export const Form = ({
               <Box
                 sx={{
                   display: 'flex',
-                  flexWrap: 'wrap',
-                  // gap: '16px',
-                  // width: '100%'
-                  gap: isSmallScreen ? '20px' : '16px',
+                  // flexWrap: 'wrap',
+                  gap: 'clamp(60px, 11.111vw, 160px)',
                   width: '100%'
                 }}
               >
@@ -502,11 +483,9 @@ export const Form = ({
               <Box
                 sx={{
                   display: 'flex',
-                  flexWrap: 'wrap',
-                  // gap: '16px',
-                  // width: '100%'
-                  width: '100%',
-                  gap: isSmallScreen ? '20px' : '16px'
+                  // flexWrap: 'wrap',
+                  gap: 'clamp(60px, 11.111vw, 160px)',
+                  width: '100%'
                 }}
               >
                 <Tooltip title='You should put your site here' placement='right' arrow>
@@ -579,8 +558,8 @@ export const Form = ({
                     <Box
                       sx={{
                         display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: '16px',
+                        // flexWrap: 'wrap',
+                        gap: 'clamp(60px, 11.111vw, 160px)',
                         width: '100%'
                       }}
                     >
@@ -640,7 +619,6 @@ export const Form = ({
                           ))}
                         </TextField>
                       </Tooltip>
-
                       <Controller
                         name='stars'
                         control={control}
@@ -748,13 +726,10 @@ export const Form = ({
             size='large'
             sx={{
               mb: 1,
-              // height: '8vh',
-              height: isSmallScreen ? '4vh' : '8vh',
+              height: '8%',
               minHeight: '25px',
               maxHeight: '63px',
-              // width: '15%',
-              fontSize: isSmallScreen ? '12px' : '16px',
-              width: isSmallScreen ? '6%' : '15%',
+              width: '15%',
               minWidth: '100px',
               maxWidth: '229px',
               color: theme.palette.buttontext,
