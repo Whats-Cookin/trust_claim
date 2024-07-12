@@ -10,7 +10,7 @@ import DayNightToggle from 'react-day-and-night-toggle'
 import CloseIcon from '@mui/icons-material/Close'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import loginIllustration from '../../assets/images/loginIllustration.svg'
+import RegisterIllustration from '../../assets/images/RegisterIllustration.svg'
 import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import MobileRegister from './MobileRegister'
@@ -109,7 +109,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                 borderRadius: '30px',
                 opacity: '1',
                 zIndex: 200,
-                backgroundImage: `url(${loginIllustration})`,
+                backgroundImage: `url(${RegisterIllustration})`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundPositionY: 'center',
@@ -184,7 +184,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                   fontSize: '2.5rem'
                 }}
               >
-                Sign in
+                Create Account
               </Typography>
 
               <TextField
@@ -299,7 +299,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                   variant='contained'
                   size='medium'
                 >
-                  Sign in
+                  SIGN UP
                 </Button>
               </Box>
 
@@ -310,7 +310,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                   onClick={() => navigate('/login')}
                   sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
                 >
-                  Register
+                  LOGIN
                 </Typography>
               </Typography>
               <Typography

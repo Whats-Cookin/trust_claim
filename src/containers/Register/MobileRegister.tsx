@@ -8,10 +8,8 @@ import { TextField, Box, Button, useTheme, IconButton } from '@mui/material'
 import DayNightToggle from 'react-day-and-night-toggle'
 import styles from './styles'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
+import RegisterIllustrationPhone from '../../assets/images/RegisterIllustrationPhone.svg'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
-import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
-import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
@@ -81,7 +79,7 @@ const MobileRegister = ({
           width: '100%',
           height: '61.25vh',
           minHeight: '400px',
-          backgroundImage: `url(${loginIllustrationPhone})`,
+          backgroundImage: `url(${RegisterIllustrationPhone})`,
           backgroundRepeat: 'no-repeat',
           borderRadius: '0 0 20px 20px',
           backgroundSize: 'cover',
@@ -153,7 +151,7 @@ const MobileRegister = ({
                 marginBottom: '20px'
               }}
             >
-              Register
+              Create Account
             </Typography>
             <TextField
               {...register('email', {
@@ -266,7 +264,7 @@ const MobileRegister = ({
               variant='contained'
               size='medium'
             >
-              Register <LogoutIcon sx={{ ml: 2 }} />
+              SIGN UP <LogoutIcon sx={{ ml: 2 }} />
             </Button>
           </Box>
         </form>
