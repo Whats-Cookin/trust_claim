@@ -15,7 +15,7 @@ import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.s
 import { getAccountId } from '@didtools/pkh-ethereum'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import LogoutIcon from '@mui/icons-material/Logout'
-import circles from '../../assets/images/circles.svg'
+import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}` // Use environment variable
