@@ -210,7 +210,7 @@ export const Form = ({
   }
   let titleText = 'Enter a Claim'
   if (selectedClaim) {
-    titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate?' : 'What do you have to say about'
+    titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate?' : 'What do you have to say about?'
   }
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -304,10 +304,12 @@ export const Form = ({
                       flexGrow: 1,
                       flexBasis: 'calc(50% - 16px)',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(16px, 2.5vw, 20px)'
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(12px, 2.5vw, 20px)'
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts
@@ -336,10 +338,12 @@ export const Form = ({
                       flexGrow: 1,
                       flexBasis: 'calc(50% - 16px)',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(16px, 2.5vw, 20px)'
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(12px, 2.5vw, 20px)'
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts
@@ -403,10 +407,12 @@ export const Form = ({
                       flexGrow: 1,
                       flexBasis: 'calc(50% - 16px)',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(16px, 2.5vw, 20px)'
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(12px, 2.5vw, 20px)'
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts
@@ -457,10 +463,12 @@ export const Form = ({
                       flexGrow: 1,
                       flexBasis: 'calc(50% - 16px)',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(16px, 2.5vw, 20px)'
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(12px, 2.5vw, 20px)'
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts
@@ -495,10 +503,12 @@ export const Form = ({
                       flexGrow: 1,
                       flexBasis: 'calc(50% - 16px)',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(16px, 2.5vw, 20px)'
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(12px, 2.5vw, 20px)'
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts
@@ -526,10 +536,12 @@ export const Form = ({
                       flexGrow: 1,
                       flexBasis: 'calc(50% - 16px)',
                       '& .MuiInputBase-input': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(16px, 2.5vw, 20px)'
                       },
                       '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        fontSize: 'clamp(12px, 2.5vw, 20px)'
                       },
                       '& .MuiFormHelperText-root': {
                         color: theme.palette.texts
@@ -568,14 +580,21 @@ export const Form = ({
                           select
                           label='Aspect'
                           {...register('aspect')}
+                          InputLabelProps={{
+                            sx: {
+                              fontSize: 'clamp(12px, 2.5vw, 20px)'
+                            }
+                          }}
                           sx={{
                             flexGrow: 1,
                             flexBasis: 'calc(50% - 16px)',
                             '& .MuiInputBase-input': {
-                              color: theme.palette.texts
+                              color: theme.palette.texts,
+                              fontSize: 'clamp(16px, 2.5vw, 20px)'
                             },
                             '& .MuiInputLabel-root': {
-                              color: theme.palette.texts
+                              color: theme.palette.texts,
+                              fontSize: 'clamp(12px, 2.5vw, 20px)'
                             },
                             '& .MuiFormHelperText-root': {
                               color: theme.palette.texts
@@ -660,14 +679,21 @@ export const Form = ({
                     <Tooltip title='What entity is the subject related to?' placement='right' arrow>
                       <TextField
                         {...register('object')}
+                        InputLabelProps={{
+                          sx: {
+                            fontSize: 'clamp(12px, 2.5vw, 20px)'
+                          }
+                        }}
                         sx={{
                           flexGrow: 1,
                           flexBasis: 'calc(50% - 16px)',
                           '& .MuiInputBase-input': {
-                            color: theme.palette.texts
+                            color: theme.palette.texts,
+                            fontSize: 'clamp(16px, 2.5vw, 20px)'
                           },
                           '& .MuiInputLabel-root': {
-                            color: theme.palette.texts
+                            color: theme.palette.texts,
+                            fontSize: 'clamp(12px, 2.5vw, 20px)'
                           },
                           '& .MuiFormHelperText-root': {
                             color: theme.palette.texts
@@ -695,14 +721,21 @@ export const Form = ({
                   renderInput={(params: any) => (
                     <TextField
                       {...params}
+                      InputLabelProps={{
+                        sx: {
+                          fontSize: 'clamp(12px, 2.5vw, 20px)'
+                        }
+                      }}
                       sx={{
                         flexGrow: 1,
                         flexBasis: 'calc(100% - 16px)',
                         '& .MuiInputBase-input': {
-                          color: theme.palette.texts
+                          color: theme.palette.texts,
+                          fontSize: 'clamp(16px, 2.5vw, 20px)'
                         },
                         '& .MuiInputLabel-root': {
-                          color: theme.palette.texts
+                          color: theme.palette.texts,
+                          fontSize: 'clamp(12px, 2.5vw, 20px)'
                         },
                         '& .MuiFormHelperText-root': {
                           color: theme.palette.texts

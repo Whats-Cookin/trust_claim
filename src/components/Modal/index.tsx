@@ -82,7 +82,7 @@ const Modal: React.FC<ModalProps> = ({ open, setOpen, selectedClaim }) => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'flex-start',
-                  // columnGap: '50px',
+                  columnGap: '2vw',
                   padding: '5px 10px',
                   flexGrow: 1
                 }}
