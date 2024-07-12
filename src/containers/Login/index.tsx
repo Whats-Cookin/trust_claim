@@ -298,7 +298,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     m: 'auto'
                   }}
                 >
-                  <GitHubIcon sx={styles.authIcon} />
+                  <GitHubIcon />
                 </MuiLink>
 
                 <Box

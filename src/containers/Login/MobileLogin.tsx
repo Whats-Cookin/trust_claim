@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from '../../axiosInstance' // Ensure the correct path
+import axios from '../../axiosInstance'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Box, Typography, Button, TextField, Link as MuiLink } from '@mui/material'
@@ -11,11 +11,9 @@ import { useTheme } from '@mui/material/styles'
 import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
-import formBackgrounddark from '../../assets/images/formBackgrounddark.svg' // Ensure the correct path
-import formBackgroundlight from '../../assets/images/formBackgroundlight.svg' // Ensure the correct path
-import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg' // Ensure the correct path
-import { getAccountId } from '@didtools/pkh-ethereum' // Ensure the correct path
-import { authenticateCeramic, ceramic, composeClient } from '../../composedb' // Ensure the correct path
+import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
+import { getAccountId } from '@didtools/pkh-ethereum'
+import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
