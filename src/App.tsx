@@ -126,7 +126,7 @@ const App = () => {
                 ? '100%'
                 : `calc(100% - ${isSidebarOpen ? '19.6vw' : '4.8vw'})`,
             transition: 'margin-left 0.3s, width 0.3s',
-            marginBottom: isMediumScreen ? '60px' : '0'
+            marginBottom: isMediumScreen || isLoginPage || isRegisterPage ? '0' : '60px'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />

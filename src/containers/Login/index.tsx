@@ -14,22 +14,22 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme, TextField, IconButton } from '@mui/material'
+import { useTheme, TextField, IconButton, useMediaQuery } from '@mui/material'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-// import BackgroundImages from '../BackgroundImags'
 import CloseIcon from '@mui/icons-material/Close'
 import loginIllustration from '../../assets/images/loginIllustration.svg'
 import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import DayNightToggle from 'react-day-and-night-toggle'
+import MobileLogin from './MobileLogin'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const location = useLocation()
-
   const {
     register,
     handleSubmit,
@@ -51,9 +51,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     if (githubAuthCode) {
       const githubAuthUrl = '/auth/github'
       axios
-        .post<{ accessToken: string; refreshToken: string }>(githubAuthUrl, {
-          githubAuthCode
-        })
+        .post(githubAuthUrl, { githubAuthCode })
         .then(res => {
           const { accessToken, refreshToken } = res.data
           handleAuth(accessToken, refreshToken)
@@ -68,20 +66,13 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   }, [])
 
   const handleWalletAuth = async () => {
-    console.log('Hi this is handle wallet auth nice to meet you')
-    const ethProvider = window.ethereum // import/get your web3 eth provider
-    const addresses = await ethProvider.request({
-      method: 'eth_requestAccounts'
-    })
+    const ethProvider = window.ethereum
+    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
     const accountId = await getAccountId(ethProvider, addresses[0])
 
-    console.log('In handlewalletauth, accountId is ' + accountId)
-
     if (accountId) {
-      // User address is found, store and navigate to home page
       localStorage.setItem('ethAddress', accountId.address)
       try {
-        console.log('Trying to authenticate ceramic')
         await authenticateCeramic(ceramic, composeClient)
         navigate('/')
       } catch (e) {
@@ -94,6 +85,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
       navigate('/login')
     }
   }
+
   const handleMetamaskAuth = (event: { preventDefault: () => void }) => {
     event.preventDefault()
     handleWalletAuth()
@@ -110,8 +102,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
         const data = { email, password }
         const {
           data: { accessToken, refreshToken }
-        } = await axios.post<{ accessToken: string; refreshToken: string }>(loginUrl, data)
-
+        } = await axios.post(loginUrl, data)
         handleAuth(accessToken, refreshToken)
         if (location.state?.from) {
           navigate(location.state?.from)
@@ -125,7 +116,10 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     }
   })
 
-  // Check if Metamask is installed
+  if (isMobile) {
+    return <MobileLogin {...{ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }} />
+  }
+
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
@@ -169,7 +163,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
           alignItems: 'center',
           margin: 'auto',
           flexDirection: 'column',
-          // paddingRight: '171px',
           paddingRight: '110px',
           boxSizing: 'content-box'
         }}
@@ -220,17 +213,13 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
               <Box
                 sx={{
                   display: 'flex',
-                  // gap: '5px',
                   alignItems: 'center',
                   position: 'absolute',
                   bottom: '20px',
                   right: '30px'
                 }}
               >
-                <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={35} />{' '}
-                {/* <Typography sx={{ color: 'theme.palette.texts', fontSize: '20px', fontWeight: 'bold' }}>
-                    {isDarkMode ? 'Dark' : 'Light'}
-                  </Typography> */}
+                <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={35} />
               </Box>
             </Box>
             <Box
@@ -369,7 +358,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 helperText={(errors.email?.message as string) || ''}
                 error={!!errors.email}
               />
-
               <TextField
                 {...register('password', {
                   required: 'Password is required'
@@ -457,7 +445,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
             </Box>
           </Box>
         </form>
-        {/* <BackgroundImages /> */}
       </Box>
     </Box>
   )

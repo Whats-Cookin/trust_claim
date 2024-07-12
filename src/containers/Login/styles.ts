@@ -42,9 +42,6 @@ const styles = {
     },
     padding: '10px 15px',
     fontSize: '16px'
-  },
-  authIcon: {
-    fontSize: '2rem'
   }
 }
 export default styles
