@@ -433,7 +433,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                   onClick={() => navigate('/register')}
                   sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
                 >
-                  Register
+                  REGISTER
                 </Typography>
               </Typography>
               <Typography

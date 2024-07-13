@@ -1,41 +1,34 @@
 import React from 'react'
 import axios from '../../axiosInstance'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Box, Typography, Button, TextField, Link as MuiLink } from '@mui/material'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Typography from '@mui/material/Typography'
+import IRegisterProps from './types'
+import { TextField, Box, Button, useTheme, IconButton } from '@mui/material'
 import DayNightToggle from 'react-day-and-night-toggle'
-import { useTheme } from '@mui/material/styles'
-import metaicon from './metamask-icon.svg'
 import styles from './styles'
-import ILoginProps from './types'
-import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
-import { getAccountId } from '@didtools/pkh-ethereum'
-import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import RegisterIllustrationPhone from '../../assets/images/RegisterIllustrationPhone.svg'
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
-
-const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
-  const theme = useTheme()
-  const location = useLocation()
+const MobileRegister = ({
+  toggleSnackbar,
+  setSnackbarMessage,
+  setLoading,
+  toggleTheme,
+  isDarkMode
+}: IRegisterProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
-  const navigate = useNavigate()
 
-  const handleAuth = (accessToken: string, refreshToken: string) => {
-    localStorage.setItem('accessToken', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
-    setLoading(false)
-    navigate('/')
-  }
+  const navigate = useNavigate()
+  const theme = useTheme()
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
     try {
@@ -43,73 +36,19 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
         toggleSnackbar(true)
         setSnackbarMessage('Both email and password are required fields.')
       } else {
-        setLoading(true)
-        const loginUrl = '/auth/login'
+        const signupUrl = '/auth/signup'
         const data = { email, password }
-        const {
-          data: { accessToken, refreshToken }
-        } = await axios.post(loginUrl, data)
-        handleAuth(accessToken, refreshToken)
-        if (location.state?.from) {
-          navigate(location.state?.from)
-        }
+        await axios.post(signupUrl, data)
+        setLoading(false)
+        navigate('/login')
       }
     } catch (err: any) {
       setLoading(false)
       toggleSnackbar(true)
-      setSnackbarMessage('User not Found!')
-      console.error('Error: ', err?.message)
+      setSnackbarMessage(err.response.data.message)
+      console.error('err', err.response.data.message)
     }
   })
-
-  const handleWalletAuth = async () => {
-    const ethProvider = window.ethereum
-    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-    const accountId = await getAccountId(ethProvider, addresses[0])
-    if (accountId) {
-      localStorage.setItem('ethAddress', accountId.address)
-      try {
-        await authenticateCeramic(ceramic, composeClient)
-        navigate('/')
-      } catch (e) {
-        console.log(`Error trying to authenticate ceramic: ${e}`)
-      }
-      if ((location as any).state?.from) {
-        navigate((location as any).state.from)
-      }
-    } else {
-      navigate('/login')
-    }
-  }
-
-  const handleMetamaskAuth = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    handleWalletAuth()
-  }
-
-  let ethLoginOpt
-  if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
-    ethLoginOpt = (
-      <Box
-        id='loginButton'
-        onClick={handleMetamaskAuth}
-        sx={{
-          color: theme.palette.buttontext
-        }}
-      >
-        <Box component='img' src={metaicon} alt='' sx={{ width: '50px' }} />
-      </Box>
-    )
-  } else {
-    ethLoginOpt = (
-      <p id='metamaskLink'>
-        To login with Ethereum
-        <MuiLink href='https://metamask.io/' target='_blank'>
-          Install Metamask
-        </MuiLink>
-      </p>
-    )
-  }
 
   return (
     <Box
@@ -140,7 +79,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           width: '100%',
           height: '61.25vh',
           minHeight: '400px',
-          backgroundImage: `url(${loginIllustrationPhone})`,
+          backgroundImage: `url(${RegisterIllustrationPhone})`,
           backgroundRepeat: 'no-repeat',
           borderRadius: '0 0 20px 20px',
           backgroundSize: 'cover',
@@ -212,59 +151,8 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 marginBottom: '20px'
               }}
             >
-              Sign in
+              Create Account
             </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '29px',
-                alignItems: 'center',
-                marginBottom: '20px'
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: theme.palette.buttontext,
-                  backgroundColor: theme.palette.formBackground,
-                  cursor: 'pointer',
-                  boxShadow: '0px 1px 5px #ffffff20',
-                  borderRadius: '50%',
-                  width: '82px',
-                  height: '82px'
-                }}
-              >
-                <MuiLink
-                  href={githubUrl}
-                  sx={{
-                    color: theme.palette.texts
-                  }}
-                >
-                  <GitHubIcon sx={{ fontSize: '50px' }} />
-                </MuiLink>
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: theme.palette.buttontext,
-                  backgroundColor: theme.palette.formBackground,
-                  cursor: 'pointer',
-                  boxShadow: '0px 1px 5px #ffffff20',
-                  borderRadius: '50%',
-                  width: '82px',
-                  height: '82px'
-                }}
-              >
-                {ethLoginOpt}
-              </Box>
-            </Box>
             <TextField
               {...register('email', {
                 required: 'Email is required',
@@ -376,7 +264,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
               variant='contained'
               size='medium'
             >
-              Sign in <LogoutIcon sx={{ ml: 2 }} />
+              SIGN UP <LogoutIcon sx={{ ml: 2 }} />
             </Button>
           </Box>
         </form>
@@ -395,10 +283,10 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           Click here to
           <Typography
             component='span'
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/login')}
             sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
           >
-            Register
+            Login
           </Typography>
         </Typography>
         <Typography
@@ -417,4 +305,4 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
   )
 }
 
-export default MobileLogin
+export default MobileRegister
