@@ -133,7 +133,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           position: 'absolute'
         }}
       >
-        <img src={circles} alt='' style={{ width: '100%' }} />
+        <Box component='img' src={circles} alt='' sx={{ width: '100px' }} />
       </Box>
       <Box
         sx={{
