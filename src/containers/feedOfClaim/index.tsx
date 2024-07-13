@@ -243,7 +243,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Recent Attestations
+                  Claim Attestations
                   <Box
                     sx={{
                       height: '4px',
@@ -254,7 +254,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     }}
                   />
                 </Typography>
-              </Box>{' '}
+              </Box>
               {visibleClaims.map((claim: any, index: number) => (
                 <Box key={claim.id} sx={{ marginBottom: '15px' }}>
                   <Card
@@ -335,7 +335,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                             }
                           }}
                         >
-                          VALIDATE
+                          Validate
                         </Button>
                         <Link to={'/report/' + claim.claim_id}>
                           <Button
