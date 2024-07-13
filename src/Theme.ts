@@ -85,6 +85,21 @@ declare module '@mui/material/Typography' {
 }
 
 const darkModeTheme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 100px #172D2D inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      border-top-left-radius: initial !important;
+      border-top-right-radius: initial !important;
+      }
+      `
+    }
+  },
   palette: {
     mode: 'dark',
     background: {
@@ -102,7 +117,7 @@ const darkModeTheme = createTheme({
     footerText: '#ffffff',
     menuBackground: '#172d2d',
     pageBackground: '#0A1C1D',
-    formBackground: '#0A1C1D',
+    formBackground: '#172D2D',
     formMainText: '#ffffff',
     cardBackground: '#223B3A',
     cardBackgroundBlur: '#43434380',
@@ -131,6 +146,21 @@ const darkModeTheme = createTheme({
 })
 
 const lightModeTheme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 100px #ffffff inset !important;
+      -webkit-text-fill-color: #0A1C1D !important;
+      border-top-left-radius: initial !important;
+      border-top-right-radius: initial !important;
+      }
+      `
+    }
+  },
   palette: {
     mode: 'light',
     background: {
