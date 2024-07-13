@@ -25,7 +25,7 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           shape: 'roundrectangle',
           backgroundOpacity: 0,
           borderOpacity: 0,
-          'background-color': theme.palette.nodeBackground
+          'background-color': theme.palette.darkinputtext
         }
       },
       {

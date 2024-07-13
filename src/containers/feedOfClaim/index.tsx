@@ -222,12 +222,12 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                 display: 'flex',
                 justifyContent: 'center',
                 position: 'relative',
-                mt: '64px',
-                // mb: '1vh',
-                width: isMediumScreen ? '97%' : '100%',
+                mt: '8vh',
+                mb: '1vh',
+                width: isMediumScreen ? '97%' : '95%',
                 flexDirection: 'column',
                 backgroundColor: theme.palette.menuBackground,
-                borderRadius: isMediumScreen ? '10px' : '10px 0px 0px 10px',
+                borderRadius: '20px',
                 padding: '20px'
               }}
             >
@@ -243,7 +243,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Feed of Claims
+                  Claim Attestations
                   <Box
                     sx={{
                       height: '4px',
@@ -326,6 +326,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           variant='text'
                           sx={{
                             fontSize: isMediumScreen ? '8px' : '16px',
+                            fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
                             color: theme.palette.sidecolor,
@@ -342,6 +343,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                             variant='text'
                             sx={{
                               fontSize: isMediumScreen ? '8px' : '16px',
+                              fontWeight: 'bold',
                               marginRight: '10px',
                               p: '4px',
                               color: theme.palette.sidecolor,
@@ -359,6 +361,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           variant='text'
                           sx={{
                             fontSize: isMediumScreen ? '8px' : '16px',
+                            fontWeight: 'bold',
                             marginRight: '10px',
                             p: '4px',
                             color: theme.palette.sidecolor,

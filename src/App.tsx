@@ -32,7 +32,6 @@ const App = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
   const checkAuth = () => {
     const accessToken = localStorage.getItem('accessToken')
@@ -82,8 +81,7 @@ const App = () => {
         },
         body: {
           '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none',
-          backgroundColor: theme.palette.pageBackground
+          'scrollbar-width': 'none'
         }
       }}
     />
@@ -119,7 +117,7 @@ const App = () => {
             display: 'flex',
             flexDirection: 'column',
             minHeight: '100vh',
-            backgroundColor: theme.palette.pageBackground,
+            backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'hidden',
             marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '19.6vw' : '4.8vw',

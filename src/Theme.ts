@@ -29,7 +29,7 @@ declare module '@mui/material/styles' {
     shadows: string
     cardsbuttons: string
     sidecolor: string
-    nodeBackground: string
+    darkinputtext: string
   }
 
   interface PaletteOptions {
@@ -60,7 +60,7 @@ declare module '@mui/material/styles' {
     shadows?: string
     cardsbuttons?: string
     sidecolor?: string
-    nodeBackground?: string
+    darkinputtext?: string
   }
 
   interface TypographyVariants {
@@ -132,7 +132,7 @@ const darkModeTheme = createTheme({
     borderColor: '#008a7cdc',
     shadows: '#00000040',
     sidecolor: '#ffffff',
-    nodeBackground: '#4C726F'
+    darkinputtext: '#4C726F'
   },
   breakpoints: {
     values: {
@@ -193,7 +193,7 @@ const lightModeTheme = createTheme({
     borderColor: '#00796B80',
     shadows: '#00000020',
     sidecolor: '#0A1C1D',
-    nodeBackground: '#79A8A4'
+    darkinputtext: '#79A8A4'
   },
   breakpoints: {
     values: {

@@ -1,13 +1,6 @@
 import React from 'react'
 import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery } from '@mui/material'
-import {
-  Home,
-  Search,
-  DarkMode,
-  Logout,
-  Login
-  //  HowToReg
-} from '@mui/icons-material'
+import { Home, DarkMode, Logout, Login } from '@mui/icons-material'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'

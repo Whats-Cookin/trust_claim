@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styles from './styles'
 import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
@@ -183,9 +183,10 @@ const Search = (homeProps: IHomeProps) => {
     <>
       <Container
         sx={{
+          width: isMediumUp ? '97%' : '95%',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: isMediumUp ? '10px 0px 0px 10px' : '10px',
-          marginTop: '64px'
+          pt: '65px'
         }}
         maxWidth={false}
         disableGutters
