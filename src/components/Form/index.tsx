@@ -149,7 +149,7 @@ export const Form = ({
         toggleSnackbar(true)
         setSnackbarMessage(message)
         if (isSuccess) {
-          navigate('/')
+          navigate('/feed')
           reset()
         }
       } else {
@@ -220,8 +220,22 @@ export const Form = ({
   }
   let titleText = 'Enter a Claim'
 
+  const displayHowKnownText = {
+    first_hand: 'First Hand',
+    second_hand: 'Second Hand',
+    website: 'Website',
+    physical_document: 'Physical Document'
+  } as any
+
+  const displayClaimText = {
+    related_to: 'Related To',
+    impact: 'Impact',
+    rated: 'Rated',
+    report: 'Report'
+  } as any
+
   if (selectedClaim) {
-    titleText = selectedClaim.entType === 'CLAIM' ? 'do you want to validate ?' : 'what do you have to say about'
+    titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate ?' : 'What do you have to say about'
   }
   const theme = useTheme()
   return (
@@ -341,7 +355,8 @@ export const Form = ({
                     key={claimText}
                   >
                     <Tooltip title={tooltips.claim[index]} placement='right' arrow>
-                      <Box sx={{ width: '100%', height: '100%' }}>{claimText}</Box>
+                      {/* ['rated', 'impact', 'report', 'related_to'] */}
+                      <Box sx={{ width: '100%', height: '100%' }}>{displayClaimText[claimText] || claimText}</Box>
                     </Tooltip>
                   </MenuItem>
                 ))}
@@ -398,7 +413,9 @@ export const Form = ({
                     key={howKnownText}
                   >
                     <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
-                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownText}</Box>
+                      <Box sx={{ width: '100%', height: '100%' }}>
+                        {displayHowKnownText[howKnownText] || howKnownText}
+                      </Box>
                     </Tooltip>
                   </MenuItem>
                 ))}
