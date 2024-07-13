@@ -1,18 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {
-  Typography,
-  Box,
-  Link as MuiLink,
-  Dialog,
-  Rating,
-  Button,
-  DialogContent,
-  DialogTitle,
-  IconButton
-} from '@mui/material'
+import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { Close } from '@mui/icons-material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import { borderRadius, useTheme } from '@mui/system'
+import { useTheme } from '@mui/system'
 
 const RenderClaimInfo = ({
   claim,
@@ -52,7 +42,6 @@ const RenderClaimInfo = ({
   ] // Keys to display as chips
   const claimEntries = Object.entries(claim).filter(([key]) => !excludedKeys.includes(key))
   const [openD, setOpenD] = useState(false)
-  const [imageError, setImageError] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [detailsOpen, setDetailsOpen] = useState(false)
   const cardRef = useRef<HTMLDivElement | null>(null)
@@ -82,21 +71,9 @@ const RenderClaimInfo = ({
   const handleDetailsClose = () => {
     setDetailsOpen(false)
   }
-  //TODO: Remove this after fixing image issue in backend
-  const getImageForClaim = (claim: { [key: string]: string }) => {
-    if (claim.effectiveDate === '2024-05-04T12:21:01.188+00:00') {
-      return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/IMG_20240503_144203.jpeg'
-    }
-    if (claim.effectiveDate === '2024-05-04T12:48:07.204+00:00') {
-      return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/1714738074246.jpeg'
-    }
-    if (claim.effectiveDate === '2024-05-27T10:47:08.728+00:00') {
-      return 'https://trustclaims-images.s3.us-west-1.amazonaws.com/IMG_20240503_130439.jpeg'
-    }
-    return null
-  }
 
-  const claimImage = claim.image || getImageForClaim(claim)
+  const claimImage = claim.image ? claim.image : null
+  const isStatementLong = claim.statement && claim.statement.length > 500
 
   return (
     <>
@@ -110,7 +87,6 @@ const RenderClaimInfo = ({
           borderRadius: '20px',
           color: theme.palette.texts,
           transition: 'min-height 0.3s ease-in-out'
-          // padding: '20px'
         }}
       >
         <Box
@@ -119,32 +95,8 @@ const RenderClaimInfo = ({
             alignItems: 'revert',
             justifyContent: 'flex-start',
             flexWrap: 'wrap'
-            // gap: '20px',
           }}
         >
-          {/* {claimImage && !imageError && (
-            <Box>
-              <IconButton
-                onClick={() => setOpenD(true)}
-                sx={{
-                  padding: 0,
-                  borderRadius: '50%',
-                  top: 0
-                }}
-              >
-                <img
-                  src={claimImage}
-                  onError={() => setImageError(true)}
-                  style={{
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%'
-                  }}
-                  alt='claim'
-                />
-              </IconButton>
-            </Box>
-          )} */}
           <Box
             sx={{
               paddingInline: '10px',
@@ -200,23 +152,20 @@ const RenderClaimInfo = ({
                   variant='inherit'
                   component='span'
                   sx={{
-                    color: theme.palette.texts,
-                    fontWeight: 600,
-                    textAlign: 'left'
+                    padding: '5px 1 1 5px',
+                    wordBreak: 'break-word',
+                    marginBottom: '1px',
+                    color: theme.palette.texts
                   }}
                 >
-                  {claim.statement.length > 500 ? (
-                    <>
-                      {isExpanded ? claim.statement : truncateText(claim.statement, 500)}
-                      <MuiLink
-                        onClick={handleToggleExpand}
-                        sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
-                      >
-                        {isExpanded ? 'Show Less' : 'See More'}
-                      </MuiLink>
-                    </>
-                  ) : (
-                    claim.statement
+                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 500)}
+                  {(isStatementLong || hasExtraDetails) && (
+                    <MuiLink
+                      onClick={handleToggleExpand}
+                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
+                    >
+                      {isExpanded ? 'Show Less' : 'See More'}
+                    </MuiLink>
                   )}
                 </Typography>
               </Typography>
@@ -224,54 +173,15 @@ const RenderClaimInfo = ({
           </Box>
         </Box>
 
-        {/* {hasExtraDetails && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: {
-                xs: 'column',
-                sm: 'row'
-              },
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: '20px',
-              position: 'relative'
-            }}
-          >
-            <Button
-              onClick={handleDetailsOpen}
-              variant='contained'
-              sx={{
-                backgroundColor: theme.palette.smallButton,
-                color: theme.palette.buttontext,
-                borderRadius: '91px'
-              }}
-            >
-              View Details
-            </Button>
-            {claim.stars && (
-              <Rating
-                name='size-medium'
-                defaultValue={parseInt(claim.stars)}
-                sx={{
-                  color: theme.palette.stars,
-                  marginTop: {
-                    xs: '10px',
-                    sm: '0'
-                  },
-                  position: {
-                    xs: 'static',
-                    sm: 'absolute'
-                  },
-                  right: {
-                    sm: 0
-                  }
-                }}
-                readOnly
-              />
-            )}
+        {isExpanded && hasExtraDetails && (
+          <Box sx={{ marginTop: '1rem' }}>
+            {otherEntries.map(([key, value]) => (
+              <Typography key={key} variant='body2' sx={{ color: theme.palette.texts }}>
+                <strong>{key}:</strong> {value}
+              </Typography>
+            ))}
           </Box>
-        )} */}
+        )}
       </Box>
 
       {openD && claimImage && (

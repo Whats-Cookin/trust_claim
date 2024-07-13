@@ -1,0 +1,33 @@
+.custom-node-container {
+  width: 180px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #557572;
+  color: #ffffff;
+  font-size: 13px;
+  border-radius: 50px;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 0 5px 0 0;
+  cursor: pointer;
+}
+
+.node-icon {
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+.node-label {
+  flex: 1;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+  padding: 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

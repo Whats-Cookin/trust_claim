@@ -102,6 +102,9 @@ const darkModeTheme = createTheme({
   },
   palette: {
     mode: 'dark',
+    background: {
+      default: '#0A1C1D'
+    },
     smallButton: '#4C726F',
     buttons: '#009688',
     buttonHover: '#00695f',
@@ -129,7 +132,7 @@ const darkModeTheme = createTheme({
     borderColor: '#008a7cdc',
     shadows: '#00000040',
     sidecolor: '#ffffff',
-    darkinputtext: '#ffffff'
+    darkinputtext: '#4C726F'
   },
   breakpoints: {
     values: {
@@ -160,6 +163,9 @@ const lightModeTheme = createTheme({
   },
   palette: {
     mode: 'light',
+    background: {
+      default: '#F2FAF9'
+    },
     smallButton: '#797979',
     buttons: '#009688',
     buttonHover: '#00695f',
@@ -187,7 +193,7 @@ const lightModeTheme = createTheme({
     borderColor: '#00796B80',
     shadows: '#00000020',
     sidecolor: '#0A1C1D',
-    darkinputtext: '#0A1C1D'
+    darkinputtext: '#79A8A4'
   },
   breakpoints: {
     values: {
