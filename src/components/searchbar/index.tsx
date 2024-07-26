@@ -19,7 +19,7 @@ const SearchBar = () => {
   useEffect(() => {
     if (searchVal.trim() !== '') {
       navigate({
-        pathname: '/feed',
+        pathname: '/search',
         search: `?query=${searchVal}`
       })
     }
@@ -29,7 +29,7 @@ const SearchBar = () => {
     if (isExpanded) {
       if (searchVal.trim() !== '') {
         navigate({
-          pathname: '/feed',
+          pathname: '/search',
           search: `?query=${searchVal}`
         })
       }
