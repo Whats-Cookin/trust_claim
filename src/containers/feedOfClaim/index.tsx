@@ -243,7 +243,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Recent Attestations
+                  Claim Attestations
                   <Box
                     sx={{
                       height: '4px',
@@ -254,7 +254,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     }}
                   />
                 </Typography>
-              </Box>{' '}
+              </Box>
               {visibleClaims.map((claim: any, index: number) => (
                 <Box key={claim.id} sx={{ marginBottom: '15px' }}>
                   <Card
@@ -325,8 +325,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           startIcon={<VerifiedOutlinedIcon />}
                           variant='text'
                           sx={{
-                            fontSize: isMediumScreen ? '8px' : '16px',
-                            fontWeight: 'bold',
+                            fontSize: isMediumScreen ? '8px' : '12px',
                             marginRight: '10px',
                             p: '4px',
                             color: theme.palette.sidecolor,
@@ -335,15 +334,14 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                             }
                           }}
                         >
-                          VALIDATE
+                          Validate
                         </Button>
                         <Link to={'/report/' + claim.claim_id}>
                           <Button
                             startIcon={<FeedOutlinedIcon />}
                             variant='text'
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '16px',
-                              fontWeight: 'bold',
+                              fontSize: isMediumScreen ? '8px' : '12px',
                               marginRight: '10px',
                               p: '4px',
                               color: theme.palette.sidecolor,
@@ -360,8 +358,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           onClick={() => handleschema(claim.link)}
                           variant='text'
                           sx={{
-                            fontSize: isMediumScreen ? '8px' : '16px',
-                            fontWeight: 'bold',
+                            fontSize: isMediumScreen ? '8px' : '12px',
                             marginRight: '10px',
                             p: '4px',
                             color: theme.palette.sidecolor,

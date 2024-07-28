@@ -17,20 +17,19 @@ const SearchBar = () => {
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
-    if (location.pathname === '/feed') {
+    if (searchVal.trim() !== '') {
       navigate({
         pathname: '/feed',
         search: `?query=${searchVal}`
       })
     }
-  }, [searchVal, navigate, location.pathname])
+  }, [searchVal, navigate])
 
   const handleSearch = () => {
     if (isExpanded) {
-      window.localStorage.removeItem('claims')
       if (searchVal.trim() !== '') {
         navigate({
-          pathname: '/search',
+          pathname: '/feed',
           search: `?query=${searchVal}`
         })
       }

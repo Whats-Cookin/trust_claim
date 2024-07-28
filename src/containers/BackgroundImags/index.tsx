@@ -24,5 +24,4 @@ const BackgroundImages = () => {
     </>
   )
 }
-
 export default BackgroundImages
