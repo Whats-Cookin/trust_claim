@@ -16,7 +16,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "typeRoots": ["./node_modules/@types", "./src/composedb/__generated", "./node_modules/@types/istanbul-reports"]
+    "typeRoots": [
+       "./node_modules/@types",
+       "./src/composedb/__generated"
+    ]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

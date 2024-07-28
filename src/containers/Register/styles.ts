@@ -14,9 +14,6 @@ const styles = {
   },
   submitButton: {
     width: '100%'
-  },
-  inputField: {
-    backgroundColor: '#00000000'
   }
 }
 export default styles

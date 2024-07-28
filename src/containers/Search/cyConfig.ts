@@ -1,17 +1,4 @@
-import cytoscape from 'cytoscape'
-import { Theme } from '@mui/material'
-import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
-
-cytoscape.use(cytoscapeNodeHtmlLabel)
-
-const truncateLabel = (label: string, maxLength: number) => {
-  if (label.length <= maxLength) {
-    return label
-  }
-  return label.slice(0, maxLength) + '.....'
-}
-
-const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOptions: object) => {
+const cyConfig = (containerRef: any) => {
   return {
     container: containerRef || undefined,
     boxSelectionEnabled: false,
@@ -20,65 +7,42 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
       {
         selector: 'node',
         style: {
-          height: 60,
-          width: 180,
-          shape: 'roundrectangle',
-          backgroundOpacity: 0,
-          borderOpacity: 0,
-          'background-color': theme.palette.darkinputtext
-        }
-      },
-      {
-        selector: 'node[entType="CLAIM"]',
-        style: {
-          shape: 'square'
+          height: 300,
+          width: 300,
+          borderColor: '#00695f',
+          borderWidth: '10px',
+          borderOpacity: 0.5,
+          backgroundColor: '#009688',
+          color: '#ffffff',
+          fontWeight: 'bold',
+          fontSize: 25,
+          textHalign: 'center',
+          textValign: 'center',
+          textWrap: 'wrap',
+          textMaxWidth: 100,
+          content: 'data(label)'
         }
       },
       {
         selector: 'edge',
         style: {
-          width: 3,
-          fontSize: 14,
+          width: 6,
+          fontSize: 20,
           targetArrowShape: 'triangle-cross',
-          lineColor: theme.palette.stars,
-          targetArrowColor: theme.palette.stars,
+          lineColor: '#006400',
+          targetArrowColor: '#006400',
           curveStyle: 'bezier',
-          color: theme.palette.stars,
           controlPointWeights: '0.5 0.2 0.8',
           textRotation: 'autorotate',
           textMarginX: 30,
-          content: 'data(relation)',
-          'line-cap': 'round',
-          'source-endpoint': 'outside-to-node',
-          'target-endpoint': 'outside-to-node',
-          'control-point-weights': '0.5 0.2 0.8'
+          content: 'data(relation)'
         }
       }
     ],
     layout: {
-      name: layoutName,
-      ...layoutOptions,
-      animate: true,
-      animationDuration: 1000
-    },
-    ready: function (this: cytoscape.Core) {
-      const cy = this
-      cy.nodeHtmlLabel([
-        {
-          query: 'node',
-          halign: 'center',
-          valign: 'center',
-          valignBox: 'center',
-          halignBox: 'center',
-          cssClass: 'custom-node',
-          tpl: (data: any) => `
-            <div class="custom-node-container">
-              ${data.image ? `<div class="node-icon" style="background-image: url(${data.image})"></div>` : ''}
-              <div class="node-label">${truncateLabel(data.label, 40)}</div>
-            </div>
-          `
-        }
-      ])
+      name: 'breadthfirst',
+      directed: true,
+      padding: 10
     }
   }
 }
