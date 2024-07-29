@@ -17,7 +17,8 @@ const colors = {
   '#4C726F80': 'theme.palette.searchBarBackground', // Search bar background alternative
   '#DFDFDF': 'theme.palette.searchBarText', // Search bar text
   '#008a7cdc': 'theme.palette.borderColor', // Border color
-  '#00000040': 'theme.palette.shadows' // Shadow color
+  '#00000040': 'theme.palette.shadows', // Shadow color
+  '#425655': 'theme.palette.input' // inputFiled
 }
 
 export default colors

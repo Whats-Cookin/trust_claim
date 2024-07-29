@@ -3,30 +3,25 @@ import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
-  TextField,
   Button,
   MenuItem,
   FormControl,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  Dialog,
-  DialogContentText,
-  useTheme
+  useTheme,
+  Card,
+  CardMedia,
+  Select,
+  TextField,
+  useMediaQuery,
+  IconButton
 } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import Tooltip from '@mui/material/Tooltip'
-import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material'
 import { useForm } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { useQueryParams } from '../../hooks'
 import Loader from '../Loader'
 import axios from '../../axiosInstance'
-import BackgroundImages from '../../containers/BackgroundImags'
+import { CloudUpload } from '@mui/icons-material'
 
-// TODO make these shared in settings across app
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
 const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
@@ -47,6 +42,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [amtValue, setAmtValue] = useState('')
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [howknownInputValue, setHowknownInputValue] = useState('')
+
   const subject = queryParams.get('subject')
   const howknown = (queryParams.get('how_known') ?? '').replace(/_/g, ' ') || 'FIRST_HAND'
   console.log('how known: ' + howknown)
@@ -190,277 +186,252 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     ]
   }
   const theme = useTheme()
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <>
       <Loader open={loading} />
-      <BackgroundImages />
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          rowGap: 2,
-          width: '100%',
-          padding: '2rem',
-          maxWidth: '830px',
-          marginTop: { xs: 15, md: 8 },
-          backgroundColor: theme.palette.formBackground,
-          boxShadow: '0px 1px 20px theme.pallete.shadows',
-          zIndex: 20,
-          borderRadius: '10px',
-          margin: '0 auto'
+          position: 'relative',
+          mt: '5vh',
+          width: isMediumScreen ? '97%' : '95%',
+          backgroundColor: theme.palette.menuBackground,
+          borderRadius: '20px',
+          padding: '35px'
         }}
       >
-        <Box>
-          <Typography
-            variant='h4'
-            sx={{
-              textAlign: 'center',
-              fontSize: '20px',
-              color: theme.palette.maintext,
-              fontWeight: 'bold'
-            }}
-          >
-            {`Welcome!  We value your input, thank you for helping keep it real`}
-          </Typography>
-        </Box>
-        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'row', borderTop: '3px solid #009688' }}>
-          <Box sx={{ width: '50%', borderRight: '3px solid #009688', p: 2 }}>
+        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'row' }}>
+          <Box sx={{ width: '50%', p: 2 }}>
             <Typography
-              variant='h4'
               sx={{
-                textAlign: 'center',
-                fontSize: '20px',
-                color: theme.palette.maintext,
-                fontWeight: 'bold',
-                mb: '20px',
-                mt: '20px'
+                fontFamily: 'Montserrat',
+                fontSize: '23px',
+                fontWeight: '800',
+                width: '242px',
+                height: '28px',
+                maxWidth: '1000px'
               }}
             >
-              {`We have a claim that`}
-            </Typography>
-            <Box
-              sx={{
-                width: '100%',
-                color: 'primary.main',
-                fontSize: '20px',
-                fontWeight: 'bold',
-                '& > *': { margin: '12px 0' }
-              }}
-            >
-              <Typography
-                variant='h5'
+              {`There’s a claim that`}
+              <Box
                 sx={{
-                  fontWeight: 'bold',
-                  color: theme.palette.texts,
-                  maxWidth: '100%',
-                  overflowWrap: 'break-word'
+                  height: '4px',
+                  backgroundColor: theme.palette.maintext,
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '70%'
                 }}
-              >{`${subjectValue}`}</Typography>
-              <Typography variant='h5' sx={{ color: theme.palette.maintext }}>{`${claimVerbValue}`}</Typography>
-              {statementValue && (
-                <Box sx={{ display: 'flex', margin: '0' }}>
-                  <Typography
-                    variant='h5'
-                    borderColor='primary.main'
+              />
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Box
+                sx={{
+                  width: '95%',
+                  height: '1097',
+                  top: '210px',
+                  left: '212px',
+                  borderRadius: '50px',
+                  backgroundColor: 'theme.palette.cardBackground',
+                  marginTop: ' 0vh'
+                }}
+              >
+                <Card
+                  sx={{
+                    backgroundColor: theme.palette.cardBackground,
+                    padding: '30px',
+                    width: '45%',
+                    height: '758px',
+                    borderRadius: '20px',
+                    position: 'absolute',
+                    top: '134px'
+                  }}
+                >
+                  {' '}
+                  <Box
                     sx={{
-                      p: '6px 8px 0',
-                      color: theme.palette.texts,
-                      borderRadius: 1,
-                      border: 1,
-                      fontSize: '11pt',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: expanded ? 'unset' : 10,
-                      WebkitBoxOrient: 'vertical'
+                      border: '2px ',
+                      borderRadius: '8px',
+                      height: '328px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#425655',
+                      p: '3',
+                      marginBottom: '45px'
                     }}
                   >
-                    {statementValue}
-                  </Typography>
-                  <Box onClick={toggleExpansion} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'start' }}>
-                    {expanded ? (
-                      <ExpandLessIcon />
-                    ) : (
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <ExpandMoreIcon />
-                      </Box>
-                    )}
+                    {/* <CardMedia component='img' image='/' /> */}
                   </Box>
-                </Box>
-              )}
-              {objectValue && (
-                <Typography variant='h5' sx={{ color: theme.palette.maintext }}>{`to: ${objectValue}`}</Typography>
-              )}
-              {amtValue && (
-                <Typography variant='h5' sx={{ color: theme.palette.maintext }}>{`worth: ${amtValue}`}</Typography>
-              )}
-              {effectiveDateValue && (
-                <Typography sx={{ color: theme.palette.texts }}>{`as of: ${effectiveDateValue}`}</Typography>
-              )}
+                  <Box sx={{ height: '544', width: '536' }}>
+                    <Typography sx={{ fontSize: '20px' }}>
+                      <strong>Issuer:</strong>
+                    </Typography>
+                    <Typography sx={{ fontSize: '20px' }}>
+                      <strong>Subject:</strong>{' '}
+                    </Typography>
+                    <Typography sx={{ fontSize: '20px' }}>
+                      <strong>Aspect:</strong> impact
+                    </Typography>
+                    <Typography sx={{ fontSize: '20px' }}>
+                      <strong>Confidence:</strong> 0.9
+                    </Typography>
+                    <Typography sx={{ fontSize: '20px' }}>
+                      <strong>Amount of claim:</strong> 50 $
+                    </Typography>
+                    <Typography sx={{ fontSize: '20px' }}>
+                      <strong>Date:</strong> May 21, 2024
+                    </Typography>
+                    <Typography sx={{ fontSize: '18px' }}>
+                      <strong>Statement : </strong>
+                      Dysfunctional Family Goes to Vegas! : THE TEAM After 4 years of hard work anddedication, this 9
+                      Ball from Baltimore ,MD has achieved a remarkable milestone by qualifying for APA World
+                      Championships in Las Vegas, August 12-18. accomplishment marks
+                      <a href='./' style={{ color: theme.palette.buttons }}>
+                        ...View more
+                      </a>
+                    </Typography>
+                  </Box>
+                </Card>
+              </Box>
+
+              <Box
+                sx={{
+                  width: '45%',
+                  height: '872px',
+                  top: '210px',
+                  left: '212px',
+                  borderRadius: '20px'
+                }}
+              ></Box>
             </Box>
           </Box>
-          <Box sx={{ width: '50%', rowGap: 1, m: 1 }}>
+          <Box sx={{ width: '50%', p: 2 }}>
             <Typography
               sx={{
-                textAlign: 'center',
-                fontSize: '20px',
-                color: theme.palette.maintext,
-                fontWeight: 'bold',
-                mt: '10px'
+                fontFamily: 'Montserrat',
+                fontSize: '23px',
+                fontWeight: '800'
+                // width: '242px',
+                // height: '28px'
               }}
             >
-              Do you know anything about this?
-            </Typography>
-            <Box sx={{ width: '95%', mb: '10px', mt: '20px' }}>
-              <Tooltip title='How do you know about it?' placement='right' arrow>
-                <TextField
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '22ch',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  select
-                  label='How known'
-                  {...register('howKnown')}
-                  margin='dense'
-                  variant='outlined'
-                  fullWidth
-                  defaultValue={FIRST_HAND}
-                  onChange={handleHowKnownChange}
-                >
-                  {inputOptions.howKnown.map(howKnownItem => (
-                    <MenuItem
-                      sx={{
-                        backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.texts,
-                        '&:hover': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: theme.palette.formBackground,
-                          '&:hover': {
-                            backgroundColor: theme.palette.formBackground
-                          }
-                        },
-                        '&:active': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '::selection': {
-                          backgroundColor: theme.palette.formBackground
-                        }
-                      }}
-                      value={howKnownItem.value}
-                      key={howKnownItem.value}
-                    >
-                      <Box sx={{ width: '100%', height: '100%' }}>{howKnownItem.text}</Box>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-              {(howknownInputValue === FIRST_HAND_BENEFIT || howknown === FIRST_HAND_BENEFIT) && (
-                <FormControl {...register('amt')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                  <OutlinedInput
-                    id='outlined-adornment-amount'
-                    startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                    label='Amount'
-                  />
-                </FormControl>
-              )}
-              {(howknownInputValue === WEB_DOCUMENT || howknown === WEB_DOCUMENT) && (
-                <FormControl {...register('sourceURI')} fullWidth sx={{ mt: 1, width: '100%' }}>
-                  <InputLabel htmlFor='outlined-adornment-amount'>Source</InputLabel>
-                  <OutlinedInput id='outlined-adornment-amount' label='Source' />
-                </FormControl>
-              )}
-            </Box>
-            <Tooltip title='write more information here ' placement='right' arrow>
-              <TextField
+              {`Do you know any thing about that?`}
+              <Box
                 sx={{
-                  ml: 1,
-                  mr: 1,
-                  width: '95%',
-                  mb: '20px',
-                  '& .MuiInputBase-input': {
-                    color: theme.palette.texts
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: theme.palette.texts
-                  },
-                  '& .MuiFormHelperText-root': {
-                    color: theme.palette.texts
-                  },
-                  '& .MuiSvgIcon-root': {
-                    color: theme.palette.icons
-                  }
+                  height: '4px',
+                  backgroundColor: theme.palette.maintext,
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '60%'
                 }}
-                {...register('statement')}
-                placeholder={''}
-                margin='dense'
-                variant='outlined'
-                fullWidth
-                label='explain here'
-                key='statement'
-                type='text'
-                multiline={true}
-                rows={4}
               />
-            </Tooltip>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label='Effective Date'
-                value={watchEffectiveDate}
-                onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                renderInput={(params: any) => (
-                  <TextField
-                    {...params}
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Box
+                sx={{
+                  width: '95%',
+                  height: '1097',
+                  top: '210px',
+                  left: '212px',
+                  borderRadius: '50px',
+                  backgroundColor: 'theme.palette.cardBackground',
+                  marginTop: ' 0vh'
+                }}
+              >
+                <Card
+                  sx={{
+                    backgroundColor: theme.palette.cardBackground,
+                    padding: '30px',
+                    width: '45%',
+                    height: '758px',
+                    borderRadius: '20px',
+                    position: 'absolute',
+                    top: '134px'
+                  }}
+                >
+                  <Typography
                     sx={{
-                      mr: 1,
-                      width: '95%',
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts
-                      },
-                      '& .MuiInputLabel-root': {
-                        color: theme.palette.texts
-                      },
-                      '& .MuiFormHelperText-root': {
-                        color: theme.palette.texts
-                      },
-                      '& .MuiSvgIcon-root': {
-                        color: theme.palette.icons
-                      }
+                      fontFamily: 'Montserrat',
+                      fontSize: '23px',
+                      fontWeight: '800'
+                      // width: '242px',
+                      // height: '28px'
                     }}
-                    variant='filled'
-                  />
-                )}
-              />
-            </LocalizationProvider>
-            <input type='hidden' value='first_hand' {...register('howKnown')} />
+                  >
+                    How Known
+                  </Typography>
+                  <FormControl fullWidth margin='normal' variant='filled'>
+                    <Select>
+                      <MenuItem value='option1'>First Hand 1</MenuItem>
+                      <MenuItem value='option2'>Second Hand</MenuItem>
+                      <MenuItem value='option3'>Website</MenuItem>
+                      <MenuItem value='option3'>Physical Document</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <Typography
+                    sx={{
+                      fontFamily: 'Montserrat',
+                      fontSize: '23px',
+                      fontWeight: '800'
+                      // width: '242px',
+                      // height: '28px'
+                    }}
+                  >
+                    Effective Date
+                  </Typography>
+                  <FormControl fullWidth margin='normal' variant='filled'>
+                    <TextField id='outlined-multiline-static' multiline variant='filled' />
+                  </FormControl>
+                  <Typography
+                    sx={{
+                      fontFamily: 'Montserrat',
+                      fontSize: '23px',
+                      fontWeight: '800',
+                      // width: '242px',
+                      // height: '28px'
+                      p: '5px'
+                    }}
+                  >
+                    Explain here
+                  </Typography>
+                  <TextField multiline rows={4} sx={{ width: '100%', hight: '179px' }} variant='filled' />{' '}
+                  <Typography
+                    sx={{
+                      fontFamily: 'Montserrat',
+                      fontSize: '23px',
+                      fontWeight: '800',
+                      // width: '242px',
+                      // height: '28px'
+                      margin: '10px'
+                    }}
+                  >
+                    Upload image
+                  </Typography>
+                  <Box
+                    sx={{
+                      border: '2px dashed #425655', // Green border
+                      borderRadius: '8px',
+                      padding: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      height: '200px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <IconButton color='primary' component='label' sx={{ mt: 2 }}>
+                      <CloudUpload fontSize='large' />
+                      <input type='file' hidden />
+                    </IconButton>
+                  </Box>
+                </Card>
+              </Box>
+            </Box>
           </Box>
-          <Dialog
-            open={dialogOpen}
-            onClose={() => {
-              setDialogOpen(false)
-              if (isFormSubmitted) {
-                navigate('/feed')
-              }
-            }}
-          >
-            <DialogContentText sx={{ p: '30px' }}>Thank you for your submission!</DialogContentText>
-          </Dialog>
         </form>
 
         <Button
@@ -471,7 +442,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           sx={{
             ml: 1,
             mr: 1,
-            width: '50%',
+            width: '20%',
+            // borderRadius
+            borderRadius: '30px',
+            mt: '20px',
             bgcolor: theme.palette.buttons,
             color: theme.palette.buttontext,
             margin: '0 auto',
