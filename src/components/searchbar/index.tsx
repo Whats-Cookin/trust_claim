@@ -11,7 +11,6 @@ const SearchBar = () => {
   const search = location.search
   const query = new URLSearchParams(search).get('query')
   const [searchVal, setSearchVal] = useState<string>(query ?? '')
-  const [isExpanded, setIsExpanded] = useState(false)
   const searchRef = useRef<HTMLDivElement | null>(null)
 
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
@@ -26,48 +25,36 @@ const SearchBar = () => {
   }, [searchVal, navigate])
 
   const handleSearch = () => {
-    if (isExpanded) {
-      if (searchVal.trim() !== '') {
-        navigate({
-          pathname: '/feed',
-          search: `?query=${searchVal}`
-        })
-      }
-    } else {
-      setIsExpanded(true)
+    if (searchVal.trim() !== '') {
+      navigate({
+        pathname: '/feed',
+        search: `?query=${searchVal}`
+      })
     }
   }
 
   const handleSearchKeypress = (event: any) => {
-    if (event.key === 'Enter' && isExpanded) {
+    if (event.key === 'Enter') {
       handleSearch()
-    } else if (!isExpanded) {
-      setIsExpanded(true)
     }
   }
 
   const handleClickOutside = (event: MouseEvent) => {
     if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-      setIsExpanded(false)
+      // Removed the logic for expanding or collapsing
     }
   }
 
   useEffect(() => {
-    if (isExpanded) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isExpanded])
+  }, [])
 
   return (
     <Box
       ref={searchRef}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -89,7 +76,7 @@ const SearchBar = () => {
         value={searchVal}
         onChange={e => setSearchVal(e.target.value)}
         onKeyUp={handleSearchKeypress}
-        onFocus={() => setIsExpanded(true)}
+        onFocus={() => {}} // Removed onFocus logic
         variant='standard'
         placeholder='Type to search...'
         InputProps={{
@@ -115,8 +102,7 @@ const SearchBar = () => {
             color: theme.palette.searchBarText,
             letterSpacing: '1px'
           },
-          width: isExpanded ? (isSmallScreen ? '45vw' : '23vw') : '0px',
-          transition: 'width 0.4s ease',
+          width: isSmallScreen ? '45vw' : '23vw',
           overflow: 'hidden',
           position: 'absolute',
           right: 0
