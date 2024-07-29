@@ -179,7 +179,7 @@ export const Form = ({
           issuerId: did,
           name,
           images: images.map(img => ({
-            ...img,
+            ...img
           }))
         }
         // console.log('Payload: ' + JSON.stringify(payload))
