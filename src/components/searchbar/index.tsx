@@ -18,18 +18,20 @@ const SearchBar = () => {
 
   useEffect(() => {
     if (searchVal.trim() !== '') {
+      const pathname = location.pathname === '/search' ? '/search' : '/feed'
       navigate({
-        pathname: '/feed',
+        pathname,
         search: `?query=${searchVal}`
       })
     }
-  }, [searchVal, navigate])
+  }, [searchVal, navigate, location.pathname])
 
   const handleSearch = () => {
     if (isExpanded) {
       if (searchVal.trim() !== '') {
+        const pathname = location.pathname === '/search' ? '/search' : '/feed'
         navigate({
-          pathname: '/feed',
+          pathname,
           search: `?query=${searchVal}`
         })
       }
@@ -38,11 +40,22 @@ const SearchBar = () => {
     }
   }
 
-  const handleSearchKeypress = (event: any) => {
+  const handleSearchKeypress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && isExpanded) {
       handleSearch()
     } else if (!isExpanded) {
       setIsExpanded(true)
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setSearchVal(newValue)
+    if (newValue === '') {
+      navigate({
+        pathname: location.pathname,
+        search: ''
+      })
     }
   }
 
@@ -87,7 +100,7 @@ const SearchBar = () => {
       </IconButton>
       <TextField
         value={searchVal}
-        onChange={e => setSearchVal(e.target.value)}
+        onChange={handleInputChange}
         onKeyUp={handleSearchKeypress}
         onFocus={() => setIsExpanded(true)}
         variant='standard'
