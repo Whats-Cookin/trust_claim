@@ -81,32 +81,8 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClaim> => {
-  const uniqueClaimsMap = new Map<string, ImportedClaim>()
-
-  claims.forEach(claim => {
-    if (claim.statement && claim.claim_id) {
-      const key = `${claim.statement}_${claim.claim_id}`
-      const existingClaim = uniqueClaimsMap.get(key)
-
-      if (claim.source_link.includes('https://live.linkedtrust.us/claims')) {
-        return
-      }
-
-      if (claim.name === 'Trust Claims' && existingClaim) {
-        return
-      }
-
-      uniqueClaimsMap.set(key, claim)
-    }
-  })
-
-  return Array.from(uniqueClaimsMap.values())
-}
-
-const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
+const FeedClaim: React.FC<IHomeProps> = ({}) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
-  const [filteredClaims, setFilteredClaims] = useState<Array<ImportedClaim>>([])
   const [visibleClaims, setVisibleClaims] = useState<Array<ImportedClaim>>([])
   const location = useLocation()
   const [isAuth, setIsAuth] = useState(false)
@@ -124,11 +100,9 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     axios
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, { timeout: 60000 })
       .then(res => {
-        console.log(res.data)
-        const filteredClaims = filterDuplicateClaims(res.data)
-        setClaims(filteredClaims)
-        setFilteredClaims(filteredClaims)
-        setVisibleClaims(filteredClaims.slice(0, 4))
+        const claims = res.data
+        setClaims(claims)
+        setVisibleClaims(claims.slice(0, 4))
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
@@ -139,24 +113,14 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       setIsAuth(false)
     }
   }, [])
+
   useEffect(() => {
     const search = new URLSearchParams(location.search).get('query')
     setSearchTerm(search ?? '')
   }, [location.search])
+
   useEffect(() => {
-    if (searchTerm) {
-      const results = claims.filter(
-        claim =>
-          claim.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 4))
-    } else {
-      setFilteredClaims(claims)
-      setVisibleClaims(claims.slice(0, 4))
-    }
+    setVisibleClaims(claims.slice(0, 4))
   }, [searchTerm, claims])
 
   // Effect to track scroll position
@@ -202,7 +166,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   const handleSeeMore = () => {
     const newVisibleCount = visibleClaims.length + 4
-    setVisibleClaims(filteredClaims.slice(0, newVisibleCount))
+    setVisibleClaims(claims.slice(0, newVisibleCount))
   }
 
   const handleScrollToTop = () => {
@@ -216,7 +180,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
         <Loader open={isLoading} />
       ) : (
         <>
-          {filteredClaims.length > 0 ? (
+          {claims.length > 0 ? (
             <Box
               sx={{
                 display: 'flex',
@@ -494,7 +458,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   </Card>
                 </Box>
               ))}
-              {visibleClaims.length < filteredClaims.length && (
+              {visibleClaims.length < claims.length && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                   <Button
                     variant='contained'
