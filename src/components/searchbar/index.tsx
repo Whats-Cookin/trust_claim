@@ -9,29 +9,24 @@ const SearchBar = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const search = location.search
-  const query = new URLSearchParams(search).get('query')
-  const [searchVal, setSearchVal] = useState<string>(query ?? '')
+  const query = new URLSearchParams(search).get('query') ?? ''
+  const [searchVal, setSearchVal] = useState<string>(query)
   const [isExpanded, setIsExpanded] = useState(false)
   const searchRef = useRef<HTMLDivElement | null>(null)
 
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
-    if (searchVal.trim() !== '') {
-      const pathname = location.pathname === '/search' ? '/search' : '/feed'
-      navigate({
-        pathname,
-        search: `?query=${searchVal}`
-      })
-    }
-  }, [searchVal, navigate, location.pathname])
+    // Sync searchVal with URL query param on location change
+    const newQuery = new URLSearchParams(location.search).get('query') ?? ''
+    setSearchVal(newQuery)
+  }, [location.search])
 
   const handleSearch = () => {
     if (isExpanded) {
       if (searchVal.trim() !== '') {
-        const pathname = location.pathname === '/search' ? '/search' : '/feed'
         navigate({
-          pathname,
+          pathname: location.pathname === '/search' ? '/search' : '/feed',
           search: `?query=${searchVal}`
         })
       }
