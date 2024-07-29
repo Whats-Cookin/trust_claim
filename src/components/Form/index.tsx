@@ -21,10 +21,11 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import IHomeProps from '../../containers/Form/types'
 import styles from '../../containers/Form/styles'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
+import ImageUploader from './imageUploading'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
@@ -44,6 +45,19 @@ const tooltips = {
     'The information is known from a physical document, such as a paper document or certificate',
     'The information is known through an integrated system or platform'
   ]
+}
+
+interface ImageI {
+  url: string
+  digestMultibase: string
+  metadata: {
+    description: string
+    caption: string
+  }
+  effectiveDate: Date
+  createdDate: Date
+  owner: string
+  signature: string
 }
 
 export const Form = ({
@@ -73,8 +87,30 @@ export const Form = ({
       effectiveDate: new Date(),
       confidence: null as number | null,
       stars: null as number | null,
-      amt: null as number | null
+      amt: null as number | null,
+      issuerId: null as string | null,
+      name: null as string | null,
+      images: [
+        {
+          url: '',
+          digestMultibase: '',
+          metadata: {
+            description: '',
+            caption: ''
+          },
+          effectiveDate: new Date(),
+          createdDate: new Date(),
+          owner: '',
+          signature: ''
+        }
+      ] as ImageI[]
     }
+  })
+
+  // Image fields
+  const imageFieldArray = useFieldArray({
+    control,
+    name: 'images'
   })
 
   const { createClaim } = useCreateClaim()
@@ -117,7 +153,9 @@ export const Form = ({
       effectiveDate,
       confidence,
       stars,
-      amt
+      amt,
+      name,
+      images
     }) => {
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
@@ -138,13 +176,16 @@ export const Form = ({
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
           amt: amtAsNumber,
-          issuerId: did
+          issuerId: did,
+          name,
+          images: images.map(img => ({
+            ...img,
+          }))
         }
-
+        // console.log('Payload: ' + JSON.stringify(payload))
+        // console.log(payload.images)
         setLoading(true)
-
         const { message, isSuccess } = await createClaim(payload)
-
         setLoading(false)
         toggleSnackbar(true)
         setSnackbarMessage(message)
@@ -265,7 +306,39 @@ export const Form = ({
       </DialogTitle>
       <DialogContent>
         <form onSubmit={onSubmit}>
+          <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />{' '}
           <Box sx={styles.inputFieldWrap}>
+            <Tooltip title='Enter the name associated with the claim' placement='right' arrow>
+              <TextField
+                {...register('name', { required: { value: true, message: 'Name is required' } })}
+                sx={{
+                  ml: 1,
+                  mr: 1,
+                  width: '22ch',
+                  '& .MuiInputBase-input': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.texts
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: theme.palette.icons
+                  }
+                }}
+                margin='dense'
+                variant='standard'
+                fullWidth
+                label='Name'
+                key='name'
+                disabled={!!selectedClaim?.nodeUri}
+                type='text'
+                error={Boolean(errors.name)}
+                helperText={errors.name ? errors.name.message : ''}
+              />
+            </Tooltip>
             <Tooltip
               title='You should put the link to the site or social media account where the claim was created  '
               placement='right'
@@ -607,7 +680,7 @@ export const Form = ({
                   </>
                 )}
                 {watchClaim === 'impact' && (
-                  <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
+                  <FormControl sx={{ mt: 1 }}>
                     <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
                     <OutlinedInput
                       {...register('amt')}
@@ -660,7 +733,7 @@ export const Form = ({
                     sx={{
                       ml: 1,
                       mr: 1,
-                      width: '100%',
+                      // width: '100%',
                       '& .MuiInputBase-input': {
                         color: theme.palette.texts
                       },
