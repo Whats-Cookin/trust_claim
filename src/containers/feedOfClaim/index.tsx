@@ -93,7 +93,7 @@ const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClai
         return
       }
 
-      if (claim.name === 'Trust Claims' && existingClaim) {
+      if (claim.name === 'Linked Claims' && existingClaim) {
         return
       }
 
