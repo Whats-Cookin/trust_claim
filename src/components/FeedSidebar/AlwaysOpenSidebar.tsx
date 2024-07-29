@@ -41,7 +41,7 @@ const AlwaysOpenSidebar: React.FC<SidebarProps> = ({ toggleTheme, isDarkMode }) 
       }}
     >
       <List sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-        <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={() => navigate('/')}>
+        <ListItemButton sx={{ gap: '1rem', width: '100%', justifyContent: 'center' }} onClick={() => navigate('/feed')}>
           <Home sx={{ color: theme.palette.texts }} />
           <ListItemText primary='Home' />
         </ListItemButton>
