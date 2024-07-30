@@ -9,27 +9,24 @@ const SearchBar = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const search = location.search
-  const query = new URLSearchParams(search).get('query')
-  const [searchVal, setSearchVal] = useState<string>(query ?? '')
+  const query = new URLSearchParams(search).get('query') ?? ''
+  const [searchVal, setSearchVal] = useState<string>(query)
   const [isExpanded, setIsExpanded] = useState(false)
   const searchRef = useRef<HTMLDivElement | null>(null)
 
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
-    if (searchVal.trim() !== '') {
-      navigate({
-        pathname: '/feed',
-        search: `?query=${searchVal}`
-      })
-    }
-  }, [searchVal, navigate])
+    // Sync searchVal with URL query param on location change
+    const newQuery = new URLSearchParams(location.search).get('query') ?? ''
+    setSearchVal(newQuery)
+  }, [location.search])
 
   const handleSearch = () => {
     if (isExpanded) {
       if (searchVal.trim() !== '') {
         navigate({
-          pathname: '/feed',
+          pathname: location.pathname === '/search' ? '/search' : '/feed',
           search: `?query=${searchVal}`
         })
       }
@@ -38,11 +35,22 @@ const SearchBar = () => {
     }
   }
 
-  const handleSearchKeypress = (event: any) => {
+  const handleSearchKeypress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && isExpanded) {
       handleSearch()
     } else if (!isExpanded) {
       setIsExpanded(true)
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setSearchVal(newValue)
+    if (newValue === '') {
+      navigate({
+        pathname: location.pathname,
+        search: ''
+      })
     }
   }
 
@@ -87,7 +95,7 @@ const SearchBar = () => {
       </IconButton>
       <TextField
         value={searchVal}
-        onChange={e => setSearchVal(e.target.value)}
+        onChange={handleInputChange}
         onKeyUp={handleSearchKeypress}
         onFocus={() => setIsExpanded(true)}
         variant='standard'
