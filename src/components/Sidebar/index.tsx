@@ -99,8 +99,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           </ListItemButton>
           {isAuth && (
             <ListItemButton
-              sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/') }}
-              onClick={() => navigate('/')}
+              sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/claim') }}
+              onClick={() => navigate('/claim')}
             >
               <AddCircleOutlineOutlinedIcon sx={iconStyle} />
               <ListItemText primary='Claim' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />

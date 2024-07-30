@@ -63,8 +63,8 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
         <BottomNavigationAction
           label='Claim'
           icon={<AddCircleOutlineOutlined />}
-          onClick={() => navigate('/')}
-          sx={{ ...getActiveStyle('/'), color: theme.palette.sidecolor }}
+          onClick={() => navigate('/claim')}
+          sx={{ ...getActiveStyle('/claim'), color: theme.palette.sidecolor }}
         />
       )}
       <BottomNavigationAction

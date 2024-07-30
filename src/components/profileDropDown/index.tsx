@@ -94,7 +94,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
           <Button
             disableRipple={true}
             color='inherit'
-            onClick={() => handleNavigate('/')}
+            onClick={() => handleNavigate('/claim')}
             sx={{
               width: '85%',
               marginBottom: '1em',
