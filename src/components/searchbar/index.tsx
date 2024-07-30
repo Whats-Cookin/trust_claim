@@ -21,14 +21,11 @@ const SearchBar = () => {
   }, [location.search])
 
   const handleSearch = () => {
-      if (searchVal.trim() !== '') {
-        navigate({
-          pathname: location.pathname === '/search' ? '/search' : '/feed',
-          search: `?query=${searchVal}`
-        })
-      }
-    } else {
-      setIsExpanded(true)
+    if (searchVal.trim() !== '') {
+      navigate({
+        pathname: location.pathname === '/search' ? '/search' : '/feed',
+        search: `?query=${searchVal}`
+      })
     }
   }
 
@@ -51,7 +48,6 @@ const SearchBar = () => {
 
   const handleClickOutside = (event: MouseEvent) => {
     if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-      // Removed the logic for expanding or collapsing
     }
   }
 
@@ -86,7 +82,6 @@ const SearchBar = () => {
         value={searchVal}
         onChange={handleInputChange}
         onKeyUp={handleSearchKeypress}
-        onFocus={() => {}} // Removed onFocus logic
         variant='standard'
         placeholder='Type to search...'
         InputProps={{
