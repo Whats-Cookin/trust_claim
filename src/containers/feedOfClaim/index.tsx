@@ -243,7 +243,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Claim Attestations
+                  Recent Claims
                   <Box
                     sx={{
                       height: '4px',
