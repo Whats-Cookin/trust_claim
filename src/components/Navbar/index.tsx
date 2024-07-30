@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
               transition: 'opacity 0.3s'
             }}
           >
-            Trust Claims
+            Linked Claims
           </Typography>
         </Box>
         {/* <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
