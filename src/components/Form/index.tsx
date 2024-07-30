@@ -358,7 +358,7 @@ export const Form = ({
           backgroundColor: theme.palette.pageBackground,
           boxShadow: `0 0 30px ${theme.palette.shadows}`,
           borderRadius: '10px',
-          border: `1px solid ${theme.palette.borderColor}`,
+          border: `1px solid ${theme.palette.pageBackground}`,
           width: '70em'
         }}
       >
@@ -818,7 +818,7 @@ export const Form = ({
             variant='contained'
             size='medium'
             sx={{
-              width: '50%',
+              width: '20%',
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
               borderRadius: '80px',
