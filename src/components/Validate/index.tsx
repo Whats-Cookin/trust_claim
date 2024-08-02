@@ -23,6 +23,7 @@ import axios from '../../axiosInstance'
 import { CloudUpload } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import MobileIndex from './MobileIndex'
 import placeholderImage from '../../assets/images/imgplaceholder.svg' // Import the placeholder image
 
 const FIRST_HAND = 'FIRST_HAND'
@@ -163,21 +164,40 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     }
   })
 
+  const watchEffectiveDate = watch('effectiveDate')
+
+  const inputOptions = {
+    howKnown: [
+      { value: FIRST_HAND, text: 'validate first hand' },
+      { value: WEB_DOCUMENT, text: 'validate from source' },
+
+      // these are not valid to return to server, will be modified in handler
+      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
+      { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
+      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
+    ]
+  }
+
   const theme = useTheme()
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-  const truncateText = (text: string, length: number) => {
-    if (text.length <= length) return text
-    return `${text.substring(0, length)}...`
+  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  if (isMobile) {
+    function toggleTheme(): void {
+      throw new Error('Function not implemented.')
+    }
+
+    return (
+      <MobileIndex
+        toggleSnackbar={toggleSnackbar}
+        setSnackbarMessage={setSnackbarMessage}
+        setLoading={setLoading}
+        toggleTheme={toggleTheme}
+        isDarkMode={isDarkMode}
+      />
+    )
   }
-
-  const isStatementLong = statementValue.length > 400
-  const [isExpanded, setIsExpanded] = useState(false)
-
-  const handleToggleExpand = () => {
-    setIsExpanded(!isExpanded)
-  }
-
   return (
     <>
       <Loader open={loading} />
@@ -187,7 +207,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           flexDirection: 'column',
           position: 'relative',
           mt: '5vh',
-          width: isMediumScreen ? '97%' : '95%',
+          width: '95%',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
           padding: '35px',
