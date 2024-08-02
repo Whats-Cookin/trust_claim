@@ -8,11 +8,11 @@ import {
   FormControl,
   useTheme,
   Card,
-  CardMedia,
   Select,
   TextField,
   useMediaQuery,
-  IconButton
+  IconButton,
+  Link as MuiLink
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
@@ -23,6 +23,7 @@ import axios from '../../axiosInstance'
 import { CloudUpload } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import placeholderImage from '../../assets/images/imgplaceholder.svg' // Import the placeholder image
 
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -34,40 +35,30 @@ const CLAIM_RATED = 'rated'
 const CLAIM_IMPACT = 'impact'
 
 const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
-  const [expanded, setExpanded] = useState(false)
   const [loading, setLoading] = useState(false)
   const queryParams = useQueryParams()
   const [subjectValue, setSubjectValue] = useState('')
-  const [claimVerbValue, setClaimVerbValue] = useState('')
   const [statementValue, setStatementValue] = useState('')
-  const [objectValue, setObjectValue] = useState('')
   const [amtValue, setAmtValue] = useState('')
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
-  const [howknownInputValue, setHowknownInputValue] = useState('')
+  const [aspectValue, setAspectValue] = useState('')
+  const [confidenceValue, setConfidenceValue] = useState<number | null>(null) // Initialize with null
+  const [issuerValue, setIssuerValue] = useState('')
+  const [sourceThumbnail, setSourceThumbnail] = useState('')
+  const [howKnownValue, setHowKnownValue] = useState('')
 
   const subject = queryParams.get('subject')
   const howknown = (queryParams.get('how_known') ?? '').replace(/_/g, ' ') || 'FIRST_HAND'
   console.log('how known: ' + howknown)
-  const toggleExpansion = () => {
-    setExpanded(!expanded)
-  }
 
-  const handleHowKnownChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedValue = event.target.value
-    setHowknownInputValue(selectedValue)
-  }
-
+  let number: string | undefined
   if (subject) {
     const parts = subject.split('/')
-    var number = parts[parts.length - 1] || undefined
+    number = parts[parts.length - 1]
   }
 
   useEffect(() => {
-    interface ClaimDict {
-      [key: string]: string
-    }
-
-    const claimDict: ClaimDict = {
+    const claimDict: Record<string, string> = {
       rated: 'was reviewed as follows',
       helped: 'created a positive impact',
       impact: 'created a positive impact'
@@ -76,13 +67,18 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        let res = await axios.get(`/api/claim/${number}`)
+        const res = await axios.get(`/api/claim/${number}`)
         console.log(res.data)
-        setSubjectValue(res.data.subject)
-        setClaimVerbValue(claimDict[res.data.claim] || res.data.claim)
-        setStatementValue(res.data.statement)
-        setObjectValue(res.data.object)
-        setAmtValue(res.data.amt)
+
+        if (res.data.subject) setSubjectValue(res.data.subject)
+        if (res.data.statement) setStatementValue(res.data.statement)
+        if (res.data.amt) setAmtValue(res.data.amt)
+        if (res.data.aspect) setAspectValue(res.data.aspect)
+        if (res.data.confidence !== undefined) setConfidenceValue(res.data.confidence)
+        if (res.data.source_name) setIssuerValue(res.data.source_name)
+        if (res.data.source_thumbnail) setSourceThumbnail(res.data.source_thumbnail)
+        if (res.data.howKnown) setHowKnownValue(res.data.howKnown)
+
         if (res.data.effectiveDate) {
           const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
           setEffectiveDateValue(dayPart)
@@ -97,10 +93,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     fetchData()
   }, [number])
 
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
-
-  const { register, handleSubmit, reset, watch, setValue, control } = useForm({
+  const { register, handleSubmit, reset, control } = useForm({
     defaultValues: {
       subject: subject as string,
       statement: '' as string,
@@ -159,37 +152,31 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       toggleSnackbar(true)
       setSnackbarMessage(message)
       if (isSuccess) {
-        setDialogOpen(true)
-        setIsFormSubmitted(true)
         setTimeout(() => {
-          setDialogOpen(false)
           navigate('/feed')
         }, 3000)
         reset()
       } else {
-        setLoading(false)
         toggleSnackbar(true)
         setSnackbarMessage('Subject and Claims are required fields.')
       }
     }
   })
 
-  const watchEffectiveDate = watch('effectiveDate')
-
-  const inputOptions = {
-    howKnown: [
-      { value: FIRST_HAND, text: 'validate first hand' },
-      { value: WEB_DOCUMENT, text: 'validate from source' },
-
-      // these are not valid to return to server, will be modified in handler
-      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
-      { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
-      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
-    ]
-  }
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const truncateText = (text: string, length: number) => {
+    if (text.length <= length) return text
+    return `${text.substring(0, length)}...`
+  }
+
+  const isStatementLong = statementValue.length > 400
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const handleToggleExpand = () => {
+    setIsExpanded(!isExpanded)
+  }
 
   return (
     <>
@@ -204,19 +191,18 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
           padding: '35px',
-          height: '1097px'
+          height: isMediumScreen ? 'auto' : '1097px'
         }}
       >
-        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'row' }}>
-          <Box sx={{ width: '50%', p: 2 }}>
+        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: isMediumScreen ? 'column' : 'row' }}>
+          <Box sx={{ width: '100%', p: 2 }}>
             <Typography
               sx={{
                 fontFamily: 'Montserrat',
                 fontSize: '23px',
                 fontWeight: '800',
                 width: '242px',
-                height: '28px',
-                maxWidth: '1000px'
+                height: '28px'
               }}
             >
               {`There’s a claim that`}
@@ -230,133 +216,126 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 }}
               />
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+            <Box
+              sx={{ display: 'flex', flexDirection: isMediumScreen ? 'column' : 'row', justifyContent: 'space-around' }}
+            >
               <Box
                 sx={{
-                  width: '95%',
-                  height: '1097',
+                  width: isMediumScreen ? '95%' : '47.5%',
+                  height: 'auto',
                   top: '210px',
                   left: '212px',
-                  borderRadius: '50px',
-                  backgroundColor: 'theme.palette.cardBackground',
-                  marginTop: ' 0vh'
+                  borderRadius: '20px',
+                  backgroundColor: theme.palette.cardBackground,
+                  mt: 0
                 }}
               >
                 <Card
                   sx={{
                     backgroundColor: theme.palette.cardBackground,
                     padding: '30px',
-                    width: '45%',
-                    height: '870px',
-                    borderRadius: '20px',
-                    position: 'absolute',
-                    top: '134px'
+                    width: '100%',
+                    minHeight: isMediumScreen ? 'auto' : '870px',
+                    height: 'auto',
+                    borderRadius: '20px'
                   }}
                 >
-                  {' '}
                   <Box
                     sx={{
-                      border: '2px ',
+                      border: '20px ',
                       borderRadius: '8px',
                       height: '328px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: '#425655',
+                      backgroundColor: theme.palette.input,
                       p: '3',
                       marginBottom: '45px'
                     }}
                   >
-                    {/* <CardMedia component='img' image='/' /> */}
+                    <img
+                      src={sourceThumbnail || placeholderImage}
+                      alt='Source Thumbnail'
+                      style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      onError={e => {
+                        e.currentTarget.src = placeholderImage
+                        e.currentTarget.style.objectFit = 'contain'
+                      }}
+                    />
                   </Box>
                   <Box sx={{ height: '544', width: '536' }}>
-                    <Typography sx={{ fontSize: '20px' }}>
-                      <strong>Issuer:</strong>
-                    </Typography>
-                    <Typography sx={{ fontSize: '20px' }}>
-                      <strong>Subject:</strong>
-                      {subjectValue}
-                    </Typography>
-                    <Typography sx={{ fontSize: '20px' }}>
-                      <strong>Aspect:</strong> impact
-                    </Typography>
-                    <Typography sx={{ fontSize: '20px' }}>
-                      <strong>Confidence:</strong> 0.9
-                    </Typography>
-                    <Typography sx={{ fontSize: '20px' }}>
-                      <strong>Amount of claim:</strong> 50 $
-                    </Typography>
-                    <Typography sx={{ fontSize: '20px' }}>
-                      <strong>Date:</strong> {effectiveDateValue}
-                    </Typography>
-                    <Typography sx={{ fontSize: '18px' }}>
-                      <strong>Statement : </strong>
-                      {statementValue}
-
-                      <a href='./' style={{ color: theme.palette.buttons }}>
-                        ...View more
-                      </a>
-                    </Typography>
+                    {issuerValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Issuer: {issuerValue}</Typography>
+                    )}
+                    {subjectValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Subject: {subjectValue}</Typography>
+                    )}
+                    {aspectValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Aspect: {aspectValue}</Typography>
+                    )}
+                    {confidenceValue !== null && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
+                        Confidence: {confidenceValue}
+                      </Typography>
+                    )}
+                    {amtValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Amount of claim: {amtValue}</Typography>
+                    )}
+                    {effectiveDateValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Date: {effectiveDateValue}</Typography>
+                    )}
+                    {howKnownValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>How Known: {howKnownValue}</Typography>
+                    )}
+                    {statementValue && (
+                      <Typography variant='body1'>
+                        <Typography
+                          variant='inherit'
+                          component='span'
+                          sx={{
+                            padding: '5px 1 1 5px',
+                            wordBreak: 'break-word',
+                            marginBottom: '1px',
+                            color: theme.palette.texts
+                          }}
+                        >
+                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 500)}
+                          {isStatementLong && (
+                            <MuiLink
+                              onClick={handleToggleExpand}
+                              sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
+                            >
+                              {isExpanded ? 'Show Less' : 'See More'}
+                            </MuiLink>
+                          )}
+                        </Typography>
+                      </Typography>
+                    )}
                   </Box>
                 </Card>
               </Box>
 
               <Box
                 sx={{
-                  width: '45%',
-                  height: '872px',
-                  top: '210px',
-                  left: '212px',
-                  borderRadius: '20px'
-                }}
-              ></Box>
-            </Box>
-          </Box>
-          <Box sx={{ width: '50%', p: 2 }}>
-            <Typography
-              sx={{
-                fontFamily: 'Montserrat',
-                fontSize: '23px',
-                fontWeight: '800',
-                textAlign: 'left'
-              }}
-            >
-              {`Do you know anything about that?`}
-              <Box
-                sx={{
-                  height: '4px',
-                  backgroundColor: theme.palette.maintext,
-                  marginTop: '4px',
-                  borderRadius: '2px',
-                  width: '60%'
-                }}
-              />
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Box
-                sx={{
-                  width: '95%',
-                  height: '1097',
-                  top: '210px',
-                  left: '212px',
-                  borderRadius: '50px',
-                  backgroundColor: 'theme.palette.cardBackground',
-                  marginTop: ' 0vh'
+                  width: isMediumScreen ? '95%' : '47.5%',
+                  height: 'auto',
+                  minHeight: isMediumScreen ? 'auto' : '870px',
+                  borderRadius: '20px',
+                  mt: isMediumScreen ? 2 : 0,
+                  p: 2,
+                  backgroundColor: theme.palette.cardBackground
                 }}
               >
                 <Card
                   sx={{
                     backgroundColor: theme.palette.cardBackground,
                     padding: '30px',
-                    width: '45%',
-                    height: '870px',
-                    borderRadius: '20px',
-                    position: 'absolute',
-                    top: '134px'
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '20px'
                   }}
                 >
-                  {' '}
-                  <Box sx={{ height: '544', width: '536' }}>
+                  <Box sx={{ height: '544', width: '100%' }}>
                     <Typography
                       sx={{
                         fontFamily: 'Montserrat',
@@ -373,10 +352,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         backgroundColor: theme.palette.input,
                         '& .MuiOutlinedInput-root': {
                           '& fieldset': {
-                            borderColor: 'transparent' // Remove border
+                            borderColor: 'transparent'
                           },
                           '&:hover fieldset': {
-                            borderColor: 'transparent' // Transparent on hover
+                            borderColor: 'transparent'
                           }
                         }
                       }}
@@ -384,14 +363,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       <Select
                         sx={{
                           '& .MuiSelect-icon': {
-                            color: '#0A1C1D' // Change dropdown icon color to red
+                            color: '#0A1C1D'
                           },
                           '& .MuiOutlinedInput-notchedOutline': {
-                            border: 'none' // Remove border
+                            border: 'none'
                           }
                         }}
                       >
-                        <MenuItem value='option1'>First Hand 1</MenuItem>
+                        <MenuItem value='option1'>First Hand</MenuItem>
                         <MenuItem value='option2'>Second Hand</MenuItem>
                         <MenuItem value='option3'>Website</MenuItem>
                         <MenuItem value='option4'>Physical Document</MenuItem>
@@ -402,8 +381,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         fontFamily: 'Montserrat',
                         fontSize: '23px',
                         fontWeight: '800'
-                        // width: '242px',
-                        // height: '28px'
                       }}
                     >
                       Effective Date
@@ -423,20 +400,20 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     backgroundColor: theme.palette.input,
                                     '& .MuiOutlinedInput-root': {
                                       '& fieldset': {
-                                        borderColor: 'transparent' // Make the border transparent
+                                        borderColor: 'transparent'
                                       },
                                       '&:hover fieldset': {
-                                        borderColor: 'transparent' // Transparent on hover
+                                        borderColor: 'transparent'
                                       },
                                       '&.Mui-focused fieldset': {
-                                        borderColor: 'transparent' // Transparent when focused
+                                        borderColor: 'transparent'
                                       }
                                     },
                                     '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-                                      color: '#0A1C1D' // Change icon color
+                                      color: '#0A1C1D'
                                     },
                                     '& .MuiInputBase-input': {
-                                      color: 'transparent' // Make text inside input transparent
+                                      color: 'transparent'
                                     }
                                   }}
                                   margin='normal'
@@ -444,13 +421,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     ...params.InputProps,
                                     sx: {
                                       '&:before': {
-                                        borderBottom: 'none' // Remove the bottom border
+                                        borderBottom: 'none'
                                       },
                                       '&:hover:not(.Mui-disabled):before': {
-                                        borderBottom: 'none' // No border on hover
+                                        borderBottom: 'none'
                                       },
                                       '&.Mui-focused:after': {
-                                        borderBottom: 'none' // No border when focused
+                                        borderBottom: 'none'
                                       }
                                     }
                                   }}
@@ -468,8 +445,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         fontFamily: 'Montserrat',
                         fontSize: '23px',
                         fontWeight: '800',
-                        // width: '242px',
-                        // height: '28px'
+
                         p: '5px'
                       }}
                     >
@@ -506,7 +482,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     </Typography>
                     <Box
                       sx={{
-                        border: `5px dashed ${theme.palette.input}`, // استخدام علامات الاقتباس الصحيحة
+                        border: `5px dashed ${theme.palette.input}`,
                         borderRadius: '20px',
                         display: 'flex',
                         alignItems: 'center',
@@ -525,16 +501,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </Box>
                 </Card>
               </Box>
-
-              <Box
-                sx={{
-                  width: '45%',
-                  height: '872px',
-                  top: '210px',
-                  left: '212px',
-                  borderRadius: '20px'
-                }}
-              ></Box>
             </Box>
           </Box>
         </form>
