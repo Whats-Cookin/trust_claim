@@ -23,6 +23,7 @@ import axios from '../../axiosInstance'
 import { CloudUpload } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import MobileIndex from './MobileIndex'
 
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -187,10 +188,27 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
     ]
   }
-  const theme = useTheme()
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
+  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  if (isMobile) {
+    function toggleTheme(): void {
+      throw new Error('Function not implemented.')
+    }
+
+    return (
+      <MobileIndex
+        toggleSnackbar={toggleSnackbar}
+        setSnackbarMessage={setSnackbarMessage}
+        setLoading={setLoading}
+        toggleTheme={toggleTheme}
+        isDarkMode={isDarkMode}
+      />
+    )
+  }
   return (
     <>
       <Loader open={loading} />
@@ -200,7 +218,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           flexDirection: 'column',
           position: 'relative',
           mt: '5vh',
-          width: isMediumScreen ? '97%' : '95%',
+          width: '95%',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
           padding: '35px',
@@ -267,7 +285,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       marginBottom: '45px'
                     }}
                   >
-                    {/* <CardMedia component='img' image='/' /> */}
+                    <CardMedia component='img' image='/' />
+                    {/* <CloudUpload sx={{ color: '#fff', fontSize: '3rem' }} /> */}
                   </Box>
                   <Box sx={{ height: '544', width: '536' }}>
                     <Typography sx={{ fontSize: '20px' }}>
