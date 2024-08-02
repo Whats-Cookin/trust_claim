@@ -23,7 +23,7 @@ import axios from '../../axiosInstance'
 import { CloudUpload } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import placeholderImage from '../../assets/images/imgplaceholder.svg' // Import the placeholder image
+import placeholderImage from '../../assets/images/imgplaceholder.svg'
 
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -42,7 +42,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [amtValue, setAmtValue] = useState('')
   const [effectiveDateValue, setEffectiveDateValue] = useState('')
   const [aspectValue, setAspectValue] = useState('')
-  const [confidenceValue, setConfidenceValue] = useState<number | null>(null) // Initialize with null
+  const [confidenceValue, setConfidenceValue] = useState<number | null>(null)
   const [issuerValue, setIssuerValue] = useState('')
   const [sourceThumbnail, setSourceThumbnail] = useState('')
   const [howKnownValue, setHowKnownValue] = useState('')
