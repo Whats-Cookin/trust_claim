@@ -140,7 +140,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
       setLoading(true)
 
-      const { message, isSuccess } = await createClaim(payload) // Change this line
+      const { message, isSuccess } = await createClaim(payload)
 
       setLoading(false)
       toggleSnackbar(true)
@@ -180,23 +180,31 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
-          mt: '5vh',
+          alignItems: 'center',
+          mt: isMediumScreen ? '40px' : '42px',
           width: isMediumScreen ? '97%' : '95%',
           backgroundColor: theme.palette.menuBackground,
-          borderRadius: '20px',
-          padding: '35px',
-          height: isMediumScreen ? 'auto' : '1097px'
+          borderRadius: '40px 0px 0px 40px',
+          height: '100%'
         }}
       >
-        <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: isMediumScreen ? 'column' : 'row' }}>
+        <form
+          onSubmit={onSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: isMediumScreen ? 'column' : 'row'
+          }}
+        >
           <Box sx={{ width: '100%', p: 2 }}>
             <Typography
               sx={{
                 fontFamily: 'Montserrat',
                 fontSize: '23px',
                 fontWeight: '800',
+                mt: isMediumScreen ? '10px' : '42px',
                 width: '242px',
-                height: '28px'
+                textWrap: 'nowrap',
+                marginBottom: isMediumScreen ? '12px' : '36px'
               }}
             >
               {`There’s a claim that`}
@@ -210,8 +218,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 }}
               />
             </Typography>
+
             <Box
-              sx={{ display: 'flex', flexDirection: isMediumScreen ? 'column' : 'row', justifyContent: 'space-around' }}
+              sx={{
+                display: 'flex',
+                flexDirection: isMediumScreen ? 'column' : 'row',
+                justifyContent: 'space-around',
+                alignItems: 'center'
+              }}
             >
               <Box
                 sx={{
@@ -230,6 +244,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     padding: '30px',
                     width: '100%',
                     minHeight: isMediumScreen ? 'auto' : '870px',
+                    backgroundImage: 'none',
                     height: 'auto',
                     borderRadius: '20px'
                   }}
@@ -293,7 +308,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             color: theme.palette.texts
                           }}
                         >
-                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 500)}
+                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 400)}
                           {isStatementLong && (
                             <MuiLink
                               onClick={handleToggleExpand}
@@ -323,6 +338,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <Card
                   sx={{
                     backgroundColor: theme.palette.cardBackground,
+                    backgroundImage: 'none',
+                    overflow: 'visible',
+                    boxShadow: 'none',
                     padding: '30px',
                     width: '100%',
                     height: 'auto',
@@ -505,7 +523,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             variant='contained'
             size='large'
             sx={{
-              mt: 4,
               height: '8%',
               margin: '46px auto',
               minHeight: '50px',
