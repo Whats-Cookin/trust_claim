@@ -15,7 +15,7 @@ import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import Terms from './containers/Terms'
-import Cookie from './containers/Cookie'
+// import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
 import './App.css'
 
@@ -150,7 +150,7 @@ const App = () => {
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
-              <Route path='cookie' element={<Cookie />} />
+              {/* <Route path='cookie' element={<Cookie />} /> */}
               <Route
                 path='/rate'
                 element={

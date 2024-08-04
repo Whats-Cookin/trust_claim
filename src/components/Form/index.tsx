@@ -1,5 +1,6 @@
 import {
   useTheme,
+  useMediaQuery,
   TextField,
   Button,
   FormControl,
@@ -11,19 +12,18 @@ import {
   DialogContent,
   DialogTitle,
   Rating,
-  FormHelperText
+  FormHelperText,
+  Box,
+  Typography,
+  Tooltip
 } from '@mui/material'
 import React, { useEffect } from 'react'
-import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
-import Typography from '@mui/material/Typography'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import IHomeProps from '../../containers/Form/types'
-import styles from '../../containers/Form/styles'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
-import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
 import ImageUploader from './imageUploading'
 
@@ -112,14 +112,18 @@ export const Form = ({
     control,
     name: 'images'
   })
+
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
 
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
   // querying composeDB
   useEffect(() => {
     const QUERY = `
-      query{
+      query {
         linkedClaimIndex(last: 3) {
           edges {
             node {
@@ -259,6 +263,7 @@ export const Form = ({
     ],
     howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
+
   let titleText = 'Make a Claim'
 
   const displayHowKnownText = {
@@ -276,45 +281,53 @@ export const Form = ({
   } as any
 
   if (selectedClaim) {
-    titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate ?' : 'What do you have to say about'
+    titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate?' : 'What do you have to say about'
   }
-  const theme = useTheme()
+
   return (
     <Box
       sx={{
-        width: '1300px',
-        backgroundColor: '#172D2D',
-        padding: '30px',
+        width: isMobile ? '92%' : '100%',
+        height: 'auto',
+        backgroundColor: theme.palette.menuBackground,
         display: 'flex',
-        justifyContent: 'flex-end',
-        overflow: 'hidden',
-        mt: 7,
-        p: '3em'
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: isMobile ? 'center' : 'flex-end',
+        overflow: 'auto',
+        borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
+        mt: '64px',
+        mb: isMobile ? '60px' : '24px',
+        ml: isMobile ? '4%' : '42px',
+        mr: isMobile ? '4%' : 'auto',
+        paddingTop: isMobile ? '0px' : '41px',
+        paddingBottom: isMobile ? '0px' : '66px',
+        paddingLeft: isMobile ? '16px' : '30px',
+        paddingRight: isMobile ? '16px' : '30px'
       }}
     >
       <Box
         sx={{
-          mr: 20
+          textAlign: 'left'
         }}
       >
         <DialogTitle>
           <Typography
             variant='h4'
             sx={{
-              fontSize: '20px',
+              fontSize: isMobile ? '20px' : '32px',
               color: '#FFFFFF',
-              textTransform: 'uppercase',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              textWrap: 'nowrap'
             }}
           >
             {titleText}
             <Box
               sx={{
-                height: '4px',
+                height: '5px',
                 backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
+                marginTop: '2px',
                 borderRadius: '2px',
-                width: '40%'
+                width: isMobile ? '120px' : '140px'
               }}
             />
           </Typography>
@@ -322,34 +335,50 @@ export const Form = ({
         </DialogTitle>
         <Typography
           sx={{
-            fontSize: '40px',
             color: '#fff',
-            marginTop: '5em',
-            lineHeight: '1.2'
+            marginTop: isMobile ? '32px' : '232px',
+            lineHeight: isMobile ? '1.5' : '1.2',
+            fontWeight: '500'
           }}
         >
-          <Box sx={{ lineHeight: '2em' }}>Strengthening</Box>
-          <Box sx={{ lineHeight: '2em', display: 'inline-block', m: 0 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: isMobile ? 'row' : 'column',
+              alignItems: 'flex-start',
+              overflow: 'visible'
+            }}
+          >
+            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>Strengthening</Box>
+            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em' }}></Box>
             <span
               style={{
                 backgroundColor: theme.palette.pageBackground,
-                padding: '0 0.5em'
+                fontSize: '47px',
+                fontWeight: '700',
+                paddingRight: isMobile ? '500px' : '0'
               }}
             >
               Trust
             </span>
           </Box>
-          <Box sx={{ lineHeight: '2em' }}>Safeguarding</Box>
-          <Box sx={{ lineHeight: '2em' }}>
-            Your
-            <span
-              style={{
-                backgroundColor: theme.palette.pageBackground,
-                padding: '0 0.5em'
-              }}
-            >
-              Future.
-            </span>
+          <Box sx={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column' }}>
+            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>Safeguarding</Box>
+            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>
+              Your
+              {''}
+              <span
+                style={{
+                  backgroundColor: theme.palette.pageBackground,
+                  fontSize: '45px',
+                  fontWeight: '700',
+                  paddingRight: isMobile ? '500px' : '0',
+                  width: '100px'
+                }}
+              >
+                Future.
+              </span>
+            </Box>
           </Box>
         </Typography>
       </Box>
@@ -357,9 +386,16 @@ export const Form = ({
         sx={{
           backgroundColor: theme.palette.pageBackground,
           boxShadow: `0 0 30px ${theme.palette.shadows}`,
-          borderRadius: '10px',
-          border: `1px solid ${theme.palette.pageBackground}`,
-          width: '70em'
+          borderRadius: '20px',
+          width: '100%',
+          marginRight: isMobile ? 0 : '0.972vw',
+          marginLeft: isMobile ? 0 : '105px',
+          marginTop: isMobile ? '3.596vh' : '0',
+          marginBottom: isMobile ? '0.965vh' : '1.3vh',
+          paddingTop: isMobile ? '4.123vh' : '3.5vh',
+          paddingBottom: isMobile ? '0.965vh' : '1.3vh',
+          paddingLeft: isMobile ? '4.6vw' : '3vw',
+          paddingRight: isMobile ? '4.6vw' : '3vw'
         }}
       >
         <DialogContent>
@@ -398,7 +434,7 @@ export const Form = ({
                 />
               </Tooltip>
               <Tooltip
-                title='You should put the link to the site or social media account where the claim was created  '
+                title='You should put the link to the site or social media account where the claim was created'
                 placement='right'
                 arrow
                 sx={{ backgroundColor: theme.palette.maintext }}
@@ -433,7 +469,7 @@ export const Form = ({
                   helperText={errors.subject?.message}
                 />
               </Tooltip>
-              <Tooltip title='For evaluation being made ' placement='right' arrow>
+              <Tooltip title='For evaluation being made' placement='right' arrow>
                 <TextField
                   select
                   label='Claim'
@@ -492,7 +528,7 @@ export const Form = ({
                   ))}
                 </TextField>
               </Tooltip>
-              <Tooltip title='The method or source of the claim ' placement='right' arrow>
+              <Tooltip title='The method or source of the claim' placement='right' arrow>
                 <TextField
                   select
                   label='How Known'
@@ -551,7 +587,7 @@ export const Form = ({
                   ))}
                 </TextField>
               </Tooltip>
-              <Tooltip title='Additional details or context about the claim ' placement='right' arrow>
+              <Tooltip title='Additional details or context about the claim' placement='right' arrow>
                 <TextField
                   {...register('statement')}
                   sx={{
@@ -812,13 +848,15 @@ export const Form = ({
             </Box>
           </form>
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%', columnGap: 3 }}>
+        <DialogActions
+          sx={{ display: 'flex', justifyContent: isMobile ? 'center' : 'flex-end', width: '100%', columnGap: 3 }}
+        >
           <Button
             onClick={onSubmit}
             variant='contained'
             size='medium'
             sx={{
-              width: '20%',
+              width: isMobile ? '50%' : '20%',
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
               borderRadius: '80px',

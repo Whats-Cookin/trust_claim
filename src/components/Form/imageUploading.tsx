@@ -85,7 +85,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   const theme = useTheme()
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 4, bgcolor: 'transparent', borderRadius: 2 }}>
+    <Box sx={{ minWidth: '210px', mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
       <Box sx={{ mb: 4 }}>
         <label htmlFor='image-upload'>
           <Box
@@ -226,7 +226,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
                 variant='outlined'
                 size='small'
                 sx={{ mb: 2 }}
-                value={currentImage.effectiveDate.toISOString().substr(0, 10)}
+                value={currentImage.effectiveDate.toISOString().slice(0, 10)}
                 onChange={handleEffectiveDateChange}
               />
             </>
