@@ -1,6 +1,8 @@
 * {
   /* border: 1px solid red; */
+  font-family: 'Montserrat', sans-serif;
 }
+
 .app {
   position: relative;
   /* background-color: #eeeeee; */
@@ -12,19 +14,12 @@
   /* font-size: calc(3px + 2vmin); */
   /* color: #0A1C1D; */
   overflow: hidden;
-  font-family: 'Montserrat', sans-serif;
 }
 
 .App-link {
   color: #61dafb;
-  font-family: 'Montserrat', sans-serif;
 }
 
 button {
   font-size: calc(3px + 2vmin);
-  font-family: 'Montserrat', sans-serif;
-}
-.slick-prev:before,
-.slick-next:before {
-  color: #009688;
 }

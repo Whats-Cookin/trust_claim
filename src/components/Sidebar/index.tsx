@@ -179,9 +179,9 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
         <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           Privacy Policy
         </Link>
-        <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+        {/* <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           Cookie Policy
-        </Link>
+        </Link> */}
       </Box>
     </Box>
   )
