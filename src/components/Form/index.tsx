@@ -26,6 +26,8 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
 import ImageUploader from './imageUploading'
+import BackGroundDark from '../../assets/images/createbackground.svg'
+import BackGroundLight from '../../assets/images/createbackgroundlight.svg'
 
 const tooltips = {
   claim: [
@@ -289,11 +291,13 @@ export const Form = ({
       sx={{
         width: isMobile ? '92%' : '100%',
         height: 'auto',
-        backgroundColor: theme.palette.menuBackground,
+        backgroundImage: `url(${theme.palette.mode === 'dark' ? BackGroundDark : BackGroundLight})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         justifyContent: isMobile ? 'center' : 'flex-end',
-        overflow: 'auto',
+        overflow: 'hidden',
         borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
         mt: '64px',
         mb: isMobile ? '60px' : '24px',
@@ -307,15 +311,16 @@ export const Form = ({
     >
       <Box
         sx={{
-          textAlign: 'left'
+          textAlign: 'left',
+          width: '32%'
         }}
       >
         <DialogTitle>
           <Typography
             variant='h4'
             sx={{
-              fontSize: isMobile ? '20px' : '32px',
-              color: '#FFFFFF',
+              fontSize: isMobile ? '40px' : '32px',
+              color: theme.palette.texts,
               fontWeight: 'bold',
               textWrap: 'nowrap'
             }}
@@ -327,7 +332,7 @@ export const Form = ({
                 backgroundColor: theme.palette.maintext,
                 marginTop: '2px',
                 borderRadius: '2px',
-                width: isMobile ? '120px' : '140px'
+                width: isMobile ? '220px' : '175px'
               }}
             />
           </Typography>
@@ -335,7 +340,7 @@ export const Form = ({
         </DialogTitle>
         <Typography
           sx={{
-            color: '#fff',
+            color: theme.palette.texts,
             marginTop: isMobile ? '32px' : '232px',
             lineHeight: isMobile ? '1.5' : '1.2',
             fontWeight: '500'
@@ -345,35 +350,74 @@ export const Form = ({
             sx={{
               display: 'flex',
               flexDirection: isMobile ? 'row' : 'column',
-              alignItems: 'flex-start',
-              overflow: 'visible'
+              alignItems: 'flex-start'
             }}
           >
-            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>Strengthening</Box>
+            <Box
+              sx={{
+                lineHeight: isMobile ? '1.5em' : '2em',
+                fontSize: '40px',
+                marginRight: '10px',
+                color: theme.palette.texts
+              }}
+            >
+              Strengthening
+            </Box>
             <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em' }}></Box>
             <span
               style={{
                 backgroundColor: theme.palette.pageBackground,
-                fontSize: '47px',
+                color: theme.palette.texts,
+                fontSize: '45px',
                 fontWeight: '700',
-                paddingRight: isMobile ? '500px' : '0'
+                zIndex: 3,
+                paddingRight: isMobile ? '374px' : '0'
               }}
             >
               Trust
             </span>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column' }}>
-            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>Safeguarding</Box>
+            <Box
+              sx={{
+                lineHeight: isMobile ? '1.5em' : '2em',
+                fontSize: '40px',
+                marginRight: '10px',
+                color: theme.palette.texts
+              }}
+            >
+              Safeguarding
+            </Box>
+            <span
+              style={{
+                color: theme.palette.texts,
+                display: isMobile ? 'inline-block' : 'none',
+                fontSize: '40px',
+                marginRight: '10px'
+              }}
+            >
+              {' '}
+              your{' '}
+            </span>
             <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>
-              Your
-              {''}
+              <span
+                style={{
+                  display: isMobile ? 'none' : 'inline-block',
+                  color: theme.palette.texts,
+                  fontSize: '40px',
+                  marginRight: '10px'
+                }}
+              >
+                your{' '}
+              </span>
               <span
                 style={{
                   backgroundColor: theme.palette.pageBackground,
                   fontSize: '45px',
                   fontWeight: '700',
-                  paddingRight: isMobile ? '500px' : '0',
-                  width: '100px'
+                  paddingRight: isMobile ? '356px' : '0',
+                  width: '100px',
+                  color: theme.palette.texts
                 }}
               >
                 Future.
@@ -390,8 +434,8 @@ export const Form = ({
           width: '100%',
           marginRight: isMobile ? 0 : '0.972vw',
           marginLeft: isMobile ? 0 : '105px',
-          marginTop: isMobile ? '3.596vh' : '0',
-          marginBottom: isMobile ? '0.965vh' : '1.3vh',
+          marginTop: isMobile ? '41px' : '0',
+          marginBottom: isMobile ? '83px' : '1.3vh',
           paddingTop: isMobile ? '4.123vh' : '3.5vh',
           paddingBottom: isMobile ? '0.965vh' : '1.3vh',
           paddingLeft: isMobile ? '4.6vw' : '3vw',
@@ -399,7 +443,7 @@ export const Form = ({
         }}
       >
         <DialogContent>
-          <form onSubmit={onSubmit}>
+          <form style={{ padding: '6px' }} onSubmit={onSubmit}>
             <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <Tooltip title='Enter the name associated with the claim' placement='right' arrow>
@@ -425,7 +469,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Name'
+                  label='Name *'
                   key='name'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
@@ -461,7 +505,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Subject'
+                  label='Subject *'
                   key='subject'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
@@ -748,23 +792,37 @@ export const Form = ({
                       <Controller
                         name='stars'
                         control={control}
-                        rules={{ required: { value: true, message: 'rating is required' } }}
+                        rules={{ required: { value: true, message: 'Rating is required' } }}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                           <Tooltip title='A rating associated with the claim' placement='right' arrow>
-                            <FormControl sx={{ ml: 1, mr: 1, width: '100%' }} fullWidth error={!!error}>
-                              <Typography sx={{ mb: 1, color: theme.palette.texts }}>Review Rating</Typography>
-                              <Rating
-                                name='stars'
-                                value={value}
-                                onChange={(e, newValue) => onChange(newValue)}
-                                precision={1}
-                                sx={{
-                                  color: theme.palette.stars,
-                                  '& .MuiRating-icon': { color: theme.palette.stars }
-                                }}
-                                size='large'
-                              />
-
+                            <FormControl
+                              sx={{
+                                ml: 1,
+                                mr: 1,
+                                width: '100%',
+                                '& .MuiInputBase-root': {
+                                  borderBottom: `1px solid ${theme.palette.texts}`
+                                }
+                              }}
+                              fullWidth
+                              error={!!error}
+                            >
+                              <Box
+                                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}
+                              >
+                                <Typography sx={{ color: theme.palette.texts }}>Review Rating *</Typography>
+                                <Rating
+                                  name='stars'
+                                  value={value}
+                                  onChange={(e, newValue) => onChange(newValue)}
+                                  precision={1}
+                                  sx={{
+                                    color: theme.palette.stars,
+                                    '& .MuiRating-icon': { color: theme.palette.stars }
+                                  }}
+                                  size='large'
+                                />
+                              </Box>
                               <FormHelperText>{error?.message}</FormHelperText>
                             </FormControl>
                           </Tooltip>
