@@ -505,29 +505,29 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             key={howKnownText}
                             value={howKnownMapping[howKnownText]}
                             sx={{
-                              backgroundColor: theme.palette.menuBackground,
+                              backgroundColor: theme.palette.input,
                               color: theme.palette.texts,
                               '&:hover': {
-                                backgroundColor: theme.palette.formBackground
+                                backgroundColor: theme.palette.input
                               },
                               '&.Mui-selected': {
-                                backgroundColor: theme.palette.formBackground,
+                                backgroundColor: theme.palette.input,
                                 '&:hover': {
-                                  backgroundColor: theme.palette.formBackground
+                                  backgroundColor: theme.palette.input
                                 }
                               },
                               '&:active': {
-                                backgroundColor: theme.palette.formBackground
+                                backgroundColor: theme.palette.input
                               },
                               '::selection': {
-                                backgroundColor: theme.palette.formBackground
+                                backgroundColor: theme.palette.input
                               },
                               display: 'flex',
                               justifyContent: 'space-between',
                               alignItems: 'center'
                             }}
                           >
-                            <Box sx={{ flexGrow: 1 }}>{displayHowKnownText[howKnownText] || howKnownText}</Box>
+                            <Box sx={{ flexGrow: 1 }}>{howKnownText}</Box>
                             {isMobile && (
                               <Tooltip
                                 title={tooltips.howKnown[index]}
@@ -541,7 +541,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 disableTouchListener
                               >
                                 <IconButton size='small' onClick={() => handleTooltipToggle(index)}>
-                                  <HelpIcon sx={{ color: theme.palette.buttons }} />
+                                  <HelpIcon sx={{ color: '#0ABAB5' }} />
                                 </IconButton>
                               </Tooltip>
                             )}
