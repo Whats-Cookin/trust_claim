@@ -115,7 +115,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     website: 'Website',
     physical_document: 'Physical Document'
   } as any
-  //mobile version tools tips
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
@@ -144,7 +143,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         claim: CLAIM_RATED
       }
 
-      // some how known settings have implications for other fields
       if (howKnown === FIRST_HAND_BENEFIT) {
         payload.claim = CLAIM_IMPACT
         payload.amt = amt
@@ -177,7 +175,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   })
 
   const theme = useTheme()
-
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const truncateText = (text: string, length: number) => {
@@ -185,13 +182,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     return `${text.substring(0, length)}...`
   }
 
-  const isStatementLong = statementValue.length > 400
+  const isStatementLong = statementValue.length > 300
   const [isExpanded, setIsExpanded] = useState(false)
 
   const handleToggleExpand = () => {
     setIsExpanded(!isExpanded)
   }
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm')) // Check for mobile devices
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
 
   const inputOptions = {
@@ -210,182 +208,84 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const handleTooltipToggle = (index: number) => {
     setOpenTooltipIndex(prevIndex => (prevIndex === index ? null : index))
   }
+
   return (
     <>
       <Loader open={loading} />
       <Box
         sx={{
+          width: isMobile ? '92%' : '100%',
+          height: 'auto',
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: isMobile ? 'center' : 'flex-end',
+          overflow: 'hidden',
+          borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
+          mt: '64px',
+          mb: isMobile ? '60px' : '24px',
+          ml: isMobile ? '4%' : '42px',
+          mr: isMobile ? '4%' : 'auto',
+          paddingTop: isMobile ? '0px' : '41px',
+          paddingBottom: isMobile ? '0px' : '66px',
+          paddingLeft: isMobile ? '16px' : '30px',
+          paddingRight: isMobile ? '16px' : '30px',
           position: 'relative',
           alignItems: 'center',
-          mt: isMediumScreen ? '40px' : '42px',
-          width: isMediumScreen ? '97%' : '95%',
-          backgroundColor: theme.palette.menuBackground,
-          borderRadius: '40px 0px 0px 40px',
-          height: '85%%'
+          backgroundColor: theme.palette.menuBackground
         }}
       >
         <form
           onSubmit={onSubmit}
           style={{
             display: 'flex',
-            flexDirection: isMediumScreen ? 'column' : 'row'
+            flexDirection: isMediumScreen ? 'column' : 'row',
+            width: '100%'
           }}
         >
           <Box sx={{ width: '100%', p: 2 }}>
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: isMediumScreen ? 'column' : 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center'
+                mt: isMediumScreen ? '10px' : '42px',
+                width: '100%',
+                padding: '20px 0 0 20px',
+                textWrap: 'wrap',
+                wordBreak: 'break-word',
+                marginBottom: isMediumScreen ? '12px' : '36px',
+                display: 'flex'
               }}
             >
-              {' '}
-              <Box sx={{ ml: isMediumScreen ? '0' : '54px' }}>
-                <Typography
-                  sx={{
-                    fontFamily: 'Montserrat',
-                    fontSize: '23px',
-                    fontWeight: '800',
-                    mt: isMediumScreen ? '10px' : '42px',
-                    width: '242px',
-                    textWrap: 'nowrap',
-                    marginBottom: isMediumScreen ? '12px' : '36px'
-                  }}
-                >
-                  {`There’s a claim that`}
-                  <Box
-                    sx={{
-                      height: '4px',
-                      backgroundColor: theme.palette.maintext,
-                      marginTop: '4px',
-                      borderRadius: '2px',
-                      width: '70%'
-                    }}
-                  />
-                </Typography>
-
+              <Typography
+                sx={{
+                  fontFamily: 'Montserrat',
+                  fontSize: '23px',
+                  fontWeight: '800'
+                }}
+              >
+                {`There’s a claim that`}
                 <Box
                   sx={{
-                    width: isMediumScreen ? '95%' : '90%',
-                    height: 'auto',
-                    top: '210px',
-                    left: '212px',
-                    borderRadius: '20px',
-                    backgroundColor: theme.palette.cardBackground,
-                    mt: 0
+                    height: '5px',
+                    backgroundColor: theme.palette.maintext,
+                    marginTop: '4px',
+                    borderRadius: '2px',
+                    width: '185px'
                   }}
-                >
-                  <Card
-                    sx={{
-                      backgroundColor: theme.palette.cardBackground,
-                      padding: '30px',
-                      width: '100%',
-                      minHeight: isMediumScreen ? 'auto' : '870px',
-                      backgroundImage: 'none',
-                      height: 'auto',
-                      borderRadius: '20px'
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        border: '20px ',
-                        borderRadius: '8px',
-                        height: '328px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: theme.palette.input,
-                        p: '3',
-                        marginBottom: '45px'
-                      }}
-                    >
-                      <img
-                        src={sourceThumbnail || placeholderImage}
-                        alt='Source Thumbnail'
-                        style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        onError={e => {
-                          e.currentTarget.src = placeholderImage
-                          e.currentTarget.style.objectFit = 'contain'
-                        }}
-                      />
-                    </Box>
-                    <Box sx={{ height: '544', width: '536' }}>
-                      {issuerValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Issuer: {issuerValue}</Typography>
-                      )}
-                      {subjectValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Subject: {subjectValue}</Typography>
-                      )}
-                      {aspectValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Aspect: {aspectValue}</Typography>
-                      )}
-                      {confidenceValue !== null && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          Confidence: {confidenceValue}
-                        </Typography>
-                      )}
-                      {amtValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          Amount of claim: {amtValue}
-                        </Typography>
-                      )}
-                      {effectiveDateValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          Date: {effectiveDateValue}
-                        </Typography>
-                      )}
-                      {howKnownValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          How Known: {howKnownValue}
-                        </Typography>
-                      )}
-                      {statementValue && (
-                        <Typography variant='body1'>
-                          <Typography
-                            variant='inherit'
-                            component='span'
-                            sx={{
-                              padding: '5px 1 1 5px',
-                              wordBreak: 'break-word',
-                              marginBottom: '1px',
-                              color: theme.palette.texts
-                            }}
-                          >
-                            {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 400)}
-                            {isStatementLong && (
-                              <MuiLink
-                                onClick={handleToggleExpand}
-                                sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
-                              >
-                                {isExpanded ? 'Show Less' : 'See More'}
-                              </MuiLink>
-                            )}
-                          </Typography>
-                        </Typography>
-                      )}
-                    </Box>
-                  </Card>
-                </Box>
-              </Box>
-              <Box>
+                />
+              </Typography>
+              <Box sx={{ display: isMediumScreen ? 'none' : 'flex', ml: 'clamp(140px, 31%, 670px)' }}>
                 <Typography
                   sx={{
                     fontFamily: 'Montserrat',
                     fontSize: '23px',
                     fontWeight: '800',
-                    m: isMediumScreen ? '10px' : '42px',
-                    width: '242px',
-                    textWrap: 'nowrap',
-                    marginBottom: isMediumScreen ? '12px' : '36px'
+                    textWrap: 'wrap',
+                    wordBreak: 'break-word'
                   }}
                 >
                   {`Do you know any thing about that?`}
                   <Box
                     sx={{
-                      height: '4px',
+                      height: '5px',
                       backgroundColor: theme.palette.maintext,
                       marginTop: '4px',
                       borderRadius: '2px',
@@ -393,29 +293,179 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     }}
                   />
                 </Typography>
+              </Box>
+            </Box>
 
-                <Box
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: isMediumScreen ? 'column' : 'row',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                width: '100%'
+              }}
+            >
+              <Box
+                sx={{
+                  width: isMediumScreen ? '95%' : '45%',
+                  height: 'auto',
+                  top: '210px',
+                  left: '212px',
+                  borderRadius: '20px',
+                  backgroundColor: theme.palette.cardBackground,
+                  mt: 0
+                }}
+              >
+                <Card
                   sx={{
-                    width: isMediumScreen ? '95%' : '90%',
-                    height: 'auto',
-                    top: '210px',
-                    left: '212px',
-                    borderRadius: '20px',
                     backgroundColor: theme.palette.cardBackground,
-                    mt: 0
+                    padding: '30px',
+                    width: '100%',
+                    minHeight: isMediumScreen ? 'auto' : '870px',
+                    backgroundImage: 'none',
+                    height: 'auto',
+                    borderRadius: '20px'
                   }}
                 >
-                  <Card
+                  <Box
                     sx={{
-                      backgroundColor: theme.palette.cardBackground,
-                      padding: '30px',
-                      width: '100%',
-                      minHeight: isMediumScreen ? 'auto' : '870px',
-                      backgroundImage: 'none',
-                      height: 'auto',
-                      borderRadius: '20px'
+                      border: '20px ',
+                      borderRadius: '8px',
+                      height: '328px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: theme.palette.input,
+                      textWrap: 'wrap',
+                      p: '3',
+                      marginBottom: '45px'
                     }}
                   >
+                    <img
+                      src={sourceThumbnail || placeholderImage}
+                      alt='Source Thumbnail'
+                      style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      onError={e => {
+                        e.currentTarget.src = placeholderImage
+                        e.currentTarget.style.objectFit = 'contain'
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ height: '544', width: '536' }}>
+                    {issuerValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        Issuer:&ensp;{issuerValue}
+                      </Typography>
+                    )}
+                    {subjectValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        Subject:&ensp;{subjectValue}
+                      </Typography>
+                    )}
+                    {aspectValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        Aspect:&ensp;{aspectValue}
+                      </Typography>
+                    )}
+                    {confidenceValue !== null && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        Confidence:&ensp;{confidenceValue}
+                      </Typography>
+                    )}
+                    {amtValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        Amount of claim:&ensp;{amtValue}
+                      </Typography>
+                    )}
+                    {effectiveDateValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        Date:&ensp;{effectiveDateValue}
+                      </Typography>
+                    )}
+                    {howKnownValue && (
+                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                        How Known:&ensp;{howKnownValue}
+                      </Typography>
+                    )}
+                    {statementValue && (
+                      <Typography variant='body1'>
+                        <Typography
+                          variant='inherit'
+                          component='span'
+                          sx={{
+                            padding: '5px 1 1 5px',
+                            wordBreak: 'break-word',
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            color: theme.palette.texts
+                          }}
+                        >
+                          Statement: &ensp;
+                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
+                          {isStatementLong && (
+                            <MuiLink
+                              onClick={handleToggleExpand}
+                              sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
+                            >
+                              {isExpanded ? 'Show Less' : 'See More'}
+                            </MuiLink>
+                          )}
+                        </Typography>
+                      </Typography>
+                    )}
+                  </Box>
+                </Card>
+              </Box>
+              <Box
+                sx={{
+                  display: isMediumScreen ? 'flex' : 'none',
+                  flexDirection: 'column',
+                  width: '100%',
+                  padding: '20px 0 0 20px',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  marginBottom: isMediumScreen ? '12px' : '36px',
+                  position: 'relative',
+                  textWrap: 'wrap',
+                  wordBreak: 'break-word'
+                }}
+              >
+                <Typography sx={{ fontFamily: 'Montserrat', fontSize: '23px', fontWeight: '800' }}>
+                  {`Do you know any thing about that?`}
+                  <Box
+                    sx={{
+                      height: '5px',
+                      backgroundColor: theme.palette.maintext,
+                      marginTop: '4px',
+                      borderRadius: '2px',
+                      width: '70%'
+                    }}
+                  />
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  width: isMediumScreen ? '95%' : '47.5%',
+                  height: 'auto',
+                  minHeight: isMediumScreen ? 'auto' : '870px',
+                  borderRadius: '20px',
+                  boxShadow: 'none',
+                  backgroundColor: theme.palette.cardBackground
+                }}
+              >
+                <Card
+                  sx={{
+                    backgroundColor: theme.palette.cardBackground,
+                    backgroundImage: 'none',
+                    overflow: 'visible',
+                    boxShadow: 'none',
+                    padding: '30px',
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '20px'
+                  }}
+                >
+                  <Box sx={{ height: '544', width: '100%' }}>
                     <Typography
                       sx={{
                         fontFamily: 'Montserrat',
@@ -425,10 +475,23 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     >
                       How Known
                     </Typography>
-                    <FormControl fullWidth margin='normal'>
+                    <FormControl
+                      fullWidth
+                      margin='normal'
+                      sx={{
+                        backgroundColor: theme.palette.input,
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: 'transparent'
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'transparent'
+                          }
+                        }
+                      }}
+                    >
                       <Select
                         sx={{
-                          backgroundColor: theme.palette.input,
                           '& .MuiSelect-icon': {
                             color: '#0A1C1D'
                           },
@@ -486,93 +549,155 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         ))}
                       </Select>
                     </FormControl>
-                    <Box sx={{ height: '544', width: '536' }}>
-                      {issuerValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Issuer: {issuerValue}</Typography>
-                      )}
-                      {subjectValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Subject: {subjectValue}</Typography>
-                      )}
-                      {aspectValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>Aspect: {aspectValue}</Typography>
-                      )}
-                      {confidenceValue !== null && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          Confidence: {confidenceValue}
-                        </Typography>
-                      )}
-                      {amtValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          Amount of claim: {amtValue}
-                        </Typography>
-                      )}
-                      {effectiveDateValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          Date: {effectiveDateValue}
-                        </Typography>
-                      )}
-                      {howKnownValue && (
-                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold' }}>
-                          How Known: {howKnownValue}
-                        </Typography>
-                      )}
-                      {statementValue && (
-                        <Typography variant='body1'>
-                          <Typography
-                            variant='inherit'
-                            component='span'
-                            sx={{
-                              padding: '5px 1 1 5px',
-                              wordBreak: 'break-word',
-                              marginBottom: '1px',
-                              color: theme.palette.texts
-                            }}
-                          >
-                            {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 400)}
-                            {isStatementLong && (
-                              <MuiLink
-                                onClick={handleToggleExpand}
-                                sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
-                              >
-                                {isExpanded ? 'Show Less' : 'See More'}
-                              </MuiLink>
-                            )}
-                          </Typography>
-                        </Typography>
-                      )}
+                    <Typography
+                      sx={{
+                        fontFamily: 'Montserrat',
+                        fontSize: '23px',
+                        fontWeight: '800'
+                      }}
+                    >
+                      Effective Date
+                    </Typography>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
+                      <Controller
+                        name='effectiveDate'
+                        control={control}
+                        render={({ field }) => (
+                          <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                              {...field}
+                              renderInput={params => (
+                                <TextField
+                                  {...params}
+                                  sx={{
+                                    backgroundColor: theme.palette.input,
+                                    '& .MuiOutlinedInput-root': {
+                                      '& fieldset': {
+                                        borderColor: 'transparent'
+                                      },
+                                      '&:hover fieldset': {
+                                        borderColor: 'transparent'
+                                      },
+                                      '&.Mui-focused fieldset': {
+                                        borderColor: 'transparent'
+                                      }
+                                    },
+                                    '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                                      color: '#0A1C1D'
+                                    },
+                                    '& .MuiInputBase-input': {
+                                      color: 'transparent'
+                                    }
+                                  }}
+                                  margin='normal'
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    sx: {
+                                      '&:before': {
+                                        borderBottom: 'none'
+                                      },
+                                      '&:hover:not(.Mui-disabled):before': {
+                                        borderBottom: 'none'
+                                      },
+                                      '&.Mui-focused:after': {
+                                        borderBottom: 'none'
+                                      }
+                                    }
+                                  }}
+                                />
+                              )}
+                              value={field.value}
+                              onChange={date => field.onChange(date)}
+                            />
+                          </LocalizationProvider>
+                        )}
+                      />
+                    </FormControl>
+                    <Typography
+                      sx={{
+                        fontFamily: 'Montserrat',
+                        fontSize: '23px',
+                        fontWeight: '800',
+                        p: '5px'
+                      }}
+                    >
+                      Explain here
+                    </Typography>
+                    <TextField
+                      multiline
+                      rows={4}
+                      sx={{
+                        width: '100%',
+                        hight: '179px',
+                        backgroundColor: theme.palette.input,
+                        border: 'none',
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: 'transparent'
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'transparent'
+                          }
+                        }
+                      }}
+                      margin='normal'
+                    />
+                    <Typography
+                      sx={{
+                        fontFamily: 'Montserrat',
+                        fontSize: '23px',
+                        fontWeight: '800',
+                        margin: '10px'
+                      }}
+                    >
+                      Upload image
+                    </Typography>
+                    <Box
+                      sx={{
+                        border: `5px dashed ${theme.palette.input}`,
+                        borderRadius: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                        height: '304px',
+                        width: '99%',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <IconButton component='label' sx={{ mt: 2 }}>
+                        <CloudUpload sx={{ color: theme.palette.input, fontSize: '4.2rem' }} />
+                        <input type='file' hidden />
+                      </IconButton>
                     </Box>
-                  </Card>
-                </Box>
+                  </Box>
+                </Card>
               </Box>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: '27px' }}>
+              <Button
+                onClick={onSubmit}
+                variant='contained'
+                size='large'
+                sx={{
+                  fontFamily: 'Montserrat',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  height: '63px',
+                  width: '229px',
+                  color: theme.palette.buttontext,
+                  borderRadius: '30px',
+                  bgcolor: theme.palette.buttons,
+                  '&:hover': {
+                    backgroundColor: theme.palette.buttonHover
+                  }
+                }}
+              >
+                Submit
+              </Button>
             </Box>
           </Box>
         </form>
-
-        <Box sx={{ display: 'flex', justifyContent: 'center', p: '4' }}>
-          <Button
-            onClick={onSubmit}
-            variant='contained'
-            size='large'
-            sx={{
-              height: '8%',
-              margin: '46px auto',
-              minHeight: '50px',
-              maxHeight: '63px',
-              width: '15%',
-              minWidth: '100px',
-              maxWidth: '229px',
-              color: theme.palette.buttontext,
-              borderRadius: '30px',
-              bgcolor: theme.palette.buttons,
-
-              '&:hover': {
-                backgroundColor: theme.palette.buttonHover
-              }
-            }}
-          >
-            Submit
-          </Button>
-        </Box>
       </Box>
     </>
   )
