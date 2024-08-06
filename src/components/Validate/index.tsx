@@ -301,7 +301,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 display: 'flex',
                 flexDirection: isMediumScreen ? 'column' : 'row',
                 justifyContent: 'space-around',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 width: '100%'
               }}
             >
@@ -351,7 +351,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       }}
                     />
                   </Box>
-                  <Box sx={{ height: '544', width: '536' }}>
+                  <Box sx={{ height: '545', width: '535' }}>
                     {issuerValue && (
                       <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
                         Issuer:&ensp;{issuerValue}
@@ -374,7 +374,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     )}
                     {amtValue && (
                       <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        Amount of claim:&ensp;{amtValue}
+                        Amount of claim:&ensp;{amtValue} $
                       </Typography>
                     )}
                     {effectiveDateValue && (
@@ -486,6 +486,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '&:hover fieldset': {
                             borderColor: 'transparent'
+                          },
+                          '& .MuiInputBase-input': {
+                            color: theme.palette.texts,
+                            fontFamily: 'Montserrat',
+                            fontWeight: '600'
                           }
                         }
                       }}
@@ -497,6 +502,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiOutlinedInput-notchedOutline': {
                             border: 'none'
+                          },
+                          '& .MuiInputBase-input': {
+                            color: theme.palette.texts,
+                            fontFamily: 'Montserrat',
+                            fontWeight: '600'
                           }
                         }}
                       >
@@ -515,6 +525,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 '&:hover': {
                                   backgroundColor: theme.palette.input
                                 }
+                              },
+                              '& .MuiInputBase-input': {
+                                color: theme.palette.texts,
+                                fontFamily: 'Montserrat',
+                                fontWeight: '600'
                               },
                               '&:active': {
                                 backgroundColor: theme.palette.input
@@ -586,7 +601,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                       color: '#0A1C1D'
                                     },
                                     '& .MuiInputBase-input': {
-                                      color: 'transparent'
+                                      color: theme.palette.texts,
+                                      fontFamily: 'Montserrat',
+                                      fontWeight: '600'
                                     }
                                   }}
                                   margin='normal'
@@ -637,6 +654,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '&:hover fieldset': {
                             borderColor: 'transparent'
+                          },
+                          '& .MuiInputBase-input': {
+                            color: theme.palette.texts,
+                            fontFamily: 'Montserrat',
+                            fontWeight: '600'
                           }
                         }
                       }}
