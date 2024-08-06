@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
 import { CssBaseline, ThemeProvider, GlobalStyles, Box, useTheme, useMediaQuery } from '@mui/material'
 import { darkModeTheme, lightModeTheme } from './Theme'
@@ -15,11 +15,11 @@ import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import Terms from './containers/Terms'
-// import Cookie from './containers/Cookie'
+import AuthCallback from './utils/AuthCallback'
 import Privacy from './containers/Privacy'
 import './App.css'
 
-const App = () => {
+const App: FC = () => {
   const [loading, setLoading] = useState(false)
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
@@ -33,7 +33,7 @@ const App = () => {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const checkAuth = () => {
+  const checkAuth = (): boolean => {
     const accessToken = localStorage.getItem('accessToken')
     const refreshToken = localStorage.getItem('refreshToken')
     const ethAddress = localStorage.getItem('ethAddress')
@@ -45,8 +45,6 @@ const App = () => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
       navigate('/feed') // Redirect to /feed if not authenticated
-    } else if (isAuthenticated && location.pathname === '/') {
-      navigate('/feed') // Redirect to /feed if authenticated
     }
 
     const handleResize = () => {
@@ -74,26 +72,21 @@ const App = () => {
   const isLoginPage = location.pathname === '/login'
   const isRegisterPage = location.pathname === '/register'
 
-  const globalStyles = (
-    <GlobalStyles
-      styles={{
-        '::-webkit-scrollbar': {
-          width: '0',
-          height: '0'
-        },
-        body: {
-          '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none'
-        }
-      }}
-    />
-  )
-
   return (
     <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
       <CssBaseline />
-      {globalStyles}
-
+      <GlobalStyles
+        styles={{
+          '::-webkit-scrollbar': {
+            width: '0',
+            height: '0'
+          },
+          body: {
+            '-ms-overflow-style': 'none',
+            'scrollbar-width': 'none'
+          }
+        }}
+      />
       {!isLoginPage && !isRegisterPage && (
         <Navbar
           isAuth={checkAuth()}
@@ -152,7 +145,7 @@ const App = () => {
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
-              {/* <Route path='cookie' element={<Cookie />} /> */}
+              <Route path='/auth/callback' element={<AuthCallback {...commonProps} />} />
               <Route
                 path='/rate'
                 element={

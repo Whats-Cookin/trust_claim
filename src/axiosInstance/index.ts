@@ -1,7 +1,6 @@
+// axiosInstance.ts
 import axios, { AxiosError } from 'axios'
 import { BACKEND_BASE_URL } from '../utils/settings'
-
-const baseURL = BACKEND_BASE_URL
 
 const instance = axios.create({
   baseURL: BACKEND_BASE_URL,
@@ -11,21 +10,20 @@ const instance = axios.create({
 instance.interceptors.request.use(config => {
   const route = config.url?.split('/')[1]
   const accessToken = localStorage.getItem('accessToken')
-  if (accessToken !== 'undefined' && route !== 'auth' && config.headers) {
-    config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : ''
+  if (accessToken && route !== 'auth' && config.headers) {
+    config.headers.Authorization = `Bearer ${accessToken}`
   }
   return config
 })
 
-interface HaultedReqCb {
-  (newAccessToken: string): void
-}
+type HaultedReqCb = (newAccessToken: string) => void
 
 let isRefreshing = false
 let tokenSubscribers: HaultedReqCb[] = []
 
 const onRefreshed = (newAccessToken: string) => {
   tokenSubscribers.forEach(cb => cb(newAccessToken))
+  tokenSubscribers = [] // clear subscribers once all are notified
 }
 
 const subscribeTokenRefresh = (haultedReqCb: HaultedReqCb) => {
@@ -33,34 +31,29 @@ const subscribeTokenRefresh = (haultedReqCb: HaultedReqCb) => {
 }
 
 instance.interceptors.response.use(
-  value => value,
+  response => response,
   async error => {
     const originalReq = error.config
-    const errorResponse = error.response
-    if (errorResponse.status === 401 && errorResponse.data.message === 'jwt expired') {
+    if (error.response?.status === 401 && error.response.data.message === 'jwt expired') {
       if (!isRefreshing) {
         const refreshToken = localStorage.getItem('refreshToken')
         isRefreshing = true
-        instance
-          .post('/auth/refresh_token', { refreshToken })
-          .then(res => {
-            const {
-              data: { accessToken, refreshToken }
-            } = res
-            localStorage.setItem('accessToken', accessToken)
-            localStorage.setItem('refreshToken', refreshToken)
-
-            isRefreshing = false
-            onRefreshed(accessToken)
-          })
-          .catch((err: AxiosError) => {
-            console.error('Token could not be refreshed', err.message)
-          })
+        try {
+          const res = await instance.post('/refresh_token', { refreshToken })
+          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res.data
+          localStorage.setItem('accessToken', newAccessToken)
+          localStorage.setItem('refreshToken', newRefreshToken)
+          isRefreshing = false
+          onRefreshed(newAccessToken)
+        } catch (err: AxiosError | any) {
+          console.error('Token could not be refreshed', err.message)
+          isRefreshing = false
+        }
       }
 
       return new Promise(resolve => {
-        subscribeTokenRefresh(accessToken => {
-          originalReq.headers.Authorization = `Bearer ${accessToken}`
+        subscribeTokenRefresh(newAccessToken => {
+          originalReq.headers.Authorization = `Bearer ${newAccessToken}`
           resolve(instance(originalReq))
         })
       })

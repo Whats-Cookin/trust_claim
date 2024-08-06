@@ -1,57 +1,60 @@
+// Login.tsx
 import React, { useEffect, useCallback } from 'react'
-import axios from '../../axiosInstance'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { getAccountId } from '@didtools/pkh-ethereum'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import MuiLink from '@mui/material/Link'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import metaicon from './metamask-icon.svg'
-import styles from './styles'
-import ILoginProps from './types'
-import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
-import { useQueryParams } from '../../hooks'
-import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
-import { useTheme, TextField, IconButton, useMediaQuery } from '@mui/material'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
+import axios from '../../axiosInstance'
+import { useTheme, TextField, IconButton, useMediaQuery, Box, Typography, Button, Link as MuiLink } from '@mui/material'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import CloseIcon from '@mui/icons-material/Close'
-import loginIllustration from '../../assets/images/loginIllustration.svg'
-import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
-import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
+import styles from './styles'
+import { GITHUB_CLIENT_ID } from '../../utils/settings'
+import ILoginProps from './types'
 
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
+// Ensure all these assets are imported correctly
+import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
+import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
+import loginIllustration from '../../assets/images/loginIllustration.svg'
+import metaicon from './metamask-icon.svg'
 
-const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
+// Assume these imports are correct, or fix paths
+import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
+import { getAccountId } from '@didtools/pkh-ethereum' // Ensure this is imported correctly
+
+const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=http://localhost:5173/auth/callback&scope=read:user`
+
+const Login: React.FC<ILoginProps> = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const location = useLocation()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
 
-  const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
-    localStorage.setItem('accessToken', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
-    setLoading(false)
-    navigate('/')
-  }, [])
+  const handleAuth = useCallback(
+    (accessToken: string, refreshToken: string) => {
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
+      setLoading(false)
+      navigate('/')
+    },
+    [navigate, setLoading]
+  )
 
-  const navigate = useNavigate()
-  const queryParams = useQueryParams()
+  const queryParams = new URLSearchParams(location.search)
   const githubAuthCode = queryParams.get('code')
 
   useEffect(() => {
     if (githubAuthCode) {
-      const githubAuthUrl = '/auth/github'
+      setLoading(true)
       axios
-        .post(githubAuthUrl, { githubAuthCode })
+        .post('/auth/github', { code: githubAuthCode })
         .then(res => {
           const { accessToken, refreshToken } = res.data
           handleAuth(accessToken, refreshToken)
@@ -59,89 +62,77 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
         .catch(err => {
           setLoading(false)
           toggleSnackbar(true)
-          setSnackbarMessage(err.message)
-          console.error(err.message)
+          setSnackbarMessage('Failed to authenticate with GitHub.')
+          console.error('GitHub Auth Error:', err.message)
         })
     }
-  }, [])
+  }, [githubAuthCode, handleAuth, setLoading, toggleSnackbar, setSnackbarMessage])
 
   const handleWalletAuth = async () => {
-    const ethProvider = window.ethereum
-    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-    const accountId = await getAccountId(ethProvider, addresses[0])
+    try {
+      const ethProvider = (window as any).ethereum
+      if (!ethProvider) throw new Error('Ethereum provider not found')
 
-    if (accountId) {
-      localStorage.setItem('ethAddress', accountId.address)
-      try {
+      const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
+      const accountId = await getAccountId(ethProvider, addresses[0])
+
+      if (accountId) {
+        localStorage.setItem('ethAddress', accountId.address)
         await authenticateCeramic(ceramic, composeClient)
         navigate('/')
-      } catch (e) {
-        console.log(`Error trying to authenticate ceramic: ${e}`)
+      } else {
+        navigate('/login')
       }
-      if (location.state?.from) {
-        navigate(location.state.from)
-      }
-    } else {
+    } catch (e) {
+      console.error(`Error trying to authenticate ceramic: ${e}`)
       navigate('/login')
     }
   }
 
-  const handleMetamaskAuth = (event: { preventDefault: () => void }) => {
+  const handleMetamaskAuth = (event: React.MouseEvent) => {
     event.preventDefault()
     handleWalletAuth()
   }
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
+    setLoading(true)
     try {
-      if (!email || !password) {
-        toggleSnackbar(true)
-        setSnackbarMessage('Both email and password are required fields.')
-      } else {
-        setLoading(true)
-        const loginUrl = '/auth/login'
-        const data = { email, password }
-        const {
-          data: { accessToken, refreshToken }
-        } = await axios.post(loginUrl, data)
-        handleAuth(accessToken, refreshToken)
-        if (location.state?.from) {
-          navigate(location.state?.from)
-        }
+      const {
+        data: { accessToken, refreshToken }
+      } = await axios.post('/auth/login', { email, password })
+      handleAuth(accessToken, refreshToken)
+      if (location.state?.from) {
+        navigate(location.state.from)
       }
     } catch (err: any) {
       setLoading(false)
       toggleSnackbar(true)
-      setSnackbarMessage('User not Found!')
-      console.error('Error: ', err?.message)
+      setSnackbarMessage(err.response?.data?.message || 'Login failed.')
+      console.error('Login Error: ', err.message)
     }
   })
 
-  if (isMobile) {
-    return <MobileLogin {...{ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }} />
-  }
-
-  let ethLoginOpt
+  // Ensure ethLoginOpt is defined
+  let ethLoginOpt: React.ReactNode
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
-      <Box
-        id='loginButton'
-        onClick={handleMetamaskAuth}
-        sx={{
-          color: theme.palette.buttontext
-        }}
-      >
-        <Box component='img' src={metaicon} alt='' sx={{ width: '30px' }} />
+      <Box id='loginButton' onClick={handleMetamaskAuth} sx={{ color: theme.palette.buttontext }}>
+        <Box component='img' src={metaicon} alt='Metamask Icon' sx={{ width: '30px' }} />
       </Box>
     )
   } else {
     ethLoginOpt = (
       <p id='metamaskLink'>
         To login with Ethereum
-        <Link to='https://metamask.io/' target='_blank'>
+        <MuiLink href='https://metamask.io/' target='_blank'>
           Install Metamask
-        </Link>
+        </MuiLink>
       </p>
     )
+  }
+
+  if (isMobile) {
+    return <MobileLogin {...{ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }} />
   }
 
   return (
@@ -210,15 +201,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 backgroundPositionX: 'center'
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  bottom: '20px',
-                  right: '30px'
-                }}
-              >
+              <Box sx={{ display: 'flex', alignItems: 'center', position: 'absolute', bottom: '20px', right: '30px' }}>
                 <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={35} />
               </Box>
             </Box>
@@ -242,17 +225,11 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
               }}
             >
               <Link to='/feed' style={{ textDecoration: 'none' }}>
-                <IconButton
-                  sx={{
-                    color: '#fff',
-                    zIndex: 30
-                  }}
-                >
+                <IconButton sx={{ color: '#fff', zIndex: 30 }}>
                   <CloseIcon />
                 </IconButton>
               </Link>
             </Box>
-
             <Box
               sx={{
                 display: 'flex',
@@ -271,86 +248,40 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
             >
               <Typography
                 variant='h5'
-                sx={{
-                  color: theme.palette.darkinputtext,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  fontSize: '2.5rem'
-                }}
+                sx={{ color: theme.palette.darkinputtext, textAlign: 'center', fontWeight: 'bold', fontSize: '2.5rem' }}
               >
                 Sign in
               </Typography>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: '29px',
-                  alignItems: 'center',
-                  m: 'auto'
-                }}
-              >
+              <Box sx={{ display: 'flex', flexDirection: 'row', gap: '29px', alignItems: 'center', m: 'auto' }}>
                 <MuiLink
                   href={githubUrl}
-                  sx={{
-                    color: theme.palette.texts,
-                    backgroundColor: theme.palette.formBackground,
-                    m: 'auto'
-                  }}
+                  sx={{ color: theme.palette.texts, backgroundColor: theme.palette.formBackground, m: 'auto' }}
                 >
                   <GitHubIcon />
                 </MuiLink>
-
-                <Box
-                  sx={{
-                    color: theme.palette.buttontext,
-                    cursor: 'pointer'
-                  }}
-                >
-                  {ethLoginOpt}
-                </Box>
+                <Box sx={{ color: theme.palette.buttontext, cursor: 'pointer' }}>{ethLoginOpt}</Box>
               </Box>
               <TextField
                 {...register('email', {
                   required: 'Email is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address'
-                  }
+                  pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' }
                 })}
                 label={
-                  <React.Fragment>
+                  <>
                     <EmailOutlinedIcon sx={{ mr: 1 }} />
                     Email
-                  </React.Fragment>
+                  </>
                 }
-                InputLabelProps={{
-                  sx: {
-                    display: 'flex',
-                    alignItems: 'center'
-                  }
-                }}
+                InputLabelProps={{ sx: { display: 'flex', alignItems: 'center' } }}
                 sx={{
                   ...styles.inputField,
                   backgroundColor: theme.palette.formBackground,
-                  '& .MuiFilledInput-root': {
-                    backgroundColor: theme.palette.formBackground
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: theme.palette.darkinputtext
-                  },
-                  '& .MuiFilledInput-input': {
-                    color: theme.palette.darkinputtext
-                  },
-                  '& .MuiFilledInput-underline:before': {
-                    borderBottomColor: theme.palette.darkinputtext
-                  },
-                  '& .MuiFilledInput-underline:after': {
-                    borderBottomColor: theme.palette.darkinputtext
-                  },
-                  '& .MuiFormHelperText-root': {
-                    color: theme.palette.darkinputtext
-                  }
+                  '& .MuiFilledInput-root': { backgroundColor: theme.palette.formBackground },
+                  '& .MuiInputLabel-root': { color: theme.palette.darkinputtext },
+                  '& .MuiFilledInput-input': { color: theme.palette.darkinputtext },
+                  '& .MuiFilledInput-underline:before': { borderBottomColor: theme.palette.darkinputtext },
+                  '& .MuiFilledInput-underline:after': { borderBottomColor: theme.palette.darkinputtext },
+                  '& .MuiFormHelperText-root': { color: theme.palette.darkinputtext }
                 }}
                 fullWidth
                 variant='filled'
@@ -359,57 +290,31 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 error={!!errors.email}
               />
               <TextField
-                {...register('password', {
-                  required: 'Password is required'
-                })}
+                {...register('password', { required: 'Password is required' })}
                 fullWidth
                 label={
-                  <React.Fragment>
+                  <>
                     <LockOutlinedIcon sx={{ mr: 1 }} />
                     Password
-                  </React.Fragment>
+                  </>
                 }
-                InputLabelProps={{
-                  sx: {
-                    display: 'flex',
-                    alignItems: 'center'
-                  }
-                }}
+                InputLabelProps={{ sx: { display: 'flex', alignItems: 'center' } }}
                 sx={{
                   ...styles.inputField,
                   backgroundColor: theme.palette.formBackground,
-                  '& .MuiFilledInput-root': {
-                    backgroundColor: theme.palette.formBackground
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: theme.palette.darkinputtext
-                  },
-                  '& .MuiFilledInput-input': {
-                    color: theme.palette.darkinputtext
-                  },
-                  '& .MuiFilledInput-underline:before': {
-                    borderBottomColor: theme.palette.darkinputtext
-                  },
-                  '& .MuiFilledInput-underline:after': {
-                    borderBottomColor: theme.palette.darkinputtext
-                  },
-                  '& .MuiFormHelperText-root': {
-                    color: theme.palette.darkinputtext
-                  }
+                  '& .MuiFilledInput-root': { backgroundColor: theme.palette.formBackground },
+                  '& .MuiInputLabel-root': { color: theme.palette.darkinputtext },
+                  '& .MuiFilledInput-input': { color: theme.palette.darkinputtext },
+                  '& .MuiFilledInput-underline:before': { borderBottomColor: theme.palette.darkinputtext },
+                  '& .MuiFilledInput-underline:after': { borderBottomColor: theme.palette.darkinputtext },
+                  '& .MuiFormHelperText-root': { color: theme.palette.darkinputtext }
                 }}
                 variant='filled'
                 type='password'
                 helperText={(errors.password?.message as string) || ''}
                 error={!!errors.password}
               />
-
-              <Box
-                sx={{
-                  width: '50%',
-                  m: 'auto',
-                  mt: '2em'
-                }}
-              >
+              <Box sx={{ width: '50%', m: 'auto', mt: '2em' }}>
                 <Button
                   sx={{
                     width: '100%',
@@ -425,7 +330,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                   Sign in
                 </Button>
               </Box>
-
               <Typography variant='body1' sx={{ color: theme.palette.texts }}>
                 Click here to
                 <Typography
