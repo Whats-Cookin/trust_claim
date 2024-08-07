@@ -25,6 +25,7 @@ import IHomeProps from '../../containers/Form/types'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
+import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import ImageUploader from './imageUploading'
 import BackGroundDark from '../../assets/images/createbackground.svg'
 import BackGroundLight from '../../assets/images/createbackgroundlight.svg'
@@ -190,14 +191,25 @@ export const Form = ({
 
         setLoading(true)
 
-        const { message, isSuccess } = await createClaim(payload)
+        try {
+          const { message, isSuccess } = await timeoutPromise(createClaim(payload), 1000)
 
-        setLoading(false)
-        toggleSnackbar(true)
-        setSnackbarMessage(message)
-        if (isSuccess) {
-          navigate('/feed')
-          reset()
+          if (message) {
+            setSnackbarMessage(message)
+            toggleSnackbar(true)
+          }
+
+          if (isSuccess) {
+            navigate('/feed')
+            reset()
+          }
+        } catch (e) {
+          if (e instanceof PromiseTimeoutError) {
+            navigate('/feed')
+            reset()
+          }
+        } finally {
+          setLoading(false)
         }
       } else {
         setLoading(false)
