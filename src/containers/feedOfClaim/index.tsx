@@ -93,7 +93,7 @@ const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClai
         return
       }
 
-      if (claim.name === 'Trust Claims' && existingClaim) {
+      if (claim.name === 'Linked Claims' && existingClaim) {
         return
       }
 
@@ -243,7 +243,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Claim Attestations
+                  Recent Claims
                   <Box
                     sx={{
                       height: '4px',
@@ -495,7 +495,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                 </Box>
               ))}
               {visibleClaims.length < filteredClaims.length && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px', mb: '50px' }}>
                   <Button
                     variant='contained'
                     onClick={handleSeeMore}
@@ -504,10 +504,10 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                       color: theme.palette.buttontext,
                       borderRadius: '91px',
                       fontWeight: 'bold',
-                      fontSize: '22px',
-                      width: '13.3vw',
+                      fontSize: isMediumScreen ? '12px' : '18px',
+                      width: '14vw',
                       maxWidth: '192px',
-                      minWidth: '158px',
+                      minWidth: '100px',
                       '&:hover': {
                         backgroundColor: theme.palette.buttonHover
                       }

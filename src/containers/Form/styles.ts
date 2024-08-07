@@ -4,7 +4,6 @@ const styles = {
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     maxWidth: 600,
-    rowGap: 3,
     mb: 4
   }
 }

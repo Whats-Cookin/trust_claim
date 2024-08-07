@@ -99,8 +99,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           </ListItemButton>
           {isAuth && (
             <ListItemButton
-              sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/') }}
-              onClick={() => navigate('/')}
+              sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/claim') }}
+              onClick={() => navigate('/claim')}
             >
               <AddCircleOutlineOutlinedIcon sx={iconStyle} />
               <ListItemText primary='Claim' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
@@ -179,9 +179,9 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
         <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           Privacy Policy
         </Link>
-        <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+        {/* <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           Cookie Policy
-        </Link>
+        </Link> */}
       </Box>
     </Box>
   )

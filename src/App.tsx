@@ -15,7 +15,7 @@ import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import Terms from './containers/Terms'
-import Cookie from './containers/Cookie'
+// import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
 import './App.css'
 
@@ -44,7 +44,9 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = checkAuth()
     if (!isAuthenticated && location.pathname === '/') {
-      navigate('/feed')
+      navigate('/feed') // Redirect to /feed if not authenticated
+    } else if (isAuthenticated && location.pathname === '/') {
+      navigate('/feed') // Redirect to /feed if authenticated
     }
 
     const handleResize = () => {
@@ -145,12 +147,12 @@ const App = () => {
               <Route path='feed' element={<FeedClaim {...commonProps} />} />
               <Route path='report/:claimId' element={<ClaimReport />} />
               <Route path='search' element={<Search {...commonProps} />} />
-              <Route path='/' element={<Form {...commonProps} />} />
+              <Route path='claim' element={<Form {...commonProps} />} />
               <Route path='register' element={<Register {...commonProps} />} />
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
-              <Route path='cookie' element={<Cookie />} />
+              {/* <Route path='cookie' element={<Cookie />} /> */}
               <Route
                 path='/rate'
                 element={
