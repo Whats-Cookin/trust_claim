@@ -13,7 +13,7 @@ import {
   Rating,
   FormHelperText
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -25,6 +25,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Tooltip from '@mui/material/Tooltip'
 import { composeClient } from '../../composedb'
+import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
@@ -143,14 +144,25 @@ export const Form = ({
 
         setLoading(true)
 
-        const { message, isSuccess } = await createClaim(payload)
+        try {
+          const { message, isSuccess } = await timeoutPromise(createClaim(payload), 1000)
 
-        setLoading(false)
-        toggleSnackbar(true)
-        setSnackbarMessage(message)
-        if (isSuccess) {
-          navigate('/feed')
-          reset()
+          if (message) {
+            setSnackbarMessage(message)
+            toggleSnackbar(true)
+          }
+
+          if (isSuccess) {
+            navigate('/feed')
+            reset()
+          }
+        } catch (e) {
+          if (e instanceof PromiseTimeoutError) {
+            navigate('/feed')
+            reset()
+          }
+        } finally {
+          setLoading(false)
         }
       } else {
         setLoading(false)
