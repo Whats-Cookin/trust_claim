@@ -78,7 +78,9 @@ const RenderClaimInfo = ({
           backgroundColor: theme.palette.cardBackground,
           borderRadius: '20px',
           color: theme.palette.texts,
-          transition: 'min-height 0.3s ease-in-out'
+          transition: 'min-height 0.3s ease-in-out',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word'
         }}
       >
         <Box
@@ -128,7 +130,7 @@ const RenderClaimInfo = ({
               variant='body1'
               sx={{
                 color: theme.palette.date,
-                fontWeight: 500,
+                fontWeight: 600,
                 marginBottom: '1rem'
               }}
             >
@@ -146,6 +148,7 @@ const RenderClaimInfo = ({
                   sx={{
                     padding: '5px 1 1 5px',
                     wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
                     marginBottom: '1px',
                     color: theme.palette.texts
                   }}

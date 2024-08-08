@@ -316,6 +316,8 @@ function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
               width: '3vw',
               height: '3vw',
               fontSize: '3vw',
+              minWidth: '18px',
+              minHeight: '18px',
               maxWidth: '24px',
               maxHeight: '24px'
             }}
