@@ -14,13 +14,12 @@ import {
 } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import StarIcon from '@mui/icons-material/Star'
 
 interface Claim {
   statement: string | null
   subject: string
+  id: string
   [key: string]: any
 }
 
@@ -61,10 +60,6 @@ const DonationReport: React.FC = () => {
     fetchReportData()
   }, [claimId])
 
-  const handleMenuClose = () => {
-    setSelectedIndex(null)
-  }
-
   if (isLoading) {
     return (
       <Container
@@ -90,19 +85,6 @@ const DonationReport: React.FC = () => {
       </Container>
     )
   }
-
-  const validValidations = reportData.data.validations.filter((validation: Claim) => validation.statement !== null)
-  const validAttestations = reportData.data.attestations.filter((attestation: Claim) => attestation.statement !== null)
-
-  const settings = (itemsLength: number) => ({
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: true,
-    arrows: itemsLength > 1
-  })
 
   return (
     <Container sx={{ marginBlock: '2rem' }}>
@@ -149,84 +131,93 @@ const DonationReport: React.FC = () => {
           theme={theme}
           isLargeScreen={isLargeScreen}
           setSelectedIndex={setSelectedIndex}
-          handleMenuClose={handleMenuClose}
+          handleMenuClose={() => setSelectedIndex(null)}
         />
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
-              fontWeight: 'bold'
-            }}
-          >
-            Validations
-            <Box
-              sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
-                borderRadius: '2px',
-                width: '80%'
-              }}
-            />
-          </Typography>
-        </Box>
 
-        {reportData.data.validations.map(
-          (validation: Claim, index: number) =>
-            validation.statement && (
-              <MyCard
-                key={index}
-                data={validation}
-                theme={theme}
-                isLargeScreen={isLargeScreen}
-                setSelectedIndex={setSelectedIndex}
-                handleMenuClose={handleMenuClose}
-              />
-            )
+        {reportData.data.validations.length > 0 && (
+          <>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{
+                  color: theme.palette.texts,
+                  textAlign: 'center',
+                  marginLeft: isMediumScreen ? '0' : '1rem',
+                  fontSize: '23px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Validations
+                <Box
+                  sx={{
+                    height: '4px',
+                    backgroundColor: theme.palette.maintext,
+                    marginTop: '4px',
+                    borderRadius: '2px',
+                    width: '80%'
+                  }}
+                />
+              </Typography>
+            </Box>
+
+            {reportData.data.validations.map(
+              (validation: Claim) =>
+                validation.statement && (
+                  <MyCard
+                    key={validation.id}
+                    data={validation}
+                    theme={theme}
+                    isLargeScreen={isLargeScreen}
+                    setSelectedIndex={setSelectedIndex}
+                    handleMenuClose={() => setSelectedIndex(null)}
+                  />
+                )
+            )}
+          </>
         )}
 
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
-              fontWeight: 'bold'
-            }}
-          >
-            Related Attestations
-            <Box
-              sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
-                borderRadius: '2px',
-                width: '80%'
-              }}
-            />
-          </Typography>
-        </Box>
+        {reportData.data.attestations.length > 0 && (
+          <>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{
+                  color: theme.palette.texts,
+                  textAlign: 'center',
+                  marginLeft: isMediumScreen ? '0' : '1rem',
+                  fontSize: '23px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Related Attestations
+                <Box
+                  sx={{
+                    height: '4px',
+                    backgroundColor: theme.palette.maintext,
+                    marginTop: '4px',
+                    borderRadius: '2px',
+                    width: '80%'
+                  }}
+                />
+              </Typography>
+            </Box>
 
-        {reportData.data.attestations.map(
-          (attestation: Claim, index: number) =>
-            attestation.statement && (
-              <MyCard
-                key={index}
-                data={attestation}
-                theme={theme}
-                isLargeScreen={isLargeScreen}
-                setSelectedIndex={setSelectedIndex}
-                handleMenuClose={handleMenuClose}
-              />
-            )
+            {reportData.data.attestations.map(
+              (attestation: Claim) =>
+                attestation.statement && (
+                  <MyCard
+                    key={attestation.id}
+                    data={attestation}
+                    theme={theme}
+                    isLargeScreen={isLargeScreen}
+                    setSelectedIndex={setSelectedIndex}
+                    handleMenuClose={() => setSelectedIndex(null)}
+                  />
+                )
+            )}
+          </>
         )}
       </Box>
     </Container>
@@ -239,13 +230,13 @@ function MyCard({
   setSelectedIndex,
   handleMenuClose,
   isLargeScreen
-}: {
+}: Readonly<{
   data: any
   theme: any
-  setSelectedIndex: any
-  handleMenuClose: any
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
+  handleMenuClose: () => void
   isLargeScreen: any
-}) {
+}>) {
   return (
     <Card
       sx={{
@@ -294,7 +285,7 @@ function MyCard({
   )
 }
 
-function Stars({ stars, theme }: { stars: number; theme: any }) {
+function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
   return (
     <Box
       sx={{
@@ -319,7 +310,7 @@ function Stars({ stars, theme }: { stars: number; theme: any }) {
       >
         {Array.from({ length: stars }).map((_, index) => (
           <StarIcon
-            key={index}
+            key={`${stars}-${index}`}
             sx={{
               color: theme.palette.stars,
               width: '3vw',

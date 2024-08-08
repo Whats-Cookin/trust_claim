@@ -64,14 +64,6 @@ const RenderClaimInfo = ({
     }
   }, [isExpanded])
 
-  const handleDetailsOpen = () => {
-    setDetailsOpen(true)
-  }
-
-  const handleDetailsClose = () => {
-    setDetailsOpen(false)
-  }
-
   const claimImage = claim.image ? claim.image : null
   const isStatementLong = claim.statement && claim.statement.length > 500
 
@@ -211,7 +203,7 @@ const RenderClaimInfo = ({
         </Dialog>
       )}
 
-      <Dialog open={detailsOpen} onClose={handleDetailsClose} fullWidth>
+      <Dialog open={detailsOpen} onClose={() => setDetailsOpen(false)} fullWidth>
         <DialogTitle>Claim Details</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem' }}>
           {Object.entries(claim)
