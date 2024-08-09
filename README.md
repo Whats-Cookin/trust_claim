@@ -12,14 +12,14 @@ And for Auth Details to the pipeline, kindly refer to vault [jenkins logins](htt
 For SSH Access into the dev server, kindly refer to this creds in the vault [dev server ssh creds](https://vault.whatscookin.us/app/passwords/view/cbe52954-3f7a-4e5d-9bb7-039389acc42c) this would help you ssh into the dev server
 
 ## DEPLOYING to PRODUCTION
-
+```
 ssh -l ubuntu -i [key] trustclaims.whatscookin.us
 cd /data/trust_claim
 git pull
 yarn && yarn build
 cd /data/trust_claim/dist
 cp -r ./ /var/www/trust_claim/
-
+```
 This deploys to [live.linkedtrust.us](live.linkedtrust.us)*
 
 
