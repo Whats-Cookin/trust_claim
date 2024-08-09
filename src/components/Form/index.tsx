@@ -305,7 +305,8 @@ export const Form = ({
         height: 'auto',
         backgroundImage: `url(${theme.palette.mode === 'dark' ? BackGroundDark : BackGroundLight})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'bottom',
+        backgroundRepeat: 'no-repeat',
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         justifyContent: isMobile ? 'center' : 'flex-end',
@@ -813,14 +814,24 @@ export const Form = ({
                                 mr: 1,
                                 width: '100%',
                                 '& .MuiInputBase-root': {
-                                  borderBottom: `1px solid ${theme.palette.texts}`
+                                  borderBottom: `1px solid ${theme.palette.texts}`,
+                                  overflow: 'hidden'
+                                },
+                                '& .MuiFormControl-root': {
+                                  boxSizing: 'border-box'
                                 }
                               }}
                               fullWidth
                               error={!!error}
                             >
                               <Box
-                                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'space-between',
+                                  mb: 1,
+                                  overflow: 'hidden'
+                                }}
                               >
                                 <Typography sx={{ color: theme.palette.texts }}>Review Rating *</Typography>
                                 <Rating
@@ -830,7 +841,9 @@ export const Form = ({
                                   precision={1}
                                   sx={{
                                     color: theme.palette.stars,
-                                    '& .MuiRating-icon': { color: theme.palette.stars }
+                                    '& .MuiRating-icon': { color: theme.palette.stars },
+                                    fontSize: '1.5rem',
+                                    lineHeight: '1.2'
                                   }}
                                   size='large'
                                 />

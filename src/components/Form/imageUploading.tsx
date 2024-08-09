@@ -85,7 +85,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   const theme = useTheme()
 
   return (
-    <Box sx={{ minWidth: '210px', mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
+    <Box sx={{ mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
       <Box sx={{ mb: 4 }}>
         <label htmlFor='image-upload'>
           <Box
@@ -106,10 +106,10 @@ const ImageUploader = <TFieldValues extends FieldValues>({
             }}
           >
             <Upload style={{ width: 40, height: 40, marginBottom: 10, color: 'grey' }} />
-            <Typography variant='body2' color='textSecondary'>
+            <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
               <strong>Click to upload</strong> or drag and drop
             </Typography>
-            <Typography variant='caption' color='textSecondary'>
+            <Typography variant='caption' color='textSecondary' sx={{ textAlign: 'center' }}>
               SVG, PNG, JPG or GIF (MAX. 800x400px)
             </Typography>
           </Box>

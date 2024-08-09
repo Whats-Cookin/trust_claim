@@ -17,12 +17,10 @@ instance.interceptors.request.use(config => {
   return config
 })
 
-interface HaultedReqCb {
-  (newAccessToken: string): void
-}
+type HaultedReqCb = (newAccessToken: string) => void
 
 let isRefreshing = false
-let tokenSubscribers: HaultedReqCb[] = []
+const tokenSubscribers: HaultedReqCb[] = []
 
 const onRefreshed = (newAccessToken: string) => {
   tokenSubscribers.forEach(cb => cb(newAccessToken))
@@ -65,7 +63,7 @@ instance.interceptors.response.use(
         })
       })
     }
-    return Promise.reject(error)
+    return Promise.reject(new Error(error.message))
   }
 )
 
