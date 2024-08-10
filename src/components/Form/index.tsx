@@ -15,7 +15,9 @@ import {
   FormHelperText,
   Box,
   Typography,
-  Tooltip
+  Tooltip,
+  ListSubheader,
+  Divider
 } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -27,8 +29,6 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import ImageUploader from './imageUploading'
-import BackGroundDark from '../../assets/images/createbackground.svg'
-import BackGroundLight from '../../assets/images/createbackgroundlight.svg'
 
 const tooltips = {
   claim: [
@@ -122,6 +122,7 @@ export const Form = ({
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const tooltipPlacement = isMobile ? 'top' : 'left'
 
   // querying composeDB
   useEffect(() => {
@@ -302,22 +303,20 @@ export const Form = ({
     <Box
       sx={{
         width: isMobile ? '92%' : '100%',
+        top: 0,
         height: 'auto',
-        backgroundImage: `url(${theme.palette.mode === 'dark' ? BackGroundDark : BackGroundLight})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'bottom',
-        backgroundRepeat: 'no-repeat',
+        background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`,
         display: 'flex',
         flexDirection: isMobile ? 'column' : 'row',
         justifyContent: isMobile ? 'center' : 'flex-end',
         overflow: 'hidden',
         borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
         mt: '64px',
-        mb: isMobile ? '60px' : '24px',
+        mb: isMobile ? '60px' : 'auto',
         ml: isMobile ? '4%' : '42px',
         mr: isMobile ? '4%' : 'auto',
         paddingTop: isMobile ? '0px' : '41px',
-        paddingBottom: isMobile ? '0px' : '66px',
+        paddingBottom: isMobile ? '0px' : '0px',
         paddingLeft: isMobile ? '16px' : '30px',
         paddingRight: isMobile ? '16px' : '30px'
       }}
@@ -356,6 +355,7 @@ export const Form = ({
             color: theme.palette.texts,
             marginTop: isMobile ? '32px' : '232px',
             lineHeight: isMobile ? '1.5' : '1.2',
+            fontSize: isMobile ? '18px' : '40px',
             fontWeight: '500'
           }}
         >
@@ -363,13 +363,14 @@ export const Form = ({
             sx={{
               display: 'flex',
               flexDirection: isMobile ? 'row' : 'column',
-              alignItems: 'flex-start'
+              alignItems: 'flex-start',
+              mb: '7px'
             }}
           >
             <Box
               sx={{
                 lineHeight: isMobile ? '1.5em' : '2em',
-                fontSize: '40px',
+                fontSize: isMobile ? '18px' : '40px',
                 marginRight: '10px',
                 color: theme.palette.texts
               }}
@@ -381,10 +382,10 @@ export const Form = ({
               style={{
                 backgroundColor: theme.palette.pageBackground,
                 color: theme.palette.texts,
-                fontSize: '45px',
+                fontSize: isMobile ? '23px' : '45px',
                 fontWeight: '700',
                 zIndex: 3,
-                paddingRight: isMobile ? '374px' : '0'
+                paddingRight: isMobile ? '603px' : '0'
               }}
             >
               Trust
@@ -394,7 +395,7 @@ export const Form = ({
             <Box
               sx={{
                 lineHeight: isMobile ? '1.5em' : '2em',
-                fontSize: '40px',
+                fontSize: isMobile ? '18px' : '40px',
                 marginRight: '10px',
                 color: theme.palette.texts
               }}
@@ -405,19 +406,24 @@ export const Form = ({
               style={{
                 color: theme.palette.texts,
                 display: isMobile ? 'inline-block' : 'none',
-                fontSize: '40px',
+                fontSize: isMobile ? '18px' : '40px',
                 marginRight: '10px'
               }}
             >
               {' '}
               your{' '}
             </span>
-            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em', fontSize: '40px' }}>
+            <Box
+              sx={{
+                lineHeight: isMobile ? '1.5em' : '2em',
+                fontSize: isMobile ? '18px' : '40px'
+              }}
+            >
               <span
                 style={{
                   display: isMobile ? 'none' : 'inline-block',
                   color: theme.palette.texts,
-                  fontSize: '40px',
+                  fontSize: isMobile ? '18px' : '40px',
                   marginRight: '10px'
                 }}
               >
@@ -426,9 +432,9 @@ export const Form = ({
               <span
                 style={{
                   backgroundColor: theme.palette.pageBackground,
-                  fontSize: '45px',
+                  fontSize: isMobile ? '23px' : '45px',
                   fontWeight: '700',
-                  paddingRight: isMobile ? '356px' : '0',
+                  paddingRight: isMobile ? '536px' : '0',
                   width: '100px',
                   color: theme.palette.texts
                 }}
@@ -456,10 +462,10 @@ export const Form = ({
         }}
       >
         <DialogContent>
-          <form style={{ padding: '6px' }} onSubmit={onSubmit}>
+          <form style={{ padding: '5px' }} onSubmit={onSubmit}>
             <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Tooltip title='Enter the name associated with the claim' placement='top' arrow>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <Tooltip title='Enter the name associated with the claim' placement={tooltipPlacement} arrow>
                 <TextField
                   {...register('name', { required: { value: true, message: 'Name is required' } })}
                   sx={{
@@ -492,7 +498,7 @@ export const Form = ({
               </Tooltip>
               <Tooltip
                 title='You should put the link to the site or social media account where the claim was created'
-                placement='top'
+                placement={tooltipPlacement}
                 arrow
                 sx={{ backgroundColor: theme.palette.maintext }}
               >
@@ -526,7 +532,7 @@ export const Form = ({
                   helperText={errors.subject?.message}
                 />
               </Tooltip>
-              <Tooltip title='For evaluation being made' placement='top' arrow>
+              <Tooltip title='For evaluation being made' placement={tooltipPlacement} arrow>
                 <TextField
                   select
                   label='Claim'
@@ -578,14 +584,14 @@ export const Form = ({
                       value={claimText}
                       key={claimText}
                     >
-                      <Tooltip title={tooltips.claim[index]} placement='top' arrow>
+                      <Tooltip title={tooltips.claim[index]} placement={tooltipPlacement} arrow>
                         <Box sx={{ width: '100%', height: '100%' }}>{displayClaimText[claimText] || claimText}</Box>
                       </Tooltip>
                     </MenuItem>
                   ))}
                 </TextField>
               </Tooltip>
-              <Tooltip title='The method or source of the claim' placement='top' arrow>
+              <Tooltip title='The method or source of the claim' placement={tooltipPlacement} arrow>
                 <TextField
                   select
                   label='How Known'
@@ -635,7 +641,7 @@ export const Form = ({
                       value={howKnownMapping[howKnownText]}
                       key={howKnownText}
                     >
-                      <Tooltip title={tooltips.howKnown[index]} placement='top' arrow>
+                      <Tooltip title={tooltips.howKnown[index]} placement={tooltipPlacement} arrow>
                         <Box sx={{ width: '100%', height: '100%' }}>
                           {displayHowKnownText[howKnownText] || howKnownText}
                         </Box>
@@ -644,7 +650,7 @@ export const Form = ({
                   ))}
                 </TextField>
               </Tooltip>
-              <Tooltip title='Additional details or context about the claim' placement='top' arrow>
+              <Tooltip title='Additional details or context about the claim' placement={tooltipPlacement} arrow>
                 <TextField
                   {...register('statement')}
                   sx={{
@@ -674,7 +680,7 @@ export const Form = ({
                   maxRows={4}
                 />
               </Tooltip>
-              <Tooltip title='You should put your site here' placement='top' arrow>
+              <Tooltip title='You should put your site here' placement={tooltipPlacement} arrow>
                 <TextField
                   {...register('sourceURI')}
                   sx={{
@@ -704,7 +710,7 @@ export const Form = ({
               </Tooltip>
               <Tooltip
                 title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
-                placement='top'
+                placement={tooltipPlacement}
                 arrow
               >
                 <TextField
@@ -744,7 +750,7 @@ export const Form = ({
                 <>
                   {watchClaim === 'rated' && (
                     <>
-                      <Tooltip title='A specific dimension being evaluated or rated' placement='top' arrow>
+                      <Tooltip title='A specific dimension being evaluated or rated' placement={tooltipPlacement} arrow>
                         <TextField
                           select
                           label='Aspect'
@@ -770,35 +776,146 @@ export const Form = ({
                           variant='standard'
                           fullWidth
                         >
-                          {inputOptions.aspect.map((aspectText: string, index: number) => (
-                            <MenuItem
-                              sx={{
-                                backgroundColor: theme.palette.menuBackground,
-                                color: theme.palette.texts,
-                                '&:hover': {
-                                  backgroundColor: theme.palette.formBackground
-                                },
-                                '&.Mui-selected': {
-                                  backgroundColor: theme.palette.formBackground,
+                          {/* Impact Category */}
+                          <ListSubheader
+                            sx={{
+                              backgroundColor: theme.palette.menuBackground,
+                              color: theme.palette.texts,
+                              textAlign: 'center',
+                              '&:hover': {
+                                backgroundColor: theme.palette.formBackground
+                              }
+                            }}
+                          >
+                            Impact
+                          </ListSubheader>
+                          <Divider sx={{ backgroundColor: theme.palette.divider }} />
+                          {inputOptions.aspect
+                            .filter(aspectText => aspectText.startsWith('impact:'))
+                            .map((aspectText, index) => (
+                              <MenuItem
+                                sx={{
+                                  backgroundColor: theme.palette.menuBackground,
+                                  color: theme.palette.texts,
                                   '&:hover': {
+                                    backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
+                                    color: theme.palette.primary.contrastText // Adjust text color on hover
+                                  },
+                                  '&.Mui-selected': {
+                                    backgroundColor: theme.palette.formBackground,
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.primary.light // Maintain hover color when selected
+                                    }
+                                  },
+                                  '&:active': {
+                                    backgroundColor: theme.palette.formBackground
+                                  },
+                                  '::selection': {
                                     backgroundColor: theme.palette.formBackground
                                   }
-                                },
-                                '&:active': {
-                                  backgroundColor: theme.palette.formBackground
-                                },
-                                '::selection': {
-                                  backgroundColor: theme.palette.formBackground
-                                }
-                              }}
-                              value={aspectText}
-                              key={aspectText}
-                            >
-                              <Tooltip title={tooltips.aspect[index]} placement='top' arrow>
-                                <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
-                              </Tooltip>
-                            </MenuItem>
-                          ))}
+                                }}
+                                value={aspectText}
+                                key={aspectText}
+                              >
+                                <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
+                                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
+                                </Tooltip>
+                              </MenuItem>
+                            ))}
+
+                          {/* Quality Category */}
+                          <ListSubheader
+                            sx={{
+                              backgroundColor: theme.palette.menuBackground,
+                              color: theme.palette.texts,
+                              textAlign: 'center',
+                              '&:hover': {
+                                backgroundColor: theme.palette.formBackground
+                              }
+                            }}
+                          >
+                            Quality
+                          </ListSubheader>
+                          <Divider sx={{ backgroundColor: theme.palette.divider }} />
+                          {inputOptions.aspect
+                            .filter(aspectText => aspectText.startsWith('quality:'))
+                            .map((aspectText, index) => (
+                              <MenuItem
+                                sx={{
+                                  backgroundColor: theme.palette.menuBackground,
+                                  color: theme.palette.texts,
+                                  '&:hover': {
+                                    backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
+                                    color: theme.palette.primary.contrastText // Adjust text color on hover
+                                  },
+                                  '&.Mui-selected': {
+                                    backgroundColor: theme.palette.formBackground,
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.primary.light // Maintain hover color when selected
+                                    }
+                                  },
+                                  '&:active': {
+                                    backgroundColor: theme.palette.formBackground
+                                  },
+                                  '::selection': {
+                                    backgroundColor: theme.palette.formBackground
+                                  }
+                                }}
+                                value={aspectText}
+                                key={aspectText}
+                              >
+                                <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
+                                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
+                                </Tooltip>
+                              </MenuItem>
+                            ))}
+
+                          {/* Report Category */}
+                          <ListSubheader
+                            sx={{
+                              backgroundColor: theme.palette.menuBackground,
+                              color: theme.palette.texts,
+                              textAlign: 'center',
+                              '&:hover': {
+                                backgroundColor: theme.palette.formBackground
+                              }
+                            }}
+                          >
+                            Report
+                          </ListSubheader>
+                          <Divider sx={{ backgroundColor: theme.palette.divider }} />
+                          {inputOptions.aspect
+                            .filter(aspectText => aspectText.startsWith('report:'))
+                            .map((aspectText, index) => (
+                              <MenuItem
+                                sx={{
+                                  backgroundColor: theme.palette.menuBackground,
+                                  color: theme.palette.texts,
+                                  '&:hover': {
+                                    backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
+                                    color: theme.palette.primary.contrastText // Adjust text color on hover
+                                  },
+                                  '&.Mui-selected': {
+                                    backgroundColor: theme.palette.formBackground,
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.primary.light // Maintain hover color when selected
+                                    }
+                                  },
+                                  '&:active': {
+                                    backgroundColor: theme.palette.formBackground
+                                  },
+                                  '::selection': {
+                                    backgroundColor: theme.palette.formBackground
+                                  }
+                                }}
+                                value={aspectText}
+                                key={aspectText}
+                              >
+                                <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
+                                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
+                                </Tooltip>
+                              </MenuItem>
+                            ))}
                         </TextField>
                       </Tooltip>
 
@@ -807,7 +924,7 @@ export const Form = ({
                         control={control}
                         rules={{ required: { value: true, message: 'Rating is required' } }}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
-                          <Tooltip title='A rating associated with the claim' placement='top' arrow>
+                          <Tooltip title='A rating associated with the claim' placement={tooltipPlacement} arrow>
                             <FormControl
                               sx={{
                                 ml: 1,
@@ -867,7 +984,7 @@ export const Form = ({
                     </FormControl>
                   )}
                   {watchClaim === 'related' && (
-                    <Tooltip title='What entity is the subject related to?' placement='top' arrow>
+                    <Tooltip title='What entity is the subject related to?' placement={tooltipPlacement} arrow>
                       <TextField
                         {...register('object')}
                         sx={{
