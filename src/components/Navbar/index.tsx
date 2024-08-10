@@ -21,28 +21,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollTop, setLastScrollTop] = useState(0)
 
-  // const getPageName = () => {
-  //   const path = location.pathname
-  //   switch (path) {
-  //     case '/':
-  //       return 'Create Claims'
-  //     case '/explore':
-  //       return 'Explore'
-  //     case '/search':
-  //       return 'Search claims'
-  //     case '/terms':
-  //       return 'Terms of Service'
-  //     case '/privacy':
-  //       return 'Privacy policy'
-  //     case '/cookie':
-  //       return 'Cookies policy'
-  //     case '/validate':
-  //       return 'Validate Claim'
-  //     default:
-  //       return ''
-  //   }
-  // }
-
   const handleScroll = () => {
     const currentScrollTop = window.scrollY || document.documentElement.scrollTop
 
@@ -95,29 +73,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             Linked Claims
           </Typography>
         </Box>
-        {/* <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isSmallScreen ? '0' : '1rem',
-              fontSize: isSmallScreen ? '14px' : '18px'
-            }}
-          >
-            {getPageName()}
-            <Box
-              sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
-                borderRadius: '2px',
-                width: '100%'
-              }}
-            />
-          </Typography>
-        </Box> */}
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
           <SearchBar />
         </Box>
