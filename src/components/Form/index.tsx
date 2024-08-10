@@ -459,7 +459,7 @@ export const Form = ({
           <form style={{ padding: '6px' }} onSubmit={onSubmit}>
             <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Tooltip title='Enter the name associated with the claim' placement='right' arrow>
+              <Tooltip title='Enter the name associated with the claim' placement='top' arrow>
                 <TextField
                   {...register('name', { required: { value: true, message: 'Name is required' } })}
                   sx={{
@@ -492,7 +492,7 @@ export const Form = ({
               </Tooltip>
               <Tooltip
                 title='You should put the link to the site or social media account where the claim was created'
-                placement='right'
+                placement='top'
                 arrow
                 sx={{ backgroundColor: theme.palette.maintext }}
               >
@@ -526,7 +526,7 @@ export const Form = ({
                   helperText={errors.subject?.message}
                 />
               </Tooltip>
-              <Tooltip title='For evaluation being made' placement='right' arrow>
+              <Tooltip title='For evaluation being made' placement='top' arrow>
                 <TextField
                   select
                   label='Claim'
@@ -578,14 +578,14 @@ export const Form = ({
                       value={claimText}
                       key={claimText}
                     >
-                      <Tooltip title={tooltips.claim[index]} placement='right' arrow>
+                      <Tooltip title={tooltips.claim[index]} placement='top' arrow>
                         <Box sx={{ width: '100%', height: '100%' }}>{displayClaimText[claimText] || claimText}</Box>
                       </Tooltip>
                     </MenuItem>
                   ))}
                 </TextField>
               </Tooltip>
-              <Tooltip title='The method or source of the claim' placement='right' arrow>
+              <Tooltip title='The method or source of the claim' placement='top' arrow>
                 <TextField
                   select
                   label='How Known'
@@ -635,7 +635,7 @@ export const Form = ({
                       value={howKnownMapping[howKnownText]}
                       key={howKnownText}
                     >
-                      <Tooltip title={tooltips.howKnown[index]} placement='right' arrow>
+                      <Tooltip title={tooltips.howKnown[index]} placement='top' arrow>
                         <Box sx={{ width: '100%', height: '100%' }}>
                           {displayHowKnownText[howKnownText] || howKnownText}
                         </Box>
@@ -644,7 +644,7 @@ export const Form = ({
                   ))}
                 </TextField>
               </Tooltip>
-              <Tooltip title='Additional details or context about the claim' placement='right' arrow>
+              <Tooltip title='Additional details or context about the claim' placement='top' arrow>
                 <TextField
                   {...register('statement')}
                   sx={{
@@ -674,7 +674,7 @@ export const Form = ({
                   maxRows={4}
                 />
               </Tooltip>
-              <Tooltip title='You should put your site here' placement='right' arrow>
+              <Tooltip title='You should put your site here' placement='top' arrow>
                 <TextField
                   {...register('sourceURI')}
                   sx={{
@@ -704,7 +704,7 @@ export const Form = ({
               </Tooltip>
               <Tooltip
                 title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
-                placement='right'
+                placement='top'
                 arrow
               >
                 <TextField
@@ -744,7 +744,7 @@ export const Form = ({
                 <>
                   {watchClaim === 'rated' && (
                     <>
-                      <Tooltip title='A specific dimension being evaluated or rated' placement='right' arrow>
+                      <Tooltip title='A specific dimension being evaluated or rated' placement='top' arrow>
                         <TextField
                           select
                           label='Aspect'
@@ -794,7 +794,7 @@ export const Form = ({
                               value={aspectText}
                               key={aspectText}
                             >
-                              <Tooltip title={tooltips.aspect[index]} placement='right' arrow>
+                              <Tooltip title={tooltips.aspect[index]} placement='top' arrow>
                                 <Box sx={{ width: '100%', height: '100%' }}>{aspectText}</Box>
                               </Tooltip>
                             </MenuItem>
@@ -807,7 +807,7 @@ export const Form = ({
                         control={control}
                         rules={{ required: { value: true, message: 'Rating is required' } }}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
-                          <Tooltip title='A rating associated with the claim' placement='right' arrow>
+                          <Tooltip title='A rating associated with the claim' placement='top' arrow>
                             <FormControl
                               sx={{
                                 ml: 1,
@@ -867,7 +867,7 @@ export const Form = ({
                     </FormControl>
                   )}
                   {watchClaim === 'related' && (
-                    <Tooltip title='What entity is the subject related to?' placement='right' arrow>
+                    <Tooltip title='What entity is the subject related to?' placement='top' arrow>
                       <TextField
                         {...register('object')}
                         sx={{
