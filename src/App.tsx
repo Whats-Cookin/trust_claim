@@ -121,14 +121,14 @@ const App = () => {
             minHeight: '100vh',
             backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
-            overflow: 'hidden',
+            overflow: 'auto',
             marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '19.6vw' : '4.8vw',
             width:
               isMediumScreen || isLoginPage || isRegisterPage
                 ? '100%'
                 : `calc(100% - ${isSidebarOpen ? '19.6vw' : '4.8vw'})`,
-            transition: 'margin-left 0.3s, width 0.3s',
-            marginBottom: isMediumScreen || isLoginPage || isRegisterPage ? '0' : '60px'
+            transition: 'margin-left 0.3s, width 0.3s'
+            // marginBottom: isMediumScreen || isLoginPage || isRegisterPage ? '60' : '0px'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
@@ -138,7 +138,7 @@ const App = () => {
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center',
+              alignItems: isMediumScreen || isLoginPage || isRegisterPage ? 'center' : 'flex-end',
               justifyContent: 'center',
               width: '100%'
             }}

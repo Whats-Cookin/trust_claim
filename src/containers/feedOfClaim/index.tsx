@@ -122,12 +122,13 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   useEffect(() => {
     setIsLoading(true)
     axios
-      .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, { timeout: 60000 })
+      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
       .then(res => {
         const filteredClaims = res.data
+        console.log(filteredClaims)
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
-        setVisibleClaims(filteredClaims.slice(0, 4))
+        setVisibleClaims(filteredClaims.slice(0, 8))
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
@@ -151,10 +152,10 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
           claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 4))
+      setVisibleClaims(results.slice(0, 8))
     } else {
       setFilteredClaims(claims)
-      setVisibleClaims(claims.slice(0, 4))
+      setVisibleClaims(claims.slice(0, 8))
     }
   }, [searchTerm, claims])
 
@@ -221,12 +222,12 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                 display: 'flex',
                 justifyContent: 'center',
                 position: 'relative',
-                mt: '8vh',
-                mb: '1vh',
-                width: isMediumScreen ? '97%' : '95%',
+                mt: '64px',
+                mb: isMediumScreen ? '77px' : '28px',
+                width: '95%',
                 flexDirection: 'column',
                 backgroundColor: theme.palette.menuBackground,
-                borderRadius: '20px',
+                borderRadius: isMediumScreen ? '20px' : '20px 0px 0px 40px',
                 padding: '20px'
               }}
             >
@@ -494,7 +495,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                 </Box>
               ))}
               {visibleClaims.length < filteredClaims.length && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px', mb: '50px' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: '10px' }}>
                   <Button
                     variant='contained'
                     onClick={handleSeeMore}
@@ -502,11 +503,14 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                       backgroundColor: theme.palette.buttons,
                       color: theme.palette.buttontext,
                       borderRadius: '91px',
-                      fontWeight: 'bold',
+                      fontWeight: '700',
                       fontSize: isMediumScreen ? '12px' : '18px',
                       width: '14vw',
+                      mb: '-35px',
                       maxWidth: '192px',
-                      minWidth: '100px',
+                      minWidth: '132px',
+                      fontFamily: 'Montserrat',
+                      textTransform: 'none',
                       '&:hover': {
                         backgroundColor: theme.palette.buttonHover
                       }

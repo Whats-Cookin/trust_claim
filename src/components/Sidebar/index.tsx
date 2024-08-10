@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       }}
     >
       <Box>
-        <List>
+        <List sx={{ paddingTop: '0px' }}>
           <ListItemButton
             sx={{ gap: '32px', justifyContent: 'center', transition: 'all 0.3s', minHeight: '65px' }}
             onClick={toggleSidebar}
