@@ -65,9 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center',
-            minWidth: '174px',
             width: '50%',
-            maxWidth: '176px',
             textWrap: 'wrap',
             mr: 'auto'
           }}
