@@ -135,12 +135,12 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     )
   } else {
     ethLoginOpt = (
-      <p id='metamaskLink'>
-        To login with Ethereum
-        <Link to='https://metamask.io/' target='_blank'>
+      <Typography id='metamaskLink' sx={{ color: theme.palette.texts }}>
+        To login with Ethereum &nbsp;
+        <MuiLink component={Link} to='https://metamask.io/' target='_blank' sx={{ color: theme.palette.link }}>
           Install Metamask
-        </Link>
-      </p>
+        </MuiLink>
+      </Typography>
     )
   }
 
@@ -272,7 +272,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
               <Typography
                 variant='h5'
                 sx={{
-                  color: theme.palette.darkinputtext,
+                  color: theme.palette.texts,
                   textAlign: 'center',
                   fontWeight: 'bold',
                   fontSize: '2.5rem'
@@ -290,21 +290,43 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                   m: 'auto'
                 }}
               >
-                <MuiLink
-                  href={githubUrl}
-                  sx={{
-                    color: theme.palette.texts,
-                    backgroundColor: theme.palette.formBackground,
-                    m: 'auto'
-                  }}
-                >
-                  <GitHubIcon />
-                </MuiLink>
-
                 <Box
                   sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     color: theme.palette.buttontext,
-                    cursor: 'pointer'
+                    backgroundColor: theme.palette.formBackground,
+                    cursor: 'pointer',
+                    boxShadow: '0px 1px 5px #ffffff20',
+                    borderRadius: '50%',
+                    width: '82px',
+                    height: '82px'
+                  }}
+                >
+                  <MuiLink
+                    href={githubUrl}
+                    sx={{
+                      color: theme.palette.texts
+                    }}
+                  >
+                    <GitHubIcon sx={{ fontSize: '50px' }} />
+                  </MuiLink>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.formBackground,
+                    cursor: 'pointer',
+                    boxShadow: '0px 1px 5px #ffffff20',
+                    borderRadius: '50%',
+                    width: '82px',
+                    height: '82px'
                   }}
                 >
                   {ethLoginOpt}

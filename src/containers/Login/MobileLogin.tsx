@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from '../../axiosInstance'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Box, Typography, Button, TextField, Link as MuiLink } from '@mui/material'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -102,12 +102,12 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
     )
   } else {
     ethLoginOpt = (
-      <p id='metamaskLink'>
-        To login with Ethereum
-        <MuiLink href='https://metamask.io/' target='_blank'>
+      <Typography id='metamaskLink' sx={{ color: theme.palette.texts }}>
+        To login with Ethereum &nbsp;
+        <MuiLink component={Link} to='https://metamask.io/' target='_blank' sx={{ color: theme.palette.link }}>
           Install Metamask
         </MuiLink>
-      </p>
+      </Typography>
     )
   }
 
@@ -161,10 +161,10 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           <Box
             sx={{
               width: '74.028vw',
-              minWidth: '433px',
+              minWidth: '320px',
               maxWidth: '533px',
               height: '49.844vh',
-              minHeight: '538px',
+              minHeight: '430px',
               maxHeight: '638px',
               padding: '20px',
               borderRadius: '20px',
@@ -185,7 +185,8 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 top: '0px',
                 right: '0px',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                zIndex: '1'
               }}
             >
               <img src={Ellipse} alt='' />
@@ -193,23 +194,29 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
             <Box
               sx={{
                 position: 'absolute',
-                top: '40px',
-                right: '15px',
+                top: '30px',
+                right: '7px',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                zIndex: '5'
               }}
             >
-              <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={35} />
+              <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={30} />
             </Box>
             <Typography
               variant='h5'
               sx={{
-                color: theme.palette.darkinputtext,
+                color: theme.palette.texts,
+                top: '15px',
+                right: '51%',
+                transform: 'translateX(50%)',
                 textAlign: 'center',
                 fontWeight: '600',
                 fontSize: '2.5rem',
                 fontFamily: 'montserrat',
-                marginBottom: '20px'
+                position: 'absolute',
+                marginBottom: '20px',
+                zIndex: '1'
               }}
             >
               Sign in
@@ -220,7 +227,9 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 flexDirection: 'row',
                 gap: '29px',
                 alignItems: 'center',
-                marginBottom: '20px'
+                marginBottom: '20px',
+                mt: '65px',
+                zIndex: '2'
               }}
             >
               <Box
