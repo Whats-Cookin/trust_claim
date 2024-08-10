@@ -42,7 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
       window.removeEventListener('scroll', handleScroll)
     }
   }, [lastScrollTop, isSmallScreen])
-
+  const displayValue = isVisible ? 'block' : 'none'
   return (
     <AppBar
       position='fixed'
@@ -55,17 +55,29 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         zIndex: 999,
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.3s ease-in-out',
-        display: isSmallScreen ? (isVisible ? 'block' : 'none') : 'block'
+        flexDirection: 'row',
+        display: isSmallScreen ? displayValue : 'block'
       }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            minWidth: '174px',
+            width: '50%',
+            maxWidth: '176px',
+            textWrap: 'wrap',
+            mr: 'auto'
+          }}
+        >
           <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '8px' }} />
           <Typography
             sx={{
               color: theme.palette.maintext,
               fontWeight: 'bold',
-              flexWrap: 'nowrap',
+              flexWrap: 'wrap',
               fontSize: isSmallScreen ? '20px' : '30px',
               transition: 'opacity 0.3s'
             }}

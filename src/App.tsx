@@ -42,11 +42,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    const isAuthenticated = checkAuth()
-    if (!isAuthenticated && location.pathname === '/') {
-      navigate('/feed') // Redirect to /feed if not authenticated
-    } else if (isAuthenticated && location.pathname === '/') {
-      navigate('/feed') // Redirect to /feed if authenticated
+    if (location.pathname === '/') {
+      navigate('/feed') // Redirect to /feed
     }
 
     const handleResize = () => {
@@ -128,7 +125,6 @@ const App = () => {
                 ? '100%'
                 : `calc(100% - ${isSidebarOpen ? '19.6vw' : '4.8vw'})`,
             transition: 'margin-left 0.3s, width 0.3s'
-            // marginBottom: isMediumScreen || isLoginPage || isRegisterPage ? '60' : '0px'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />

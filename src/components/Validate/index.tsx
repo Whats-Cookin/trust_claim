@@ -25,7 +25,6 @@ import axios from '../../axiosInstance'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import placeholderImage from '../../assets/images/imgplaceholder.svg'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
 
@@ -113,7 +112,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   const { handleSubmit, reset, control, register } = useForm<FormData>({
     defaultValues: {
-      subject: subject || '',
+      subject: subject ?? '',
       statement: '',
       sourceURI: '',
       amt: '',
@@ -145,12 +144,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     physical_document: 'PHYSICAL_DOCUMENT'
   }
 
-  const displayHowKnownText = {
-    first_hand: 'First Hand',
-    second_hand: 'Second Hand',
-    website: 'Website',
-    physical_document: 'Physical Document'
-  } as any
+  // const displayHowKnownText = {
+  //   first_hand: 'First Hand',
+  //   second_hand: 'Second Hand',
+  //   website: 'Website',
+  //   physical_document: 'Physical Document'
+  // } as any
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()

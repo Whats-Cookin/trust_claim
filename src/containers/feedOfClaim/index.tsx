@@ -81,29 +81,6 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-// const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClaim> => {
-//   const uniqueClaimsMap = new Map<string, ImportedClaim>()
-
-//   claims.forEach(claim => {
-//     if (claim.statement && claim.claim_id) {
-//       const key = `${claim.statement}_${claim.claim_id}`
-//       const existingClaim = uniqueClaimsMap.get(key)
-
-//       // if (claim.source_link.includes('https://live.linkedtrust.us/claims')) {
-//       //   return
-//       // }
-
-//       if (claim.name === 'Linked Claims' && existingClaim) {
-//         return
-//       }
-
-//       uniqueClaimsMap.set(key, claim)
-//     }
-//   })
-
-//   return Array.from(uniqueClaimsMap.values())
-// }
-
 const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
   const [filteredClaims, setFilteredClaims] = useState<Array<ImportedClaim>>([])
