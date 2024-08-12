@@ -127,7 +127,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
         const filteredClaims = res.data
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
-        setVisibleClaims(filteredClaims.slice(0, 4))
+        setVisibleClaims(filteredClaims.slice(0, 8))
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
@@ -151,27 +151,33 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
           claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 4))
+      setVisibleClaims(results.slice(0, 8))
     } else {
       setFilteredClaims(claims)
-      setVisibleClaims(claims.slice(0, 4))
+      setVisibleClaims(claims.slice(0, 8))
     }
   }, [searchTerm, claims])
 
   // Effect to track scroll position
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setShowScrollButton(true)
-      } else {
-        setShowScrollButton(false)
+      const scrollOffset = 100
+      const scrollPosition = window.innerHeight + window.scrollY
+      const documentHeight = document.body.offsetHeight
+
+      if (scrollPosition >= documentHeight - scrollOffset) {
+        if (visibleClaims.length < filteredClaims.length) {
+          const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8)
+          setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
+        }
       }
+      setShowScrollButton(window.scrollY > 200)
     }
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [])
+  }, [filteredClaims, visibleClaims])
 
   const handleValidation = (subject: any, id: number) => {
     console.log(subject, 'and', id)
@@ -197,11 +203,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const handleClose = () => {
     setAnchorEl(null)
     setSelectedIndex(null)
-  }
-
-  const handleSeeMore = () => {
-    const newVisibleCount = visibleClaims.length + 4
-    setVisibleClaims(filteredClaims.slice(0, newVisibleCount))
   }
 
   const handleScrollToTop = () => {
@@ -493,29 +494,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   </Card>
                 </Box>
               ))}
-              {visibleClaims.length < filteredClaims.length && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: '20px', mb: '50px' }}>
-                  <Button
-                    variant='contained'
-                    onClick={handleSeeMore}
-                    sx={{
-                      backgroundColor: theme.palette.buttons,
-                      color: theme.palette.buttontext,
-                      borderRadius: '91px',
-                      fontWeight: 'bold',
-                      fontSize: isMediumScreen ? '12px' : '18px',
-                      width: '14vw',
-                      maxWidth: '192px',
-                      minWidth: '100px',
-                      '&:hover': {
-                        backgroundColor: theme.palette.buttonHover
-                      }
-                    }}
-                  >
-                    See More
-                  </Button>
-                </Box>
-              )}
               <Grow in={showScrollButton}>
                 <Fab
                   aria-label='scroll to top'
