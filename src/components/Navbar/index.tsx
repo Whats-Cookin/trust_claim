@@ -21,28 +21,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollTop, setLastScrollTop] = useState(0)
 
-  // const getPageName = () => {
-  //   const path = location.pathname
-  //   switch (path) {
-  //     case '/':
-  //       return 'Create Claims'
-  //     case '/explore':
-  //       return 'Explore'
-  //     case '/search':
-  //       return 'Search claims'
-  //     case '/terms':
-  //       return 'Terms of Service'
-  //     case '/privacy':
-  //       return 'Privacy policy'
-  //     case '/cookie':
-  //       return 'Cookies policy'
-  //     case '/validate':
-  //       return 'Validate Claim'
-  //     default:
-  //       return ''
-  //   }
-  // }
-
   const handleScroll = () => {
     const currentScrollTop = window.scrollY || document.documentElement.scrollTop
 
@@ -64,7 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
       window.removeEventListener('scroll', handleScroll)
     }
   }, [lastScrollTop, isSmallScreen])
-
+  const displayValue = isVisible ? 'block' : 'none'
   return (
     <AppBar
       position='fixed'
@@ -77,17 +55,27 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         zIndex: 999,
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.3s ease-in-out',
-        display: isSmallScreen ? (isVisible ? 'block' : 'none') : 'block'
+        flexDirection: 'row',
+        display: isSmallScreen ? displayValue : 'block'
       }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            width: '50%',
+            textWrap: 'wrap',
+            mr: 'auto'
+          }}
+        >
           <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '8px' }} />
           <Typography
             sx={{
               color: theme.palette.maintext,
               fontWeight: 'bold',
-              flexWrap: 'nowrap',
+              flexWrap: 'wrap',
               fontSize: isSmallScreen ? '20px' : '30px',
               transition: 'opacity 0.3s'
             }}
@@ -95,29 +83,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             Linked Claims
           </Typography>
         </Box>
-        {/* <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-          <Typography
-            variant='h6'
-            component='div'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isSmallScreen ? '0' : '1rem',
-              fontSize: isSmallScreen ? '14px' : '18px'
-            }}
-          >
-            {getPageName()}
-            <Box
-              sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
-                borderRadius: '2px',
-                width: '100%'
-              }}
-            />
-          </Typography>
-        </Box> */}
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
           <SearchBar />
         </Box>

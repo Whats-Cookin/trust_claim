@@ -64,14 +64,6 @@ const RenderClaimInfo = ({
     }
   }, [isExpanded])
 
-  const handleDetailsOpen = () => {
-    setDetailsOpen(true)
-  }
-
-  const handleDetailsClose = () => {
-    setDetailsOpen(false)
-  }
-
   const claimImage = claim.image ? claim.image : null
   const isStatementLong = claim.statement && claim.statement.length > 500
 
@@ -86,7 +78,9 @@ const RenderClaimInfo = ({
           backgroundColor: theme.palette.cardBackground,
           borderRadius: '20px',
           color: theme.palette.texts,
-          transition: 'min-height 0.3s ease-in-out'
+          transition: 'min-height 0.3s ease-in-out',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word'
         }}
       >
         <Box
@@ -136,7 +130,7 @@ const RenderClaimInfo = ({
               variant='body1'
               sx={{
                 color: theme.palette.date,
-                fontWeight: 500,
+                fontWeight: 600,
                 marginBottom: '1rem'
               }}
             >
@@ -154,6 +148,7 @@ const RenderClaimInfo = ({
                   sx={{
                     padding: '5px 1 1 5px',
                     wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
                     marginBottom: '1px',
                     color: theme.palette.texts
                   }}
@@ -211,7 +206,7 @@ const RenderClaimInfo = ({
         </Dialog>
       )}
 
-      <Dialog open={detailsOpen} onClose={handleDetailsClose} fullWidth>
+      <Dialog open={detailsOpen} onClose={() => setDetailsOpen(false)} fullWidth>
         <DialogTitle>Claim Details</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem' }}>
           {Object.entries(claim)
