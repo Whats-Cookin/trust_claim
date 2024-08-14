@@ -147,7 +147,12 @@ const App = () => {
               <Route path='feed' element={<FeedClaim {...commonProps} />} />
               <Route path='report/:claimId' element={<ClaimReport />} />
               <Route path='search' element={<Search {...commonProps} />} />
-              <Route path='claim' element={<Form {...commonProps} />} />
+              <Route
+                path='claim'
+                element={
+                  checkAuth() ? <Form {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                }
+              />
               <Route path='register' element={<Register {...commonProps} />} />
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
