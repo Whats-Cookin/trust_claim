@@ -26,6 +26,7 @@ import axios from 'axios'
 import Loader from '../../components/Loader'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
+import { checkAuth } from '../../utils/authUtils'
 // import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
@@ -119,6 +120,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isAuthenticated = checkAuth()
 
   useEffect(() => {
     setIsLoading(true)
@@ -544,33 +546,35 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
-              <Fab
-                aria-label='scroll to top'
-                onClick={handleCreateClaim}
-                sx={{
-                  position: 'fixed',
-                  bottom: {
-                    xs: 130,
-                    sm: 150,
-                    md: 160,
-                    lg: 180
-                  },
-                  right: 36,
-                  color: theme.palette.buttontext,
-                  width: '5.486vw',
-                  minWidth: '35px',
-                  minHeight: '35px',
-                  height: '5.486vw',
-                  maxWidth: '79px',
-                  maxHeight: '79px',
-                  backgroundColor: theme.palette.buttons,
-                  '&:hover': {
-                    backgroundColor: theme.palette.buttonHover
-                  }
-                }}
-              >
-                <AddCircleOutlineOutlined />
-              </Fab>
+              {isAuthenticated && (
+                <Fab
+                  aria-label='create claim'
+                  onClick={handleCreateClaim}
+                  sx={{
+                    position: 'fixed',
+                    bottom: {
+                      xs: 130,
+                      sm: 150,
+                      md: 160,
+                      lg: 180
+                    },
+                    right: 36,
+                    color: theme.palette.buttontext,
+                    width: '5.486vw',
+                    minWidth: '35px',
+                    minHeight: '35px',
+                    height: '5.486vw',
+                    maxWidth: '79px',
+                    maxHeight: '79px',
+                    backgroundColor: theme.palette.buttons,
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  <AddCircleOutlineOutlined />
+                </Fab>
+              )}
             </Box>
           ) : (
             <Box sx={{ textAlign: 'center', mt: '20px' }}>
