@@ -528,13 +528,18 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   onClick={handleScrollToTop}
                   sx={{
                     position: 'fixed',
-                    bottom: 84,
+                    bottom: {
+                      xs: 130,
+                      sm: 150,
+                      md: 160,
+                      lg: 180
+                    },
                     right: 36,
                     color: theme.palette.buttontext,
-                    width: '5.486vw',
+                    width: '4.5vw',
                     minWidth: '35px',
                     minHeight: '35px',
-                    height: '5.486vw',
+                    height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
                     backgroundColor: theme.palette.buttons,
@@ -552,18 +557,13 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   onClick={handleCreateClaim}
                   sx={{
                     position: 'fixed',
-                    bottom: {
-                      xs: 130,
-                      sm: 150,
-                      md: 160,
-                      lg: 180
-                    },
+                    bottom: 84,
                     right: 36,
                     color: theme.palette.buttontext,
-                    width: '5.486vw',
+                    width: '4.5vw',
                     minWidth: '35px',
                     minHeight: '35px',
-                    height: '5.486vw',
+                    height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
                     backgroundColor: theme.palette.buttons,
