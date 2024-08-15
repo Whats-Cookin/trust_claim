@@ -87,8 +87,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
         if ((location as any).state?.from) {
           navigate((location as any).state.from)
         }
-      }
-      else {
+      } else {
         navigate('/login')
       }
     } catch (error: any) {
