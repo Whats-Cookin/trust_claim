@@ -27,6 +27,7 @@ import Loader from '../../components/Loader'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
+import MainContainer from '../../components/MainContainer'
 // import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
@@ -127,9 +128,9 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     if (searchTerm) {
       const results = claims.filter(
         claim =>
-          claim.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           claim.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
+          claim.source_link?.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFilteredClaims(results)
       setVisibleClaims(results.slice(0, 8))
@@ -200,20 +201,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       ) : (
         <>
           {filteredClaims.length > 0 ? (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                position: 'relative',
-                mt: '64px',
-                mb: isMediumScreen ? '77px' : '28px',
-                width: '95%',
-                flexDirection: 'column',
-                backgroundColor: theme.palette.menuBackground,
-                borderRadius: isMediumScreen ? '20px' : '20px 0px 0px 40px',
-                padding: '20px'
-              }}
-            >
+            <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
                   variant='h6'
@@ -556,11 +544,11 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   <AddCircleOutlineOutlined />
                 </Fab>
               )}
-            </Box>
+            </MainContainer>
           ) : (
-            <Box sx={{ textAlign: 'center', mt: '20px' }}>
+            <MainContainer sx={{ textAlign: 'center' }}>
               <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
-            </Box>
+            </MainContainer>
           )}
         </>
       )}
