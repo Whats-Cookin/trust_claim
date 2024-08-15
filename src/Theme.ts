@@ -134,7 +134,7 @@ const darkModeTheme = createTheme({
     borderColor: '#008a7cdc',
     shadows: '#00000040',
     sidecolor: '#ffffff',
-    darkinputtext: '#4C726F',
+    darkinputtext: '#ffffff',
     input: '#425655'
   },
   breakpoints: {
@@ -196,7 +196,7 @@ const lightModeTheme = createTheme({
     borderColor: '#00796B80',
     shadows: '#00000020',
     sidecolor: '#0A1C1D',
-    darkinputtext: '#79A8A4',
+    darkinputtext: '#0A1C1D',
     input: '#E6F0EE'
   },
   breakpoints: {

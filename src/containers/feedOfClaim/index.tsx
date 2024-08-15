@@ -25,6 +25,8 @@ import {
 import axios from 'axios'
 import Loader from '../../components/Loader'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import { AddCircleOutlineOutlined } from '@mui/icons-material'
+import { checkAuth } from '../../utils/authUtils'
 // import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
@@ -81,29 +83,6 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-// const filterDuplicateClaims = (claims: Array<ImportedClaim>): Array<ImportedClaim> => {
-//   const uniqueClaimsMap = new Map<string, ImportedClaim>()
-
-//   claims.forEach(claim => {
-//     if (claim.statement && claim.claim_id) {
-//       const key = `${claim.statement}_${claim.claim_id}`
-//       const existingClaim = uniqueClaimsMap.get(key)
-
-//       // if (claim.source_link.includes('https://live.linkedtrust.us/claims')) {
-//       //   return
-//       // }
-
-//       if (claim.name === 'Linked Claims' && existingClaim) {
-//         return
-//       }
-
-//       uniqueClaimsMap.set(key, claim)
-//     }
-//   })
-
-//   return Array.from(uniqueClaimsMap.values())
-// }
-
 const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
   const [filteredClaims, setFilteredClaims] = useState<Array<ImportedClaim>>([])
@@ -118,13 +97,15 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isAuthenticated = checkAuth()
 
   useEffect(() => {
     setIsLoading(true)
     axios
-      .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, { timeout: 60000 })
+      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
       .then(res => {
         const filteredClaims = res.data
+        console.log(filteredClaims)
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
         setVisibleClaims(filteredClaims.slice(0, 8))
@@ -208,6 +189,9 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+  const handleCreateClaim = () => {
+    navigate('/claim')
+  }
 
   return (
     <>
@@ -222,12 +206,12 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                 display: 'flex',
                 justifyContent: 'center',
                 position: 'relative',
-                mt: '8vh',
-                mb: '1vh',
-                width: isMediumScreen ? '97%' : '95%',
+                mt: '64px',
+                mb: isMediumScreen ? '77px' : '28px',
+                width: '95%',
                 flexDirection: 'column',
                 backgroundColor: theme.palette.menuBackground,
-                borderRadius: '20px',
+                borderRadius: isMediumScreen ? '20px' : '20px 0px 0px 40px',
                 padding: '20px'
               }}
             >
@@ -502,13 +486,18 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   onClick={handleScrollToTop}
                   sx={{
                     position: 'fixed',
-                    bottom: 84,
+                    bottom: {
+                      xs: 130,
+                      sm: 150,
+                      md: 160,
+                      lg: 180
+                    },
                     right: 36,
                     color: theme.palette.buttontext,
-                    width: '5.486vw',
+                    width: '4.5vw',
                     minWidth: '35px',
                     minHeight: '35px',
-                    height: '5.486vw',
+                    height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
                     backgroundColor: theme.palette.buttons,
@@ -520,6 +509,30 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
+              {isAuthenticated && (
+                <Fab
+                  aria-label='create claim'
+                  onClick={handleCreateClaim}
+                  sx={{
+                    position: 'fixed',
+                    bottom: 84,
+                    right: 36,
+                    color: theme.palette.buttontext,
+                    width: '4.5vw',
+                    minWidth: '35px',
+                    minHeight: '35px',
+                    height: '4.5vw',
+                    maxWidth: '79px',
+                    maxHeight: '79px',
+                    backgroundColor: theme.palette.buttons,
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  <AddCircleOutlineOutlined />
+                </Fab>
+              )}
             </Box>
           ) : (
             <Box sx={{ textAlign: 'center', mt: '20px' }}>

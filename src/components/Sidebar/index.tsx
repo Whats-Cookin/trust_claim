@@ -68,14 +68,14 @@ const Sidebar: React.FC<SidebarProps> = ({
           justifyContent: 'space-between',
           overflow: 'hidden',
           borderRight: 'none',
-          borderRadius: '0 10px 10px 0',
+          borderRadius: '0 20px 40px 0',
           marginTop: isNavbarVisible && !isAuthPage ? '64px' : '0',
           height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 64px)' : '100vh'
         }
       }}
     >
       <Box>
-        <List>
+        <List sx={{ paddingTop: '0px' }}>
           <ListItemButton
             sx={{ gap: '32px', justifyContent: 'center', transition: 'all 0.3s', minHeight: '65px' }}
             onClick={toggleSidebar}
@@ -130,13 +130,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Login sx={iconStyle} />
                 <ListItemText primary='Login' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
               </ListItemButton>
-              {/* <ListItemButton
-                sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/register') }}
-                onClick={() => navigate('/register')}
-              >
-                <HowToReg sx={iconStyle} />
-                <ListItemText primary='Register' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
-              </ListItemButton> */}
             </>
           )}
         </List>
@@ -154,22 +147,19 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
       sx={{
         display: isOpen ? 'flex' : 'none',
         flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         padding: '1rem',
         width: '100%'
       }}
     >
-      <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-        <Typography>© {new Date().getFullYear()} LinkedTrust</Typography>
-      </Link>
       <Box
         sx={{
           display: 'flex',
-          gap: '5px',
-          textAlign: 'center',
-          justifyContent: 'center',
+          gap: '10px',
+          textAlign: 'left',
+          justifyContent: 'flex-start',
           flexDirection: 'row',
+          alignItems: 'center',
           fontSize: '15px'
         }}
       >
@@ -179,9 +169,19 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
         <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           Privacy Policy
         </Link>
-        {/* <Link to='/cookie' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-          Cookie Policy
-        </Link> */}
+      </Box>
+      <Box
+        sx={{
+          marginTop: '8px',
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          fontSize: '15px'
+        }}
+      >
+        <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+          <Typography>© {new Date().getFullYear()} LinkedTrust</Typography>
+        </Link>
       </Box>
     </Box>
   )

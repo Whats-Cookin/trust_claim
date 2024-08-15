@@ -16,18 +16,17 @@ import {
   Tooltip,
   Fade
 } from '@mui/material'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useFieldArray } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { useQueryParams } from '../../hooks'
 import Loader from '../Loader'
 import axios from '../../axiosInstance'
-import { CloudUpload } from '@mui/icons-material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import placeholderImage from '../../assets/images/imgplaceholder.svg'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import HelpIcon from '@mui/icons-material/Help'
+import ImageUploader from '../Form/imageUploading'
 
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -37,6 +36,26 @@ const WEB_DOCUMENT_REJECTED = 'WEB_DOCUMENT_REJECTED'
 
 const CLAIM_RATED = 'rated'
 const CLAIM_IMPACT = 'impact'
+
+interface ImageI {
+  url: string
+  metadata: {
+    description: string
+    caption: string
+  }
+  effectiveDate: Date
+  createdDate: Date
+}
+
+interface FormData {
+  subject: string
+  statement: string
+  sourceURI: string
+  amt: string
+  howKnown: string
+  effectiveDate: Date
+  images: ImageI[]
+}
 
 const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [loading, setLoading] = useState(false)
@@ -91,15 +110,31 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     fetchData()
   }, [number])
 
-  const { handleSubmit, reset, control } = useForm({
+  const { handleSubmit, reset, control, register } = useForm<FormData>({
     defaultValues: {
-      subject: subject as string,
-      statement: '' as string,
-      sourceURI: '' as string,
-      amt: '' as string,
-      howKnown: '' as string,
-      effectiveDate: new Date()
+      subject: subject ?? '',
+      statement: '',
+      sourceURI: '',
+      amt: '',
+      howKnown: '',
+      effectiveDate: new Date(),
+      images: []
     }
+  })
+
+  const {
+    fields: imageFields,
+    append: appendImage,
+    remove: removeImage,
+    swap,
+    move,
+    insert,
+    prepend,
+    update,
+    replace
+  } = useFieldArray({
+    control,
+    name: 'images'
   })
 
   const howKnownMapping: { [key: string]: string } = {
@@ -109,17 +144,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     physical_document: 'PHYSICAL_DOCUMENT'
   }
 
-  const displayHowKnownText = {
-    first_hand: 'First Hand',
-    second_hand: 'Second Hand',
-    website: 'Website',
-    physical_document: 'Physical Document'
-  } as any
+  // const displayHowKnownText = {
+  //   first_hand: 'First Hand',
+  //   second_hand: 'Second Hand',
+  //   website: 'Website',
+  //   physical_document: 'Physical Document'
+  // } as any
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
 
-  const onSubmit = handleSubmit(async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI }) => {
+  const onSubmit = handleSubmit(async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI, images }) => {
     if (subject) {
       const effectiveDateAsString = effectiveDate.toISOString()
 
@@ -132,6 +167,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         claim: string
         amt?: string | number
         score?: number
+        images?: ImageI[]
       }
 
       const payload: PayloadType = {
@@ -140,7 +176,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         sourceURI,
         howKnown,
         effectiveDate: effectiveDateAsString,
-        claim: CLAIM_RATED
+        claim: CLAIM_RATED,
+        images
       }
 
       if (howKnown === FIRST_HAND_BENEFIT) {
@@ -282,7 +319,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     wordBreak: 'break-word'
                   }}
                 >
-                  {`Do you know any thing about that?`}
+                  {`Do you know anything about that?`}
                   <Box
                     sx={{
                       height: '5px',
@@ -431,7 +468,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 }}
               >
                 <Typography sx={{ fontFamily: 'Montserrat', fontSize: '23px', fontWeight: '800' }}>
-                  {`Do you know any thing about that?`}
+                  {`Do you know anything about that?`}
                   <Box
                     sx={{
                       height: '5px',
@@ -674,24 +711,21 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     >
                       Upload image
                     </Typography>
-                    <Box
-                      sx={{
-                        border: `5px dashed ${theme.palette.input}`,
-                        borderRadius: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                        height: '304px',
-                        width: '99%',
-                        cursor: 'pointer'
+                    <ImageUploader
+                      fieldArray={{
+                        fields: imageFields,
+                        append: appendImage,
+                        remove: removeImage,
+                        swap,
+                        move,
+                        insert,
+                        prepend,
+                        update,
+                        replace
                       }}
-                    >
-                      <IconButton component='label' sx={{ mt: 2 }}>
-                        <CloudUpload sx={{ color: theme.palette.input, fontSize: '4.2rem' }} />
-                        <input type='file' hidden />
-                      </IconButton>
-                    </Box>
+                      control={control}
+                      register={register}
+                    />
                   </Box>
                 </Card>
               </Box>
