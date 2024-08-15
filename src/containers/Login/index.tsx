@@ -104,6 +104,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
           data: { accessToken, refreshToken }
         } = await axios.post(loginUrl, data)
         handleAuth(accessToken, refreshToken)
+        await authenticateCeramic(ceramic, composeClient)
         if (location.state?.from) {
           navigate(location.state?.from)
         }

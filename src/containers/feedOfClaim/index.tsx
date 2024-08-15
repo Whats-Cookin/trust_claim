@@ -105,7 +105,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
       .then(res => {
         const filteredClaims = res.data
-        console.log(filteredClaims)
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
         setVisibleClaims(filteredClaims.slice(0, 8))

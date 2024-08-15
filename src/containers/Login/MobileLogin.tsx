@@ -50,6 +50,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           data: { accessToken, refreshToken }
         } = await axios.post(loginUrl, data)
         handleAuth(accessToken, refreshToken)
+        await authenticateCeramic(ceramic, composeClient)
         if (location.state?.from) {
           navigate(location.state?.from)
         }
@@ -64,21 +65,41 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
 
   const handleWalletAuth = async () => {
     const ethProvider = window.ethereum
-    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-    const accountId = await getAccountId(ethProvider, addresses[0])
-    if (accountId) {
-      localStorage.setItem('ethAddress', accountId.address)
-      try {
-        await authenticateCeramic(ceramic, composeClient)
-        navigate('/')
-      } catch (e) {
-        console.log(`Error trying to authenticate ceramic: ${e}`)
+    console.log('ethProvider: ', ethProvider)
+    setLoading(true)
+
+    try {
+      // Check if a request is already being processed
+      if (!ethProvider) {
+        throw new Error('MetaMask not available')
       }
-      if ((location as any).state?.from) {
-        navigate((location as any).state.from)
+      const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
+      console.log('addresses: ', addresses)
+      const accountId = await getAccountId(ethProvider, addresses[0])
+      if (accountId) {
+        localStorage.setItem('ethAddress', accountId.address)
+        try {
+          await authenticateCeramic(ceramic, composeClient)
+          navigate('/')
+        } catch (e) {
+          console.log(`Error trying to authenticate ceramic: ${e}`)
+        }
+        if ((location as any).state?.from) {
+          navigate((location as any).state.from)
+        }
       }
-    } else {
-      navigate('/login')
+      else {
+        navigate('/login')
+      }
+    } catch (error: any) {
+      if (error.code === -32002) {
+        setSnackbarMessage('MetaMask is already processing a request. Please wait.')
+      } else {
+        setSnackbarMessage(error.message || 'An error occurred during authentication.')
+      }
+      toggleSnackbar(true)
+    } finally {
+      setLoading(false)
     }
   }
 
