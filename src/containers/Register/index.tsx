@@ -1,7 +1,8 @@
-import React, { useEffect, useCallback } from 'react'
+import React from 'react'
 import axios from '../../axiosInstance'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import ReactDOMServer from 'react-dom/server'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
 import styles from './styles'
@@ -11,8 +12,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import RegisterIllustration from '../../assets/images/RegisterIllustration.svg'
-import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
-import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
+import Icons from '../../components/Icons'
 import MobileRegister from './MobileRegister'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: IRegisterProps) => {
@@ -48,6 +48,11 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
 
   if (isMobile) {
     return <MobileRegister {...{ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }} />
+  }
+
+  const svgToDataUrl = (svgElement: any) => {
+    const svgString = ReactDOMServer.renderToStaticMarkup(svgElement)
+    return `data:image/svg+xml;base64,${btoa(svgString)}`
   }
 
   return (
@@ -88,7 +93,9 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
               zIndex: 20,
               borderRadius: '10px',
               position: 'relative',
-              backgroundImage: `url(${isDarkMode ? formBackgrounddark : formBackgroundlight})`,
+              backgroundImage: `url(${
+                isDarkMode ? svgToDataUrl(<Icons.formBackgrounddark />) : svgToDataUrl(<Icons.formBackgroundlight />)
+              })`,
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
               backgroundPositionY: 'center',
@@ -312,12 +319,6 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                 >
                   LOGIN
                 </Typography>
-              </Typography>
-              <Typography
-                variant='body1'
-                sx={{ color: theme.palette.darkinputtext, textDecoration: 'underline', cursor: 'pointer' }}
-              >
-                forgot your password?
               </Typography>
             </Box>
           </Box>

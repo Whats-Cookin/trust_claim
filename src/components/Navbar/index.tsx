@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
-import Logo from '../../assets/logolinkedtrust.svg'
+import Icons from '../../components/Icons'
 
 interface NavbarProps {
   isAuth: boolean
@@ -70,7 +70,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             mr: 'auto'
           }}
         >
-          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '8px' }} />
+          <Box sx={{ width: '28px', height: '28px', mr: '8px' }}>
+            <Icons.logolinkedtrust />
+          </Box>
           <Typography
             sx={{
               color: theme.palette.maintext,

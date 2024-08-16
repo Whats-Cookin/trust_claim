@@ -14,13 +14,13 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import { useQueryParams } from '../../hooks'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
+import ReactDOMServer from 'react-dom/server'
 import { useTheme, TextField, IconButton, useMediaQuery } from '@mui/material'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import CloseIcon from '@mui/icons-material/Close'
 import loginIllustration from '../../assets/images/loginIllustration.svg'
-import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
-import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
+import Icons from '../../components/Icons'
 import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
 
@@ -144,6 +144,11 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     )
   }
 
+  const svgToDataUrl = (svgElement: any) => {
+    const svgString = ReactDOMServer.renderToStaticMarkup(svgElement)
+    return `data:image/svg+xml;base64,${btoa(svgString)}`
+  }
+
   return (
     <Box
       sx={{
@@ -182,7 +187,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
               zIndex: 20,
               borderRadius: '10px',
               position: 'relative',
-              backgroundImage: `url(${isDarkMode ? formBackgrounddark : formBackgroundlight})`,
+              backgroundImage: `url(${
+                isDarkMode ? svgToDataUrl(<Icons.formBackgrounddark />) : svgToDataUrl(<Icons.formBackgroundlight />)
+              })`,
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
               backgroundPositionY: 'center',
@@ -457,12 +464,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 >
                   REGISTER
                 </Typography>
-              </Typography>
-              <Typography
-                variant='body1'
-                sx={{ color: theme.palette.darkinputtext, textDecoration: 'underline', cursor: 'pointer' }}
-              >
-                forgot your password?
               </Typography>
             </Box>
           </Box>

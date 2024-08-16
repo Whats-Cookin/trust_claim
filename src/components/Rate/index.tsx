@@ -13,7 +13,6 @@ import DialogContentText from '@mui/material/DialogContentText'
 import React, { useState } from 'react'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import BackgroundImages from '../../containers/BackgroundImags'
 
 const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) => {
   const queryParams = useQueryParams()
@@ -102,7 +101,6 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
 
   return (
     <>
-      <BackgroundImages />
       <Box
         sx={{
           display: 'flex',

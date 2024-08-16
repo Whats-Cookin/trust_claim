@@ -15,8 +15,7 @@ import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.s
 import { getAccountId } from '@didtools/pkh-ethereum'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import LogoutIcon from '@mui/icons-material/Logout'
-import circles from '../../assets/images/Circles.svg'
-import Ellipse from '../../assets/images/Ellipse.svg'
+import Icons from '../../components/Icons'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
 
@@ -133,7 +132,8 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           position: 'absolute'
         }}
       >
-        <Box component='img' src={circles} alt='' sx={{ width: '100px' }} />
+        <Box sx={{ width: '100px' }} />
+        <Icons.Circles />
       </Box>
       <Box
         sx={{
@@ -189,7 +189,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 zIndex: '1'
               }}
             >
-              <img src={Ellipse} alt='' />
+              <Icons.Ellipse />
             </Box>
             <Box
               sx={{
