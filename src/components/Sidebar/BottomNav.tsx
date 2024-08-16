@@ -53,12 +53,12 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
         onClick={() => navigate('/feed')}
         sx={{ ...getActiveStyle('/feed'), color: theme.palette.sidecolor }}
       />
-      {/* <BottomNavigationAction
+      <BottomNavigationAction
         label='Search'
         icon={<Search />}
         onClick={() => navigate('/search')}
         sx={{ ...getActiveStyle('/search'), color: theme.palette.sidecolor }}
-      /> */}
+      />
       {isAuth && (
         <BottomNavigationAction
           label='Claim'
