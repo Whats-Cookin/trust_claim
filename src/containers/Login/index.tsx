@@ -22,7 +22,10 @@ import loginIllustration from '../../assets/images/loginIllustration.svg'
 import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import DayNightToggle from 'react-day-and-night-toggle'
-import MobileLogin from './MobileLogin'
+import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
+import LogoutIcon from '@mui/icons-material/Logout'
+import circles from '../../assets/images/Circles.svg'
+import Ellipse from '../../assets/images/Ellipse.svg'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
@@ -35,17 +38,19 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     handleSubmit,
     formState: { errors }
   } = useForm()
-
-  const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
-    localStorage.setItem('accessToken', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
-    setLoading(false)
-    navigate('/')
-  }, [])
-
   const navigate = useNavigate()
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
+
+  const handleAuth = useCallback(
+    (accessToken: string, refreshToken: string) => {
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
+      setLoading(false)
+      navigate('/')
+    },
+    [setLoading, navigate]
+  )
 
   useEffect(() => {
     if (githubAuthCode) {
@@ -63,7 +68,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
           console.error(err.message)
         })
     }
-  }, [])
+  }, [githubAuthCode, handleAuth, setLoading, toggleSnackbar, setSnackbarMessage])
 
   const handleWalletAuth = async () => {
     const ethProvider = window.ethereum
@@ -86,7 +91,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     }
   }
 
-  const handleMetamaskAuth = (event: { preventDefault: () => void }) => {
+  const handleMetamaskAuth = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     handleWalletAuth()
   }
@@ -116,10 +121,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     }
   })
 
-  if (isMobile) {
-    return <MobileLogin {...{ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }} />
-  }
-
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
@@ -130,7 +131,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
           color: theme.palette.buttontext
         }}
       >
-        <Box component='img' src={metaicon} alt='' sx={{ width: '30px' }} />
+        <Box component='img' src={metaicon} alt='' sx={{ width: isMobile ? '50px' : '30px' }} />
       </Box>
     )
   } else {
@@ -141,6 +142,322 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
           Install Metamask
         </MuiLink>
       </Typography>
+    )
+  }
+
+  if (isMobile) {
+    return (
+      <Box
+        sx={{
+          width: '100vw',
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Box
+          sx={{
+            width: '11.528vw',
+            minWidth: '83px',
+            maxWidth: '97px',
+            height: '11.528vw',
+            minHeight: '88px',
+            maxHeight: '100px',
+            bottom: '2.344vh',
+            left: '4.306vw',
+            position: 'absolute'
+          }}
+        >
+          <Box component='img' src={circles} alt='' sx={{ width: '100px' }} />
+        </Box>
+        <Box
+          sx={{
+            width: '100%',
+            height: '61.25vh',
+            minHeight: '400px',
+            backgroundImage: `url(${loginIllustrationPhone})`,
+            backgroundRepeat: 'no-repeat',
+            borderRadius: '0 0 20px 20px',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        />
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+            bottom: '152px'
+          }}
+        >
+          <form onSubmit={onSubmit}>
+            <Box
+              sx={{
+                width: '74.028vw',
+                minWidth: '320px',
+                maxWidth: '533px',
+                height: '49.844vh',
+                minHeight: '430px',
+                maxHeight: '638px',
+                padding: '20px',
+                borderRadius: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative',
+                backgroundColor: theme.palette.pageBackground,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '0px',
+                  right: '0px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  zIndex: '1'
+                }}
+              >
+                <img src={Ellipse} alt='' />
+              </Box>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '30px',
+                  right: '7px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  zIndex: '5'
+                }}
+              >
+                <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={30} />
+              </Box>
+              <Typography
+                variant='h5'
+                sx={{
+                  color: theme.palette.texts,
+                  top: '15px',
+                  right: '51%',
+                  transform: 'translateX(50%)',
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  fontSize: '2.5rem',
+                  fontFamily: 'montserrat',
+                  position: 'absolute',
+                  marginBottom: '20px',
+                  zIndex: '1'
+                }}
+              >
+                Sign in
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: '29px',
+                  alignItems: 'center',
+                  marginBottom: '20px',
+                  mt: '65px',
+                  zIndex: '2'
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.formBackground,
+                    cursor: 'pointer',
+                    boxShadow: '0px 1px 5px #ffffff20',
+                    borderRadius: '50%',
+                    width: '82px',
+                    height: '82px'
+                  }}
+                >
+                  <MuiLink
+                    href={githubUrl}
+                    sx={{
+                      color: theme.palette.texts
+                    }}
+                  >
+                    <GitHubIcon sx={{ fontSize: '50px' }} />
+                  </MuiLink>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.formBackground,
+                    cursor: 'pointer',
+                    boxShadow: '0px 1px 5px #ffffff20',
+                    borderRadius: '50%',
+                    width: '82px',
+                    height: '82px'
+                  }}
+                >
+                  {ethLoginOpt}
+                </Box>
+              </Box>
+              <TextField
+                {...register('email', {
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: 'Invalid email address'
+                  }
+                })}
+                label={
+                  <React.Fragment>
+                    <EmailOutlinedIcon sx={{ mr: 1 }} />
+                    Email
+                  </React.Fragment>
+                }
+                InputLabelProps={{
+                  sx: {
+                    display: 'flex',
+                    alignItems: 'center'
+                  }
+                }}
+                sx={{
+                  ...styles.inputField,
+                  '& .MuiFilledInput-root': {
+                    backgroundColor: theme.palette.pageBackground
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.darkinputtext
+                  },
+                  '& .MuiFilledInput-input': {
+                    color: theme.palette.darkinputtext
+                  },
+                  '& .MuiFilledInput-underline:before': {
+                    borderBottomColor: theme.palette.darkinputtext
+                  },
+                  '& .MuiFilledInput-underline:after': {
+                    borderBottomColor: theme.palette.darkinputtext
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.darkinputtext
+                  },
+                  paddingBottom: '53px'
+                }}
+                fullWidth
+                variant='filled'
+                type='email'
+                helperText={(errors.email?.message as string) || ''}
+                error={!!errors.email}
+                margin='dense'
+              />
+              <TextField
+                {...register('password', {
+                  required: 'Password is required'
+                })}
+                fullWidth
+                label={
+                  <React.Fragment>
+                    <LockOutlinedIcon sx={{ mr: 1 }} />
+                    Password
+                  </React.Fragment>
+                }
+                InputLabelProps={{
+                  sx: {
+                    display: 'flex',
+                    alignItems: 'center'
+                  }
+                }}
+                sx={{
+                  ...styles.inputField,
+                  '& .MuiFilledInput-root': {
+                    backgroundColor: theme.palette.pageBackground
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.darkinputtext
+                  },
+                  '& .MuiFilledInput-input': {
+                    color: theme.palette.darkinputtext
+                  },
+                  '& .MuiFilledInput-underline:before': {
+                    borderBottomColor: theme.palette.darkinputtext
+                  },
+                  '& .MuiFilledInput-underline:after': {
+                    borderBottomColor: theme.palette.darkinputtext
+                  },
+                  '& .MuiFormHelperText-root': {
+                    color: theme.palette.darkinputtext
+                  }
+                }}
+                variant='filled'
+                type='password'
+                helperText={(errors.password?.message as string) || ''}
+                error={!!errors.password}
+                margin='dense'
+              />
+              <Button
+                sx={{
+                  width: '31.528vw',
+                  minWidth: '200px',
+                  maxWidth: '227px',
+                  height: '72px',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.buttons,
+                  '&:hover': { backgroundColor: theme.palette.buttonHover },
+                  borderRadius: '80px',
+                  fontWeight: 'bold',
+                  fontSize: '20px',
+                  marginTop: '20px'
+                }}
+                type='submit'
+                variant='contained'
+                size='medium'
+              >
+                Sign in <LogoutIcon sx={{ ml: 2 }} />
+              </Button>
+            </Box>
+          </form>
+        </Box>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            position: 'relative',
+            bottom: '102px'
+          }}
+        >
+          <Typography variant='body1' sx={{ color: theme.palette.texts, marginTop: '20px' }}>
+            Click here to
+            <Typography
+              component='span'
+              onClick={() => navigate('/register')}
+              sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
+            >
+              Register
+            </Typography>
+          </Typography>
+          <Typography
+            variant='body1'
+            sx={{
+              color: theme.palette.darkinputtext,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              marginTop: '10px'
+            }}
+          >
+            forgot your password?
+          </Typography>
+        </Box>
+      </Box>
     )
   }
 
@@ -266,7 +583,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 maxHeight: '510px',
                 textAlign: 'center',
                 ml: '202px',
-                mt: '72px'
+                mt: '30px'
               }}
             >
               <Typography
