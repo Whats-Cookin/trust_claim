@@ -11,8 +11,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import RegisterIllustrationPhone from '../../assets/images/RegisterIllustrationPhone.svg'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LogoutIcon from '@mui/icons-material/Logout'
-import circles from '../../assets/images/Circles.svg'
-import Ellipse from '../../assets/images/Ellipse.svg'
+import Icons from '../../components/Icons'
 
 const MobileRegister = ({
   toggleSnackbar,
@@ -72,7 +71,8 @@ const MobileRegister = ({
           position: 'absolute'
         }}
       >
-        <Box component='img' src={circles} alt='' sx={{ width: '100px' }} />
+        <Box sx={{ width: '100px' }} />
+        <Icons.Circles />
       </Box>
       <Box
         sx={{
@@ -127,7 +127,7 @@ const MobileRegister = ({
                 alignItems: 'center'
               }}
             >
-              <img src={Ellipse} alt='' />
+              <Icons.Ellipse />
             </Box>
             <Box
               sx={{

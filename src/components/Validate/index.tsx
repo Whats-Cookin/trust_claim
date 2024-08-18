@@ -24,7 +24,7 @@ import Loader from '../Loader'
 import axios from '../../axiosInstance'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import placeholderImage from '../../assets/images/imgplaceholder.svg'
+import Icons from '../../components/Icons'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
 
@@ -378,15 +378,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       marginBottom: '45px'
                     }}
                   >
-                    <img
-                      src={sourceThumbnail || placeholderImage}
-                      alt='Source Thumbnail'
-                      style={{ maxWidth: '100%', maxHeight: '100%' }}
-                      onError={e => {
-                        e.currentTarget.src = placeholderImage
-                        e.currentTarget.style.objectFit = 'contain'
-                      }}
-                    />
+                    {sourceThumbnail ? (
+                      <img
+                        src={sourceThumbnail}
+                        alt='Source Thumbnail'
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      />
+                    ) : (
+                      <Icons.imgplaceholder />
+                    )}
                   </Box>
                   <Box sx={{ height: '545', width: '535' }}>
                     {issuerValue && (

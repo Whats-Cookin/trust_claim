@@ -6,9 +6,7 @@ import Modal from '@mui/material/Modal'
 import DensityMediumIcon from '@mui/icons-material/DensityMedium'
 import { Grid, IconButton, useMediaQuery, useTheme } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import Left from '../../assets/leftClick.svg'
-import Right from '../../assets/rightClick.svg'
-import Middle from '../../assets/middlewheel.svg'
+import Icons from '../../components/Icons'
 
 export default function BasicModal() {
   const [open, setOpen] = React.useState(false)
@@ -112,7 +110,9 @@ export default function BasicModal() {
             <Grid container spacing={2} alignItems='center' gap={10}>
               <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
-                  <img src={Left} alt='Left Click' width='97.59' height='115.82' />
+                  <Box sx={{ width: '97.59', height: '115.82' }}>
+                    <Icons.leftClick />
+                  </Box>
                 </Grid>
                 <Grid item xs={8} sx={{ padding: '1.1vh' }}>
                   <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
@@ -125,7 +125,9 @@ export default function BasicModal() {
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
-                  <img src={Right} alt='Right Click' width='97.59' height='115.82' />
+                  <Box sx={{ width: '97.59', height: '115.82' }}>
+                    <Icons.rightClick />
+                  </Box>
                 </Grid>
                 <Grid item xs={8} sx={{ padding: '1.1vh' }}>
                   <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
@@ -139,7 +141,9 @@ export default function BasicModal() {
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
-                  <img src={Middle} alt='Middle Wheel' width='76.99' height='95.62' />
+                  <Box sx={{ width: '76.99', height: '95.62' }}>
+                    <Icons.middlewheel />
+                  </Box>
                 </Grid>
                 <Grid item xs={8} sx={{ padding: '1.1vh' }}>
                   <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
