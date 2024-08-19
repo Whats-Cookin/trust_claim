@@ -13,14 +13,14 @@ For SSH Access into the dev server, kindly refer to this creds in the vault [dev
 
 ## DEPLOYING to PRODUCTION
 ```
-ssh -l ubuntu -i [key] trustclaims.whatscookin.us
+ssh -i [key] ubuntu@68.183.144.184
 cd /data/trust_claim
 git pull
 yarn && yarn build
 cd /data/trust_claim/dist
 cp -r ./ /var/www/trust_claim/
 ```
-This deploys to [live.linkedtrust.us](live.linkedtrust.us)*
+This deploys to [live.linkedtrust.us](dev.linkedtrust.us)*
 
 
 ## TO RUN LOCALLY
@@ -49,7 +49,7 @@ To avoid having to run the back end you may point to the live backend *BUT DO NO
 
 ```bash
 VITE_CERAMIC_URL='https://ceramic.linkedtrust.us/'
-VITE_BACKEND_BASE_URL='https://live.linkedtrust.us'
+VITE_BACKEND_BASE_URL='https://dev.linkedtrust.us'
 VITE_DID_PRIVATE_KEY='...'   in vault [DID PK](https://vault.whatscookin.us/app/passwords/view/0a1b11f4-03be-40e8-bda9-59791526967d)
 
 ```
