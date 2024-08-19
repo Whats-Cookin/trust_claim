@@ -20,7 +20,7 @@ yarn && yarn build
 cd /data/trust_claim/dist
 cp -r ./ /var/www/trust_claim/
 ```
-This deploys to [live.linkedtrust.us](dev.linkedtrust.us)*
+This deploys to [dev.linkedtrust.us](dev.linkedtrust.us)*
 
 
 ## TO RUN LOCALLY
