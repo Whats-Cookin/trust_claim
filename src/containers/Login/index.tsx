@@ -23,8 +23,7 @@ import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
-import { GoogleLogin } from '@react-oauth/google';
-
+import { GoogleLogin } from '@react-oauth/google'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
@@ -307,18 +306,22 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     height: '82px'
                   }}
                 >
-
                   <GoogleLogin
                     type='icon'
                     shape='circle'
-                    onSuccess={credentialResponse => {
-                      console.log(credentialResponse);
+                    onSuccess={async credentialResponse => {
+                      const {
+                        data: { accessToken, refreshToken }
+                      } = await axios.post('/auth/google', {
+                        googleAuthCode: credentialResponse.credential
+                      })
+
+                      handleAuth(accessToken, refreshToken)
                     }}
                     onError={() => {
-                      console.log('Login Failed');
+                      console.log('Login Failed')
                     }}
                   />
-
                 </Box>
                 <Box
                   sx={{
