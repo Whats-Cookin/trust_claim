@@ -17,6 +17,7 @@ import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
+import { GoogleLogin } from '@react-oauth/google'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
 
@@ -247,14 +248,22 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                   height: '82px'
                 }}
               >
-                <MuiLink
-                  href={githubUrl}
-                  sx={{
-                    color: theme.palette.texts
+                <GoogleLogin
+                  type='icon'
+                  shape='circle'
+                  onSuccess={async credentialResponse => {
+                    const {
+                      data: { accessToken, refreshToken }
+                    } = await axios.post('/auth/google', {
+                      googleAuthCode: credentialResponse.credential
+                    })
+
+                    handleAuth(accessToken, refreshToken)
                   }}
-                >
-                  <GitHubIcon sx={{ fontSize: '50px' }} />
-                </MuiLink>
+                  onError={() => {
+                    console.log('Login Failed')
+                  }}
+                />
               </Box>
               <Box
                 sx={{
