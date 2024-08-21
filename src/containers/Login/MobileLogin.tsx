@@ -3,7 +3,6 @@ import axios from '../../axiosInstance'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { Box, Typography, Button, TextField, Link as MuiLink } from '@mui/material'
-import GitHubIcon from '@mui/icons-material/GitHub'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import DayNightToggle from 'react-day-and-night-toggle'
@@ -18,8 +17,6 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 import { GoogleLogin } from '@react-oauth/google'
-
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
 
 const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()

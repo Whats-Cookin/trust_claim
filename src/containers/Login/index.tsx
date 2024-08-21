@@ -10,8 +10,6 @@ import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
-import { useQueryParams } from '../../hooks'
-import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme, TextField, IconButton, useMediaQuery } from '@mui/material'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
@@ -23,8 +21,6 @@ import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
 import { GoogleLogin } from '@react-oauth/google'
-
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
@@ -44,26 +40,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   }, [])
 
   const navigate = useNavigate()
-  const queryParams = useQueryParams()
-  const githubAuthCode = queryParams.get('code')
-
-  useEffect(() => {
-    if (githubAuthCode) {
-      const githubAuthUrl = '/auth/github'
-      axios
-        .post(githubAuthUrl, { githubAuthCode })
-        .then(res => {
-          const { accessToken, refreshToken } = res.data
-          handleAuth(accessToken, refreshToken)
-        })
-        .catch(err => {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage(err.message)
-          console.error(err.message)
-        })
-    }
-  }, [])
 
   const handleWalletAuth = async () => {
     const ethProvider = window.ethereum
