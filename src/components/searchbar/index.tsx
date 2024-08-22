@@ -48,11 +48,11 @@ const SearchBar = () => {
 
   const handleClickOutside = (event: MouseEvent) => {
     if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-      setSearchVal('');
+      setSearchVal('')
       navigate({
         pathname: location.pathname,
         search: ''
-      });
+      })
     }
   }
 
