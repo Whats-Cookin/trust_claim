@@ -102,7 +102,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   useEffect(() => {
     setIsLoading(true)
     axios
-      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=10000`, { timeout: 60000 })
+      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=1000`, { timeout: 60000 })
       .then(res => {
         const filteredClaims = res.data
         // console.log(filteredClaims)
@@ -125,7 +125,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }, [location.search])
   useEffect(() => {
     if (searchTerm) {
-      console.log(searchTerm)
       axios.get(`${BACKEND_BASE_URL}/api/claim/search?search=${searchTerm}`).then(res => {
         const filteredClaims = res.data.claims
         // console.log('---------------------------', filteredClaims)
