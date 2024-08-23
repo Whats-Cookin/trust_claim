@@ -27,7 +27,6 @@ import Loader from '../../components/Loader'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
-// import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -93,7 +92,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [showScrollButton, setShowScrollButton] = useState(false) // state for scroll button visibility
+  const [showScrollButton, setShowScrollButton] = useState(false)
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -105,7 +104,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
       .then(res => {
         const filteredClaims = res.data
-        console.log(filteredClaims)
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
         setVisibleClaims(filteredClaims.slice(0, 8))
@@ -134,7 +132,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       })
       setFilteredClaims(results)
       setVisibleClaims(results.slice(0, 8))
-      console.log('results', results)
     } else {
       setFilteredClaims(claims)
       setVisibleClaims(claims.slice(0, 8))
@@ -163,7 +160,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }, [filteredClaims, visibleClaims])
 
   const handleValidation = (subject: any, id: number) => {
-    console.log(subject, 'and', id)
     navigate({
       pathname: '/validate',
       search: `?subject=${CLAIM_ROOT_URL}/${id}`
@@ -197,7 +193,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   return (
     <>
-      {/* <OverlayModal /> */}
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
