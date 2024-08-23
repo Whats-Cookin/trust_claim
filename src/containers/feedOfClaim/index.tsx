@@ -125,19 +125,22 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }, [location.search])
   useEffect(() => {
     if (searchTerm) {
-      const results = claims.filter(
-        claim =>
-          claim.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      const results = claims.filter(claim => {
+        return (
+          (claim.name && claim.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (claim.statement && claim.statement.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (claim.source_link && claim.source_link.toLowerCase().includes(searchTerm.toLowerCase()))
+        )
+      })
       setFilteredClaims(results)
       setVisibleClaims(results.slice(0, 8))
+      console.log('results', results)
     } else {
       setFilteredClaims(claims)
       setVisibleClaims(claims.slice(0, 8))
     }
   }, [searchTerm, claims])
+  
 
   // Effect to track scroll position
   useEffect(() => {
