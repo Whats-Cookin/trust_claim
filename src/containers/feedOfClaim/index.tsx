@@ -52,7 +52,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
   const displayName = extractProfileName(claim.name)
   const theme = useTheme()
   const highlightedName = searchTerm
-    ? displayName.replace(
+    ? displayName?.replace(
         new RegExp(`(${searchTerm})`, 'gi'),
         (match: string) => `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
       )
@@ -125,12 +125,30 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }, [location.search])
   useEffect(() => {
     if (searchTerm) {
+      console.log(searchTerm)
+      axios.get(`${BACKEND_BASE_URL}/api/claim/search?search=${searchTerm}`).then(res => {
+        const filteredClaims = res.data.claims
+        // console.log('---------------------------', filteredClaims)
+        let claimSearch = [] as any
+        filteredClaims.map((claim: any) => {
+          // console.log(claim.claim)
+          claimSearch.push(claim.claim)
+        })
+        setClaims(claimSearch)
+        setFilteredClaims(claimSearch)
+        setVisibleClaims(claimSearch.slice(0, 8))
+      })
       const results = claims.filter(
         claim =>
           claim?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           claim?.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.source_link?.toLowerCase().includes(searchTerm.toLowerCase())
+          claim?.source_link?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim?.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim?.sourceURI?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim?.nodeUri?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim?.descrip?.toLowerCase().includes(searchTerm.toLowerCase())
       )
+      // console.log(results)
       setFilteredClaims(results)
       setVisibleClaims(results.slice(0, 8))
     } else {
