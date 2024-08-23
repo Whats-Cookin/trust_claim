@@ -140,7 +140,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       setVisibleClaims(claims.slice(0, 8))
     }
   }, [searchTerm, claims])
-  
 
   // Effect to track scroll position
   useEffect(() => {
