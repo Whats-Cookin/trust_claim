@@ -1,0 +1,17 @@
+version: 1.0
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - yarn
+    build:
+      commands:
+        - yarn test
+        - yarn build
+  artifacts:
+    baseDirectory: build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
