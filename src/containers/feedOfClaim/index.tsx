@@ -127,9 +127,9 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     if (searchTerm) {
       const results = claims.filter(
         claim =>
-          claim.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim.source_link.toLowerCase().includes(searchTerm.toLowerCase())
+          claim?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim?.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          claim?.source_link?.toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFilteredClaims(results)
       setVisibleClaims(results.slice(0, 8))
