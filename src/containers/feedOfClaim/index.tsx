@@ -105,7 +105,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=10000`, { timeout: 60000 })
       .then(res => {
         const filteredClaims = res.data
-        console.log(filteredClaims)
+        // console.log(filteredClaims)
         setClaims(filteredClaims)
         setFilteredClaims(filteredClaims)
         setVisibleClaims(filteredClaims.slice(0, 8))
@@ -161,7 +161,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }, [filteredClaims, visibleClaims])
 
   const handleValidation = (subject: any, id: number) => {
-    console.log(subject, 'and', id)
+    // console.log(subject, 'and', id)
     navigate({
       pathname: '/validate',
       search: `?subject=${CLAIM_ROOT_URL}/${id}`
