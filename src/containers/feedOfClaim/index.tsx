@@ -27,8 +27,9 @@ import Loader from '../../components/Loader'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
-// import OverlayModal from '../../components/OverLayModal/OverlayModal'
 import { debounce } from 'lodash'
+// import OverlayModal from '../../components/OverLayModal/OverlayModal'
+
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
