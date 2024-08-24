@@ -30,7 +30,6 @@ import { checkAuth } from '../../utils/authUtils'
 import { debounce } from 'lodash'
 // import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
-
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
 interface LocalClaim {
