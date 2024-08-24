@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
@@ -28,6 +28,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
 // import OverlayModal from '../../components/OverLayModal/OverlayModal'
+import { debounce } from 'lodash'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -93,6 +94,11 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [page, setPage] = useState(1)
+  const [offset, setOffset] = useState(0)
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  const [searchPage, setSearchPage] = useState(1)
+  const [searchOffset, setSearchOffset] = useState(0)
   const [showScrollButton, setShowScrollButton] = useState(false) // state for scroll button visibility
   const navigate = useNavigate()
   const theme = useTheme()
@@ -102,59 +108,77 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   useEffect(() => {
     setIsLoading(true)
     axios
-      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=1000`, { timeout: 60000 })
+      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400&page=${page}&offset=${offset}`, { timeout: 60000 })
       .then(res => {
-        const filteredClaims = res.data
-        // console.log(filteredClaims)
-        setClaims(filteredClaims)
-        setFilteredClaims(filteredClaims)
-        setVisibleClaims(filteredClaims.slice(0, 8))
+        const newClaims = res.data
+        setClaims(prevClaims => [...prevClaims, ...newClaims])
+        setFilteredClaims(prevFilteredClaims => [...prevFilteredClaims, ...newClaims])
+        setVisibleClaims(prevVisibleClaims => {
+          const allVisibleClaims = [...prevVisibleClaims, ...newClaims]
+          return allVisibleClaims.slice(0, prevVisibleClaims.length + 8)
+        })
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
+
     const token = localStorage.getItem('accessToken')
-    if (token) {
-      setIsAuth(true)
-    } else {
-      setIsAuth(false)
-    }
-  }, [])
+    setIsAuth(!!token)
+  }, [page, offset])
   useEffect(() => {
     const search = new URLSearchParams(location.search).get('query')
     setSearchTerm(search ?? '')
   }, [location.search])
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((searchTerm: any) => {
+        setDebouncedSearchTerm(searchTerm)
+        setSearchPage(1)
+        setSearchOffset(400)
+      }, 300),
+    []
+  )
+
   useEffect(() => {
-    if (searchTerm) {
-      axios.get(`${BACKEND_BASE_URL}/api/claim/search?search=${searchTerm}`).then(res => {
-        const filteredClaims = res.data.claims
-        // console.log('---------------------------', filteredClaims)
-        let claimSearch = [] as any
-        filteredClaims.map((claim: any) => {
-          // console.log(claim.claim)
-          claimSearch.push(claim.claim)
+    debouncedSearch(searchTerm)
+  }, [searchTerm, debouncedSearch])
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsLoading(true)
+      axios
+        .get(`${BACKEND_BASE_URL}/api/claim/search`, {
+          params: {
+            search: debouncedSearchTerm,
+            limit: 600,
+            page: searchPage,
+            offset: searchOffset
+          }
         })
-        setClaims(claimSearch)
-        setFilteredClaims(claimSearch)
-        setVisibleClaims(claimSearch.slice(0, 8))
-      })
-      const results = claims.filter(
-        claim =>
-          claim?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.statement?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.source_link?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.sourceURI?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.nodeUri?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          claim?.descrip?.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      // console.log(results)
-      setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 8))
+        .then(res => {
+          const newClaims = res.data.claims.map((claim: any) => claim.claim)
+          console.log(newClaims)
+          if (searchPage === 1) {
+            setClaims(newClaims)
+            setFilteredClaims(newClaims)
+            setVisibleClaims(newClaims.slice(0, 8))
+          } else {
+            setClaims(prevClaims => [...prevClaims, ...newClaims])
+            setFilteredClaims(prevFiltered => [...prevFiltered, ...newClaims])
+            setVisibleClaims(prevVisible => [...prevVisible, ...newClaims.slice(0, 8)])
+          }
+        })
+        .catch(err => console.error(err))
+        .finally(() => setIsLoading(false))
     } else {
       setFilteredClaims(claims)
       setVisibleClaims(claims.slice(0, 8))
     }
-  }, [searchTerm, claims])
+  }, [debouncedSearchTerm, searchPage, searchOffset])
+
+  const loadMoreSearchResults = () => {
+    setSearchPage(prevPage => prevPage + 1)
+    setSearchOffset(prevOffset => prevOffset + 400)
+  }
 
   // Effect to track scroll position
   useEffect(() => {
@@ -165,17 +189,27 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
       if (scrollPosition >= documentHeight - scrollOffset) {
         if (visibleClaims.length < filteredClaims.length) {
+          // Load more visible claims from the already fetched claims
           const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8)
           setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
+        } else {
+          if (debouncedSearchTerm) {
+            loadMoreSearchResults()
+          } else {
+            // If no search term, load more regular claims
+            setPage(prevPage => prevPage + 1)
+            setOffset(prevOffset => prevOffset + 400)
+          }
         }
       }
       setShowScrollButton(window.scrollY > 200)
     }
+
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [filteredClaims, visibleClaims])
+  }, [filteredClaims, visibleClaims, debouncedSearchTerm])
 
   const handleValidation = (subject: any, id: number) => {
     // console.log(subject, 'and', id)
