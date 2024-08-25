@@ -27,6 +27,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import placeholderImage from '../../assets/images/imgplaceholder.svg'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
+import MainContainer from '../MainContainer'
 
 const FIRST_HAND = 'FIRST_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -249,26 +250,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   return (
     <>
       <Loader open={loading} />
-      <Box
+      <MainContainer
         sx={{
-          width: isMobile ? '92%' : '100%',
-          height: 'auto',
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: isMobile ? 'center' : 'flex-end',
           overflow: 'hidden',
-          borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
-          mt: '64px',
-          mb: isMobile ? '60px' : '24px',
-          ml: isMobile ? '4%' : '42px',
-          mr: isMobile ? '4%' : 'auto',
-          paddingTop: isMobile ? '0px' : '41px',
-          paddingBottom: isMobile ? '0px' : '66px',
-          paddingLeft: isMobile ? '16px' : '30px',
-          paddingRight: isMobile ? '16px' : '30px',
-          position: 'relative',
-          alignItems: 'center',
-          backgroundColor: theme.palette.menuBackground
+          alignItems: 'center'
         }}
       >
         <form
@@ -754,7 +739,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Box>
           </Box>
         </form>
-      </Box>
+      </MainContainer>
     </>
   )
 }

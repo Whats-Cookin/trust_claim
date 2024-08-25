@@ -29,6 +29,7 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import ImageUploader from './imageUploading'
+import MainContainer from '../MainContainer'
 
 const tooltips = {
   claim: [
@@ -300,25 +301,11 @@ export const Form = ({
   }
 
   return (
-    <Box
+    <MainContainer
+      flexRowOnDesktop={true}
       sx={{
-        width: isMobile ? '92%' : '100%',
-        top: 0,
-        height: 'auto',
-        background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`,
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        justifyContent: isMobile ? 'center' : 'flex-end',
         overflow: 'hidden',
-        borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
-        mt: '64px',
-        mb: isMobile ? '60px' : 'auto',
-        ml: isMobile ? '4%' : '42px',
-        mr: isMobile ? '4%' : 'auto',
-        paddingTop: isMobile ? '0px' : '41px',
-        paddingBottom: isMobile ? '0px' : '0px',
-        paddingLeft: isMobile ? '16px' : '30px',
-        paddingRight: isMobile ? '16px' : '30px'
+        background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`
       }}
     >
       <Box
@@ -1071,6 +1058,6 @@ export const Form = ({
           {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
         </DialogActions>
       </Box>
-    </Box>
+    </MainContainer>
   )
 }
