@@ -289,17 +289,6 @@ const MobileRegister = ({
             Login
           </Typography>
         </Typography>
-        <Typography
-          variant='body1'
-          sx={{
-            color: theme.palette.darkinputtext,
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            marginTop: '10px'
-          }}
-        >
-          forgot your password?
-        </Typography>
       </Box>
     </Box>
   )
