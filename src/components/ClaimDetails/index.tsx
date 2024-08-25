@@ -103,7 +103,6 @@ const ClaimDetails: React.FC = () => {
           }}
         >
           {displayText}
-          {console.log(displayText)}
           {key === 'statement' && value.length > 60 && (
             <Typography
               component='span'
