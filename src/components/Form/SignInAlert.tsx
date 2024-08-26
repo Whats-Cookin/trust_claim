@@ -22,11 +22,11 @@ export default function SignInAlert() {
       <Box
         width='100%'
         maxWidth='500px'
-        height='350px'
         position='relative'
         sx={{
           bgcolor: theme.palette.menuBackground,
-          width: { xs: '90%', sm: '80%' }
+          width: { xs: '90%', sm: '80%' },
+          height: { xs: '200px', lg: '350px' }
         }}
       >
         {/* Dashed Circles */}
@@ -76,10 +76,16 @@ export default function SignInAlert() {
           width='fit-content'
           sx={{
             transform: 'translateX(-50%)',
-            mb: '-50px'
+            mb: '-50px',
+            '& img': {
+              width: {
+                xs: '200px',
+                lg: '300px'
+              }
+            }
           }}
         >
-          <img src={bill} alt='bill' width='300px' />
+          <img src={bill} alt='bill' />
         </Box>
 
         {/* Content */}
@@ -119,11 +125,11 @@ export default function SignInAlert() {
               position: 'relative',
               bottom: '-25px',
               color: 'white',
-              fontSize: '27px',
+              fontSize: { xs: '1rem', lg: '1.5rem' },
               fontWeight: '600',
-              px: '3rem',
               borderRadius: '50px',
-              backgroundColor: theme.palette.buttons
+              backgroundColor: theme.palette.buttons,
+              px: { xs: '1.5rem', lg: '3rem' }
             }}
           >
             SIGN IN
