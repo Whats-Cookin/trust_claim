@@ -442,12 +442,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                   REGISTER
                 </Typography>
               </Typography>
-              <Typography
-                variant='body1'
-                sx={{ color: theme.palette.darkinputtext, textDecoration: 'underline', cursor: 'pointer' }}
-              >
-                forgot your password?
-              </Typography>
             </Box>
           </Box>
         </form>
