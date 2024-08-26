@@ -105,8 +105,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isAuthenticated = checkAuth()
 
-  useEffect(() => {
-    setIsLoading(true)
+  const getAllClaims = () => {
     axios
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400&page=${page}&offset=${offset}`, { timeout: 60000 })
       .then(res => {
@@ -120,7 +119,10 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
-
+  }
+  useEffect(() => {
+    setIsLoading(true)
+    getAllClaims()
     const token = localStorage.getItem('accessToken')
     setIsAuth(!!token)
   }, [page, offset])
@@ -128,13 +130,14 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     const search = new URLSearchParams(location.search).get('query')
     setSearchTerm(search ?? '')
   }, [location.search])
+
   const debouncedSearch = useMemo(
     () =>
       debounce((searchTerm: any) => {
         setDebouncedSearchTerm(searchTerm)
         setSearchPage(1)
         setSearchOffset(400)
-      }, 300),
+      }, 100),
     []
   )
 
@@ -156,7 +159,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
         })
         .then(res => {
           const newClaims = res.data.claims.map((claim: any) => claim.claim)
-          console.log(newClaims)
           if (searchPage === 1) {
             setClaims(newClaims)
             setFilteredClaims(newClaims)
@@ -170,8 +172,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
         .catch(err => console.error(err))
         .finally(() => setIsLoading(false))
     } else {
-      setFilteredClaims(claims)
-      setVisibleClaims(claims.slice(0, 8))
+      getAllClaims()
     }
   }, [debouncedSearchTerm, searchPage, searchOffset])
 
