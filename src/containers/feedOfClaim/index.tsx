@@ -28,7 +28,6 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
 import MainContainer from '../../components/MainContainer'
-import SignInAlert from '../../components/Form/SignInAlert'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -195,7 +194,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   return (
     <>
-      <SignInAlert />
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
