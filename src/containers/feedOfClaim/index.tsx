@@ -124,15 +124,15 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   }, [location.search])
   useEffect(() => {
     if (searchTerm) {
-      const results = claims.filter(claim => {
-        return (
-          (claim.name && claim.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (claim.statement && claim.statement.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (claim.source_link && claim.source_link.toLowerCase().includes(searchTerm.toLowerCase()))
-        )
-      })
-      setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 8))
+      setIsLoading(true)
+      axios
+        .get(`${BACKEND_BASE_URL}/api/claimsfeed2?search=${encodeURIComponent(searchTerm)}`, { timeout: 60000 })
+        .then(res => {
+          setFilteredClaims(res.data)
+          setVisibleClaims(res.data.slice(0, 8))
+        })
+        .catch(err => console.error(err))
+        .finally(() => setIsLoading(false))
     } else {
       setFilteredClaims(claims)
       setVisibleClaims(claims.slice(0, 8))
