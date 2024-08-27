@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
@@ -7,20 +7,20 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import { IHomeProps, Claim as ImportedClaim } from './types'
+import { Claim as ImportedClaim, IHomeProps } from './types'
 import {
   Box,
+  Button,
   Card,
   CardContent,
+  Fab,
+  Grow,
   IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Button,
   Menu,
   MenuItem,
-  Grow,
-  Fab
+  Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
@@ -28,7 +28,6 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
 import MainContainer from '../../components/MainContainer'
-import SignInAlert from '../../components/Form/SignInAlert'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -195,7 +194,6 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
 
   return (
     <>
-      <SignInAlert />
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
