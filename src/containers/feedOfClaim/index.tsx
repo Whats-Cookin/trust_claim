@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
@@ -7,20 +7,20 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import { IHomeProps, Claim as ImportedClaim } from './types'
+import { Claim as ImportedClaim, IHomeProps } from './types'
 import {
   Box,
+  Button,
   Card,
   CardContent,
+  Fab,
+  Grow,
   IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  Button,
   Menu,
   MenuItem,
-  Grow,
-  Fab
+  Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
@@ -494,36 +494,36 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
-              {isAuthenticated && (
-                <Fab
-                  aria-label='create claim'
-                  onClick={handleCreateClaim}
-                  sx={{
-                    position: 'fixed',
-                    bottom: 84,
-                    right: 36,
-                    color: theme.palette.buttontext,
-                    width: '4.5vw',
-                    minWidth: '35px',
-                    minHeight: '35px',
-                    height: '4.5vw',
-                    maxWidth: '79px',
-                    maxHeight: '79px',
-                    backgroundColor: theme.palette.buttons,
-                    '&:hover': {
-                      backgroundColor: theme.palette.buttonHover
-                    }
-                  }}
-                >
-                  <AddCircleOutlineOutlined />
-                </Fab>
-              )}
             </MainContainer>
           ) : (
             <MainContainer sx={{ textAlign: 'center' }}>
               <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
             </MainContainer>
           )}
+
+          {/* Create Claim Button */}
+          <Fab
+            aria-label='create claim'
+            onClick={handleCreateClaim}
+            sx={{
+              position: 'fixed',
+              bottom: 84,
+              right: 36,
+              color: theme.palette.buttontext,
+              width: '4.5vw',
+              minWidth: '35px',
+              minHeight: '35px',
+              height: '4.5vw',
+              maxWidth: '79px',
+              maxHeight: '79px',
+              backgroundColor: theme.palette.buttons,
+              '&:hover': {
+                backgroundColor: theme.palette.buttonHover
+              }
+            }}
+          >
+            <AddCircleOutlineOutlined />
+          </Fab>
         </>
       )}
     </>

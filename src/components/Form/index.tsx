@@ -19,7 +19,7 @@ import {
   ListSubheader,
   Divider
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -30,6 +30,8 @@ import { composeClient } from '../../composedb'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import ImageUploader from './imageUploading'
 import MainContainer from '../MainContainer'
+import { checkAuth } from '../../utils/authUtils'
+import SignInAlert from './SignInAlert'
 
 const tooltips = {
   claim: [
@@ -118,6 +120,7 @@ export const Form = ({
   })
 
   const { createClaim } = useCreateClaim()
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
 
@@ -165,6 +168,8 @@ export const Form = ({
       name,
       images
     }) => {
+      // check if user is authenticated before submitting
+
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
@@ -308,6 +313,9 @@ export const Form = ({
         background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`
       }}
     >
+      {/* Alert for user to sign in */}
+      {isAuthenticated && <SignInAlert />}
+
       <Box
         sx={{
           textAlign: 'left',
