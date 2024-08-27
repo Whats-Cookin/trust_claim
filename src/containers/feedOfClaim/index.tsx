@@ -494,36 +494,36 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
-              {isAuthenticated && (
-                <Fab
-                  aria-label='create claim'
-                  onClick={handleCreateClaim}
-                  sx={{
-                    position: 'fixed',
-                    bottom: 84,
-                    right: 36,
-                    color: theme.palette.buttontext,
-                    width: '4.5vw',
-                    minWidth: '35px',
-                    minHeight: '35px',
-                    height: '4.5vw',
-                    maxWidth: '79px',
-                    maxHeight: '79px',
-                    backgroundColor: theme.palette.buttons,
-                    '&:hover': {
-                      backgroundColor: theme.palette.buttonHover
-                    }
-                  }}
-                >
-                  <AddCircleOutlineOutlined />
-                </Fab>
-              )}
             </MainContainer>
           ) : (
             <MainContainer sx={{ textAlign: 'center' }}>
               <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
             </MainContainer>
           )}
+
+          {/* Create Claim Button */}
+          <Fab
+            aria-label='create claim'
+            onClick={handleCreateClaim}
+            sx={{
+              position: 'fixed',
+              bottom: 84,
+              right: 36,
+              color: theme.palette.buttontext,
+              width: '4.5vw',
+              minWidth: '35px',
+              minHeight: '35px',
+              height: '4.5vw',
+              maxWidth: '79px',
+              maxHeight: '79px',
+              backgroundColor: theme.palette.buttons,
+              '&:hover': {
+                backgroundColor: theme.palette.buttonHover
+              }
+            }}
+          >
+            <AddCircleOutlineOutlined />
+          </Fab>
         </>
       )}
     </>

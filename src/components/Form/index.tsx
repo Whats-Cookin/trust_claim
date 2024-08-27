@@ -120,7 +120,7 @@ export const Form = ({
   })
 
   const { createClaim } = useCreateClaim()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
 
@@ -169,10 +169,6 @@ export const Form = ({
       images
     }) => {
       // check if user is authenticated before submitting
-      if (checkAuth()) {
-        setIsAuthenticated(true)
-        return
-      }
 
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()

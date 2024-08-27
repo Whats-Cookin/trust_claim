@@ -1,12 +1,15 @@
 import { Box, Button, Typography, useTheme } from '@mui/material'
 import bill from '../../assets/bell.png'
+import { useNavigate } from 'react-router-dom'
 
 export default function SignInAlert() {
   const theme = useTheme()
+  const navigate = useNavigate()
 
   return (
     <Box
       position='fixed'
+      zIndex={999}
       top={0}
       left={0}
       width='100vw'
@@ -15,7 +18,7 @@ export default function SignInAlert() {
       justifyContent='center'
       alignItems='center'
       sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
         backdropFilter: 'blur(4px)'
       }}
     >
@@ -131,6 +134,7 @@ export default function SignInAlert() {
               backgroundColor: theme.palette.buttons,
               px: { xs: '1.5rem', lg: '3rem' }
             }}
+            onClick={() => navigate('/login')}
           >
             SIGN IN
           </Button>
