@@ -120,7 +120,7 @@ export const Form = ({
   })
 
   const { createClaim } = useCreateClaim()
-  const [isAuthenticated, setIsAuthenticated] = useState(true)
+  const isAuthenticated = checkAuth()
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
 
@@ -314,7 +314,7 @@ export const Form = ({
       }}
     >
       {/* Alert for user to sign in */}
-      {isAuthenticated && <SignInAlert />}
+      {!isAuthenticated && <SignInAlert />}
 
       <Box
         sx={{
