@@ -8,6 +8,7 @@
 ```bash
 git clone https://github.com/Whats-Cookin/trust_claim.git
 cd trust_claim
+yarn
 yarn dev
 ```
 
