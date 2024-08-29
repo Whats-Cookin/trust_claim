@@ -143,7 +143,7 @@ const App = () => {
             <Routes>
               <Route path='feed' element={<FeedClaim {...commonProps} />} />
               <Route path='report/:claimId' element={<ClaimReport />} />
-              <Route path='claim/:claimId' element={<ClaimDetails />} />
+              <Route path='claims/:claimId' element={<ClaimDetails {...commonProps} />} />
               <Route path='search' element={<Search {...commonProps} />} />
               <Route
                 path='claim'
