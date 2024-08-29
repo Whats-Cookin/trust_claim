@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import { Button, useTheme } from '@mui/material'
 import { camelCaseToSimpleString } from '../../utils/string.utils'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import placeholderDark from '../../assets/imgplaceholderdark.svg'
 import placeholderWhite from '../../assets/imgplaceholderwhite.svg'
@@ -27,19 +28,19 @@ interface NodeDetailsProps {
 }
 
 export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, isDarkMode }: NodeDetailsProps) {
-  const handleClose = () => setOpen(!open)
+  const handleClose = () => setOpen(false)
+
   const theme = useTheme()
-  console.log(selectedClaim)
+  const navigate = useNavigate()
+  const [showFullText, setShowFullText] = useState(false)
+
   if (!selectedClaim) return null
   const excludedFields = ['id', 'userId', 'issuerId', 'issuerIdType', 'createdAt', 'lastUpdatedAt']
 
-  console.log(selectedClaim)
   const truncateText = (text: string, length: number) => {
     if (text.length <= length) return text
     return text.slice(0, length) + '...'
   }
-
-  const [showFullText, setShowFullText] = useState(false)
 
   return (
     <>
@@ -150,7 +151,8 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'end'
+          justifyContent: 'center',
+          gap: '2rem'
         }}
       >
         <Button
@@ -162,6 +164,44 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
             fontSize: 'clamp(12px, 3vw, 25px)',
             px: '2rem'
           }}
+          onClick={() =>
+            navigate({
+              pathname: '/validate',
+              search: `?subject=https://live.linkedtrust.us/claims/${selectedClaim.id}`
+            })
+          }
+        >
+          Validate
+        </Button>
+
+        <Button
+          sx={{
+            color: theme.palette.buttontext,
+            bgcolor: theme.palette.footerBackground,
+            fontWeight: 500,
+            borderRadius: '100px',
+            fontSize: 'clamp(12px, 3vw, 25px)',
+            px: '2rem'
+          }}
+          onClick={() =>
+            navigate({
+              pathname: `/report/${selectedClaim.id}`
+            })
+          }
+        >
+          Evedence
+        </Button>
+
+        <Button
+          sx={{
+            color: theme.palette.buttontext,
+            bgcolor: theme.palette.footerBackground,
+            fontWeight: 500,
+            borderRadius: '100px',
+            fontSize: 'clamp(12px, 3vw, 25px)',
+            px: '2rem'
+          }}
+          onClick={handleClose}
         >
           BACK <img src={isDarkMode ? arrow : arrowDark} alt='arrow' style={{ width: '25px', marginLeft: '10px' }} />
         </Button>

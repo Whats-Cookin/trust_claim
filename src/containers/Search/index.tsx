@@ -169,10 +169,10 @@ const Search = (homeProps: IHomeProps) => {
   }, [query, cy])
 
   useEffect(() => {
-    if (!cy) {
+    if (!cy || !showDetails) {
       setCy(Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions)))
     }
-  }, [theme, isMediumUp])
+  }, [theme, isMediumUp, showDetails])
 
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
@@ -181,7 +181,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
-  const img = '' // TODO
 
   return (
     <>
@@ -192,7 +191,7 @@ const Search = (homeProps: IHomeProps) => {
             setOpen={setShowDetails}
             selectedClaim={selectedClaim}
             isDarkMode={isDarkMode}
-            claimImg={img}
+            claimImg={selectedClaim.img || ''}
           />
         ) : (
           <Box ref={ref} sx={styles.cy} />
