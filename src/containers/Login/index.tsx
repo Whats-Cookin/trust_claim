@@ -42,25 +42,44 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   const navigate = useNavigate()
 
   const handleWalletAuth = async () => {
-    const ethProvider = window.ethereum
-    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-    const accountId = await getAccountId(ethProvider, addresses[0])
-
-    if (accountId) {
-      localStorage.setItem('ethAddress', accountId.address)
-      try {
-        await authenticateCeramic(ceramic, composeClient)
-        navigate('/')
-      } catch (e) {
-        console.log(`Error trying to authenticate ceramic: ${e}`)
-      }
-      if (location.state?.from) {
-        navigate(location.state.from)
-      }
-    } else {
-      navigate('/login')
+    const ethProvider = window.ethereum;
+  
+    if (!ethProvider) {
+      alert('MetaMask is not installed. Please install it to proceed.');
+      return;
     }
-  }
+  
+    try {
+      const addresses = await ethProvider.request({ method: 'eth_requestAccounts' });
+      const accountId = await getAccountId(ethProvider, addresses[0]);
+  
+      if (accountId) {
+        localStorage.setItem('ethAddress', accountId.address);
+        try {
+          await authenticateCeramic(ceramic, composeClient);
+          navigate('/');
+        } catch (e) {
+          console.log(`Error trying to authenticate ceramic: ${e}`);
+        }
+        if (location.state?.from) {
+          navigate(location.state.from);
+        }
+      } else {
+        alert('Failed to retrieve account. Please try again.');
+        navigate('/login');
+      }
+    } catch (error: any) {
+      console.error('MetaMask connection error:', error);
+      if (error.code === 4001) {
+        alert('Please connect to MetaMask to proceed.');
+      } else if (error.code === -32002) {
+        alert('MetaMask connection request is already pending. Please check your MetaMask extension.');
+      } else {
+        alert('An unknown error occurred. Please try again.');
+      }
+    }
+  };
+  
 
   const handleMetamaskAuth = (event: { preventDefault: () => void }) => {
     event.preventDefault()
@@ -79,6 +98,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
         const {
           data: { accessToken, refreshToken }
         } = await axios.post(loginUrl, data)
+        localStorage.setItem('did', accessToken)
         handleAuth(accessToken, refreshToken)
         if (location.state?.from) {
           navigate(location.state?.from)
