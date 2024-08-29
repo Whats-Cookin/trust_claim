@@ -181,7 +181,6 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
-
   return (
     <>
       <MainContainer>
