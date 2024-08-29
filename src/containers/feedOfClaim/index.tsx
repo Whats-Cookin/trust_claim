@@ -149,7 +149,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     if (debouncedSearchTerm) {
       setIsLoading(true)
       axios
-        .get(`${BACKEND_BASE_URL}/api/claim/search`, {
+        .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, {
           params: {
             search: debouncedSearchTerm,
             limit: 600,
@@ -158,7 +158,9 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
           }
         })
         .then(res => {
-          const newClaims = res.data.claims.map((claim: any) => claim.claim)
+          console.log(res.data)
+          const newClaims = res.data
+          console.log(newClaims)
           if (searchPage === 1) {
             setClaims(newClaims)
             setFilteredClaims(newClaims)
