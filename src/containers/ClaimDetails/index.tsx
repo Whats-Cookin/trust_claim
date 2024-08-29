@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import MainContainer from '../MainContainer'
+import MainContainer from '../../components/MainContainer'
 import { Box, Button, Card, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
