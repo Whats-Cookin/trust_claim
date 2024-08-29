@@ -1,16 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import MainContainer from '../MainContainer'
-import { Box, Button, Card, CircularProgress, Container, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Card, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { camelCaseToSimpleString } from '../../utils/string.utils'
 import imageSvg from '../../assets/images/imgplaceholder.svg'
 import imageSvgDark from '../../assets/images/imgplaceholderdark.svg'
 import arrow from '../../assets/images/arrow.svg'
 import arrowDark from '../../assets/images/arrowdark.svg'
 import circle from '../../assets/images/circle.svg'
 import dottedCircle from '../../assets/images/dotttedCircle.svg'
+import RenderClaimDetails from './RenderClaimDetails'
+import LoadingState from './LoadingState'
+import ErrorState from './ErrorState'
 
 interface Claim {
   statement: string | null
@@ -23,24 +25,11 @@ interface IHomeProps {
   isDarkMode: boolean
 }
 
-const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
-
-const truncateText = (text: string, length: number) => {
-  if (text.length <= length) return text
-  return text.slice(0, length) + '...'
-}
-
-const EXCLUDED_FIELDS = ['id', 'userId', 'issuerId', 'issuerIdType', 'createdAt', 'lastUpdatedAt']
-
 const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   const { claimId } = useParams<{ claimId: string }>()
   const [isLoading, setIsLoading] = useState(false)
   const [claimData, setClaimData] = useState<Claim | null>(null)
   const [error, setError] = useState<string>('')
-  const [showFullText, setShowFullText] = useState(false)
   const claimImage = claimData?.image ?? null
 
   const theme = useTheme()
@@ -63,71 +52,8 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
     fetchReportData()
   }, [fetchReportData])
 
-  const renderLoadingState = () => (
-    <Container
-      maxWidth='sm'
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh'
-      }}
-    >
-      <CircularProgress />
-    </Container>
-  )
-
-  const renderErrorState = () => (
-    <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
-      <Typography variant='body1' sx={{ color: theme.palette.texts }}>
-        {error || 'Report data is not available.'}
-      </Typography>
-    </Container>
-  )
-
-  const renderClaimDetail = (key: string, value: any) => {
-    if (EXCLUDED_FIELDS.includes(key) || value == null || value === '') return null
-    if (key === 'effectiveDate') value = formatDate(value) // Format the date
-
-    const displayText = key === 'statement' && !showFullText ? truncateText(value, 60) : value
-
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          padding: '5px 10px',
-          flexGrow: 1
-        }}
-        key={key}
-      >
-        <Typography sx={{ fontSize: 'clamp(10px, 5vw, 28px)' }}>{camelCaseToSimpleString(key)}:</Typography>
-        <Typography
-          component='p'
-          sx={{
-            overflowWrap: 'break-word',
-            width: '80%',
-            fontSize: 'clamp(10px, 5vw, 26px)'
-          }}
-        >
-          {displayText}
-          {key === 'statement' && value.length > 60 && (
-            <Typography
-              component='span'
-              onClick={() => setShowFullText(!showFullText)}
-              sx={{ color: theme.palette.maintext, cursor: 'pointer', fontSize: 'clamp(10px, 5vw, 26px)' }}
-            >
-              {showFullText ? ' See less' : ' See more'}
-            </Typography>
-          )}
-        </Typography>
-      </Box>
-    )
-  }
-
-  if (error || (!claimData && !isLoading)) return renderErrorState()
-  if (isLoading) return renderLoadingState()
+  if (error || (!claimData && !isLoading)) return <ErrorState error={error} theme={theme} />
+  if (isLoading) return <LoadingState />
 
   const handleBackButton = () => {
     window.history.back()
@@ -209,7 +135,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
             }
           }}
         >
-          {claimData && Object.entries(claimData).map(([key, value]) => renderClaimDetail(key, value))}
+          {claimData && <RenderClaimDetails claimData={claimData} theme={theme} />}
         </Box>
       </Card>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '15px', mb: '35px' }}>
@@ -218,8 +144,8 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
           onClick={handleBackButton}
           sx={{
             justifyContent: 'left',
-            backgroundColor: theme.palette.pageBackground,
-            color: theme.palette.texts,
+            backgroundColor: '#4C726F',
+            color: '#F2FAF9',
             borderRadius: '91px',
             fontWeight: '700',
             fontSize: isMediumScreen ? '12px' : '18px',
@@ -237,7 +163,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
               right: '11px',
               width: { lg: '36px', md: '30px', sm: '30px', xs: '30px' },
               height: { lg: '36px', md: '30px', sm: '30px', xs: '30px' },
-              backgroundImage: `url(${circle})`,
+              backgroundImage: `url(${dottedCircle})`,
               backgroundSize: 'cover',
               zIndex: 1
             },
@@ -247,17 +173,21 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
               right: '14px',
               width: { lg: '50px', md: '40px', sm: '36px', xs: '36px' },
               height: '28px',
-              backgroundImage: `url(${isDarkMode ? arrowDark : arrow})`,
+              backgroundImage: `url(${arrow})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               zIndex: 1,
               transition: 'background-image 0.3s ease-in-out'
             },
             '&:hover::before': {
-              backgroundImage: `url(${dottedCircle})`
+              backgroundImage: `url(${circle})`
+            },
+            '&:hover::after': {
+              backgroundImage: `url(${isDarkMode ? arrow : arrowDark})`
             },
             '&:hover': {
-              backgroundColor: theme.palette.smallButton
+              backgroundColor: `${isDarkMode ? '#0A1C1D' : '#F2FAF9'}`,
+              color: `${isDarkMode ? '#F2FAF9' : '#0A1C1D'}`
             }
           }}
         >
