@@ -134,7 +134,7 @@ export const Form = ({
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
-          amt: amtAsNumber,
+          amt: amtAsNumber
         }
         setLoading(true)
         const { message, isSuccess } = await createClaim(payload)
