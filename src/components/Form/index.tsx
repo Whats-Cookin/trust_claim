@@ -19,7 +19,7 @@ import {
   ListSubheader,
   Divider
 } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -29,6 +29,9 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { composeClient } from '../../composedb'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import ImageUploader from './imageUploading'
+import MainContainer from '../MainContainer'
+import { checkAuth } from '../../utils/authUtils'
+import SignInAlert from './SignInAlert'
 
 const tooltips = {
   claim: [
@@ -117,6 +120,7 @@ export const Form = ({
   })
 
   const { createClaim } = useCreateClaim()
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
 
@@ -164,6 +168,8 @@ export const Form = ({
       name,
       images
     }) => {
+      // check if user is authenticated before submitting
+
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
@@ -300,27 +306,16 @@ export const Form = ({
   }
 
   return (
-    <Box
+    <MainContainer
+      flexRowOnDesktop={true}
       sx={{
-        width: isMobile ? '92%' : '100%',
-        top: 0,
-        height: 'auto',
-        background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`,
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        justifyContent: isMobile ? 'center' : 'flex-end',
         overflow: 'hidden',
-        borderRadius: isMobile ? '15px' : '20px 0px 0px 40px',
-        mt: '64px',
-        mb: isMobile ? '60px' : 'auto',
-        ml: isMobile ? '4%' : '42px',
-        mr: isMobile ? '4%' : 'auto',
-        paddingTop: isMobile ? '0px' : '41px',
-        paddingBottom: isMobile ? '0px' : '0px',
-        paddingLeft: isMobile ? '16px' : '30px',
-        paddingRight: isMobile ? '16px' : '30px'
+        background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`
       }}
     >
+      {/* Alert for user to sign in */}
+      {isAuthenticated && <SignInAlert />}
+
       <Box
         sx={{
           textAlign: 'left',
@@ -1071,6 +1066,6 @@ export const Form = ({
           {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
         </DialogActions>
       </Box>
-    </Box>
+    </MainContainer>
   )
 }

@@ -12,6 +12,7 @@ import NewClaim from './AddNewClaim'
 import { parseSingleNode, parseMultipleNodes } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
+import MainContainer from '../../components/MainContainer'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -181,16 +182,7 @@ const Search = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <Container
-        sx={{
-          width: isMediumUp ? '97%' : '95%',
-          backgroundColor: theme.palette.menuBackground,
-          borderRadius: isMediumUp ? '10px 0px 0px 10px' : '10px',
-          pt: '65px'
-        }}
-        maxWidth={false}
-        disableGutters
-      >
+      <MainContainer>
         <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
         <NewClaim
           open={openNewClaim}
@@ -201,7 +193,7 @@ const Search = (homeProps: IHomeProps) => {
           toggleSnackbar={toggleSnackbar}
         />
         <Box ref={ref} sx={styles.cy} />
-      </Container>
+      </MainContainer>
       <GraphinfButton />
     </>
   )

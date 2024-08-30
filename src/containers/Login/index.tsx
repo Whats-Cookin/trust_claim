@@ -6,13 +6,10 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
-import GitHubIcon from '@mui/icons-material/GitHub'
 import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
 import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
-import { useQueryParams } from '../../hooks'
-import { GITHUB_CLIENT_ID } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme, TextField, IconButton, useMediaQuery } from '@mui/material'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
@@ -23,8 +20,7 @@ import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
-
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
+import { GoogleLogin } from '@react-oauth/google'
 
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
@@ -44,26 +40,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   }, [])
 
   const navigate = useNavigate()
-  const queryParams = useQueryParams()
-  const githubAuthCode = queryParams.get('code')
-
-  useEffect(() => {
-    if (githubAuthCode) {
-      const githubAuthUrl = '/auth/github'
-      axios
-        .post(githubAuthUrl, { githubAuthCode })
-        .then(res => {
-          const { accessToken, refreshToken } = res.data
-          handleAuth(accessToken, refreshToken)
-        })
-        .catch(err => {
-          setLoading(false)
-          toggleSnackbar(true)
-          setSnackbarMessage(err.message)
-          console.error(err.message)
-        })
-    }
-  }, [])
 
   const handleWalletAuth = async () => {
     const ethProvider = window.ethereum
@@ -305,14 +281,22 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     height: '82px'
                   }}
                 >
-                  <MuiLink
-                    href={githubUrl}
-                    sx={{
-                      color: theme.palette.texts
+                  <GoogleLogin
+                    type='icon'
+                    shape='circle'
+                    onSuccess={async credentialResponse => {
+                      const {
+                        data: { accessToken, refreshToken }
+                      } = await axios.post('/auth/google', {
+                        googleAuthCode: credentialResponse.credential
+                      })
+
+                      handleAuth(accessToken, refreshToken)
                     }}
-                  >
-                    <GitHubIcon sx={{ fontSize: '50px' }} />
-                  </MuiLink>
+                    onError={() => {
+                      console.log('Login Failed')
+                    }}
+                  />
                 </Box>
                 <Box
                   sx={{
