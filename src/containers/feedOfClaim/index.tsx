@@ -105,7 +105,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isAuthenticated = checkAuth()
 
-  const getAllClaims = () => {
+  const getAllClaims = async () => {
     axios
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400&page=${page}&offset=${offset}`, { timeout: 60000 })
       .then(res => {
@@ -120,16 +120,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
   }
-  useEffect(() => {
-    setIsLoading(true)
-    getAllClaims()
-    const token = localStorage.getItem('accessToken')
-    setIsAuth(!!token)
-  }, [page, offset])
-  useEffect(() => {
-    const search = new URLSearchParams(location.search).get('query')
-    setSearchTerm(search ?? '')
-  }, [location.search])
+
 
   const debouncedSearch = useMemo(
     () =>
@@ -140,79 +131,10 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       }, 100),
     []
   )
-
-  useEffect(() => {
-    debouncedSearch(searchTerm)
-  }, [searchTerm, debouncedSearch])
-
-  useEffect(() => {
-    if (debouncedSearchTerm) {
-      setIsLoading(true)
-      axios
-        .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, {
-          params: {
-            search: debouncedSearchTerm,
-            limit: 600,
-            page: searchPage,
-            offset: searchOffset
-          }
-        })
-        .then(res => {
-          console.log(res.data)
-          const newClaims = res.data
-          console.log(newClaims)
-          if (searchPage === 1) {
-            setClaims(newClaims)
-            setFilteredClaims(newClaims)
-            setVisibleClaims(newClaims.slice(0, 8))
-          } else {
-            setClaims(prevClaims => [...prevClaims, ...newClaims])
-            setFilteredClaims(prevFiltered => [...prevFiltered, ...newClaims])
-            setVisibleClaims(prevVisible => [...prevVisible, ...newClaims.slice(0, 8)])
-          }
-        })
-        .catch(err => console.error(err))
-        .finally(() => setIsLoading(false))
-    } else {
-      getAllClaims()
-    }
-  }, [debouncedSearchTerm, searchPage, searchOffset])
-
   const loadMoreSearchResults = () => {
     setSearchPage(prevPage => prevPage + 1)
     setSearchOffset(prevOffset => prevOffset + 400)
   }
-
-  // Effect to track scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollOffset = 100
-      const scrollPosition = window.innerHeight + window.scrollY
-      const documentHeight = document.body.offsetHeight
-
-      if (scrollPosition >= documentHeight - scrollOffset) {
-        if (visibleClaims.length < filteredClaims.length) {
-          // Load more visible claims from the already fetched claims
-          const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8)
-          setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
-        } else {
-          if (debouncedSearchTerm) {
-            loadMoreSearchResults()
-          } else {
-            // If no search term, load more regular claims
-            setPage(prevPage => prevPage + 1)
-            setOffset(prevOffset => prevOffset + 400)
-          }
-        }
-      }
-      setShowScrollButton(window.scrollY > 200)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [filteredClaims, visibleClaims, debouncedSearchTerm])
 
   const handleValidation = (subject: any, id: number) => {
     // console.log(subject, 'and', id)
@@ -246,6 +168,99 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const handleCreateClaim = () => {
     navigate('/claim')
   }
+
+  /// ========================================
+  useEffect(() => {
+    const initializeFeed = async () => {
+      setIsLoading(true);
+      await getAllClaims();
+      const token = localStorage.getItem('accessToken');
+      setIsAuth(!!token);
+      setIsLoading(false);
+    };
+
+    initializeFeed();
+
+    const search = new URLSearchParams(location.search).get('query');
+    setSearchTerm(search ?? '');
+  }, [location.search]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollOffset = 100;
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const documentHeight = document.body.offsetHeight;
+
+      if (scrollPosition >= documentHeight - scrollOffset) {
+        if (visibleClaims.length < filteredClaims.length) {
+          // Load more visible claims from the already fetched claims
+          const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8);
+          setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims]);
+        } else {
+          if (debouncedSearchTerm) {
+            loadMoreSearchResults();
+          } else {
+            // If no search term, load more regular claims
+            setPage(prevPage => prevPage + 1);
+            setOffset(prevOffset => prevOffset + 400);
+          }
+        }
+      }
+      setShowScrollButton(window.scrollY > 200);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [filteredClaims, visibleClaims, debouncedSearchTerm]);
+
+  useEffect(() => {
+    const debouncedSearch = debounce((searchTerm: string) => {
+      setDebouncedSearchTerm(searchTerm);
+      setSearchPage(1);
+      setSearchOffset(400);
+    }, 300);
+
+    debouncedSearch(searchTerm);
+
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsLoading(true);
+      axios.get(`${BACKEND_BASE_URL}/api/claim/search`, {
+        params: {
+          search: debouncedSearchTerm,
+          limit: 600,
+          page: searchPage,
+          offset: searchOffset
+        }
+      })
+      .then(res => {
+        const newClaims = res.data.claims.map((claim: any) => claim.claim);
+        if (searchPage === 1) {
+          setClaims(newClaims);
+          setFilteredClaims(newClaims);
+          setVisibleClaims(newClaims.slice(0, 8));
+        } else {
+          setClaims(prevClaims => [...prevClaims, ...newClaims]);
+          setFilteredClaims(prevFiltered => [...prevFiltered, ...newClaims]);
+          setVisibleClaims(prevVisible => [...prevVisible, ...newClaims.slice(0, 8)]);
+        }
+      })
+      .catch(err => console.error(err))
+      .finally(() => setIsLoading(false));
+    } else {
+      getAllClaims();
+    }
+  }, [debouncedSearchTerm, searchPage, searchOffset]);
+
+
 
   return (
     <>
