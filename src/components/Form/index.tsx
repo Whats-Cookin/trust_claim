@@ -312,9 +312,6 @@ export const Form = ({
         background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`
       }}
     >
-      {/* Alert for user to sign in */}
-      {isAuthenticated && <SignInAlert />}
-
       <Box
         sx={{
           textAlign: 'left',
