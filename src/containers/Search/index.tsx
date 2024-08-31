@@ -1,26 +1,26 @@
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styles from './styles'
 import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
-import Modal from '../../components/Modal'
 import { useLocation } from 'react-router-dom'
-import { useTheme, useMediaQuery, Container, Box } from '@mui/material'
+import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
 import NewClaim from './AddNewClaim'
-import { parseSingleNode, parseMultipleNodes } from './graph.utils'
+import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
+import NodeDetails from './NodeDetails'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
   const theme = useTheme()
-  const { setLoading, setSnackbarMessage, toggleSnackbar } = homeProps
+  const { setLoading, setSnackbarMessage, toggleSnackbar, isDarkMode } = homeProps
   const ref = useRef<any>(null)
   const query = new URLSearchParams(search).get('query')
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [showDetails, setShowDetails] = useState<boolean>(false)
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
@@ -103,6 +103,7 @@ const Search = (homeProps: IHomeProps) => {
 
       if (currentClaim) {
         setSelectedClaim(currentClaim)
+        setShowDetails(true)
         fetchRelatedClaims(event.target.data('id'), page.current)
       }
     }
@@ -114,7 +115,7 @@ const Search = (homeProps: IHomeProps) => {
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
-      setOpenModal(true)
+      setShowDetails(true)
     }
   }
 
@@ -168,10 +169,10 @@ const Search = (homeProps: IHomeProps) => {
   }, [query, cy])
 
   useEffect(() => {
-    if (!cy) {
+    if (!cy || !showDetails) {
       setCy(Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions)))
     }
-  }, [theme, isMediumUp])
+  }, [theme, isMediumUp, showDetails])
 
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
@@ -183,7 +184,17 @@ const Search = (homeProps: IHomeProps) => {
   return (
     <>
       <MainContainer>
-        <Modal open={openModal} setOpen={setOpenModal} selectedClaim={selectedClaim} />
+        {showDetails ? (
+          <NodeDetails
+            open={showDetails}
+            setOpen={setShowDetails}
+            selectedClaim={selectedClaim}
+            isDarkMode={isDarkMode}
+            claimImg={selectedClaim.img || ''}
+          />
+        ) : (
+          <Box ref={ref} sx={styles.cy} />
+        )}
         <NewClaim
           open={openNewClaim}
           setOpen={setOpenNewClaim}
@@ -192,7 +203,6 @@ const Search = (homeProps: IHomeProps) => {
           setSnackbarMessage={setSnackbarMessage}
           toggleSnackbar={toggleSnackbar}
         />
-        <Box ref={ref} sx={styles.cy} />
       </MainContainer>
       <GraphinfButton />
     </>
