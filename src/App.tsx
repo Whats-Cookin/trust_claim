@@ -14,6 +14,7 @@ import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
+import ClaimDetails from './containers/ClaimDetails'
 import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
@@ -142,6 +143,7 @@ const App = () => {
             <Routes>
               <Route path='feed' element={<FeedClaim {...commonProps} />} />
               <Route path='report/:claimId' element={<ClaimReport />} />
+              <Route path='claims/:claimId' element={<ClaimDetails {...commonProps} />} />
               <Route path='search' element={<Search {...commonProps} />} />
               <Route path='claim' element={<Form {...commonProps} />} />
               <Route path='register' element={<Register {...commonProps} />} />
