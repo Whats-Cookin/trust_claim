@@ -233,24 +233,23 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     if (debouncedSearchTerm) {
       setIsLoading(true)
       axios
-        .get(`${BACKEND_BASE_URL}/api/claim/search`, {
+        .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, {
           params: {
             search: debouncedSearchTerm,
             limit: 600,
-            page: searchPage,
             offset: searchOffset
           }
         })
         .then(res => {
-          const newClaims = res.data.claims.map((claim: any) => claim.claim)
+          const newClaims = res.data
           if (searchPage === 1) {
             setClaims(newClaims)
             setFilteredClaims(newClaims)
-            setVisibleClaims(newClaims.slice(0, 8))
+            setVisibleClaims(newClaims)
           } else {
             setClaims(prevClaims => [...prevClaims, ...newClaims])
             setFilteredClaims(prevFiltered => [...prevFiltered, ...newClaims])
-            setVisibleClaims(prevVisible => [...prevVisible, ...newClaims.slice(0, 8)])
+            setVisibleClaims(prevVisible => [...prevVisible, ...newClaims])
           }
         })
         .catch(err => console.error(err))
@@ -260,6 +259,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     }
   }, [debouncedSearchTerm, searchPage, searchOffset])
 
+  console.log(visibleClaims)
   return (
     <>
       {/* <OverlayModal /> */}
@@ -337,7 +337,13 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric'
-                            })}
+                            }) !== 'Invalid Date'
+                              ? new Date(claim.effective_date).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })
+                              : 'No Date Informed'}
                           </Typography>
                           {claim.statement && (
                             <Typography
