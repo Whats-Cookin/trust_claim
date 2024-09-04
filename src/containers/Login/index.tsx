@@ -25,7 +25,6 @@ import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
 import { GoogleLogin } from '@react-oauth/google'
 
-
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
@@ -293,21 +292,20 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 }}
               >
                 <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: theme.palette.buttontext,
-                  backgroundColor: theme.palette.formBackground,
-                  cursor: 'pointer',
-                  boxShadow: '0px 1px 5px #ffffff20',
-                  borderRadius: '50%',
-                  width: '82px',
-                  height: '82px'
-                }}
-              >
-
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.formBackground,
+                    cursor: 'pointer',
+                    boxShadow: '0px 1px 5px #ffffff20',
+                    borderRadius: '50%',
+                    width: '82px',
+                    height: '82px'
+                  }}
+                >
                   <GoogleLogin
                     type='icon'
                     shape='circle'
@@ -324,31 +322,26 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                       console.log('Login Failed')
                     }}
                   />
-
-
                 </Box>
                 <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: theme.palette.buttontext,
-                  backgroundColor: theme.palette.formBackground,
-                  cursor: 'pointer',
-                  boxShadow: '0px 1px 5px #ffffff20',
-                  borderRadius: '50%',
-                  width: '82px',
-                  height: '82px'
-                }}
-              >
-              <MuiLink
-                    href={githubUrl}
-                    sx={{ color: theme.palette.texts }}
-                  >
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.palette.buttontext,
+                    backgroundColor: theme.palette.formBackground,
+                    cursor: 'pointer',
+                    boxShadow: '0px 1px 5px #ffffff20',
+                    borderRadius: '50%',
+                    width: '82px',
+                    height: '82px'
+                  }}
+                >
+                  <MuiLink href={githubUrl} sx={{ color: theme.palette.texts }}>
                     <GitHubIcon sx={{ fontSize: '50px' }} />
                   </MuiLink>
-              </Box>
+                </Box>
                 <Box
                   sx={{
                     display: 'flex',
