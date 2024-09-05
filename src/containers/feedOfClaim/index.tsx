@@ -512,7 +512,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
-              <IntersectionObservee onIntersection={() => loadNextPage()} />
+              <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
           ) : (
             <MainContainer sx={{ textAlign: 'center' }}>
