@@ -189,7 +189,7 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
             })
           }
         >
-          Evedence
+          Evidence
         </Button>
 
         <Button
