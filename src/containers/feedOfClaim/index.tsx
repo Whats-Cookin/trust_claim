@@ -27,7 +27,6 @@ import Loader from '../../components/Loader'
 import IntersectionObservee from '../../components/IntersectionObservee'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
-import { checkAuth } from '../../utils/authUtils'
 import MainContainer from '../../components/MainContainer'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
@@ -102,7 +101,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const claimsRef = useRef<ImportedClaim[]>([])
 
   const location = useLocation()
-  // const [isAuth, setIsAuth] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
@@ -112,7 +110,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const [showScrollButton, setShowScrollButton] = useState(false)
-  // const isAuthenticated = checkAuth()
 
   const initialPageLoad = useRef(true)
   const isLastPage = useRef(false)
