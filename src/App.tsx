@@ -80,8 +80,8 @@ const App = () => {
           height: '0'
         },
         body: {
-          '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none'
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none'
         }
       }}
     />

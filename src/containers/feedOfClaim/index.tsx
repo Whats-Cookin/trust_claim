@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
@@ -24,12 +24,14 @@ import {
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
+import IntersectionObservee from '../../components/IntersectionObservee'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
 import MainContainer from '../../components/MainContainer'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
+const PAGE_LIMIT = 10
 
 interface LocalClaim {
   name: string
@@ -83,61 +85,82 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
-  const [claims, setClaims] = useState<Array<ImportedClaim>>([])
-  const [visibleClaims, setVisibleClaims] = useState<Array<ImportedClaim>>([])
+async function fetchClaims(page: number, query?: string) {
+  const res = await axios.get(`${BACKEND_BASE_URL}/api/claimsfeed2`, {
+    timeout: 60000,
+    params: {
+      limit: PAGE_LIMIT,
+      search: query,
+      page
+    }
+  })
+  return res
+}
+
+const FeedClaim: React.FC<IHomeProps> = () => {
+  const [claims, setClaims] = useState<ImportedClaim[]>([])
+  const claimsRef = useRef<ImportedClaim[]>([])
+
   const location = useLocation()
   // const [isAuth, setIsAuth] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [showScrollButton, setShowScrollButton] = useState(false)
+  const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   // const isAuthenticated = checkAuth()
 
-  useEffect(() => {
+  const initialPageLoad = useRef(true)
+  const isLastPage = useRef(false)
+  const fetchingPage = useRef(1)
+
+  useMemo(() => {
+    if (isLoading && !initialPageLoad.current) return
+    initialPageLoad.current = false
+    fetchingPage.current = 1
+    isLastPage.current = false
     setIsLoading(true)
-    axios
-      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
+    fetchClaims(1, searchTerm)
       .then(res => {
-        const claimData = res.data
-        setClaims(claimData)
-        setVisibleClaims(claimData.slice(0, 8))
+        claimsRef.current = res.data
+        setClaims(res.data)
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [searchTerm])
 
   useEffect(() => {
-    const search = new URLSearchParams(location.search).get('query')
+    const prev = searchTerm
+    const search = getSearchFromParams()
+    if (search === prev) return
+
     setSearchTerm(search ?? '')
   }, [location.search])
 
-  // Effect to track scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollOffset = 100
-      const scrollPosition = window.innerHeight + window.scrollY
-      const documentHeight = document.body.offsetHeight
+  async function loadNextPage() {
+    if (isLastPage.current) return
 
-      if (scrollPosition >= documentHeight - scrollOffset) {
-        if (visibleClaims.length < claims.length) {
-          const nextClaims = claims.slice(visibleClaims.length, visibleClaims.length + 8)
-          setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
-        }
+    const currentPage = Math.ceil(claimsRef.current.length / PAGE_LIMIT)
+    const nextPage = currentPage + 1
+
+    if (fetchingPage.current >= nextPage) return
+    fetchingPage.current = nextPage
+
+    try {
+      const { data } = await fetchClaims(nextPage, searchTerm)
+      if (data.length < PAGE_LIMIT) {
+        isLastPage.current = true
       }
-      setShowScrollButton(window.scrollY > 200)
+      claimsRef.current = claimsRef.current.concat(data)
+      setClaims(claimsRef.current)
+    } catch (err) {
+      console.error(err)
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [claims, visibleClaims])
+  }
 
-  const handleValidation = (subject: any, id: number) => {
+  const handleValidation = (id: number) => {
     navigate({
       pathname: '/validate',
       search: `?subject=${CLAIM_ROOT_URL}/${id}`
@@ -162,11 +185,12 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     setSelectedIndex(null)
   }
 
-  const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
   const handleCreateClaim = () => {
     navigate('/claim')
+  }
+
+  function getSearchFromParams() {
+    return new URLSearchParams(location.search).get('query')
   }
 
   return (
@@ -201,8 +225,8 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   />
                 </Typography>
               </Box>
-              {visibleClaims.map((claim: any, index: number) => (
-                <Grow in={true} timeout={1000} key={claim.id}>
+              {claims.map((claim: any, index: number) => (
+                <Grow in={true} timeout={1000} key={claim.claim_id}>
                   <Box sx={{ marginBottom: '15px' }}>
                     <Card
                       sx={{
@@ -268,7 +292,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                           }}
                         >
                           <Button
-                            onClick={() => handleValidation(claim.link, claim.claim_id)}
+                            onClick={() => handleValidation(claim.claim_id)}
                             startIcon={<VerifiedOutlinedIcon />}
                             variant='text'
                             sx={{
@@ -442,35 +466,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   </Box>
                 </Grow>
               ))}
-              <Grow in={showScrollButton}>
-                <Fab
-                  aria-label='scroll to top'
-                  onClick={handleScrollToTop}
-                  sx={{
-                    position: 'fixed',
-                    bottom: {
-                      xs: 130,
-                      sm: 150,
-                      md: 160,
-                      lg: 180
-                    },
-                    right: 36,
-                    color: theme.palette.buttontext,
-                    width: '4.5vw',
-                    minWidth: '35px',
-                    minHeight: '35px',
-                    height: '4.5vw',
-                    maxWidth: '79px',
-                    maxHeight: '79px',
-                    backgroundColor: theme.palette.buttons,
-                    '&:hover': {
-                      backgroundColor: theme.palette.buttonHover
-                    }
-                  }}
-                >
-                  <ArrowUpwardIcon />
-                </Fab>
-              </Grow>
+              <IntersectionObservee onIntersection={() => loadNextPage()} />
             </MainContainer>
           ) : (
             <MainContainer sx={{ textAlign: 'center' }}>
