@@ -110,6 +110,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+
+  const [showScrollButton, setShowScrollButton] = useState(false)
   // const isAuthenticated = checkAuth()
 
   const initialPageLoad = useRef(true)
@@ -139,6 +141,17 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     setSearchTerm(search ?? '')
   }, [location.search])
 
+  useEffect(() => {
+    document.addEventListener('scroll', onScroll)
+    return () => {
+      document.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  function onScroll() {
+    setShowScrollButton(window.scrollY > 200)
+  }
+
   async function loadNextPage() {
     if (isLastPage.current) return
 
@@ -158,6 +171,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     } catch (err) {
       console.error(err)
     }
+  }
+
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleValidation = (id: number) => {
@@ -466,6 +483,35 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   </Box>
                 </Grow>
               ))}
+              <Grow in={showScrollButton}>
+                <Fab
+                  aria-label='scroll to top'
+                  onClick={handleScrollToTop}
+                  sx={{
+                    position: 'fixed',
+                    bottom: {
+                      xs: 130,
+                      sm: 150,
+                      md: 160,
+                      lg: 180
+                    },
+                    right: 36,
+                    color: theme.palette.buttontext,
+                    width: '4.5vw',
+                    minWidth: '35px',
+                    minHeight: '35px',
+                    height: '4.5vw',
+                    maxWidth: '79px',
+                    maxHeight: '79px',
+                    backgroundColor: theme.palette.buttons,
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  <ArrowUpwardIcon />
+                </Fab>
+              </Grow>
               <IntersectionObservee onIntersection={() => loadNextPage()} />
             </MainContainer>
           ) : (
