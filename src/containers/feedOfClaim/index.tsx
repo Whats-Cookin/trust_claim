@@ -525,7 +525,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     <CircularProgress color='inherit' />
                   </Fade>
                 </Box>
-              ) : ""}
+              ) : (
+                ''
+              )}
 
               <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
