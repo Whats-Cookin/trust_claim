@@ -11,7 +11,7 @@ export default function IntersectionObservee(props: Props) {
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '0px',
+      rootMargin: '400px',
       threshold: 1.0
     }
 

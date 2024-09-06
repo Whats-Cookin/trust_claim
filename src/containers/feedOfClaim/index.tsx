@@ -19,9 +19,11 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Fade,
   useMediaQuery,
   useTheme
 } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 import axios from 'axios'
 import Loader from '../../components/Loader'
 import IntersectionObservee from '../../components/IntersectionObservee'
@@ -30,7 +32,7 @@ import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
-const PAGE_LIMIT = 10
+const PAGE_LIMIT = 50
 
 interface LocalClaim {
   name: string
@@ -102,6 +104,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const location = useLocation()
   const [isLoading, setIsLoading] = useState(true)
+  const [loadingNextPage, setLoadingNextPage] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
@@ -111,20 +114,23 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const [showScrollButton, setShowScrollButton] = useState(false)
 
+  const [isLastPage, setIsLastPage] = useState(false)
   const initialPageLoad = useRef(true)
-  const isLastPage = useRef(false)
   const fetchingPage = useRef(1)
 
   useMemo(() => {
     if (isLoading && !initialPageLoad.current) return
     initialPageLoad.current = false
     fetchingPage.current = 1
-    isLastPage.current = false
+    setIsLastPage(false)
     setIsLoading(true)
     fetchClaims(1, searchTerm)
-      .then(res => {
-        claimsRef.current = res.data
-        setClaims(res.data)
+      .then(({ data }) => {
+        claimsRef.current = data
+        if (data.length < PAGE_LIMIT) {
+          setIsLastPage(true)
+        }
+        setClaims(claimsRef.current)
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
@@ -150,7 +156,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   async function loadNextPage() {
-    if (isLastPage.current) return
+    if (isLastPage) return
 
     const currentPage = Math.ceil(claimsRef.current.length / PAGE_LIMIT)
     const nextPage = currentPage + 1
@@ -159,14 +165,17 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     fetchingPage.current = nextPage
 
     try {
+      setLoadingNextPage(true)
       const { data } = await fetchClaims(nextPage, searchTerm)
       if (data.length < PAGE_LIMIT) {
-        isLastPage.current = true
+        setIsLastPage(true)
       }
       claimsRef.current = claimsRef.current.concat(data)
       setClaims(claimsRef.current)
     } catch (err) {
       console.error(err)
+    } finally {
+      setLoadingNextPage(false)
     }
   }
 
@@ -509,6 +518,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
+
+              {!isLastPage ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Fade in={loadingNextPage}>
+                    <CircularProgress color='inherit' />
+                  </Fade>
+                </Box>
+              ) : ""}
+
               <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
           ) : (
