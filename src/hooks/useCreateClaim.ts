@@ -19,10 +19,12 @@ export function useCreateClaim() {
       // quick fix for "Ceramic instance is not authenticated" error
       if (!ceramic.did) {
         try {
+          const sessionStr = 'your-jwt-token'
+          console.log(`Session Token: ${sessionStr}`)
           const session = await authenticateCeramic(ceramic, composeClient)
           console.log(`Session: ${session}`)
-        } catch (error) {
-          console.log(`Error authenticating ceramic instance: Error message: ${error}`)
+        } catch (error: unknown) {
+          console.log(`Error authenticating ceramic instance: ${(error as any).message}`)
         }
       }
 
