@@ -85,10 +85,9 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
 
 const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [claims, setClaims] = useState<Array<ImportedClaim>>([])
-  const [filteredClaims, setFilteredClaims] = useState<Array<ImportedClaim>>([])
   const [visibleClaims, setVisibleClaims] = useState<Array<ImportedClaim>>([])
   const location = useLocation()
-  const [isAuth, setIsAuth] = useState(false)
+  // const [isAuth, setIsAuth] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
@@ -97,47 +96,25 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isAuthenticated = checkAuth()
+  // const isAuthenticated = checkAuth()
 
   useEffect(() => {
     setIsLoading(true)
     axios
       .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
       .then(res => {
-        const filteredClaims = res.data
-        setClaims(filteredClaims)
-        setFilteredClaims(filteredClaims)
-        setVisibleClaims(filteredClaims.slice(0, 8))
+        const claimData = res.data
+        setClaims(claimData)
+        setVisibleClaims(claimData.slice(0, 8))
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
-    const token = localStorage.getItem('accessToken')
-    if (token) {
-      setIsAuth(true)
-    } else {
-      setIsAuth(false)
-    }
   }, [])
+
   useEffect(() => {
     const search = new URLSearchParams(location.search).get('query')
     setSearchTerm(search ?? '')
   }, [location.search])
-  useEffect(() => {
-    if (searchTerm) {
-      const results = claims.filter(claim => {
-        return (
-          (claim.name && claim.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (claim.statement && claim.statement.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (claim.source_link && claim.source_link.toLowerCase().includes(searchTerm.toLowerCase()))
-        )
-      })
-      setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 8))
-    } else {
-      setFilteredClaims(claims)
-      setVisibleClaims(claims.slice(0, 8))
-    }
-  }, [searchTerm, claims])
 
   // Effect to track scroll position
   useEffect(() => {
@@ -147,8 +124,8 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
       const documentHeight = document.body.offsetHeight
 
       if (scrollPosition >= documentHeight - scrollOffset) {
-        if (visibleClaims.length < filteredClaims.length) {
-          const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8)
+        if (visibleClaims.length < claims.length) {
+          const nextClaims = claims.slice(visibleClaims.length, visibleClaims.length + 8)
           setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
         }
       }
@@ -158,7 +135,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     return () => {
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [filteredClaims, visibleClaims])
+  }, [claims, visibleClaims])
 
   const handleValidation = (subject: any, id: number) => {
     navigate({
@@ -198,7 +175,7 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
         <Loader open={isLoading} />
       ) : (
         <>
-          {filteredClaims.length > 0 ? (
+          {claims.length > 0 ? (
             <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
