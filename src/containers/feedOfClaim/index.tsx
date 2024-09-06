@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useMemo } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
@@ -7,27 +7,28 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import { Claim as ImportedClaim, IHomeProps } from './types'
+import { IHomeProps, Claim as ImportedClaim } from './types'
 import {
   Box,
-  Button,
   Card,
   CardContent,
-  Fab,
-  Grow,
   IconButton,
-  Menu,
-  MenuItem,
   Typography,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Button,
+  Menu,
+  MenuItem,
+  Grow,
+  Fab
 } from '@mui/material'
 import axios from 'axios'
 import Loader from '../../components/Loader'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import { checkAuth } from '../../utils/authUtils'
-import MainContainer from '../../components/MainContainer'
+import { debounce } from 'lodash'
+// import OverlayModal from '../../components/OverLayModal/OverlayModal'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 
@@ -52,7 +53,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
   const displayName = extractProfileName(claim.name)
   const theme = useTheme()
   const highlightedName = searchTerm
-    ? displayName.replace(
+    ? displayName?.replace(
         new RegExp(`(${searchTerm})`, 'gi'),
         (match: string) => `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
       )
@@ -93,74 +94,49 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [showScrollButton, setShowScrollButton] = useState(false)
+  const [page, setPage] = useState(1)
+  const [offset, setOffset] = useState(0)
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
+  const [searchPage, setSearchPage] = useState(1)
+  const [searchOffset, setSearchOffset] = useState(0)
+  const [showScrollButton, setShowScrollButton] = useState(false) // state for scroll button visibility
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isAuthenticated = checkAuth()
 
-  useEffect(() => {
-    setIsLoading(true)
+  const getAllClaims = async () => {
     axios
-      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400`, { timeout: 60000 })
+      .get(`${BACKEND_BASE_URL}/api/claimsfeed2?limit=400&page=${page}&offset=${offset}`, { timeout: 60000 })
       .then(res => {
-        const filteredClaims = res.data
-        setClaims(filteredClaims)
-        setFilteredClaims(filteredClaims)
-        setVisibleClaims(filteredClaims.slice(0, 8))
+        const newClaims = res.data
+        setClaims(prevClaims => [...prevClaims, ...newClaims])
+        setFilteredClaims(prevFilteredClaims => [...prevFilteredClaims, ...newClaims])
+        setVisibleClaims(prevVisibleClaims => {
+          const allVisibleClaims = [...prevVisibleClaims, ...newClaims]
+          return allVisibleClaims.slice(0, prevVisibleClaims.length + 8)
+        })
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
-    const token = localStorage.getItem('accessToken')
-    if (token) {
-      setIsAuth(true)
-    } else {
-      setIsAuth(false)
-    }
-  }, [])
-  useEffect(() => {
-    const search = new URLSearchParams(location.search).get('query')
-    setSearchTerm(search ?? '')
-  }, [location.search])
-  useEffect(() => {
-    if (searchTerm) {
-      const results = claims.filter(claim => {
-        return (
-          (claim.name && claim.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (claim.statement && claim.statement.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (claim.source_link && claim.source_link.toLowerCase().includes(searchTerm.toLowerCase()))
-        )
-      })
-      setFilteredClaims(results)
-      setVisibleClaims(results.slice(0, 8))
-    } else {
-      setFilteredClaims(claims)
-      setVisibleClaims(claims.slice(0, 8))
-    }
-  }, [searchTerm, claims])
+  }
 
-  // Effect to track scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollOffset = 100
-      const scrollPosition = window.innerHeight + window.scrollY
-      const documentHeight = document.body.offsetHeight
-
-      if (scrollPosition >= documentHeight - scrollOffset) {
-        if (visibleClaims.length < filteredClaims.length) {
-          const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8)
-          setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
-        }
-      }
-      setShowScrollButton(window.scrollY > 200)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [filteredClaims, visibleClaims])
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((searchTerm: any) => {
+        setDebouncedSearchTerm(searchTerm)
+        setSearchPage(1)
+        setSearchOffset(400)
+      }, 100),
+    []
+  )
+  const loadMoreSearchResults = () => {
+    setSearchPage(prevPage => prevPage + 1)
+    setSearchOffset(prevOffset => prevOffset + 400)
+  }
 
   const handleValidation = (subject: any, id: number) => {
+    // console.log(subject, 'and', id)
     navigate({
       pathname: '/validate',
       search: `?subject=${CLAIM_ROOT_URL}/${id}`
@@ -192,14 +168,120 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
     navigate('/claim')
   }
 
+  /// ========================================
+  useEffect(() => {
+    const initializeFeed = async () => {
+      setIsLoading(true)
+      await getAllClaims()
+      const token = localStorage.getItem('accessToken')
+      setIsAuth(!!token)
+      setIsLoading(false)
+    }
+
+    initializeFeed()
+
+    const search = new URLSearchParams(location.search).get('query')
+    setSearchTerm(search ?? '')
+  }, [location.search])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollOffset = 100
+      const scrollPosition = window.innerHeight + window.scrollY
+      const documentHeight = document.body.offsetHeight
+
+      if (scrollPosition >= documentHeight - scrollOffset) {
+        if (visibleClaims.length < filteredClaims.length) {
+          // Load more visible claims from the already fetched claims
+          const nextClaims = filteredClaims.slice(visibleClaims.length, visibleClaims.length + 8)
+          setVisibleClaims(prevClaims => [...prevClaims, ...nextClaims])
+        } else {
+          if (debouncedSearchTerm) {
+            loadMoreSearchResults()
+          } else {
+            // If no search term, load more regular claims
+            setPage(prevPage => prevPage + 1)
+            setOffset(prevOffset => prevOffset + 400)
+          }
+        }
+      }
+      setShowScrollButton(window.scrollY > 200)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [filteredClaims, visibleClaims, debouncedSearchTerm])
+
+  useEffect(() => {
+    const debouncedSearch = debounce((searchTerm: string) => {
+      setDebouncedSearchTerm(searchTerm)
+      setSearchPage(1)
+      setSearchOffset(400)
+    }, 300)
+
+    debouncedSearch(searchTerm)
+
+    return () => {
+      debouncedSearch.cancel()
+    }
+  }, [searchTerm])
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsLoading(true)
+      axios
+        .get(`${BACKEND_BASE_URL}/api/claimsfeed2`, {
+          params: {
+            search: debouncedSearchTerm,
+            limit: 600,
+            offset: searchOffset
+          }
+        })
+        .then(res => {
+          const newClaims = res.data
+          if (searchPage === 1) {
+            setClaims(newClaims)
+            setFilteredClaims(newClaims)
+            setVisibleClaims(newClaims)
+          } else {
+            setClaims(prevClaims => [...prevClaims, ...newClaims])
+            setFilteredClaims(prevFiltered => [...prevFiltered, ...newClaims])
+            setVisibleClaims(prevVisible => [...prevVisible, ...newClaims])
+          }
+        })
+        .catch(err => console.error(err))
+        .finally(() => setIsLoading(false))
+    } else {
+      getAllClaims()
+    }
+  }, [debouncedSearchTerm, searchPage, searchOffset])
+
+  console.log(visibleClaims)
   return (
     <>
+      {/* <OverlayModal /> */}
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
         <>
           {filteredClaims.length > 0 ? (
-            <MainContainer>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'relative',
+                mt: '64px',
+                mb: isMediumScreen ? '77px' : '28px',
+                width: '95%',
+                flexDirection: 'column',
+                backgroundColor: theme.palette.menuBackground,
+                borderRadius: isMediumScreen ? '20px' : '20px 0px 0px 40px',
+                padding: '20px'
+              }}
+            >
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
                   variant='h6'
@@ -255,7 +337,13 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric'
-                            })}
+                            }) !== 'Invalid Date'
+                              ? new Date(claim.effective_date).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })
+                              : 'No Date Informed'}
                           </Typography>
                           {claim.statement && (
                             <Typography
@@ -494,36 +582,36 @@ const FeedClaim: React.FC<IHomeProps> = ({ toggleTheme, isDarkMode }) => {
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
-            </MainContainer>
+              {isAuthenticated && (
+                <Fab
+                  aria-label='create claim'
+                  onClick={handleCreateClaim}
+                  sx={{
+                    position: 'fixed',
+                    bottom: 84,
+                    right: 36,
+                    color: theme.palette.buttontext,
+                    width: '4.5vw',
+                    minWidth: '35px',
+                    minHeight: '35px',
+                    height: '4.5vw',
+                    maxWidth: '79px',
+                    maxHeight: '79px',
+                    backgroundColor: theme.palette.buttons,
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  <AddCircleOutlineOutlined />
+                </Fab>
+              )}
+            </Box>
           ) : (
-            <MainContainer sx={{ textAlign: 'center' }}>
+            <Box sx={{ textAlign: 'center', mt: '20px' }}>
               <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
-            </MainContainer>
+            </Box>
           )}
-
-          {/* Create Claim Button */}
-          <Fab
-            aria-label='create claim'
-            onClick={handleCreateClaim}
-            sx={{
-              position: 'fixed',
-              bottom: 84,
-              right: 36,
-              color: theme.palette.buttontext,
-              width: '4.5vw',
-              minWidth: '35px',
-              minHeight: '35px',
-              height: '4.5vw',
-              maxWidth: '79px',
-              maxHeight: '79px',
-              backgroundColor: theme.palette.buttons,
-              '&:hover': {
-                backgroundColor: theme.palette.buttonHover
-              }
-            }}
-          >
-            <AddCircleOutlineOutlined />
-          </Fab>
         </>
       )}
     </>
