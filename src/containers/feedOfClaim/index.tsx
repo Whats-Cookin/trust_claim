@@ -30,6 +30,7 @@ import IntersectionObservee from '../../components/IntersectionObservee'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
+import { checkAuth } from '../../utils/authUtils'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 const PAGE_LIMIT = 50
@@ -117,6 +118,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const [isLastPage, setIsLastPage] = useState(false)
   const initialPageLoad = useRef(true)
   const fetchingPage = useRef(1)
+
+  const isAuth = checkAuth()
 
   useMemo(() => {
     if (isLoading && !initialPageLoad.current) return
@@ -496,10 +499,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   sx={{
                     position: 'fixed',
                     bottom: {
-                      xs: 130,
-                      sm: 150,
-                      md: 160,
-                      lg: 180
+                      xs: 145,
+                      sm: 140,
+                      md: 120,
+                      lg: 120
                     },
                     right: 36,
                     color: theme.palette.buttontext,
@@ -538,28 +541,35 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           )}
 
           {/* Create Claim Button */}
-          <Fab
-            aria-label='create claim'
-            onClick={handleCreateClaim}
-            sx={{
-              position: 'fixed',
-              bottom: 84,
-              right: 36,
-              color: theme.palette.buttontext,
-              width: '4.5vw',
-              minWidth: '35px',
-              minHeight: '35px',
-              height: '4.5vw',
-              maxWidth: '79px',
-              maxHeight: '79px',
-              backgroundColor: theme.palette.buttons,
-              '&:hover': {
-                backgroundColor: theme.palette.buttonHover
-              }
-            }}
-          >
-            <AddCircleOutlineOutlined />
-          </Fab>
+          {isAuth && (
+            <Fab
+              aria-label='create claim'
+              onClick={handleCreateClaim}
+              sx={{
+                position: 'fixed',
+                bottom: {
+                  xs: 84,
+                  sm: 75,
+                  md: 45,
+                  lg: 40
+                },
+                right: 36,
+                color: theme.palette.buttontext,
+                width: '4.5vw',
+                minWidth: '35px',
+                minHeight: '35px',
+                height: '4.5vw',
+                maxWidth: '79px',
+                maxHeight: '79px',
+                backgroundColor: theme.palette.buttons,
+                '&:hover': {
+                  backgroundColor: theme.palette.buttonHover
+                }
+              }}
+            >
+              <AddCircleOutlineOutlined />
+            </Fab>
+          )}
         </>
       )}
     </>
