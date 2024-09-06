@@ -103,7 +103,6 @@ const Search = (homeProps: IHomeProps) => {
 
       if (currentClaim) {
         setSelectedClaim(currentClaim)
-        setShowDetails(true)
         fetchRelatedClaims(event.target.data('id'), page.current)
       }
     }
