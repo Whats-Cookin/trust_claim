@@ -62,21 +62,37 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
 
   const handleWalletAuth = async () => {
     const ethProvider = window.ethereum
-    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-    const accountId = await getAccountId(ethProvider, addresses[0])
-    if (accountId) {
-      localStorage.setItem('ethAddress', accountId.address)
-      try {
+    if (!ethProvider) {
+      alert('MetaMask is not installed. Please install MetaMask and try again.')
+      return
+    }
+
+    try {
+      // Request account access if needed
+      const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
+      if (addresses.length === 0) {
+        alert('No accounts found. Please make sure MetaMask is logged in.')
+        return
+      }
+
+      // Get the accountId using the selected address
+      const accountId = await getAccountId(ethProvider, addresses[0])
+
+      if (accountId) {
+        // Store the Ethereum address locally
+        localStorage.setItem('ethAddress', accountId.address)
+
+        // Authenticate with Ceramic
         await authenticateCeramic(ceramic, composeClient)
+
+        // Redirect to home page after successful authentication
         navigate('/')
-      } catch (e) {
-        console.log(`Error trying to authenticate ceramic: ${e}`)
+      } else {
+        alert('Failed to retrieve account ID. Please try again.')
       }
-      if ((location as any).state?.from) {
-        navigate((location as any).state.from)
-      }
-    } else {
-      navigate('/login')
+    } catch (e: any) {
+      console.error(`Error during MetaMask authentication: ${e.message}`)
+      alert('MetaMask authentication failed. Please try again.')
     }
   }
 
@@ -84,7 +100,6 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
     event.preventDefault()
     handleWalletAuth()
   }
-
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
@@ -92,10 +107,11 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
         id='loginButton'
         onClick={handleMetamaskAuth}
         sx={{
-          color: theme.palette.buttontext
+          color: theme.palette.buttontext,
+          cursor: 'pointer' // Ensures the button is clickable
         }}
       >
-        <Box component='img' src={metaicon} alt='' sx={{ width: '50px' }} />
+        <Box component='img' src={metaicon} alt='MetaMask' sx={{ width: '50px' }} />
       </Box>
     )
   } else {
@@ -103,7 +119,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
       <Typography id='metamaskLink' sx={{ color: theme.palette.texts }}>
         To login with Ethereum &nbsp;
         <MuiLink component={Link} to='https://metamask.io/' target='_blank' sx={{ color: theme.palette.link }}>
-          Install Metamask
+          Install MetaMask
         </MuiLink>
       </Typography>
     )
