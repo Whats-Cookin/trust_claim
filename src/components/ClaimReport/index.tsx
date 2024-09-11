@@ -127,42 +127,41 @@ const DonationReport: React.FC = () => {
           </Typography>
         </Box>
         <MyCard
-          data={reportData.data.claim}
+          data={reportData.data.claim.claim}
           theme={theme}
           isLargeScreen={isLargeScreen}
           setSelectedIndex={setSelectedIndex}
           handleMenuClose={() => setSelectedIndex(null)}
         />
 
-        {reportData.data.validations.length > 0 && (
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              color: theme.palette.texts,
+              textAlign: 'center',
+              marginLeft: isMediumScreen ? '0' : '1rem',
+              fontSize: '23px',
+              fontWeight: 'bold'
+            }}
+          >
+            Validations
+            <Box
+              sx={{
+                height: '4px',
+                backgroundColor: theme.palette.maintext,
+                marginTop: '4px',
+                borderRadius: '2px',
+                width: '80%'
+              }}
+            />
+          </Typography>
+        </Box>
+        {reportData.data.validations.length ? (
           <>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-              <Typography
-                variant='h6'
-                component='div'
-                sx={{
-                  color: theme.palette.texts,
-                  textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
-                  fontWeight: 'bold'
-                }}
-              >
-                Validations
-                <Box
-                  sx={{
-                    height: '4px',
-                    backgroundColor: theme.palette.maintext,
-                    marginTop: '4px',
-                    borderRadius: '2px',
-                    width: '80%'
-                  }}
-                />
-              </Typography>
-            </Box>
-
-            {reportData.data.validations.map(
-              (validation: Claim) =>
+            {reportData.data.validations.map((validation: Claim) => {
+              return (
                 validation.statement && (
                   <MyCard
                     key={validation.id}
@@ -173,37 +172,64 @@ const DonationReport: React.FC = () => {
                     handleMenuClose={() => setSelectedIndex(null)}
                   />
                 )
-            )}
+              )
+            })}
           </>
-        )}
-
-        {reportData.data.attestations.length > 0 && (
-          <>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+        ) : (
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+            <Card
+              sx={{
+                minHeight: '200px',
+                width: '100%',
+                borderRadius: '20px',
+                backgroundColor: theme.palette.cardBackground,
+                backgroundImage: 'none',
+                color: theme.palette.texts,
+                marginBottom: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
               <Typography
                 variant='h6'
                 component='div'
                 sx={{
-                  color: theme.palette.texts,
-                  textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
-                  fontWeight: 'bold'
+                  color: theme.palette.texts
                 }}
               >
-                Related Attestations
-                <Box
-                  sx={{
-                    height: '4px',
-                    backgroundColor: theme.palette.maintext,
-                    marginTop: '4px',
-                    borderRadius: '2px',
-                    width: '80%'
-                  }}
-                />
+                This claim doesn't have any Validations
               </Typography>
-            </Box>
+            </Card>
+          </Box>
+        )}
 
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+          <Typography
+            variant='h6'
+            component='div'
+            sx={{
+              color: theme.palette.texts,
+              textAlign: 'center',
+              marginLeft: isMediumScreen ? '0' : '1rem',
+              fontSize: '23px',
+              fontWeight: 'bold'
+            }}
+          >
+            Related Attestations
+            <Box
+              sx={{
+                height: '4px',
+                backgroundColor: theme.palette.maintext,
+                marginTop: '4px',
+                borderRadius: '2px',
+                width: '80%'
+              }}
+            />
+          </Typography>
+        </Box>
+        {reportData.data.attestations.length ? (
+          <>
             {reportData.data.attestations.map(
               (attestation: Claim) =>
                 attestation.statement && (
@@ -218,6 +244,33 @@ const DonationReport: React.FC = () => {
                 )
             )}
           </>
+        ) : (
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+            <Card
+              sx={{
+                minHeight: '200px',
+                width: '100%',
+                borderRadius: '20px',
+                backgroundColor: theme.palette.cardBackground,
+                backgroundImage: 'none',
+                color: theme.palette.texts,
+                marginBottom: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{
+                  color: theme.palette.texts
+                }}
+              >
+                This claim doesn't have any Attestations
+              </Typography>
+            </Card>
+          </Box>
         )}
       </Box>
     </Container>
