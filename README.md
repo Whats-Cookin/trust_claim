@@ -20,6 +20,7 @@ To run in a new location you must set these environment variables *i.e* inside a
 VITE_GITHUB_CLIENT_ID=[...]
 VITE_BACKEND_BASE_URL=http://localhost:9000
 VITE_CERAMIC_URL='http://13.56.165.66/'
+VITE_GOOGLE_CLIENT_ID='114460845082-p4p1ev7iehengtartiubjf82gn26og3c.apps.googleusercontent.com'
 ```
 
 NB: This is a critical action !!!!
@@ -29,6 +30,7 @@ To avoid having to run the back end you may point to the live backend *BUT DO NO
 VITE_CERAMIC_URL='https://ceramic.linkedtrust.us/'
 VITE_BACKEND_BASE_URL='https://dev.linkedtrust.us'
 VITE_DID_PRIVATE_KEY='...'
+VITE_GOOGLE_CLIENT_ID='114460845082-p4p1ev7iehengtartiubjf82gn26og3c.apps.googleusercontent.com'
 ```
 
 
