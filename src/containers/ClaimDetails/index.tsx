@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import MainContainer from '../../components/MainContainer'
 import { Box, Button, Card, Typography, useMediaQuery, useTheme } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import imageSvg from '../../assets/images/imgplaceholder.svg'
@@ -30,6 +30,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [claimData, setClaimData] = useState<Claim | null>(null)
   const [error, setError] = useState<string>('')
+  const navigate = useNavigate()
   const claimImage = claimData?.image ?? null
 
   const theme = useTheme()
@@ -56,7 +57,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   if (isLoading) return <LoadingState />
 
   const handleBackButton = () => {
-    window.history.back()
+    navigate('/feed')
   }
 
   return (
