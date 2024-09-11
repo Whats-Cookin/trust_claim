@@ -86,7 +86,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       try {
         setLoading(true)
         const res = await axios.get(`/api/claim/${number}`)
-        console.log(res.data)
 
         if (res.data.subject) setSubjectValue(res.data.subject)
         if (res.data.statement) setStatementValue(res.data.statement)
