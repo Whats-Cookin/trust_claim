@@ -127,7 +127,7 @@ const DonationReport: React.FC = () => {
           </Typography>
         </Box>
         <MyCard
-          data={reportData.data.claim}
+          data={reportData.data.claim.claim}
           theme={theme}
           isLargeScreen={isLargeScreen}
           setSelectedIndex={setSelectedIndex}
