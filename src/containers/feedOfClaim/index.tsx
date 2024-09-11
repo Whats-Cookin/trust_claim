@@ -193,11 +193,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     })
   }
 
-  const handleschema = async (nodeUri: string) => {
-    const domain = nodeUri.replace(/^https?:\/\//, '').replace(/\/$/, '')
+  const handleschema = async (claim: ImportedClaim) => {
+    console.log(claim)
     navigate({
       pathname: '/search',
-      search: `?query=${domain}`
+      search: `?query=${claim.name}`
     })
   }
 
@@ -352,7 +352,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           </Link>
                           <Button
                             startIcon={<ShareOutlinedIcon />}
-                            onClick={() => handleschema(claim.link)}
+                            onClick={() => handleschema(claim)}
                             variant='text'
                             sx={{
                               fontSize: isMediumScreen ? '8px' : '12px',
