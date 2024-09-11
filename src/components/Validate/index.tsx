@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
@@ -72,8 +72,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [howKnownValue, setHowKnownValue] = useState('')
 
   const subject = queryParams.get('subject')
-  const howknown = (queryParams.get('how_known') ?? '').replace(/_/g, ' ') || 'FIRST_HAND'
-  console.log('how known: ' + howknown)
 
   let number: string | undefined
   if (subject) {
@@ -81,21 +79,20 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     number = parts[parts.length - 1]
   }
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchData = async () => {
       try {
         setLoading(true)
         const res = await axios.get(`/api/claim/${number}`)
-        console.log(res.data)
 
-        if (res.data.subject) setSubjectValue(res.data.subject)
-        if (res.data.statement) setStatementValue(res.data.statement)
-        if (res.data.amt) setAmtValue(res.data.amt)
-        if (res.data.aspect) setAspectValue(res.data.aspect)
-        if (res.data.confidence !== undefined) setConfidenceValue(res.data.confidence)
-        if (res.data.source_name) setIssuerValue(res.data.source_name)
-        if (res.data.source_thumbnail) setSourceThumbnail(res.data.source_thumbnail)
-        if (res.data.howKnown) setHowKnownValue(res.data.howKnown)
+        if (res.data.claim.subject) setSubjectValue(res.data.claim.subject)
+        if (res.data.claim.statement) setStatementValue(res.data.claim.statement)
+        if (res.data.claim.amt) setAmtValue(res.data.claim.amt)
+        if (res.data.claim.aspect) setAspectValue(res.data.claim.aspect)
+        if (res.data.claim.confidence !== undefined) setConfidenceValue(res.data.claim.confidence)
+        if (res.data.claim.source_name) setIssuerValue(res.data.claim.source_name)
+        if (res.data.claim.source_thumbnail) setSourceThumbnail(res.data.claim.source_thumbnail)
+        if (res.data.claim.howKnown) setHowKnownValue(res.data.claim.howKnown)
 
         if (res.data.effectiveDate) {
           const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
@@ -111,17 +108,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     fetchData()
   }, [number])
 
-  const { handleSubmit, reset, control, register } = useForm<FormData>({
-    defaultValues: {
-      subject: subject ?? '',
-      statement: '',
-      sourceURI: '',
-      amt: '',
-      howKnown: '',
-      effectiveDate: new Date(),
-      images: []
-    }
-  })
+  const defaultValues = {
+    subject: subject ?? '',
+    statement: '',
+    sourceURI: '',
+    amt: '',
+    howKnown: '',
+    effectiveDate: new Date(),
+    images: []
+  }
+
+  const { handleSubmit, reset, control, register } = useForm<FormData>({ defaultValues })
 
   const {
     fields: imageFields,
