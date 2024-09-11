@@ -51,10 +51,17 @@ const SearchBar = () => {
     }
   }
 
+  const handleUpdateSearch = (e: CustomEvent) => {
+    const query = e.detail
+    setSearchVal(query)
+  }
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('update-search', handleUpdateSearch)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener('update-search', handleUpdateSearch)
     }
   }, [])
 

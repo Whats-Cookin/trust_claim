@@ -13,6 +13,9 @@ import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
 import NodeDetails from './NodeDetails'
+import { updateSearchEventFactory } from '../../utils/custom-events.utils'
+
+const ID_REGEX = /^[1-9]\d{1,}$/
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -56,6 +59,10 @@ const Search = (homeProps: IHomeProps) => {
       })
 
       if (res.data.nodes.length > 0 && cy) {
+        const nodeName = res.data.nodes[0].edgesTo?.[0]?.startNode.name
+        if (nodeName && ID_REGEX.test(query)) {
+          document.dispatchEvent(updateSearchEventFactory(nodeName))
+        }
         const parsedClaims = parseMultipleNodes(res.data.nodes)
         cy.elements().remove()
         cy.add(parsedClaims)
