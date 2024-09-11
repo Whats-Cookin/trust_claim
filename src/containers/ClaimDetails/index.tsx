@@ -39,7 +39,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
     setIsLoading(true)
     try {
       const response = await axios.get(`${BACKEND_BASE_URL}/api/claim/${claimId}`)
-      setClaimData(response.data)
+      setClaimData(response.data.claim)
     } catch (err) {
       setError('Failed to fetch report data')
       console.error('Error fetching report data:', err)
