@@ -87,7 +87,7 @@ const DonationReport: React.FC = () => {
   }
 
   return (
-    <Container sx={{ marginBlock: '2rem' }}>
+    <Container sx={{ marginBlock: '2rem' ,}}>
       <Box
         id='report-container'
         sx={{
@@ -99,7 +99,8 @@ const DonationReport: React.FC = () => {
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
-          padding: '20px'
+          padding: '20px',
+          fontFamily:'"Roboto","Helvetica","Arial",sans-serif'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
