@@ -125,7 +125,7 @@ const darkModeTheme = createTheme({
     cardBackgroundBlur: '#43434380',
     texts: '#ffffff',
     date: '#96B1AC',
-    link: '#1976d2',
+    link: '#009688',
     profileButton: '#2f0101',
     dialogBackground: '#333333',
     searchBarBackground: '#4C726F80',
