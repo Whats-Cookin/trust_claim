@@ -98,7 +98,8 @@ const DonationReport: React.FC = () => {
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
-          padding: '20px'
+          padding: '20px',
+          fontFamily:'"Roboto","Helvetica","Arial",sans-serif'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
