@@ -87,7 +87,7 @@ const DonationReport: React.FC = () => {
   }
 
   return (
-    <Container sx={{ marginBlock: '2rem' ,}}>
+    <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
       <Box
         id='report-container'
         sx={{
@@ -95,7 +95,6 @@ const DonationReport: React.FC = () => {
           justifyContent: 'center',
           position: 'relative',
           mt: '5vh',
-          width: isMediumScreen ? '97%' : '95%',
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
@@ -112,7 +111,8 @@ const DonationReport: React.FC = () => {
               textAlign: 'center',
               marginLeft: isMediumScreen ? '0' : '1rem',
               fontSize: '23px',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              fontFamily: 'Montserrat'
             }}
           >
             Claim Report
@@ -122,7 +122,8 @@ const DonationReport: React.FC = () => {
                 backgroundColor: theme.palette.maintext,
                 marginTop: '4px',
                 borderRadius: '2px',
-                width: '80%'
+                width: '80%',
+                fontFamily: 'Montserrat'
               }}
             />
           </Typography>
@@ -135,7 +136,7 @@ const DonationReport: React.FC = () => {
           handleMenuClose={() => setSelectedIndex(null)}
         />
 
-        {reportData.data.validations.length > 0 && (
+        {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
@@ -221,7 +222,7 @@ const DonationReport: React.FC = () => {
           </>
         )}
       </Box>
-    </Container>
+    </Box>
   )
 }
 
@@ -247,7 +248,8 @@ function MyCard({
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        marginBottom: '2rem',
+        fontFamily: 'Montserrat'
       }}
     >
       {data.image ? (
@@ -297,7 +299,8 @@ function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
         mt: '10px',
         mb: '10px',
         pl: '20px',
-        pr: '20px'
+        pr: '20px',
+        fontFamily: 'Montserrat'
       }}
     >
       <Box sx={{ flexGrow: 1 }} />
@@ -320,7 +323,8 @@ function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
               minWidth: '18px',
               minHeight: '18px',
               maxWidth: '24px',
-              maxHeight: '24px'
+              maxHeight: '24px',
+              fontFamily: 'Montserrat'
             }}
           />
         ))}
