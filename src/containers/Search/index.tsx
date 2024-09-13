@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
 import NewClaim from './AddNewClaim'
-import { parseMultipleNodes, parseSingleNode } from './graph.utils'
+import { getNodeData, parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
@@ -59,9 +59,12 @@ const Search = (homeProps: IHomeProps) => {
       })
 
       if (res.data.nodes.length > 0 && cy) {
-        const nodeName = res.data.nodes[0].edgesTo?.[0]?.startNode.name
-        if (nodeName && ID_REGEX.test(query)) {
-          document.dispatchEvent(updateSearchEventFactory(nodeName))
+        if (ID_REGEX.test(query)) {
+          const firstNode = res.data.nodes[0]
+          const nodeName = firstNode && getNodeData(firstNode)?.data?.label
+          if (nodeName) {
+            document.dispatchEvent(updateSearchEventFactory(nodeName))
+          }
         }
         const parsedClaims = parseMultipleNodes(res.data.nodes)
         cy.elements().remove()
