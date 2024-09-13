@@ -157,7 +157,7 @@ const RenderClaimInfo = ({
                   {(isStatementLong || hasExtraDetails) && (
                     <MuiLink
                       onClick={handleToggleExpand}
-                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration:'none' }}
+                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
                     >
                       {isExpanded ? 'Show Less' : 'See More'}
                     </MuiLink>
@@ -171,7 +171,7 @@ const RenderClaimInfo = ({
         {isExpanded && hasExtraDetails && (
           <Box sx={{ marginTop: '1rem' }}>
             {otherEntries.map(([key, value]) => (
-              <Typography key={key} variant='body2' sx={{ color: theme.palette.texts,marginLeft: '10px' }}>
+              <Typography key={key} variant='body2' sx={{ color: theme.palette.texts, marginLeft: '10px' }}>
                 <strong>{key}:</strong> {value}
               </Typography>
             ))}

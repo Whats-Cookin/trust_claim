@@ -87,7 +87,7 @@ const DonationReport: React.FC = () => {
   }
 
   return (
-    <Box sx={{width:'100%', py:'2rem', px:'8px', pl : isMediumScreen ? '8px' : '60px', }}>
+    <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
       <Box
         id='report-container'
         sx={{
