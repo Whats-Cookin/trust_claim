@@ -193,11 +193,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     })
   }
 
-  const handleschema = async (claim: ImportedClaim) => {
+  const handleSchema = async (claim: ImportedClaim) => {
     console.log(claim)
     navigate({
       pathname: '/search',
-      search: `?query=${claim.name}`
+      search: `?query=${claim.claim_id}&name=${encodeURIComponent(claim.name)}`
     })
   }
 
@@ -352,7 +352,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           </Link>
                           <Button
                             startIcon={<ShareOutlinedIcon />}
-                            onClick={() => handleschema(claim)}
+                            onClick={() => handleSchema(claim)}
                             variant='text'
                             sx={{
                               fontSize: isMediumScreen ? '8px' : '12px',
