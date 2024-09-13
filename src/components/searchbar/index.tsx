@@ -16,8 +16,8 @@ const SearchBar = () => {
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
-    const newQuery = new URLSearchParams(location.search).get('query') ?? ''
-    setSearchVal(newQuery)
+    const newName = new URLSearchParams(location.search).get('name') ?? ''
+    setSearchVal(newName)
   }, [location.search])
 
   const handleSearch = () => {
