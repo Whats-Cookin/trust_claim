@@ -60,8 +60,7 @@ const Search = (homeProps: IHomeProps) => {
 
       if (res.data.nodes.length > 0 && cy) {
         if (ID_REGEX.test(query)) {
-          const firstNode = res.data.nodes[0]
-          const nodeName = firstNode && getNodeData(firstNode)?.data?.label
+          const nodeName = getNodeData(res.data.nodes[0])?.data?.label
           if (nodeName) {
             document.dispatchEvent(updateSearchEventFactory(nodeName))
           }
