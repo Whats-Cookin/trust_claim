@@ -134,7 +134,7 @@ const DonationReport: React.FC = () => {
           handleMenuClose={() => setSelectedIndex(null)}
         />
 
-        {reportData.data.validations.length > 0 && (
+        {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
