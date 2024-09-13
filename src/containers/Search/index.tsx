@@ -135,7 +135,13 @@ const Search = (homeProps: IHomeProps) => {
   const handleMouseRightClick = (event: any) => {
     event.preventDefault()
     const claim = event.target
-    const currentClaim = claim.data('raw')
+    let currentClaim = claim.data('raw')
+
+    const isEdge = !!currentClaim.claim
+
+    if (isEdge) {
+      currentClaim = claim.connectedNodes()[0].data('raw')
+    }
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
