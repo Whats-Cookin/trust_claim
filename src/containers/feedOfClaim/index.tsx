@@ -197,7 +197,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     console.log(claim)
     navigate({
       pathname: '/search',
-      search: `?query=${claim.name}`
+      search: `?query=${claim.claim_id}`
     })
   }
 

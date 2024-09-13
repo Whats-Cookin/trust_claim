@@ -161,4 +161,4 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
   return { nodes, edges }
 }
 
-export { parseClaims, parseMultipleNodes, parseSingleNode }
+export { parseClaims, parseMultipleNodes, parseSingleNode, getNodeData }
