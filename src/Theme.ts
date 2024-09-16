@@ -102,7 +102,7 @@ const darkModeTheme = createTheme({
       `
     }
   },
-  typography:{
+  typography: {
     fontFamily: 'Montserrat'
   },
   palette: {
@@ -167,7 +167,7 @@ const lightModeTheme = createTheme({
       `
     }
   },
-  typography:{
+  typography: {
     fontFamily: 'Montserrat'
   },
   palette: {

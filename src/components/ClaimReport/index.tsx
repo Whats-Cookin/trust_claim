@@ -110,7 +110,7 @@ const DonationReport: React.FC = () => {
               textAlign: 'center',
               marginLeft: isMediumScreen ? '0' : '1rem',
               fontSize: '23px',
-              fontWeight: 'bold',
+              fontWeight: 'bold'
             }}
           >
             Claim Report
@@ -120,7 +120,7 @@ const DonationReport: React.FC = () => {
                 backgroundColor: theme.palette.maintext,
                 marginTop: '4px',
                 borderRadius: '2px',
-                width: '80%',
+                width: '80%'
               }}
             />
           </Typography>
@@ -144,7 +144,7 @@ const DonationReport: React.FC = () => {
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
                   fontSize: '23px',
-                  fontWeight: 'bold',
+                  fontWeight: 'bold'
                 }}
               >
                 Validations
@@ -245,7 +245,7 @@ function MyCard({
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem',
+        marginBottom: '2rem'
       }}
     >
       {data.image ? (
@@ -295,7 +295,7 @@ function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
         mt: '10px',
         mb: '10px',
         pl: '20px',
-        pr: '20px',
+        pr: '20px'
       }}
     >
       <Box sx={{ flexGrow: 1 }} />
@@ -318,7 +318,7 @@ function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
               minWidth: '18px',
               minHeight: '18px',
               maxWidth: '24px',
-              maxHeight: '24px',
+              maxHeight: '24px'
             }}
           />
         ))}
