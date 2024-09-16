@@ -16,6 +16,9 @@ export function useCreateClaim() {
       const did = localStorage.getItem('did')
       const ethAddress = localStorage.getItem('ethAddress')
 
+      // Check if the user is authenticated with email
+      const accessToken = localStorage.getItem('accessToken')
+
       // quick fix for "Ceramic instance is not authenticated" error
       if (!ceramic.did) {
         try {
@@ -29,6 +32,15 @@ export function useCreateClaim() {
       let claim
       if (did && ethAddress) {
         console.log('User has did ' + did + ' and ethaddress ' + ethAddress + ' so publishing to ceramic')
+        try {
+          claim = await PublishClaim(payload)
+        } catch (err) {
+          console.log('Error trying to publish claim to ceramic: ' + err)
+        }
+      }
+
+      if (accessToken) {
+        console.log('User has accessToken ' + accessToken + ' so publishing to ceramic')
         try {
           claim = await PublishClaim(payload)
         } catch (err) {
