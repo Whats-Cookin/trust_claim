@@ -14,6 +14,7 @@
   /* font-size: calc(3px + 2vmin); */
   /* color: #0A1C1D; */
   overflow: hidden;
+  font-family: Montserrat;
 }
 
 .App-link {
