@@ -261,15 +261,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             width: '100%'
           }}
         >
-          <Box sx={{ width: '100%', p: 2 }}>
+          <Box sx={{ width: '100%', p: '0' }}>
             <Box
               sx={{
-                mt: isMediumScreen ? '10px' : '42px',
+                m: '15px',
                 width: '100%',
-                padding: '0 0 0 20px',
                 textWrap: 'wrap',
                 wordBreak: 'break-word',
-                marginBottom: isMediumScreen ? '12px' : '36px',
                 display: 'flex'
               }}
             >
@@ -319,7 +317,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 flexDirection: isMediumScreen ? 'column' : 'row',
                 justifyContent: 'space-around',
                 alignItems: 'flex-start',
-                width: '100%'
+                width: '100%',
+                margin: '0'
               }}
             >
               <Box
@@ -376,24 +375,24 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     )}
                     {subjectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
-                          Subject :
-                        </Box>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                          Subject:
+                        </Typography>
                         <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{subjectValue}</Typography>
                       </Box>
                     )}
                     {aspectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Box sx={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
-                          Aspect :
-                        </Box>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                          Aspect:
+                        </Typography>
                         <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
                       </Box>
                     )}
                     {confidenceValue !== null && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                          Confidence :
+                          Confidence:
                         </Typography>
                         <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
                       </Box>
@@ -401,7 +400,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     {amtValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                          Amount :
+                          Amount:
                         </Typography>
                         <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{amtValue}</Typography>
                       </Box>
@@ -409,7 +408,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     {effectiveDateValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                          Date :
+                          Date:
                         </Typography>
                         <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{effectiveDateValue}</Typography>
                       </Box>
@@ -417,7 +416,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     {howKnownValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
                         <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                          How Known :
+                          How Known:
                         </Typography>
                         <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
                       </Box>
@@ -435,7 +434,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             color: theme.palette.texts
                           }}
                         >
-                          Statement :
+                          Statement:
                           <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>
                             <Typography
                               variant='inherit'
