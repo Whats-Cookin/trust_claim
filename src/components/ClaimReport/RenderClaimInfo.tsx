@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material'
+
 import { Close } from '@mui/icons-material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { useTheme } from '@mui/system'
 
 const RenderClaimInfo = ({
-  claim,
-  index,
-  setSelectedIndex,
-  handleMenuClose
+  claim
 }: {
   claim: { [key: string]: string }
   index: number
@@ -107,12 +105,13 @@ const RenderClaimInfo = ({
                 target='_blank'
                 sx={{
                   color: theme.palette.texts,
-                  fontSize: 24,
-                  flexWrap: 'wrap',
-                  fontWeight: 700,
+                  fontSize: 20,
+                  fontWeight: 600,
                   display: 'flex',
+                  flexWrap: 'wrap',
                   alignItems: 'center',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
+                  marginBottom: '5px'
                 }}
               >
                 {claim.subject}
@@ -129,8 +128,9 @@ const RenderClaimInfo = ({
             <Typography
               variant='body1'
               sx={{
-                color: theme.palette.date,
-                fontWeight: 600,
+                color: theme.palette.cardDate,
+                fontWeight: 400,
+                fontSize: '16px',
                 marginBottom: '1rem'
               }}
             >
@@ -149,7 +149,9 @@ const RenderClaimInfo = ({
                     padding: '5px 1 1 5px',
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
-                    marginBottom: '1px',
+                    marginBottom: '12px',
+                    fontWeight: 400,
+                    fontSize: '20px',
                     color: theme.palette.texts
                   }}
                 >
@@ -169,10 +171,27 @@ const RenderClaimInfo = ({
         </Box>
 
         {isExpanded && hasExtraDetails && (
-          <Box sx={{ marginTop: '1rem' }}>
+          <Box sx={{ marginTop: '10px', paddingLeft: '10px' }}>
             {otherEntries.map(([key, value]) => (
-              <Typography key={key} variant='body2' sx={{ color: theme.palette.texts, marginLeft: '10px' }}>
-                <strong>{key}:</strong> {value}
+              <Typography
+                key={key}
+                variant='body2'
+                sx={{
+                  color: theme.palette.texts,
+                  fontWeight: 500,
+                  fontSize: '20px'
+                }}
+              >
+                <span
+                  style={{
+                    minWidth: '150px',
+                    display: 'inline-block',
+                    fontWeight: 600
+                  }}
+                >
+                  {key}:
+                </span>{' '}
+                {value}
               </Typography>
             ))}
           </Box>
