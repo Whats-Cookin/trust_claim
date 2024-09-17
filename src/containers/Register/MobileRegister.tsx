@@ -147,7 +147,6 @@ const MobileRegister = ({
                 textAlign: 'center',
                 fontWeight: '600',
                 fontSize: '2.5rem',
-                fontFamily: 'montserrat',
                 marginBottom: '20px'
               }}
             >

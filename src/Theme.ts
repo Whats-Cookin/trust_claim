@@ -102,6 +102,9 @@ const darkModeTheme = createTheme({
       `
     }
   },
+  typography: {
+    fontFamily: 'Montserrat'
+  },
   palette: {
     mode: 'dark',
     background: {
@@ -163,6 +166,9 @@ const lightModeTheme = createTheme({
       }
       `
     }
+  },
+  typography: {
+    fontFamily: 'Montserrat'
   },
   palette: {
     mode: 'light',

@@ -266,7 +266,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               sx={{
                 mt: isMediumScreen ? '10px' : '42px',
                 width: '100%',
-                padding: '20px 0 0 20px',
+                padding: '0 0 0 20px',
                 textWrap: 'wrap',
                 wordBreak: 'break-word',
                 marginBottom: isMediumScreen ? '12px' : '36px',
@@ -275,9 +275,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             >
               <Typography
                 sx={{
-                  fontFamily: 'Montserrat',
                   fontSize: '23px',
-                  fontWeight: '800'
+                  fontWeight: '700'
                 }}
               >
                 {`There’s a claim that`}
@@ -294,9 +293,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               <Box sx={{ display: isMediumScreen ? 'none' : 'flex', ml: 'clamp(140px, 31%, 670px)' }}>
                 <Typography
                   sx={{
-                    fontFamily: 'Montserrat',
                     fontSize: '23px',
-                    fontWeight: '800',
+                    fontWeight: '700',
                     textWrap: 'wrap',
                     wordBreak: 'break-word'
                   }}
@@ -377,37 +375,55 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       </Typography>
                     )}
                     {subjectValue && (
-                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        Subject:&ensp;{subjectValue}
-                      </Typography>
+                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
+                          Subject :
+                        </Box>
+                        <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{subjectValue}</Typography>
+                      </Box>
                     )}
                     {aspectValue && (
-                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        Aspect:&ensp;{aspectValue}
-                      </Typography>
+                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
+                          Aspect :
+                        </Box>
+                        <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
+                      </Box>
                     )}
                     {confidenceValue !== null && (
-                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        Confidence:&ensp;{confidenceValue}
-                      </Typography>
+                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                          Confidence :
+                        </Typography>
+                        <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
+                      </Box>
                     )}
                     {amtValue && (
-                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        Amount of claim:&ensp;{amtValue} $
-                      </Typography>
+                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                          Amount :
+                        </Typography>
+                        <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{amtValue}</Typography>
+                      </Box>
                     )}
                     {effectiveDateValue && (
-                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        Date:&ensp;{effectiveDateValue}
-                      </Typography>
+                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                          Date :
+                        </Typography>
+                        <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{effectiveDateValue}</Typography>
+                      </Box>
                     )}
                     {howKnownValue && (
-                      <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
-                        How Known:&ensp;{howKnownValue}
-                      </Typography>
+                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography sx={{ fontSize: '20px', fontWeight: 'bold', wordWrap: 'break-word' }}>
+                          How Known :
+                        </Typography>
+                        <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
+                      </Box>
                     )}
                     {statementValue && (
-                      <Typography variant='body1'>
+                      <Typography variant='body2'>
                         <Typography
                           variant='inherit'
                           component='span'
@@ -415,20 +431,39 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             padding: '5px 1 1 5px',
                             wordBreak: 'break-word',
                             fontSize: '20px',
-                            fontWeight: 'bold',
+                            fontWeight: 'Bold',
                             color: theme.palette.texts
                           }}
                         >
-                          Statement: &ensp;
-                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
-                          {isStatementLong && (
-                            <MuiLink
-                              onClick={handleToggleExpand}
-                              sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link }}
+                          Statement :
+                          <Typography sx={{ fontSize: '20px', wordWrap: 'break-word' }}>
+                            <Typography
+                              variant='inherit'
+                              component='span'
+                              sx={{
+                                padding: '5px 1 1 5px',
+                                wordBreak: 'break-word',
+                                fontSize: '20px',
+                                fontWeight: 500,
+                                color: theme.palette.texts
+                              }}
                             >
-                              {isExpanded ? 'Show Less' : 'See More'}
-                            </MuiLink>
-                          )}
+                              {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
+                              {isStatementLong && (
+                                <MuiLink
+                                  onClick={handleToggleExpand}
+                                  sx={{
+                                    cursor: 'pointer',
+                                    marginLeft: '5px',
+                                    color: theme.palette.link,
+                                    textDecoration: 'none'
+                                  }}
+                                >
+                                  {isExpanded ? 'Show Less' : 'See More'}
+                                </MuiLink>
+                              )}
+                            </Typography>
+                          </Typography>
                         </Typography>
                       </Typography>
                     )}
@@ -449,7 +484,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   wordBreak: 'break-word'
                 }}
               >
-                <Typography sx={{ fontFamily: 'Montserrat', fontSize: '23px', fontWeight: '800' }}>
+                <Typography sx={{ fontSize: '23px', fontWeight: '800' }}>
                   {`Do you know anything about that?`}
                   <Box
                     sx={{
@@ -487,7 +522,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   <Box sx={{ height: '544', width: '100%' }}>
                     <Typography
                       sx={{
-                        fontFamily: 'Montserrat',
                         fontSize: '23px',
                         fontWeight: '800'
                       }}
@@ -508,7 +542,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontFamily: 'Montserrat',
                             fontWeight: '600'
                           }
                         }
@@ -524,7 +557,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontFamily: 'Montserrat',
                             fontWeight: '600'
                           }
                         }}
@@ -547,7 +579,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               },
                               '& .MuiInputBase-input': {
                                 color: theme.palette.texts,
-                                fontFamily: 'Montserrat',
                                 fontWeight: '600'
                               },
                               '&:active': {
@@ -585,7 +616,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     </FormControl>
                     <Typography
                       sx={{
-                        fontFamily: 'Montserrat',
                         fontSize: '23px',
                         fontWeight: '800'
                       }}
@@ -621,7 +651,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     },
                                     '& .MuiInputBase-input': {
                                       color: theme.palette.texts,
-                                      fontFamily: 'Montserrat',
                                       fontWeight: '600'
                                     }
                                   }}
@@ -651,7 +680,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     </FormControl>
                     <Typography
                       sx={{
-                        fontFamily: 'Montserrat',
                         fontSize: '23px',
                         fontWeight: '800',
                         p: '5px'
@@ -676,7 +704,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontFamily: 'Montserrat',
                             fontWeight: '600'
                           }
                         }
@@ -685,7 +712,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     />
                     <Typography
                       sx={{
-                        fontFamily: 'Montserrat',
                         fontSize: '23px',
                         fontWeight: '800',
                         margin: '10px'
@@ -718,7 +744,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 variant='contained'
                 size='large'
                 sx={{
-                  fontFamily: 'Montserrat',
                   fontSize: '18px',
                   fontWeight: '600',
                   height: '63px',

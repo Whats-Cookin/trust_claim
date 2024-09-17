@@ -154,7 +154,6 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
             mb: '-35px',
             maxWidth: '192px',
             minWidth: '132px',
-            fontFamily: 'Montserrat',
             textTransform: 'none',
             position: 'relative',
             overflow: 'hidden',
