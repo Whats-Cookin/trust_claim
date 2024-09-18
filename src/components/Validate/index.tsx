@@ -383,40 +383,40 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     )}
                     {aspectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                      Aspect:
+                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                          Aspect:
                         </Typography>
                         <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
                       </Box>
                     )}
                     {confidenceValue !== null && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                      Confidence:
+                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                          Confidence:
                         </Typography>
                         <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
                       </Box>
                     )}
                     {amtValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                      Amount:
+                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                          Amount:
                         </Typography>
                         <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{amtValue}</Typography>
                       </Box>
                     )}
                     {effectiveDateValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                      Date:
+                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                          Date:
                         </Typography>
                         <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{effectiveDateValue}</Typography>
                       </Box>
                     )}
                     {howKnownValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                      How Known:
+                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                          How Known:
                         </Typography>
                         <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
                       </Box>
