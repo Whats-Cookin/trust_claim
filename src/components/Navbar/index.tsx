@@ -59,24 +59,23 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         display: isSmallScreen ? displayValue : 'block'
       }}
     >
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Toolbar sx={{ display: 'flex' }}>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center',
             width: '50%',
-            textWrap: 'wrap',
-            mr: 'auto'
+            textWrap: 'wrap'
           }}
         >
-          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '8px' }} />
+          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '20px', height: '20px', marginRight: '16px' }} />
           <Typography
             sx={{
               color: theme.palette.maintext,
               fontWeight: 'bold',
               flexWrap: 'wrap',
-              fontSize: isSmallScreen ? '20px' : '30px',
+              fontSize: isSmallScreen ? '20px' : '20px',
               transition: 'opacity 0.3s'
             }}
           >
