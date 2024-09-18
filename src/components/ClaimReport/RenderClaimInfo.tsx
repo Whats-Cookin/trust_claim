@@ -72,7 +72,6 @@ const RenderClaimInfo = ({
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          // justifyContent: 'space-between',
           backgroundColor: theme.palette.cardBackground,
           borderRadius: '20px',
           color: theme.palette.texts,
@@ -126,12 +125,10 @@ const RenderClaimInfo = ({
             )}
 
             <Typography
-              variant='body1'
               sx={{
                 color: theme.palette.cardDate,
-                fontWeight: 400,
-                fontSize: '16px',
-                marginBottom: '1rem'
+                fontWeight: 500,
+                fontSize: '16px'
               }}
             >
               {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
@@ -143,16 +140,15 @@ const RenderClaimInfo = ({
             {claim.statement && (
               <Typography variant='body1'>
                 <Typography
-                  variant='inherit'
-                  component='span'
                   sx={{
                     padding: '5px 1 1 5px',
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
                     marginBottom: '12px',
-                    fontWeight: 400,
-                    fontSize: '20px',
-                    color: theme.palette.texts
+                    fontWeight: 500,
+                    fontSize: '16px',
+                    color: theme.palette.texts,
+                    mt: '10px'
                   }}
                 >
                   {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 500)}
@@ -171,15 +167,14 @@ const RenderClaimInfo = ({
         </Box>
 
         {isExpanded && hasExtraDetails && (
-          <Box sx={{ marginTop: '10px', paddingLeft: '10px' }}>
+          <Box sx={{ paddingLeft: '10px' }}>
             {otherEntries.map(([key, value]) => (
               <Typography
                 key={key}
-                variant='body2'
                 sx={{
                   color: theme.palette.texts,
                   fontWeight: 500,
-                  fontSize: '20px'
+                  fontSize: '16px'
                 }}
               >
                 <span
@@ -190,7 +185,7 @@ const RenderClaimInfo = ({
                   }}
                 >
                   {key}:
-                </span>{' '}
+                </span>
                 {value}
               </Typography>
             ))}
