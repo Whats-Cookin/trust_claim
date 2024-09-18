@@ -98,19 +98,18 @@ const DonationReport: React.FC = () => {
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
-          padding: '20px'
+          padding: '25px'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
           <Typography
-            variant='h6'
             component='div'
             sx={{
               color: theme.palette.texts,
               textAlign: 'center',
               marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
-              fontWeight: 'bold'
+              fontSize: '20px',
+              fontWeight: '700'
             }}
           >
             Claim Report
@@ -118,7 +117,6 @@ const DonationReport: React.FC = () => {
               sx={{
                 height: '4px',
                 backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
                 borderRadius: '2px',
                 width: '80%'
               }}
@@ -137,14 +135,13 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='h6'
                 component='div'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
-                  fontWeight: 'bold'
+                  fontSize: '20px',
+                  fontWeight: '700'
                 }}
               >
                 Validations
@@ -180,14 +177,13 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='h6'
                 component='div'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
-                  fontWeight: 'bold'
+                  fontSize: '20px',
+                  fontWeight: '700'
                 }}
               >
                 Related Attestations
