@@ -492,7 +492,7 @@ export const Form = ({
                 />
               </Tooltip>
               <Tooltip
-                title='You should put the link to the site or social media account where the claim was created'
+                title='The person or entity involved in the claim'
                 placement={tooltipPlacement}
                 arrow
                 sx={{ backgroundColor: theme.palette.maintext }}
@@ -519,7 +519,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Subject *'
+                  label='Subject Name*'
                   key='subject'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
@@ -675,7 +675,7 @@ export const Form = ({
                   maxRows={4}
                 />
               </Tooltip>
-              <Tooltip title='You should put your site here' placement={tooltipPlacement} arrow>
+              <Tooltip title='The web link where the claim was created' placement={tooltipPlacement} arrow>
                 <TextField
                   {...register('sourceURI')}
                   sx={{
@@ -698,7 +698,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Source URI'
+                  label='Subject URL'
                   key='sourceURI'
                   type='text'
                 />
