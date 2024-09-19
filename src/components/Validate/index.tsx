@@ -343,7 +343,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     borderRadius: '20px'
                   }}
                 >
-                  <Box
+                  {/* <Box
                     sx={{
                       border: '20px ',
                       borderRadius: '8px',
@@ -366,59 +366,92 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         e.currentTarget.style.objectFit = 'contain'
                       }}
                     />
-                  </Box>
+                  </Box> */}
                   <Box sx={{ height: '545', width: '535' }}>
                     {issuerValue && (
-                      <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                        Issuer:&ensp;{issuerValue}
-                      </Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            Issuer :
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{issuerValue}</Typography>
+                        </Box>
+                      </Box>
                     )}
                     {subjectValue && (
-                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                          Subject:
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{subjectValue}</Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            Subject :
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{subjectValue}</Typography>
+                        </Box>
                       </Box>
                     )}
                     {aspectValue && (
-                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                          Aspect:
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            Aspect :
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
+                        </Box>
                       </Box>
                     )}
                     {confidenceValue !== null && (
-                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                          Confidence:
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            Confidence :
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
+                        </Box>
                       </Box>
                     )}
                     {amtValue && (
-                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                          Amount:
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{amtValue}</Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            Amount:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{amtValue}</Typography>
+                        </Box>
                       </Box>
                     )}
                     {effectiveDateValue && (
-                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                          Date:
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{effectiveDateValue}</Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            Date :
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>
+                            {effectiveDateValue}
+                          </Typography>
+                        </Box>
                       </Box>
                     )}
                     {howKnownValue && (
-                      <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                          How Known:
-                        </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
+                      <Box sx={{ display: 'flex' }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                            How Known :
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
+                        </Box>
                       </Box>
                     )}
                     {statementValue && (
@@ -434,7 +467,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             color: theme.palette.texts
                           }}
                         >
-                          Statement:
+                          Statement :
                           <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>
                             <Typography
                               variant='inherit'
