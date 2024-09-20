@@ -19,6 +19,7 @@ import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
 import './App.css'
+import Redirection from './containers/RedirectPage'
 
 const App = () => {
   const [loading, setLoading] = useState(false)
@@ -150,6 +151,7 @@ const App = () => {
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
+              <Route path='redirection' element={<Redirection />} />
               {/* <Route path='cookie' element={<Cookie />} /> */}
               <Route
                 path='/rate'

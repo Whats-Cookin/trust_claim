@@ -215,6 +215,23 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     navigate('/claim')
   }
 
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+    e.preventDefault()
+
+    const allowedDomains = ['https://live.linkedtrust.us', 'https://dev.linkedtrust.us', 'https://linkedtrust.us']
+    const isInternal = allowedDomains.some(domain => url.startsWith(domain))
+
+    if (!isInternal) {
+      const redirectionUrl = `${window.location.origin}/redirection`
+      const state = { externalLink: url }
+
+      const stateAsString = JSON.stringify(state)
+      window.open(`${redirectionUrl}?state=${encodeURIComponent(stateAsString)}`, '_blank', 'noopener noreferrer')
+    } else {
+      window.open(url, '_blank', 'noopener noreferrer')
+    }
+  }
+
   function getSearchFromParams() {
     return new URLSearchParams(location.search).get('query')
   }
@@ -271,6 +288,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         <CardContent>
                           <Link
                             to={claim.link}
+                            onClick={e => handleLinkClick(e, claim.link)}
                             target='_blank'
                             rel='noopener noreferrer'
                             style={{ textDecoration: 'none' }}
