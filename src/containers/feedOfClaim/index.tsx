@@ -194,7 +194,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   const handleSchema = async (claim: ImportedClaim) => {
-    console.log(claim)
     navigate({
       pathname: '/search',
       search: `?query=${claim.claim_id}&name=${encodeURIComponent(claim.name)}`
