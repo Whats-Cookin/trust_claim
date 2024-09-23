@@ -59,7 +59,7 @@ const Search = (homeProps: IHomeProps) => {
         const parsedClaims = parseMultipleNodes(res.data.nodes)
         cy.elements().remove()
         cy.add(parsedClaims)
-      } else {
+      } else if (!res.data.nodes.length) {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
       }
@@ -164,6 +164,8 @@ const Search = (homeProps: IHomeProps) => {
   useEffect(() => {
     if (query && cy) {
       fetchQueryClaims(encodeURIComponent(query), page.current)
+    } else if (!query) {
+      fetchQueryClaims('118499', page.current)
     }
   }, [query, cy])
 
