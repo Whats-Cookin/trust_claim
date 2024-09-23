@@ -284,7 +284,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 />
               </Typography>
               <Box sx={{ display: isMediumScreen ? 'none' : 'flex', ml: 'clamp(140px, 31%, 670px)' }}>
-                <Typography variant='body1'
+                <Typography
+                  variant='body1'
                   sx={{
                     textWrap: 'wrap',
                     wordBreak: 'break-word'
@@ -368,18 +369,22 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     )}
                     {subjectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography variant='body2' sx={{wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Subject:
                         </Typography>
-                        <Typography variant='body2' sx={{wordWrap: 'break-word' }}>{subjectValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {subjectValue}
+                        </Typography>
                       </Box>
                     )}
                     {aspectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography variant='body2' sx={{wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Aspect:
                         </Typography>
-                        <Typography variant='body2' sx={{wordWrap: 'break-word' }}>{aspectValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {aspectValue}
+                        </Typography>
                       </Box>
                     )}
                     {confidenceValue !== null && (
@@ -387,7 +392,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Confidence:
                         </Typography>
-                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>{confidenceValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {confidenceValue}
+                        </Typography>
                       </Box>
                     )}
                     {amtValue && (
@@ -395,7 +402,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Amount:
                         </Typography>
-                        <Typography variant='body2' sx={{  wordWrap: 'break-word' }}>{amtValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {amtValue}
+                        </Typography>
                       </Box>
                     )}
                     {effectiveDateValue && (
@@ -403,7 +412,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Date:
                         </Typography>
-                        <Typography variant='body2' sx={{  wordWrap: 'break-word' }}>{effectiveDateValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {effectiveDateValue}
+                        </Typography>
                       </Box>
                     )}
                     {howKnownValue && (
@@ -411,7 +422,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           How Known:
                         </Typography>
-                        <Typography variant='body2' sx={{wordWrap: 'break-word' }}>{howKnownValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {howKnownValue}
+                        </Typography>
                       </Box>
                     )}
                     {statementValue && (
@@ -426,7 +439,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           }}
                         >
                           Statement:
-                          <Typography variant='body2' sx={{wordWrap: 'break-word' }}>
+                          <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                             <Typography
                               variant='inherit'
                               component='span'
@@ -508,9 +521,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
-                    <Typography variant='body2'>
-                      How Known
-                    </Typography>
+                    <Typography variant='body2'>How Known</Typography>
                     <FormControl
                       fullWidth
                       margin='normal'
@@ -526,7 +537,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
                             fontWeight: '500',
-                            fontSize:16,
+                            fontSize: 16
                           }
                         }
                       }}
@@ -542,7 +553,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
                             fontWeight: '500',
-                            fontSize:16,
+                            fontSize: 16
                           }
                         }}
                       >
@@ -553,7 +564,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             sx={{
                               backgroundColor: theme.palette.input,
                               color: theme.palette.texts,
-                              fontSize:16,
+                              fontSize: 16,
                               '&:hover': {
                                 backgroundColor: theme.palette.input
                               },
@@ -566,7 +577,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               '& .MuiInputBase-input': {
                                 color: theme.palette.texts,
                                 fontWeight: '500',
-                                fontSize:16,
+                                fontSize: 16
                               },
                               '&:active': {
                                 backgroundColor: theme.palette.input
@@ -601,9 +612,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         ))}
                       </Select>
                     </FormControl>
-                    <Typography variant='body2'>
-                      Effective Date
-                    </Typography>
+                    <Typography variant='body2'>Effective Date</Typography>
                     <FormControl fullWidth sx={{ mt: 1 }}>
                       <Controller
                         name='effectiveDate'
@@ -633,7 +642,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     },
                                     '& .MuiInputBase-input': {
                                       color: theme.palette.texts,
-                                      fontSize:16,
+                                      fontSize: 16,
                                       fontWeight: '500'
                                     }
                                   }}
@@ -687,7 +696,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
                             fontWeight: '500',
-                            fontSize:16,
+                            fontSize: 16
                           }
                         }
                       }}
