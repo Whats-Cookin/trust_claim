@@ -271,12 +271,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 display: 'flex'
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: '23px',
-                  fontWeight: '700'
-                }}
-              >
+              <Typography variant='body1'>
                 {`There’s a claim that`}
                 <Box
                   sx={{
@@ -290,9 +285,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               </Typography>
               <Box sx={{ display: isMediumScreen ? 'none' : 'flex', ml: 'clamp(140px, 31%, 670px)' }}>
                 <Typography
+                  variant='body1'
                   sx={{
-                    fontSize: '23px',
-                    fontWeight: '700',
                     textWrap: 'wrap',
                     wordBreak: 'break-word'
                   }}
@@ -375,50 +369,62 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     )}
                     {subjectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Subject:
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{subjectValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {subjectValue}
+                        </Typography>
                       </Box>
                     )}
                     {aspectValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Aspect:
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {aspectValue}
+                        </Typography>
                       </Box>
                     )}
                     {confidenceValue !== null && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Confidence:
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {confidenceValue}
+                        </Typography>
                       </Box>
                     )}
                     {amtValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Amount:
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{amtValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {amtValue}
+                        </Typography>
                       </Box>
                     )}
                     {effectiveDateValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           Date:
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{effectiveDateValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {effectiveDateValue}
+                        </Typography>
                       </Box>
                     )}
                     {howKnownValue && (
                       <Box sx={{ width: '350px', display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                           How Known:
                         </Typography>
-                        <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
+                        <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
+                          {howKnownValue}
+                        </Typography>
                       </Box>
                     )}
                     {statementValue && (
@@ -429,21 +435,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           sx={{
                             padding: '5px 1 1 5px',
                             wordBreak: 'break-word',
-                            fontSize: '16px',
-                            fontWeight: '600',
                             color: theme.palette.texts
                           }}
                         >
                           Statement:
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>
+                          <Typography variant='body2' sx={{ wordWrap: 'break-word' }}>
                             <Typography
                               variant='inherit'
                               component='span'
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
-                                fontSize: '16px',
-                                fontWeight: 500,
                                 color: theme.palette.texts
                               }}
                             >
@@ -483,7 +485,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   wordBreak: 'break-word'
                 }}
               >
-                <Typography sx={{ fontSize: '20px', fontWeight: '700' }}>
+                <Typography variant='body1'>
                   {`Do you know anything about that?`}
                   <Box
                     sx={{
@@ -519,14 +521,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: '500'
-                      }}
-                    >
-                      How Known
-                    </Typography>
+                    <Typography variant='body2'>How Known</Typography>
                     <FormControl
                       fullWidth
                       margin='normal'
@@ -541,7 +536,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '600'
+                            fontWeight: '500',
+                            fontSize: 16
                           }
                         }
                       }}
@@ -556,7 +552,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '500'
+                            fontWeight: '500',
+                            fontSize: 16
                           }
                         }}
                       >
@@ -567,6 +564,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             sx={{
                               backgroundColor: theme.palette.input,
                               color: theme.palette.texts,
+                              fontSize: 16,
                               '&:hover': {
                                 backgroundColor: theme.palette.input
                               },
@@ -578,7 +576,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               },
                               '& .MuiInputBase-input': {
                                 color: theme.palette.texts,
-                                fontWeight: '500'
+                                fontWeight: '500',
+                                fontSize: 16
                               },
                               '&:active': {
                                 backgroundColor: theme.palette.input
@@ -613,14 +612,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         ))}
                       </Select>
                     </FormControl>
-                    <Typography
-                      sx={{
-                        fontSize: '16px',
-                        fontWeight: '500'
-                      }}
-                    >
-                      Effective Date
-                    </Typography>
+                    <Typography variant='body2'>Effective Date</Typography>
                     <FormControl fullWidth sx={{ mt: 1 }}>
                       <Controller
                         name='effectiveDate'
@@ -650,6 +642,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     },
                                     '& .MuiInputBase-input': {
                                       color: theme.palette.texts,
+                                      fontSize: 16,
                                       fontWeight: '500'
                                     }
                                   }}
@@ -678,9 +671,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       />
                     </FormControl>
                     <Typography
+                      variant='body2'
                       sx={{
-                        fontSize: '16px',
-                        fontWeight: '500',
                         p: '5px'
                       }}
                     >
@@ -703,16 +695,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '500'
+                            fontWeight: '500',
+                            fontSize: 16
                           }
                         }
                       }}
                       margin='normal'
                     />
                     <Typography
+                      variant='body2'
                       sx={{
-                        fontSize: '16',
-                        fontWeight: '500',
                         margin: '10px'
                       }}
                     >
@@ -744,7 +736,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 size='large'
                 sx={{
                   fontSize: '18px',
-                  fontWeight: '600',
+                  fontWeight: '500',
                   height: '48px',
                   width: '180px',
                   color: theme.palette.buttontext,
