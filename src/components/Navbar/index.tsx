@@ -76,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
               color: theme.palette.maintext,
               fontWeight: 'bold',
               flexWrap: 'wrap',
-              fontSize: isSmallScreen ? '20px' : '30px',
+              fontSize: isSmallScreen ? '20px' : '28px',
               transition: 'opacity 0.3s'
             }}
           >

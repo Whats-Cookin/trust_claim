@@ -107,7 +107,6 @@ const RenderClaimInfo = ({
                 target='_blank'
                 sx={{
                   color: theme.palette.texts,
-                  fontSize: 24,
                   flexWrap: 'wrap',
                   fontWeight: 700,
                   display: 'flex',
@@ -130,7 +129,7 @@ const RenderClaimInfo = ({
               variant='body1'
               sx={{
                 color: theme.palette.date,
-                fontWeight: 600,
+                fontWeight: 400,
                 marginBottom: '1rem'
               }}
             >

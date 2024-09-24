@@ -145,6 +145,12 @@ const darkModeTheme = createTheme({
       lg: 1280,
       xl: 1920
     }
+  },
+  typography: {
+    allVariants: {
+      fontSize: 16,
+      fontWeight: 500,
+    }
   }
 })
 
@@ -207,7 +213,13 @@ const lightModeTheme = createTheme({
       lg: 1280,
       xl: 1920
     }
-  }
+  },
+  typography: {
+    allVariants: {
+      fontSize: 16,
+      fontWeight: 500,
+    }}
+
 })
 
 export { darkModeTheme, lightModeTheme }

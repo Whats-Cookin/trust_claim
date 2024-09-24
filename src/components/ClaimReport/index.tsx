@@ -110,7 +110,7 @@ const DonationReport: React.FC = () => {
               color: theme.palette.texts,
               textAlign: 'center',
               marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
+              fontSize: '20px',
               fontWeight: 'bold'
             }}
           >
@@ -144,7 +144,7 @@ const DonationReport: React.FC = () => {
                   color: theme.palette.texts,
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
+                  fontSize: '20px',
                   fontWeight: 'bold'
                 }}
               >
@@ -187,7 +187,7 @@ const DonationReport: React.FC = () => {
                   color: theme.palette.texts,
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
+                  fontSize: '20px',
                   fontWeight: 'bold'
                 }}
               >

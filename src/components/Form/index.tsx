@@ -460,9 +460,9 @@ export const Form = ({
           <form style={{ padding: '5px' }} onSubmit={onSubmit}>
             <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <Tooltip title='Enter the name associated with the claim' placement={tooltipPlacement} arrow>
+              <Tooltip title='The person or entity involved in the claim' placement={tooltipPlacement} arrow>
                 <TextField
-                  {...register('name', { required: { value: true, message: 'Name is required' } })}
+                  {...register('name', { required: { value: true, message: 'Subject name is required' } })}
                   sx={{
                     ml: 1,
                     mr: 1,
@@ -483,7 +483,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Name *'
+                  label='Subject name *'
                   key='name'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
@@ -492,13 +492,13 @@ export const Form = ({
                 />
               </Tooltip>
               <Tooltip
-                title='The person or entity involved in the claim'
+                title='The web link where the claim was created'
                 placement={tooltipPlacement}
                 arrow
                 sx={{ backgroundColor: theme.palette.maintext }}
               >
                 <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                  {...register('subject', { required: { value: true, message: 'Subject URL is required' } })}
                   sx={{
                     ml: 1,
                     mr: 1,
@@ -519,7 +519,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Subject Name*'
+                  label='Subject URL*'
                   key='subject'
                   disabled={!!selectedClaim?.nodeUri}
                   type='text'
