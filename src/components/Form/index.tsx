@@ -675,7 +675,7 @@ export const Form = ({
                   maxRows={4}
                 />
               </Tooltip>
-              <Tooltip title='The web link where the claim was created' placement={tooltipPlacement} arrow>
+              <Tooltip title='You should put your site here' placement={tooltipPlacement} arrow>
                 <TextField
                   {...register('sourceURI')}
                   sx={{
@@ -698,7 +698,7 @@ export const Form = ({
                   margin='dense'
                   variant='standard'
                   fullWidth
-                  label='Subject URL'
+                  label='Source URL'
                   key='sourceURI'
                   type='text'
                 />
