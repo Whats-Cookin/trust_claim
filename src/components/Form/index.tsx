@@ -128,11 +128,11 @@ export const Form = ({
   const tooltipPlacement = isMobile ? 'top' : 'left'
 
   // State to manage visibility of additional info section
-  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false); // State to manage visibility
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false) // State to manage visibility
 
   const toggleAdditionalInfo = () => {
-    setShowAdditionalInfo((prev) => !prev); // Toggle the state
-  };
+    setShowAdditionalInfo(prev => !prev) // Toggle the state
+  }
 
   // Fetch initial data when the component mounts
   useEffect(() => {
@@ -316,8 +316,7 @@ export const Form = ({
         background: isMobile ? theme.palette.cardBackground : theme.palette.menuBackground,
         display: 'flex',
         flexDirection: 'column',
-        width: isMobile ? '100%' : '95%',
-
+        width: isMobile ? '100%' : '95%'
       }}
     >
       {/* Alert for user to sign in */}
@@ -361,11 +360,9 @@ export const Form = ({
           borderRadius: '20px',
           width: isMobile ? '358px' : '800px',
           margin: isMobile ? 0 : '0 auto',
-          padding: isMobile ? 0 : '20px',
-
+          padding: isMobile ? 0 : '20px'
         }}
       >
-
         <form onSubmit={onSubmit}>
           <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
           {/* Basic Information Section */}
@@ -519,8 +516,7 @@ export const Form = ({
                     fontSize: isMobile ? '10px' : '16px',
                     fontWeight: 500,
                     lineHeight: isMobile ? '12.19px' : '19.5px',
-                    ml: 1.5,
-
+                    ml: 1.5
                   }}
                 >
                   Statement
@@ -565,8 +561,7 @@ export const Form = ({
                   display: 'flex',
                   justifyContent: 'flex-end',
 
-                  columnGap: 3,
-
+                  columnGap: 3
                 }}
               >
                 <Button
@@ -577,7 +572,7 @@ export const Form = ({
                     width: isMobile ? '35%' : 'auto',
                     hight: isMobile ? '10px' : '40px',
                     color: theme.palette.buttontext,
-                    left: isMobile ?  '-5%' : 0,
+                    left: isMobile ? '-5%' : 0,
                     bgcolor: theme.palette.buttons,
                     borderRadius: '6px',
                     '&:hover': {
@@ -586,7 +581,6 @@ export const Form = ({
                   }}
                 >
                   <Typography
-
                     sx={{
                       fontSize: isMobile ? '8px' : '14px',
                       fontFamily: 'Montserrat, sans-serif',
@@ -594,9 +588,7 @@ export const Form = ({
                       lineHeight: isMobile ? '9.75px' : '17.07px',
                       textAlign: 'center',
                       whiteSpace: 'nowrap',
-                      textTransform: 'none',
-
-
+                      textTransform: 'none'
                     }}
                   >
                     {showAdditionalInfo ? ' Additional Information' : 'Additional Information'}
@@ -609,9 +601,13 @@ export const Form = ({
           {/* Additional Information Section */}
           {showAdditionalInfo && (
             <Box sx={{ display: 'flex', flexDirection: 'column', pb: 2 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, pt: 3, paddingLeft: '12px' }}>
+              <Box
+                sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, pt: 3, paddingLeft: '12px' }}
+              >
                 <CircleIcon sx={{ width: isMobile ? '7px' : '10px', height: isMobile ? '8px' : '10px', mr: 1 }} />
-                <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>Additional information</Typography>
+                <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>
+                  Additional information
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', width: '760px', pt: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px' }}>
@@ -681,8 +677,7 @@ export const Form = ({
                           >
                             <Tooltip title={tooltips.howKnown[index]} placement={tooltipPlacement} arrow>
                               <Box sx={{ width: '100%', height: '100%' }}>
-                                {displayHowKnownText[howKnownText as keyof typeof displayHowKnownText] ||
-                                  howKnownText}{' '}
+                                {displayHowKnownText[howKnownText as keyof typeof displayHowKnownText] || howKnownText}{' '}
                               </Box>
                             </Tooltip>
                           </MenuItem>
@@ -796,11 +791,7 @@ export const Form = ({
                       >
                         Aspect
                       </Typography>
-                      <Tooltip
-                        title='A specific dimension being evaluated or rated'
-                        placement={tooltipPlacement}
-                        arrow
-                      >
+                      <Tooltip title='A specific dimension being evaluated or rated' placement={tooltipPlacement} arrow>
                         <TextField
                           {...register('aspect')}
                           sx={{
@@ -978,9 +969,7 @@ export const Form = ({
                   </Box>
                 </Box>
               </Box>
-              <DialogActions
-
-              >
+              <DialogActions>
                 <Button
                   onClick={onSubmit}
                   variant='contained'
@@ -995,9 +984,7 @@ export const Form = ({
                     fontSize: isMobile ? '16px' : '20px',
                     '&:hover': {
                       backgroundColor: theme.palette.buttonHover
-                    },
-
-
+                    }
                   }}
                 >
                   Submit
@@ -1007,9 +994,7 @@ export const Form = ({
             </Box>
           )}
         </form>
-
       </Box>
-
-    </MainContainer >
+    </MainContainer>
   )
 }
