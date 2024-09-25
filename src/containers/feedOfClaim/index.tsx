@@ -31,6 +31,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
+import Redirection from '../../components/RedirectPage'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 const PAGE_LIMIT = 50
@@ -109,6 +110,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
+
+  const [showNotification, setShowNotification] = useState<boolean>(false)
+  const [externalLink, setExternalLink] = useState<string>('')
+
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -222,14 +227,20 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     const isInternal = allowedDomains.some(domain => url.startsWith(domain))
 
     if (!isInternal) {
-      const redirectionUrl = `${window.location.origin}/redirection`
-      const state = { externalLink: url }
-
-      const stateAsString = JSON.stringify(state)
-      window.open(`${redirectionUrl}?state=${encodeURIComponent(stateAsString)}`, '_blank', 'noopener noreferrer')
+      setShowNotification(true)
+      setExternalLink(url)
     } else {
       window.open(url, '_blank', 'noopener noreferrer')
     }
+  }
+
+  const handleContinue = () => {
+    setShowNotification(false)
+    window.open(externalLink, '_blank')
+  }
+
+  const handleCancel = () => {
+    setShowNotification(false)
   }
 
   function getSearchFromParams() {
@@ -589,6 +600,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             </Fab>
           )}
         </>
+      )}
+      {showNotification && (
+        <Redirection externalLink={externalLink} onContinue={handleContinue} onCancel={handleCancel} />
       )}
     </>
   )
