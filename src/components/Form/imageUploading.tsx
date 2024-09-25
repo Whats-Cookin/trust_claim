@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react'
-import { Upload, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import {
   TextField,
   IconButton,
@@ -86,7 +86,6 @@ const ImageUploader = <TFieldValues extends FieldValues>({
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const tooltipPlacement = isMobile ? 'top' : 'left'
 
   return (
     <Box sx={{ mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
