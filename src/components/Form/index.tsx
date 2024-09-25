@@ -370,7 +370,7 @@ export const Form = ({
           <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
           {/* Basic Information Section */}
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, paddingLeft: '12px' }}>
               <CircleIcon sx={{ width: isMobile ? '7px' : '10px', height: isMobile ? '8px' : '10px', mr: 1 }} />
               <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>Basic information</Typography>
             </Box>
@@ -577,6 +577,7 @@ export const Form = ({
                     width: isMobile ? '35%' : 'auto',
                     hight: isMobile ? '10px' : '40px',
                     color: theme.palette.buttontext,
+                    left: isMobile ?  '-5%' : 0,
                     bgcolor: theme.palette.buttons,
                     borderRadius: '6px',
                     '&:hover': {
@@ -593,6 +594,8 @@ export const Form = ({
                       lineHeight: isMobile ? '9.75px' : '17.07px',
                       textAlign: 'center',
                       whiteSpace: 'nowrap',
+                      textTransform: 'none',
+
 
                     }}
                   >
@@ -606,7 +609,7 @@ export const Form = ({
           {/* Additional Information Section */}
           {showAdditionalInfo && (
             <Box sx={{ display: 'flex', flexDirection: 'column', pb: 2 }}>
-              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, pt: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, pt: 3, paddingLeft: '12px' }}>
                 <CircleIcon sx={{ width: isMobile ? '7px' : '10px', height: isMobile ? '8px' : '10px', mr: 1 }} />
                 <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>Additional information</Typography>
               </Box>
@@ -976,26 +979,25 @@ export const Form = ({
                 </Box>
               </Box>
               <DialogActions
-                sx={{
-                  display: 'flex',
-                  justifyContent: isMobile ? 'center' : 'flex-end',
-                  width: '100%',
-                  columnGap: 3
-                }}
+
               >
                 <Button
                   onClick={onSubmit}
                   variant='contained'
-                  size='medium'
                   sx={{
-                    width: isMobile ? '100px' : '200px',
+                    width: isMobile ? 'auto' : '180px',
+
                     color: theme.palette.buttontext,
                     bgcolor: theme.palette.buttons,
-                    borderRadius: '80px',
+                    borderRadius: '24px',
                     m: 'auto',
+                    textTransform: 'none',
+                    fontSize: isMobile ? '16px' : '20px',
                     '&:hover': {
                       backgroundColor: theme.palette.buttonHover
-                    }
+                    },
+
+
                   }}
                 >
                   Submit
