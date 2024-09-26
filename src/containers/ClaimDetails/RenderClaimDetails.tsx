@@ -50,7 +50,9 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
               flexGrow: 1
             }}
           >
-            <Typography sx={{ fontSize: 'clamp(10px, 5vw, 28px)' }}>{camelCaseToSimpleString(key)}:</Typography>
+            <Typography sx={{ fontWeight: 'bold', paddingRight: '13.25px 15px', fontSize: 'clamp(10px, 5vw, 28px)' }}>
+              {camelCaseToSimpleString(key)}:
+            </Typography>
             <Typography
               component='p'
               sx={{
