@@ -13,6 +13,8 @@ import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
 import NodeDetails from './NodeDetails'
+import { s } from 'vitest/dist/types-e3c9754d'
+import { set } from 'lodash'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -23,6 +25,8 @@ const Search = (homeProps: IHomeProps) => {
   const [showDetails, setShowDetails] = useState<boolean>(false)
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
+  const [startNode, setStartNode] = useState<any>(null)
+  const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
   const isMediumUp = useMediaQuery(theme.breakpoints.up('md'))
@@ -111,10 +115,14 @@ const Search = (homeProps: IHomeProps) => {
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
     const currentClaim = event?.target?.data('raw')?.claim
+    const endNode = event?.target?.data('raw')?.endNode
+    const startNode = event?.target?.data('raw')?.startNode
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
       setShowDetails(true)
+      setStartNode(startNode)
+      setEndNode(endNode)
     }
   }
 
@@ -190,6 +198,8 @@ const Search = (homeProps: IHomeProps) => {
             selectedClaim={selectedClaim}
             isDarkMode={isDarkMode}
             claimImg={selectedClaim.img || ''}
+            startNode={startNode}
+            endNode={endNode}
           />
         ) : (
           <Box ref={ref} sx={styles.cy} />
