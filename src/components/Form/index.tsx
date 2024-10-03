@@ -351,7 +351,6 @@ export const Form = ({
             marginTop: isMobile ? '32px' : '232px',
             lineHeight: isMobile ? '1.5' : '1.2',
             fontSize: isMobile ? '18px' : '40px',
-            fontWeight: '500'
           }}
         >
           <Box

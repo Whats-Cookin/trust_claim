@@ -127,8 +127,6 @@ const RenderClaimInfo = ({
             <Typography
               sx={{
                 color: theme.palette.cardDate,
-                fontWeight: 500,
-                fontSize: '16px'
               }}
             >
               {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
@@ -145,8 +143,6 @@ const RenderClaimInfo = ({
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
                     marginBottom: '12px',
-                    fontWeight: 500,
-                    fontSize: '16px',
                     color: theme.palette.texts,
                     mt: '10px'
                   }}
@@ -173,8 +169,6 @@ const RenderClaimInfo = ({
                 key={key}
                 sx={{
                   color: theme.palette.texts,
-                  fontWeight: 500,
-                  fontSize: '16px'
                 }}
               >
                 <span
