@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.sidecolor, width: '28px', height: '28px' }
+  const iconStyle = { color: theme.palette.sidecolor, width: '20px', height: '20px' }
 
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
@@ -76,57 +76,36 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <Box>
         <List sx={{ paddingTop: '0px' }}>
-          <ListItemButton
-            sx={{ gap: '32px', justifyContent: 'center', transition: 'all 0.3s', minHeight: '65px' }}
-            onClick={toggleSidebar}
-          >
+          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleSidebar}>
             {isOpen ? <KeyboardDoubleArrowLeftIcon sx={iconStyle} /> : <KeyboardDoubleArrowRightIcon sx={iconStyle} />}
             <ListItemText primary='Close' sx={{ display: isOpen ? 'block' : 'none' }} />
           </ListItemButton>
-          <ListItemButton
-            sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/feed') }}
-            onClick={() => navigate('/feed')}
-          >
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
             <Home sx={iconStyle} />
             <ListItemText primary='Home' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
           </ListItemButton>
-          <ListItemButton
-            sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/search') }}
-            onClick={() => navigate('/search')}
-          >
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/search') }} onClick={() => navigate('/search')}>
             <Search sx={iconStyle} />
             <ListItemText primary='Search' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
           </ListItemButton>
           {isAuth && (
-            <ListItemButton
-              sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/claim') }}
-              onClick={() => navigate('/claim')}
-            >
+            <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
               <AddCircleOutlineOutlinedIcon sx={iconStyle} />
               <ListItemText primary='Claim' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
             </ListItemButton>
           )}
-          <ListItemButton
-            sx={{ gap: '32px', justifyContent: 'center', transition: 'all 0.3s', minHeight: '65px' }}
-            onClick={toggleTheme}
-          >
+          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleTheme}>
             {isDarkMode ? <LightModeOutlinedIcon sx={iconStyle} /> : <DarkMode sx={iconStyle} />}
             <ListItemText primary={isDarkMode ? 'Light' : 'Dark'} sx={{ display: isOpen ? 'block' : 'none' }} />
           </ListItemButton>
           {isAuth ? (
-            <ListItemButton
-              sx={{ gap: '32px', justifyContent: 'center', transition: 'all 0.3s', minHeight: '65px' }}
-              onClick={handleLogout}
-            >
+            <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={handleLogout}>
               <Logout sx={iconStyle} />
               <ListItemText primary='Log out' sx={{ display: isOpen ? 'block' : 'none' }} />
             </ListItemButton>
           ) : (
             <>
-              <ListItemButton
-                sx={{ gap: '32px', justifyContent: 'center', ...getActiveStyle('/login') }}
-                onClick={() => navigate('/login')}
-              >
+              <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
                 <Login sx={iconStyle} />
                 <ListItemText primary='Login' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
               </ListItemButton>
@@ -147,8 +126,8 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
       sx={{
         display: isOpen ? 'flex' : 'none',
         flexDirection: 'column',
-        justifyContent: 'flex-start',
-        padding: '1rem',
+
+        padding: '0.5rem',
         width: '100%'
       }}
     >
@@ -160,7 +139,7 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
           justifyContent: 'flex-start',
           flexDirection: 'row',
           alignItems: 'center',
-          fontSize: '15px'
+          fontSize: '16px'
         }}
       >
         <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
@@ -176,7 +155,7 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          fontSize: '15px'
+          fontSize: '16px'
         }}
       >
         <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>

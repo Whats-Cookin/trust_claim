@@ -7,6 +7,7 @@ declare module '@mui/material/styles' {
     icons: string
     buttons: string
     date: string
+    cardDate: string
     menuBackground: string
     link: string
     buttonHover: string
@@ -39,6 +40,7 @@ declare module '@mui/material/styles' {
     icons?: string
     buttons?: string
     date?: string
+    cardDate?: string
     menuBackground?: string
     link?: string
     buttonHover?: string
@@ -102,6 +104,9 @@ const darkModeTheme = createTheme({
       `
     }
   },
+  typography: {
+    fontFamily: 'Montserrat'
+  },
   palette: {
     mode: 'dark',
     background: {
@@ -125,7 +130,8 @@ const darkModeTheme = createTheme({
     cardBackgroundBlur: '#43434380',
     texts: '#ffffff',
     date: '#96B1AC',
-    link: '#1976d2',
+    cardDate: '#B7B7B7',
+    link: '#009688',
     profileButton: '#2f0101',
     dialogBackground: '#333333',
     searchBarBackground: '#4C726F80',
@@ -163,6 +169,9 @@ const lightModeTheme = createTheme({
       }
       `
     }
+  },
+  typography: {
+    fontFamily: 'Montserrat'
   },
   palette: {
     mode: 'light',

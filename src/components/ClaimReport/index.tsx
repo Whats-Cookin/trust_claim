@@ -87,7 +87,7 @@ const DonationReport: React.FC = () => {
   }
 
   return (
-    <Container sx={{ marginBlock: '2rem' }}>
+    <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
       <Box
         id='report-container'
         sx={{
@@ -95,23 +95,21 @@ const DonationReport: React.FC = () => {
           justifyContent: 'center',
           position: 'relative',
           mt: '5vh',
-          width: isMediumScreen ? '97%' : '95%',
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
-          padding: '20px'
+          padding: '25px'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
           <Typography
-            variant='h6'
             component='div'
             sx={{
               color: theme.palette.texts,
               textAlign: 'center',
               marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '23px',
-              fontWeight: 'bold'
+              fontSize: '20px',
+              fontWeight: '700'
             }}
           >
             Claim Report
@@ -119,7 +117,6 @@ const DonationReport: React.FC = () => {
               sx={{
                 height: '4px',
                 backgroundColor: theme.palette.maintext,
-                marginTop: '4px',
                 borderRadius: '2px',
                 width: '80%'
               }}
@@ -134,18 +131,17 @@ const DonationReport: React.FC = () => {
           handleMenuClose={() => setSelectedIndex(null)}
         />
 
-        {reportData.data.validations.length > 0 && (
+        {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='h6'
                 component='div'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
-                  fontWeight: 'bold'
+                  fontSize: '20px',
+                  fontWeight: '700'
                 }}
               >
                 Validations
@@ -181,14 +177,13 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='h6'
                 component='div'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '23px',
-                  fontWeight: 'bold'
+                  fontSize: '20px',
+                  fontWeight: '700'
                 }}
               >
                 Related Attestations
@@ -220,7 +215,7 @@ const DonationReport: React.FC = () => {
           </>
         )}
       </Box>
-    </Container>
+    </Box>
   )
 }
 
