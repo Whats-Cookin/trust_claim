@@ -1,0 +1,4 @@
+.blurred {
+    filter: blur(8px);  /* This applies a blur effect to the entire background */
+    transition: filter 0.3s ease;  /* Smooth transition when blur is applied */
+  }
