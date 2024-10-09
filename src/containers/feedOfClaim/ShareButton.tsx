@@ -8,13 +8,13 @@ import {
   TextField,
   useMediaQuery,
   useTheme,
-  InputAdornment,
+  InputAdornment
 } from '@mui/material'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import DriveIcon from '@mui/icons-material/DriveFileRenameOutline' // Placeholder for Google Drive
 import EmailIcon from '@mui/icons-material/Email'
 import TwitterIcon from '@mui/icons-material/Twitter'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import CloseIcon from '@mui/icons-material/Close'
 import './ShareButton.css'
 import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined'
@@ -229,7 +229,7 @@ function ShareButton() {
                     borderRadius: '5px'
                   },
                   endAdornment: (
-                    <InputAdornment position="end">
+                    <InputAdornment position='end'>
                       <IconButton onClick={() => navigator.clipboard.writeText(window.location.href)}>
                         <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
                       </IconButton>
