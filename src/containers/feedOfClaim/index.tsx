@@ -8,6 +8,7 @@ import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import { Claim as ImportedClaim, IHomeProps } from './types'
+import './ShareButton.css'
 import {
   Box,
   Button,
@@ -31,6 +32,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
+import ShareButton from './ShareButton'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 const PAGE_LIMIT = 50
@@ -366,6 +368,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph View
                           </Button>
+                          <ShareButton />
                           <Box sx={{ flexGrow: 1 }} />
                           {claim.stars && (
                             <Box
