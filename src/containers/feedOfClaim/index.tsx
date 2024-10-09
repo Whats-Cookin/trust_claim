@@ -228,7 +228,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       ) : (
         <>
           {claims.length > 0 ? (
-            <MainContainer >
+            <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
                   variant='h6'

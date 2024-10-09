@@ -1,13 +1,23 @@
 import { useState } from 'react'
-import { Button, Typography, Popover, IconButton, Box, TextField, useMediaQuery, useTheme } from '@mui/material'
+import {
+  Button,
+  Typography,
+  Popover,
+  IconButton,
+  Box,
+  TextField,
+  useMediaQuery,
+  useTheme,
+  InputAdornment,
+} from '@mui/material'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import DriveIcon from '@mui/icons-material/DriveFileRenameOutline' // Placeholder for Google Drive
 import EmailIcon from '@mui/icons-material/Email'
 import TwitterIcon from '@mui/icons-material/Twitter'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import  from '@mui/icons-material/ContentCopy'
 import CloseIcon from '@mui/icons-material/Close'
 import './ShareButton.css'
-import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined';
+import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined'
 
 function ShareButton() {
   const theme = useTheme()
@@ -217,22 +227,16 @@ function ShareButton() {
                     width: '380px',
                     backgroundColor: '#2f4f4f', // Dark background to match the style
                     borderRadius: '5px'
-                  }
+                  },
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => navigator.clipboard.writeText(window.location.href)}>
+                        <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
+                      </IconButton>
+                    </InputAdornment>
+                  )
                 }}
               />
-
-              {/* Copy button to copy the link */}
-              <Button
-                variant='contained'
-                startIcon={<ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />}
-                onClick={() => navigator.clipboard.writeText(window.location.href)}
-                sx={{
-                  height: '56px', // Matching the height of the text field
-                  marginLeft: '5px', // Space between the input and the button
-                  backgroundColor: '#2f4f4f',
-                  color: 'white'
-                }}
-              ></Button>
             </Box>
           </Box>
         </Popover>
