@@ -32,6 +32,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
+
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 const PAGE_LIMIT = 50
 
@@ -221,11 +222,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   return (
-    < >
+    <>
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
-        < >
+        <>
           {claims.length > 0 ? (
             <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
@@ -367,7 +368,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph View
                           </Button>
-                         
+
                           <Box sx={{ flexGrow: 1 }} />
                           {claim.stars && (
                             <Box
