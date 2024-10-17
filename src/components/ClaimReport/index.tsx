@@ -17,6 +17,11 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareButton from '../../containers/feedOfClaim/ShareButton'
 
+
+
+
+
+
 interface Claim {
   statement: string | null
   subject: string
