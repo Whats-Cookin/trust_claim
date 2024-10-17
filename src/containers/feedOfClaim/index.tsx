@@ -8,6 +8,7 @@ import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import { Claim as ImportedClaim, IHomeProps } from './types'
+import './ShareButton.css'
 import {
   Box,
   Button,
@@ -123,7 +124,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const [isLastPage, setIsLastPage] = useState(false)
   const initialPageLoad = useRef(true)
   const fetchingPage = useRef(1)
-
+  const open = Boolean(anchorEl)
+  const id = open ? 'share-popover' : undefined
   const isAuth = checkAuth()
 
   useMemo(() => {
@@ -395,6 +397,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph View
                           </Button>
+
                           <Box sx={{ flexGrow: 1 }} />
                           {claim.stars && (
                             <Box
