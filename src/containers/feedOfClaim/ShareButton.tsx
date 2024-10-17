@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   Button,
   Typography,
@@ -9,29 +9,30 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment
-} from '@mui/material';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import DriveIcon from '@mui/icons-material/DriveFileRenameOutline';
-import EmailIcon from '@mui/icons-material/Email';
-import XIcon from '@mui/icons-material/X';import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CloseIcon from '@mui/icons-material/Close';
-import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined';
+} from '@mui/material'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import DriveIcon from '@mui/icons-material/DriveFileRenameOutline'
+import EmailIcon from '@mui/icons-material/Email'
+import XIcon from '@mui/icons-material/X'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import CloseIcon from '@mui/icons-material/Close'
+import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined'
 
 function ShareButton() {
-  const theme = useTheme();
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const theme = useTheme()
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   // Example form data for certification
   const formData = {
-    credentialName: 'Frontend Developer Certificate',
-  };
+    credentialName: 'Frontend Developer Certificate'
+  }
 
   // Example URL for certification
-  const link = 'https://example.com/certification-link';
+  const link = 'https://example.com/certification-link'
 
   const generateLinkedInUrl = () => {
-    const baseLinkedInUrl = 'https://www.linkedin.com/profile/add';
+    const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
     const params = new URLSearchParams({
       startTask: 'CERTIFICATION_NAME',
       name: formData?.credentialName ?? 'Certification Name',
@@ -41,50 +42,48 @@ function ShareButton() {
       expirationYear: '2025',
       expirationMonth: '8',
       certUrl: link
-    });
-    return `${baseLinkedInUrl}?${params.toString()}`;
-  };
+    })
+    return `${baseLinkedInUrl}?${params.toString()}`
+  }
 
   const handleAddCertificationToLinkedIn = () => {
-    const linkedInCertificationUrl = generateLinkedInUrl();
-    window.open(linkedInCertificationUrl, '_blank');
-  };
+    const linkedInCertificationUrl = generateLinkedInUrl()
+    window.open(linkedInCertificationUrl, '_blank')
+  }
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'share-popover' : undefined;
+  const open = Boolean(anchorEl)
+  const id = open ? 'share-popover' : undefined
 
   // Get the current page URL
-  const currentUrl = window.location.href;
+  const currentUrl = window.location.href
 
   // Handlers for each platform share
   const handleLinkedInPost = () => {
-    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
-    window.open(linkedInShareUrl, '_blank');
-  };
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`
+    window.open(linkedInShareUrl, '_blank')
+  }
 
   const handleTwitterPost = () => {
-    const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}`;
-    window.open(twitterShareUrl, '_blank');
-  };
+    const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}`
+    window.open(twitterShareUrl, '_blank')
+  }
 
   const handleEmailShare = () => {
-    const mailtoUrl = `mailto:?subject=Check out this page&body=Here is the link: ${currentUrl}`;
-    window.open(mailtoUrl, '_blank'); // Mailto opens in the same window
-  };
-
-
+    const mailtoUrl = `mailto:?subject=Check out this page&body=Here is the link: ${currentUrl}`
+    window.open(mailtoUrl, '_blank') // Mailto opens in the same window
+  }
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(currentUrl);
-    alert('Link copied to clipboard!');
-  };
+    navigator.clipboard.writeText(currentUrl)
+    alert('Link copied to clipboard!')
+  }
 
   return (
     <div>
@@ -104,7 +103,7 @@ function ShareButton() {
             '&:hover': {
               backgroundColor: 'rgba(0, 150, 136, 1)'
             },
-            textTransform: 'none',
+            textTransform: 'none'
           }}
         >
           Share
@@ -170,7 +169,7 @@ function ShareButton() {
             mb={2}
             margin='auto'
             sx={{
-              width: isMediumScreen ? 'none': '400px'
+              width: isMediumScreen ? 'none' : '400px'
             }}
           >
             {/* LinkedIn Icon */}
@@ -188,7 +187,7 @@ function ShareButton() {
                 <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
               </IconButton>
               <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                Post 
+                Post
               </Typography>
             </Box>
             <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
@@ -205,7 +204,7 @@ function ShareButton() {
                 <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
               </IconButton>
               <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-              Your LinkedIn
+                Your LinkedIn
               </Typography>
             </Box>
 
@@ -227,8 +226,6 @@ function ShareButton() {
                 x
               </Typography>
             </Box>
-
-            
 
             {/* Gmail Icon */}
             <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
@@ -296,7 +293,7 @@ function ShareButton() {
         </Popover>
       </div>
     </div>
-  );
+  )
 }
 
-export default ShareButton;
+export default ShareButton

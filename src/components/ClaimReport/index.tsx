@@ -17,11 +17,6 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareButton from '../../containers/feedOfClaim/ShareButton'
 
-
-
-
-
-
 interface Claim {
   statement: string | null
   subject: string
@@ -91,7 +86,6 @@ const DonationReport: React.FC = () => {
       </Container>
     )
   }
-  
 
   return (
     <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
