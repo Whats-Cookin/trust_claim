@@ -120,7 +120,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const [isLastPage, setIsLastPage] = useState(false)
   const initialPageLoad = useRef(true)
   const fetchingPage = useRef(1)
-
+  const open = Boolean(anchorEl)
+  const id = open ? 'share-popover' : undefined
   const isAuth = checkAuth()
 
   useMemo(() => {
@@ -222,11 +223,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   return (
-    <>
+    < >
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
-        <>
+        < >
           {claims.length > 0 ? (
             <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
@@ -368,7 +369,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph View
                           </Button>
-                          <ShareButton />
+                         
                           <Box sx={{ flexGrow: 1 }} />
                           {claim.stars && (
                             <Box

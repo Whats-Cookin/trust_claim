@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Button,
   Typography,
@@ -9,49 +9,102 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment
-} from '@mui/material'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import DriveIcon from '@mui/icons-material/DriveFileRenameOutline' // Placeholder for Google Drive
-import EmailIcon from '@mui/icons-material/Email'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import CloseIcon from '@mui/icons-material/Close'
-import './ShareButton.css'
-import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined'
+} from '@mui/material';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import DriveIcon from '@mui/icons-material/DriveFileRenameOutline';
+import EmailIcon from '@mui/icons-material/Email';
+import XIcon from '@mui/icons-material/X';import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CloseIcon from '@mui/icons-material/Close';
+import ScreenShareOutlinedIcon from '@mui/icons-material/ScreenShareOutlined';
 
 function ShareButton() {
-  const theme = useTheme()
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null) // Updated type here
+  const theme = useTheme();
+  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  // Example form data for certification
+  const formData = {
+    credentialName: 'Frontend Developer Certificate',
+  };
+
+  // Example URL for certification
+  const link = 'https://example.com/certification-link';
+
+  const generateLinkedInUrl = () => {
+    const baseLinkedInUrl = 'https://www.linkedin.com/profile/add';
+    const params = new URLSearchParams({
+      startTask: 'CERTIFICATION_NAME',
+      name: formData?.credentialName ?? 'Certification Name',
+      organizationName: 'LinkedTrust', // Updated to use organization name
+      issueYear: '2024',
+      issueMonth: '8',
+      expirationYear: '2025',
+      expirationMonth: '8',
+      certUrl: link
+    });
+    return `${baseLinkedInUrl}?${params.toString()}`;
+  };
+
+  const handleAddCertificationToLinkedIn = () => {
+    const linkedInCertificationUrl = generateLinkedInUrl();
+    window.open(linkedInCertificationUrl, '_blank');
+  };
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
-  const open = Boolean(anchorEl)
-  const id = open ? 'share-popover' : undefined
+  const open = Boolean(anchorEl);
+  const id = open ? 'share-popover' : undefined;
+
+  // Get the current page URL
+  const currentUrl = window.location.href;
+
+  // Handlers for each platform share
+  const handleLinkedInPost = () => {
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
+    window.open(linkedInShareUrl, '_blank');
+  };
+
+  const handleTwitterPost = () => {
+    const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}`;
+    window.open(twitterShareUrl, '_blank');
+  };
+
+  const handleEmailShare = () => {
+    const mailtoUrl = `mailto:?subject=Check out this page&body=Here is the link: ${currentUrl}`;
+    window.open(mailtoUrl, '_blank'); // Mailto opens in the same window
+  };
+
+
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(currentUrl);
+    alert('Link copied to clipboard!');
+  };
 
   return (
-    <div className={open ? 'blurred' : ''}>
-      {' '}
-      {/* Conditionally apply blur */}
+    <div>
       <div>
         <Button
           startIcon={<ScreenShareOutlinedIcon />}
           onClick={handleClick}
-          variant='text'
+          variant='contained'
           sx={{
             fontSize: isMediumScreen ? '8px' : '12px',
-            marginRight: '10px',
-            p: '4px',
-            color: theme.palette.sidecolor,
+            borderRadius: '24px',
+            width: isMediumScreen ? '100px' : '140px',
+            height: '48px',
+            backgroundColor: 'rgba(0, 150, 136, 1)',
+            color: 'white',
+            fontFamily: 'Montserrat',
             '&:hover': {
-              backgroundColor: theme.palette.cardsbuttons
-            }
+              backgroundColor: 'rgba(0, 150, 136, 1)'
+            },
+            textTransform: 'none',
           }}
         >
           Share
@@ -60,22 +113,28 @@ function ShareButton() {
         <Popover
           id={id}
           open={open}
-          anchorEl={anchorEl}
           onClose={handleClose}
+          anchorReference='anchorPosition'
+          anchorPosition={{ top: 600, left: 750 }}
           anchorOrigin={{
-            vertical: 'bottom',
+            vertical: 'center',
             horizontal: 'center'
           }}
-          sx={{
-            '& .MuiPopover-paper': {
-              width: '500px', // Adjusted to match the image width
-              height: '366px', // Adjusted height
+          transformOrigin={{
+            vertical: 'center',
+            horizontal: 'center'
+          }}
+          PaperProps={{
+            sx: {
+              width: isMediumScreen ? '358px' : '500px',
+              height: isMediumScreen ? '370px' : '366px',
               padding: '20px',
               backgroundColor: '#172D2D',
               borderRadius: '12px',
-              position: 'absolute',
-              top: '400px',
-              left: '470px'
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              backgroundImage: 'none' // Remove background image
             }
           }}
         >
@@ -96,49 +155,28 @@ function ShareButton() {
           </Box>
           <Box
             sx={{
-              border: '1px solid #223B3A', // The border color and thickness
-              width: '500px', // Fixed width
-              height: '0px', // Zero height, typically used for horizontal dividers
-
-              borderWidth: '1px 0px 0px 0px' // Defines the top border only
+              border: '1px solid #223B3A',
+              width: '500px',
+              height: '0px',
+              borderWidth: '1px 0px 0px 0px'
             }}
           />
           {/* Icons with Labels */}
-
           <Box
             display='flex'
             justifyContent='space-between'
-            width='400px'
             height='150px'
             alignItems='center'
             mb={2}
             margin='auto'
+            sx={{
+              width: isMediumScreen ? 'none': '400px'
+            }}
           >
             {/* LinkedIn Icon */}
             <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
               <IconButton
-                href='https://www.linkedin.com'
-                target='_blank'
-                sx={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  width: '50px',
-                  height: '50px',
-                  '&:hover': { backgroundColor: '#f0f0f0' } // Light hover effect
-                }}
-              >
-                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
-              </IconButton>
-              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                LinkedIn
-              </Typography>
-            </Box>
-
-            {/* Google Drive Icon */}
-            <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-              <IconButton
-                href='https://drive.google.com'
-                target='_blank'
+                onClick={handleLinkedInPost} // Click to share on LinkedIn
                 sx={{
                   borderRadius: '50%',
                   backgroundColor: 'white',
@@ -147,17 +185,55 @@ function ShareButton() {
                   '&:hover': { backgroundColor: '#f0f0f0' }
                 }}
               >
-                <DriveIcon sx={{ fontSize: 40, color: '#0F9D58' }} />
+                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
               </IconButton>
               <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                Drive
+                Post 
               </Typography>
             </Box>
+            <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+              <IconButton
+                onClick={handleAddCertificationToLinkedIn} // Click to share on LinkedIn
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  width: '50px',
+                  height: '50px',
+                  '&:hover': { backgroundColor: '#f0f0f0' }
+                }}
+              >
+                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
+              </IconButton>
+              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+              Your LinkedIn
+              </Typography>
+            </Box>
+
+            {/* Twitter Icon */}
+            <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
+              <IconButton
+                onClick={handleTwitterPost} // Click to tweet the link
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  width: '50px',
+                  height: '50px',
+                  '&:hover': { backgroundColor: '#f0f0f0' }
+                }}
+              >
+                <XIcon sx={{ fontSize: 40, color: '#1DA1F2' }} />
+              </IconButton>
+              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                x
+              </Typography>
+            </Box>
+
+            
 
             {/* Gmail Icon */}
             <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
               <IconButton
-                href='mailto:someone@example.com'
+                onClick={handleEmailShare} // Click to share via email
                 sx={{
                   borderRadius: '50%',
                   backgroundColor: 'white',
@@ -169,37 +245,17 @@ function ShareButton() {
                 <EmailIcon sx={{ fontSize: 40, color: '#D14836' }} />
               </IconButton>
               <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                Gmail
-              </Typography>
-            </Box>
-
-            {/* Twitter Icon */}
-            <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
-              <IconButton
-                href='https://twitter.com'
-                target='_blank'
-                sx={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  width: '50px',
-                  height: '50px',
-                  '&:hover': { backgroundColor: '#f0f0f0' }
-                }}
-              >
-                <TwitterIcon sx={{ fontSize: 40, color: '#1DA1F2' }} />
-              </IconButton>
-              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                Twitter
+                Email
               </Typography>
             </Box>
           </Box>
+
           <Box
             sx={{
-              border: '1px solid #223B3A', // The border color and thickness
-              width: '500px', // Fixed width
-              height: '0px', // Zero height, typically used for horizontal dividers
-
-              borderWidth: '1px 0px 0px 0px', // Defines the top border only
+              border: '1px solid #223B3A',
+              width: '500px',
+              height: '0px',
+              borderWidth: '1px 0px 0px 0px',
               mb: 2
             }}
           />
@@ -213,24 +269,22 @@ function ShareButton() {
           >
             Copy Link
           </Typography>
-          {/* Centered Copy Link Button */}
           <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-            {/* Input field to display the link */}
             <Box display='flex' justifyContent='center' alignItems='center'>
               <TextField
-                value={window.location.href} // The link to display
+                value={currentUrl}
                 variant='outlined'
                 InputProps={{
-                  readOnly: true, // Makes the field read-only so users can't edit the link
+                  readOnly: true,
                   sx: {
                     color: 'white',
-                    width: '380px',
-                    backgroundColor: '#2f4f4f', // Dark background to match the style
+                    width: isMediumScreen ? '318px' : '460px',
+                    backgroundColor: '#2f4f4f',
                     borderRadius: '5px'
                   },
                   endAdornment: (
                     <InputAdornment position='end'>
-                      <IconButton onClick={() => navigator.clipboard.writeText(window.location.href)}>
+                      <IconButton onClick={handleCopyLink}>
                         <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
                       </IconButton>
                     </InputAdornment>
@@ -242,7 +296,7 @@ function ShareButton() {
         </Popover>
       </div>
     </div>
-  )
+  );
 }
 
-export default ShareButton
+export default ShareButton;
