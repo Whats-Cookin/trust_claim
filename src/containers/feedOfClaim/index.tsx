@@ -64,7 +64,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
     : displayName
 
   return (
-    <Typography variant='h6' sx={{ marginBottom: '10px', color: theme.palette.texts }} fontWeight='bold'>
+    <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
       <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
       <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
     </Typography>
@@ -257,14 +257,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
-                  variant='h6'
+                  variant='body1'
                   component='div'
                   sx={{
                     color: theme.palette.texts,
                     textAlign: 'center',
-                    marginLeft: isMediumScreen ? '0' : '1rem',
-                    fontSize: '23px',
-                    fontWeight: 'bold'
+                    marginLeft: isMediumScreen ? '0' : '1rem'
                   }}
                 >
                   Recent Claims
@@ -315,6 +313,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           </Typography>
                           {claim.statement && (
                             <Typography
+                              variant='body2'
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
@@ -565,7 +564,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             </MainContainer>
           ) : (
             <MainContainer sx={{ textAlign: 'center' }}>
-              <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
+              <Typography variant='body2'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
             </MainContainer>
           )}
 
