@@ -103,13 +103,11 @@ const DonationReport: React.FC = () => {
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
           <Typography
-            component='div'
+            variant='body1'
             sx={{
               color: theme.palette.texts,
               textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '20px',
-              fontWeight: '700'
+              marginLeft: isMediumScreen ? '0' : '1rem'
             }}
           >
             Claim Report
@@ -135,13 +133,11 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                component='div'
+                variant='body2'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '20px',
-                  fontWeight: '700'
+                  marginLeft: isMediumScreen ? '0' : '1rem'
                 }}
               >
                 Validations
@@ -177,7 +173,7 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                component='div'
+                variant='body2'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
