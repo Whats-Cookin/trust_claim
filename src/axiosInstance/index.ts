@@ -1,8 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { BACKEND_BASE_URL } from '../utils/settings'
 
-const baseURL = BACKEND_BASE_URL
-
 const instance = axios.create({
   baseURL: BACKEND_BASE_URL,
   timeout: 10000
@@ -35,7 +33,7 @@ instance.interceptors.response.use(
   async error => {
     const originalReq = error.config
     const errorResponse = error.response
-    if (errorResponse.status === 401 && errorResponse.data.message === 'jwt expired') {
+    if (errorResponse?.status === 401 && errorResponse.data.message === 'jwt expired') {
       if (!isRefreshing) {
         const refreshToken = localStorage.getItem('refreshToken')
         isRefreshing = true
