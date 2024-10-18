@@ -38,7 +38,7 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
         selector: 'edge',
         style: {
           width: 3,
-          fontSize: 14,
+          fontSize: 16,
           targetArrowShape: 'triangle-cross',
           lineColor: theme.palette.stars,
           targetArrowColor: theme.palette.stars,
@@ -46,7 +46,6 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           color: theme.palette.stars,
           controlPointWeights: '0.5 0.2 0.8',
           textRotation: 'autorotate',
-          textMarginX: 30,
           content: 'data(relation)',
           'line-cap': 'round',
           'source-endpoint': 'outside-to-node',
