@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.sidecolor, width: '20px', height: '20px' }
+  const iconStyle = { color: theme.palette.sidecolor, width: '26px', height: '26px' }
 
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
@@ -74,45 +74,87 @@ const Sidebar: React.FC<SidebarProps> = ({
         }
       }}
     >
-      <Box>
-        <List sx={{ paddingTop: '0px' }}>
-          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleSidebar}>
-            {isOpen ? <KeyboardDoubleArrowLeftIcon sx={iconStyle} /> : <KeyboardDoubleArrowRightIcon sx={iconStyle} />}
-            <ListItemText primary='Close' sx={{ display: isOpen ? 'block' : 'none' }} />
+      <List sx={{ paddingTop: '0px' }}>
+        <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleSidebar}>
+          {isOpen ? <KeyboardDoubleArrowLeftIcon sx={iconStyle} /> : <KeyboardDoubleArrowRightIcon sx={iconStyle} />}
+          <ListItemText
+            primary='Close'
+            sx={{
+              display: isOpen ? 'block' : 'none'
+            }}
+            primaryTypographyProps={{
+              variant: 'body2'
+            }}
+          />
+        </ListItemButton>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
+          <Home sx={iconStyle} />
+          <ListItemText
+            primary='Home'
+            sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+            primaryTypographyProps={{
+              variant: 'body2'
+            }}
+          />
+        </ListItemButton>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/search') }} onClick={() => navigate('/search')}>
+          <Search sx={iconStyle} />
+          <ListItemText
+            primary='Search'
+            sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+            primaryTypographyProps={{
+              variant: 'body2'
+            }}
+          />
+        </ListItemButton>
+        {isAuth && (
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
+            <AddCircleOutlineOutlinedIcon sx={iconStyle} />
+            <ListItemText
+              primary='Claim'
+              sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+              primaryTypographyProps={{
+                variant: 'body2'
+              }}
+            />
           </ListItemButton>
-          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
-            <Home sx={iconStyle} />
-            <ListItemText primary='Home' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
+        )}
+        <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleTheme}>
+          {isDarkMode ? <LightModeOutlinedIcon sx={iconStyle} /> : <DarkMode sx={iconStyle} />}
+          <ListItemText
+            primary={isDarkMode ? 'Light' : 'Dark'}
+            sx={{ display: isOpen ? 'block' : 'none' }}
+            primaryTypographyProps={{
+              variant: 'body2'
+            }}
+          />
+        </ListItemButton>
+        {isAuth ? (
+          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={handleLogout}>
+            <Logout sx={iconStyle} />
+            <ListItemText
+              primary='Log out'
+              sx={{ display: isOpen ? 'block' : 'none' }}
+              primaryTypographyProps={{
+                variant: 'body2'
+              }}
+            />
           </ListItemButton>
-          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/search') }} onClick={() => navigate('/search')}>
-            <Search sx={iconStyle} />
-            <ListItemText primary='Search' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
-          </ListItemButton>
-          {isAuth && (
-            <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
-              <AddCircleOutlineOutlinedIcon sx={iconStyle} />
-              <ListItemText primary='Claim' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
+        ) : (
+          <>
+            <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
+              <Login sx={iconStyle} />
+              <ListItemText
+                primary='Login'
+                sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+                primaryTypographyProps={{
+                  variant: 'body2'
+                }}
+              />
             </ListItemButton>
-          )}
-          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleTheme}>
-            {isDarkMode ? <LightModeOutlinedIcon sx={iconStyle} /> : <DarkMode sx={iconStyle} />}
-            <ListItemText primary={isDarkMode ? 'Light' : 'Dark'} sx={{ display: isOpen ? 'block' : 'none' }} />
-          </ListItemButton>
-          {isAuth ? (
-            <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={handleLogout}>
-              <Logout sx={iconStyle} />
-              <ListItemText primary='Log out' sx={{ display: isOpen ? 'block' : 'none' }} />
-            </ListItemButton>
-          ) : (
-            <>
-              <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
-                <Login sx={iconStyle} />
-                <ListItemText primary='Login' sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }} />
-              </ListItemButton>
-            </>
-          )}
-        </List>
-      </Box>
+          </>
+        )}
+      </List>
       <Footer isOpen={isOpen} />
     </Drawer>
   )
@@ -126,7 +168,6 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
       sx={{
         display: isOpen ? 'flex' : 'none',
         flexDirection: 'column',
-
         padding: '0.5rem',
         width: '100%'
       }}
@@ -138,28 +179,25 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
           textAlign: 'left',
           justifyContent: 'flex-start',
           flexDirection: 'row',
-          alignItems: 'center',
-          fontSize: '16px'
+          alignItems: 'center'
         }}
       >
         <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-          Terms of Service
+          <Typography variant='body2'>Terms of Service</Typography>
         </Link>
         <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-          Privacy Policy
+          <Typography variant='body2'>Privacy Policy</Typography>
         </Link>
       </Box>
       <Box
         sx={{
           marginTop: '8px',
           display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          fontSize: '16px'
+          justifyContent: 'flex-start'
         }}
       >
         <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-          <Typography>© {new Date().getFullYear()} LinkedTrust</Typography>
+          <Typography variant='body2'>© {new Date().getFullYear()} LinkedTrust</Typography>
         </Link>
       </Box>
     </Box>
