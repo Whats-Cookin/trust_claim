@@ -365,126 +365,108 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     {issuerValue && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            Issuer :
-                          </Typography>
+                          <Typography variant='body2'>Issuer :</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{issuerValue}</Typography>
+                          <Typography variant='body2'>{issuerValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {subjectValue && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            Subject :
-                          </Typography>
+                          <Typography variant='body2'>Subject :</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{subjectValue}</Typography>
+                          <Typography variant='body2'>{subjectValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {aspectValue && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            Aspect :
-                          </Typography>
+                          <Typography variant='body2'>Aspect :</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{aspectValue}</Typography>
+                          <Typography variant='body2'>{aspectValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {confidenceValue !== null && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            Confidence :
-                          </Typography>
+                          <Typography variant='body2'>Confidence :</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{confidenceValue}</Typography>
+                          <Typography variant='body2'>{confidenceValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {amtValue && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            Amount:
-                          </Typography>
+                          <Typography variant='body2'>Amount:</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{amtValue}</Typography>
+                          <Typography variant='body2'>{amtValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {effectiveDateValue && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            Date :
-                          </Typography>
+                          <Typography variant='body2'>Date :</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>
-                            {effectiveDateValue}
-                          </Typography>
+                          <Typography variant='body2'>{effectiveDateValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {howKnownValue && (
                       <Box sx={{ display: 'flex' }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography sx={{ fontSize: '16px', fontWeight: '600', wordWrap: 'break-word' }}>
-                            How Known :
-                          </Typography>
+                          <Typography variant='body2'>How Known :</Typography>
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>{howKnownValue}</Typography>
+                          <Typography variant='body2'>{howKnownValue}</Typography>
                         </Box>
                       </Box>
                     )}
                     {statementValue && (
-                      <Typography variant='body2'>
-                        <Typography
-                          variant='inherit'
-                          component='span'
-                          sx={{
-                            padding: '5px 1 1 5px',
-                            wordBreak: 'break-word',
-                            color: theme.palette.texts
-                          }}
-                        >
-                          Statement :
-                          <Typography sx={{ fontSize: '16px', wordWrap: 'break-word' }}>
-                            <Typography
-                              variant='inherit'
-                              component='span'
-                              sx={{
-                                padding: '5px 1 1 5px',
-                                wordBreak: 'break-word',
-                                color: theme.palette.texts
-                              }}
-                            >
-                              {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
-                              {isStatementLong && (
-                                <MuiLink
-                                  onClick={handleToggleExpand}
-                                  sx={{
-                                    cursor: 'pointer',
-                                    marginLeft: '5px',
-                                    color: theme.palette.link,
-                                    textDecoration: 'none'
-                                  }}
-                                >
-                                  {isExpanded ? 'Show Less' : 'See More'}
-                                </MuiLink>
-                              )}
-                            </Typography>
+                      <Typography
+                        variant='body2'
+                        component='span'
+                        sx={{
+                          padding: '5px 1 1 5px',
+                          wordBreak: 'break-word',
+                          color: theme.palette.texts
+                        }}
+                      >
+                        Statement :
+                        <Typography variant='body2'>
+                          <Typography
+                            variant='body2'
+                            component='span'
+                            sx={{
+                              padding: '5px 1 1 5px',
+                              wordBreak: 'break-word',
+                              color: theme.palette.texts
+                            }}
+                          >
+                            {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
+                            {isStatementLong && (
+                              <MuiLink
+                                onClick={handleToggleExpand}
+                                sx={{
+                                  cursor: 'pointer',
+                                  marginLeft: '5px',
+                                  color: theme.palette.link,
+                                  textDecoration: 'none'
+                                }}
+                              >
+                                {isExpanded ? 'Show Less' : 'See More'}
+                              </MuiLink>
+                            )}
                           </Typography>
                         </Typography>
                       </Typography>
