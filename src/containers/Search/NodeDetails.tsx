@@ -27,7 +27,7 @@ interface NodeDetailsProps {
   isDarkMode: boolean
 }
 
-export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, isDarkMode }: NodeDetailsProps) {
+export default function NodeDetails({ setOpen, selectedClaim, isDarkMode }: NodeDetailsProps) {
   const handleClose = () => setOpen(false)
 
   const theme = useTheme()
@@ -53,13 +53,11 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
         }}
       >
         <Typography
-          variant='h6'
-          component='div'
+          variant='body1'
           sx={{
             color: theme.palette.texts,
             textAlign: 'center',
-            fontSize: 'clamp(14px, 5vw, 32px)',
-            fontWeight: 'bold'
+            ml: '0.5rem'
           }}
         >
           Claim Details
@@ -88,8 +86,6 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
           marginBottom: '2rem'
         }}
       >
-        <ClaimImage claimImg={claimImg} isDarkMode={isDarkMode} />
-
         {selectedClaim &&
           Object.keys(selectedClaim).map((key: string) => {
             let value = selectedClaim[key]
@@ -111,32 +107,29 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
                 key={key}
               >
                 <Typography
+                  variant='body2'
                   sx={{
-                    fontWeight: 'bold',
-                    paddingRight: '13.25px 15px',
-                    fontSize: 'clamp(10px, 5vw, 28px)'
+                    paddingRight: '13.25px 15px'
                   }}
                 >
                   {camelCaseToSimpleString(key)}:
                 </Typography>
                 <Typography
-                  component='p'
+                  variant='body2'
                   sx={{
                     overflow: 'hidden',
                     overflowWrap: 'break-word',
-                    width: '80%',
-                    fontSize: 'clamp(10px, 5vw, 26px)'
+                    width: '80%'
                   }}
                 >
                   {displayText}
                   {key === 'statement' && value.length > 60 && (
                     <Typography
-                      component='span'
+                      variant='body2'
                       onClick={() => setShowFullText(!showFullText)}
                       sx={{
                         color: theme.palette.maintext,
-                        cursor: 'pointer',
-                        fontSize: 'clamp(10px, 5vw, 26px)'
+                        cursor: 'pointer'
                       }}
                     >
                       {showFullText ? ' See less' : ' See more'}
@@ -159,9 +152,7 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
           sx={{
             color: theme.palette.buttontext,
             bgcolor: theme.palette.footerBackground,
-            fontWeight: 500,
             borderRadius: '100px',
-            fontSize: 'clamp(12px, 3vw, 25px)',
             px: '2rem'
           }}
           onClick={() =>
@@ -178,9 +169,7 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
           sx={{
             color: theme.palette.buttontext,
             bgcolor: theme.palette.footerBackground,
-            fontWeight: 500,
             borderRadius: '100px',
-            fontSize: 'clamp(12px, 3vw, 25px)',
             px: '2rem'
           }}
           onClick={() =>
@@ -196,9 +185,7 @@ export default function NodeDetails({ open, setOpen, selectedClaim, claimImg, is
           sx={{
             color: theme.palette.buttontext,
             bgcolor: theme.palette.footerBackground,
-            fontWeight: 500,
             borderRadius: '100px',
-            fontSize: 'clamp(12px, 3vw, 25px)',
             px: '2rem'
           }}
           onClick={handleClose}
