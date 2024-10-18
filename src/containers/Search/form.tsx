@@ -81,6 +81,7 @@ export const Form = ({
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
+  const accessToken = localStorage.getItem('accessToken')
   useEffect(() => {
     const QUERY = `
       query{
@@ -135,7 +136,7 @@ export const Form = ({
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
           amt: amtAsNumber,
-          issuerId: did
+          issuerId: did ?? accessToken
         }
         setLoading(true)
         const { message, isSuccess } = await createClaim(payload)
