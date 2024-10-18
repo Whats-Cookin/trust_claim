@@ -71,9 +71,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         >
           <img src={Logo} alt='LinkedTrust Logo' style={{ width: '20px', height: '20px', marginRight: '16px' }} />
           <Typography
+            variant='body1'
             sx={{
               color: theme.palette.maintext,
-              fontWeight: 'bold',
               flexWrap: 'wrap',
               fontSize: isSmallScreen ? '20px' : '20px',
               transition: 'opacity 0.3s'
