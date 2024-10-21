@@ -168,15 +168,14 @@ export const Form = ({
       name,
       images
     }) => {
-      // check if user is authenticated before submitting
-
+      // Normalize and validate form fields
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
-        console.log('Normalizing to number amt: ' + amt)
         const amtAsNumber = Number(amt)
-
+        const validImages = images.filter(img => img.url && img.url.trim() !== '')
+  
         const payload = {
           subject,
           claim,
@@ -191,21 +190,19 @@ export const Form = ({
           amt: amtAsNumber,
           issuerId: did,
           name,
-          images: images.map(img => ({
-            ...img
-          }))
+          images: validImages 
         }
-
+  
         setLoading(true)
-
+  
         try {
           const { message, isSuccess } = await timeoutPromise(createClaim(payload), 1000)
-
+  
           if (message) {
             setSnackbarMessage(message)
             toggleSnackbar(true)
           }
-
+  
           if (isSuccess) {
             navigate('/feed')
             reset()
@@ -225,6 +222,7 @@ export const Form = ({
       }
     }
   )
+  
 
   const watchClaim = watch('claim')
   const watchEffectiveDate = watch('effectiveDate')
