@@ -128,7 +128,6 @@ export const Form = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const tooltipPlacement = isMobile ? 'top' : 'left'
 
-  // querying composeDB
   useEffect(() => {
     const QUERY = `
       query {
@@ -168,14 +167,12 @@ export const Form = ({
       name,
       images
     }) => {
-      // Normalize and validate form fields
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
         const amtAsNumber = Number(amt)
         const validImages = images.filter(img => img.url && img.url.trim() !== '')
-  
         const payload = {
           subject,
           claim,
@@ -190,19 +187,19 @@ export const Form = ({
           amt: amtAsNumber,
           issuerId: did,
           name,
-          images: validImages 
+          images: validImages
         }
-  
+
         setLoading(true)
-  
+
         try {
           const { message, isSuccess } = await timeoutPromise(createClaim(payload), 1000)
-  
+
           if (message) {
             setSnackbarMessage(message)
             toggleSnackbar(true)
           }
-  
+
           if (isSuccess) {
             navigate('/feed')
             reset()
@@ -222,7 +219,6 @@ export const Form = ({
       }
     }
   )
-  
 
   const watchClaim = watch('claim')
   const watchEffectiveDate = watch('effectiveDate')
