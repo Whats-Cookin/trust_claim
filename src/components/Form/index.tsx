@@ -128,7 +128,6 @@ export const Form = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const tooltipPlacement = isMobile ? 'top' : 'left'
 
-  // querying composeDB
   useEffect(() => {
     const QUERY = `
       query {
@@ -168,15 +167,12 @@ export const Form = ({
       name,
       images
     }) => {
-      // check if user is authenticated before submitting
-
       if (subject && claim) {
         const effectiveDateAsString = effectiveDate.toISOString()
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
-        console.log('Normalizing to number amt: ' + amt)
         const amtAsNumber = Number(amt)
-
+        const validImages = images.filter(img => img.url && img.url.trim() !== '')
         const payload = {
           subject,
           claim,
@@ -191,9 +187,7 @@ export const Form = ({
           amt: amtAsNumber,
           issuerId: did,
           name,
-          images: images.map(img => ({
-            ...img
-          }))
+          images: validImages
         }
 
         setLoading(true)
