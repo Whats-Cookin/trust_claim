@@ -116,7 +116,7 @@ const Search = (homeProps: IHomeProps) => {
     event.preventDefault()
     const currentClaim = event?.target?.data('raw')?.claim
     const endNode = event?.target?.data('raw')?.endNode
-    const startNode = event?.target?.data('raw')?.startNode
+    const startNode = event?.target?.data('raw')?.claim
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
@@ -187,6 +187,17 @@ const Search = (homeProps: IHomeProps) => {
       document.removeEventListener('contextmenu', event => event.preventDefault())
     }
   }, [])
+
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowDetails(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [showDetails])
 
   return (
     <>

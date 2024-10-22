@@ -39,7 +39,7 @@ export default function NodeDetails({
         <StartNode selectedClaim={startNode} claimImg={claimImg} />
         <EndNode selectedClaim={endNode} claimImg={claimImg} />
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px', mb: '35px' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
         <Button
           sx={{
             color: theme.palette.link,

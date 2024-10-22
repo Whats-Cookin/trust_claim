@@ -49,34 +49,37 @@ export default function StartNode({ selectedClaim, claimImg }: StartNodeProps) {
           color: theme.palette.texts
         }}
       >
-        <Box
-          sx={{
-            border: '20px ',
-            borderRadius: '20px',
-            height: { xs: '130px', sm: '270px' },
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: theme.palette.input,
-            textWrap: 'wrap',
-            margin: '15px'
-          }}
-        >
+        {claimImg && (
           <Box
-            component='img'
-            src={claimImg || placeholderWhite}
-            alt='claim image'
-            sx={{ maxWidth: { xs: '40%', sm: '100%' }, maxHeight: { xs: '40%', sm: '100%' } }}
-          />
-        </Box>
+            sx={{
+              border: '20px ',
+              borderRadius: '20px',
+              height: { xs: '130px', sm: '270px' },
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: theme.palette.input,
+              textWrap: 'wrap',
+              margin: '15px'
+            }}
+          >
+            <Box
+              component='img'
+              src={claimImg}
+              alt='claim image'
+              sx={{ maxWidth: { xs: '40%', sm: '100%' }, maxHeight: { xs: '40%', sm: '100%' } }}
+            />
+          </Box>
+        )}
+
         <Box
           sx={{
             width: { lg: '98%', md: '98%', sm: '98%', xs: '95%' },
-            height: 376,
+            height: claimImg ? 150 : 450,
             m: '10px',
             overflowY: 'auto',
             '&::-webkit-scrollbar': {
-              width: '15px'
+              width: '10px'
             },
             '&::-webkit-scrollbar-track': {
               background: theme.palette.pageBackground,
