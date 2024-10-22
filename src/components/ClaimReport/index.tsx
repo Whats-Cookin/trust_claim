@@ -15,6 +15,7 @@ import {
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
+import ShareButton from '../../containers/feedOfClaim/ShareButton'
 
 interface Claim {
   statement: string | null
@@ -101,7 +102,7 @@ const DonationReport: React.FC = () => {
           padding: '25px'
         }}
       >
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'space-between', mb: '20px' }}>
           <Typography
             variant='body1'
             sx={{
@@ -120,6 +121,7 @@ const DonationReport: React.FC = () => {
               }}
             />
           </Typography>
+          <ShareButton />
         </Box>
         <MyCard
           data={reportData.data.claim.claim}
