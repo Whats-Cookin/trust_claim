@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Container,
   Typography,
@@ -61,24 +61,6 @@ const DonationReport: React.FC = () => {
     }
     fetchReportData()
   }, [claimId])
-
-  const handleSchema = async () => {
-    navigate({
-      pathname: '/search',
-      search: `?query=${claimId}`
-    })
-  }
-
-  const handleBack = async () => {
-    navigate('/feed')
-  }
-
-  const handleValidation = () => {
-    navigate({
-      pathname: '/validate',
-      search: `?subject=${BACKEND_BASE_URL}/claims/${claimId}`
-    })
-  }
 
   if (isLoading) {
     return (
@@ -232,6 +214,8 @@ const DonationReport: React.FC = () => {
         )}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
           <Button
+            component={Link}
+            to='/feed'
             sx={{
               color: theme.palette.link,
               textDecoration: 'underline',
@@ -240,13 +224,14 @@ const DonationReport: React.FC = () => {
               fontSize: 'clamp(12px, 2.5vw, 20px)',
               px: '2rem'
             }}
-            onClick={handleBack}
           >
             <img src={backSvg} alt='arrow' style={{ width: '10px', marginRight: '10px' }} />
             BACK
           </Button>
           <Box display='flex'>
             <Button
+              component={Link}
+              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claimId}`}
               sx={{
                 color: theme.palette.buttontext,
                 bgcolor: theme.palette.buttons,
@@ -257,13 +242,13 @@ const DonationReport: React.FC = () => {
                 marginRight: '15px',
                 width: { xs: '10px', sm: '150px' }
               }}
-              onClick={() => handleValidation()}
             >
               Validate
             </Button>
             <Button
+              component={Link}
+              to={`/search?query=${claimId}`}
               startIcon={<ShareOutlinedIcon />}
-              onClick={() => handleSchema()}
               variant='text'
               sx={{
                 p: '4px',
