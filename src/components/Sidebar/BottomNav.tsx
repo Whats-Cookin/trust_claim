@@ -3,7 +3,6 @@ import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 import { Home, Search, AddCircleOutlineOutlined, LightModeOutlined, DarkMode, Logout, Login } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
-import { color } from '@mui/system'
 
 interface BottomNavProps {
   isAuth: boolean
@@ -36,14 +35,11 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
     <BottomNavigation
       sx={{
         position: 'fixed',
-        bottom: 0,
         height: '60px',
         width: '100%',
         backgroundColor: theme.palette.menuBackground,
         color: theme.palette.sidecolor,
-        zIndex: 10,
-        display: 'flex',
-        justifyContent: 'space-around'
+        zIndex: 10
       }}
       showLabels
     >
