@@ -73,6 +73,13 @@ const DonationReport: React.FC = () => {
     navigate('/feed')
   }
 
+  const handleValidation = () => {
+    navigate({
+      pathname: '/validate',
+      search: `?subject=${BACKEND_BASE_URL}/claims/${claimId}`
+    })
+  }
+
   if (isLoading) {
     return (
       <Container
@@ -238,7 +245,22 @@ const DonationReport: React.FC = () => {
             <img src={backSvg} alt='arrow' style={{ width: '10px', marginRight: '10px' }} />
             BACK
           </Button>
-          <Box>
+          <Box display='flex'>
+            <Button
+              sx={{
+                color: theme.palette.buttontext,
+                bgcolor: theme.palette.buttons,
+                fontWeight: 500,
+                borderRadius: '100px',
+                fontSize: 'clamp(5px, 2.5vw, 20px)',
+                px: '2rem',
+                marginRight: '15px',
+                width: { xs: '10px', sm: '150px' }
+              }}
+              onClick={() => handleValidation()}
+            >
+              Validate
+            </Button>
             <Button
               startIcon={<ShareOutlinedIcon />}
               onClick={() => handleSchema()}
@@ -249,8 +271,7 @@ const DonationReport: React.FC = () => {
                 borderRadius: '100px',
                 fontSize: 'clamp(5px, 2.5vw, 20px)',
                 px: '2rem',
-                marginRight: '15px',
-                width: { xs: '161px', sm: '226px' },
+                width: { xs: '10px', sm: '226px' },
                 bgcolor: theme.palette.buttons,
                 color: theme.palette.sidecolor
               }}
