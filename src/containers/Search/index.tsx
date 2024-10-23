@@ -21,6 +21,7 @@ const Search = (homeProps: IHomeProps) => {
   const theme = useTheme()
   const { setLoading, setSnackbarMessage, toggleSnackbar, isDarkMode } = homeProps
   const ref = useRef<any>(null)
+  const cyRef = useRef<Cytoscape.Core | null>(null)
   const query = new URLSearchParams(search).get('query')
   const [showDetails, setShowDetails] = useState<boolean>(false)
   const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
@@ -176,10 +177,12 @@ const Search = (homeProps: IHomeProps) => {
   }, [query, cy])
 
   useEffect(() => {
-    if (!cy || !showDetails) {
-      setCy(Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions)))
+    if (!cyRef.current && ref.current) {
+      const newCy = Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions))
+      setCy(newCy)
+      cyRef.current = newCy
     }
-  }, [theme, isMediumUp, showDetails])
+  }, [theme, layoutName, layoutOptions])
 
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
@@ -202,7 +205,8 @@ const Search = (homeProps: IHomeProps) => {
   return (
     <>
       <MainContainer>
-        {showDetails ? (
+        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />{' '}
+        {showDetails && (
           <NodeDetails
             open={showDetails}
             setOpen={setShowDetails}
@@ -212,8 +216,6 @@ const Search = (homeProps: IHomeProps) => {
             startNode={startNode}
             endNode={endNode}
           />
-        ) : (
-          <Box ref={ref} sx={styles.cy} />
         )}
         <NewClaim
           open={openNewClaim}
