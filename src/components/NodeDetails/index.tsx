@@ -1,10 +1,11 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Button, Card, useMediaQuery, useTheme } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import backSvg from '../../assets/images/back.svg'
 import StartNode from '../StartNode'
 import EndNode from '../EndNode'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 interface NodeDetailsProps {
   open: boolean
@@ -20,11 +21,10 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
   const handleClose = () => setOpen(false)
 
   const theme = useTheme()
-  const navigate = useNavigate()
 
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' } }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: { xs: 'column', sm: 'row' } }}>
         <StartNode selectedClaim={startNode} claimImg={claimImg} />
         <EndNode selectedClaim={endNode} claimImg={claimImg} />
       </Box>
@@ -34,7 +34,7 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
             color: theme.palette.link,
             fontWeight: 500,
             borderRadius: '100px',
-            fontSize: '20px',
+            fontSize: 'clamp(12px, 2.5vw, 20px)',
             px: '2rem'
           }}
           onClick={handleClose}
@@ -44,43 +44,36 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
         </Button>
         <Box>
           <Button
+            component={Link}
+            to={`/validate?subject=${BACKEND_BASE_URL}/claims/${selectedClaim.id}`}
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
               fontWeight: 600,
               borderRadius: '24px',
-              fontSize: '20px',
+              fontSize: 'clamp(10px, 2.5vw, 20px)',
               px: '2rem',
               marginRight: '15px',
               width: { xs: '10px', sm: '180px' },
               height: '48px'
             }}
-            onClick={() =>
-              navigate({
-                pathname: '/validate',
-                search: `?subject=https://live.linkedtrust.us/claims/${selectedClaim.id}`
-              })
-            }
           >
             Validate
           </Button>
 
           <Button
+            component={Link}
+            to={`/report/${selectedClaim.id}`}
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
               fontWeight: 600,
               borderRadius: '24px',
-              fontSize: '20px',
+              fontSize: 'clamp(10px, 2.5vw, 20px)',
               px: '2rem',
               width: { xs: '10px', sm: '180px' },
               height: '48px'
             }}
-            onClick={() =>
-              navigate({
-                pathname: `/report/${selectedClaim.id}`
-              })
-            }
           >
             Evidence
           </Button>

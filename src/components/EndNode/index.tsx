@@ -12,7 +12,7 @@ export default function EndNode({ selectedClaim, claimImg }: EndNodeProps) {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   return (
-    <Box sx={{ width: '50%' }}>
+    <Box sx={{ width: { sm: '50%' }, mt: { xs: '10px', sm: '0px' } }}>
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
         <Typography
           variant='body1'
@@ -84,7 +84,7 @@ export default function EndNode({ selectedClaim, claimImg }: EndNodeProps) {
           }}
         >
           <Typography variant='body2'>
-          {selectedClaim && <RenderClaimDetails claimData={selectedClaim} theme={theme} />}
+            {selectedClaim && <RenderClaimDetails claimData={selectedClaim} theme={theme} />}
           </Typography>
         </Box>
       </Card>
