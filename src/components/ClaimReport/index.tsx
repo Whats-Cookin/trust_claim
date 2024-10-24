@@ -18,6 +18,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
+import { height } from '@mui/system'
 
 interface Claim {
   statement: string | null
@@ -218,10 +219,9 @@ const DonationReport: React.FC = () => {
             to='/feed'
             sx={{
               color: theme.palette.link,
-              textDecoration: 'underline',
               fontWeight: 500,
-              borderRadius: '100px',
-              fontSize: 'clamp(12px, 2.5vw, 20px)',
+              borderRadius: '24px',
+              fontSize: 'clamp(12px, 2.5vw, 18px)',
               px: '2rem'
             }}
           >
@@ -235,12 +235,13 @@ const DonationReport: React.FC = () => {
               sx={{
                 color: theme.palette.buttontext,
                 bgcolor: theme.palette.buttons,
-                fontWeight: 500,
-                borderRadius: '100px',
-                fontSize: 'clamp(5px, 2.5vw, 20px)',
+                fontWeight: 600,
+                borderRadius: '24px',
+                fontSize: 'clamp(12px, 2.5vw, 18px)',
                 px: '2rem',
                 marginRight: '15px',
-                width: { xs: '10px', sm: '150px' }
+                width: { xs: '10px', sm: '180px' },
+                height: '48px'
               }}
             >
               Validate
@@ -252,13 +253,14 @@ const DonationReport: React.FC = () => {
               variant='text'
               sx={{
                 p: '4px',
-                fontWeight: 500,
-                borderRadius: '100px',
-                fontSize: 'clamp(5px, 2.5vw, 20px)',
+                fontWeight: 600,
+                borderRadius: '24px',
+                fontSize: 'clamp(12px, 2.5vw, 18px)',
                 px: '2rem',
-                width: { xs: '10px', sm: '226px' },
+                width: { xs: '10px', sm: '220px' },
                 bgcolor: theme.palette.buttons,
-                color: theme.palette.sidecolor
+                color: theme.palette.sidecolor,
+                height: '48px'
               }}
             >
               Graph View
