@@ -12,7 +12,7 @@ import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
-import NodeDetails from './NodeDetails'
+import NodeDetails from '../../components/NodeDetails'
 import { s } from 'vitest/dist/types-e3c9754d'
 import { set } from 'lodash'
 

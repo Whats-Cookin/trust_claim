@@ -1,8 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { Card, useMediaQuery, useTheme } from '@mui/material'
-import placeholderWhite from '../../assets/imgplaceholderwhite.svg'
-import RenderClaimDetails from '../ClaimDetails/RenderClaimDetails'
+import RenderClaimDetails from '../../containers/ClaimDetails/RenderClaimDetails'
 
 interface EndNodeProps {
   selectedClaim: any
@@ -13,39 +12,33 @@ export default function EndNode({ selectedClaim, claimImg }: EndNodeProps) {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   return (
-    <Box sx={{ width: { sm: '50%' } }}>
+    <Box sx={{ width: '50%' }}>
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
         <Typography
-          variant='h6'
-          component='div'
+          variant='body1'
           sx={{
             color: theme.palette.texts,
             textAlign: 'center',
-            marginLeft: isMediumScreen ? '0' : '1rem',
-            fontSize: '23px',
-            fontWeight: 'bold'
+            marginLeft: isMediumScreen ? '0' : '1rem'
           }}
         >
           Node Details
           <Box
             sx={{
-              height: '4px',
+              width: '96px',
+              height: '5px',
               backgroundColor: theme.palette.maintext,
               marginTop: '4px',
-              borderRadius: '2px',
-              width: '80%'
+              borderRadius: '4px'
             }}
           />
         </Typography>
       </Box>
       <Card
         sx={{
-          maxWidth: 'fit',
-          height: 'fit',
           borderRadius: '20px',
           display: isMediumScreen ? 'column' : 'row',
           backgroundColor: theme.palette.cardBackground,
-          backgroundImage: 'none',
           color: theme.palette.texts
         }}
       >
@@ -90,7 +83,9 @@ export default function EndNode({ selectedClaim, claimImg }: EndNodeProps) {
             }
           }}
         >
+          <Typography variant='body2'>
           {selectedClaim && <RenderClaimDetails claimData={selectedClaim} theme={theme} />}
+          </Typography>
         </Box>
       </Card>
     </Box>

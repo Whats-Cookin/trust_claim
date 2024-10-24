@@ -3,10 +3,8 @@ import Typography from '@mui/material/Typography'
 import { Button, Card, useMediaQuery, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import backSvg from '../../assets/images/back.svg'
-import placeholderWhite from '../../assets/imgplaceholderwhite.svg'
-import RenderClaimDetails from '../ClaimDetails/RenderClaimDetails'
-import StartNode from './StartNode'
-import EndNode from './EndNode'
+import StartNode from '../StartNode'
+import EndNode from '../EndNode'
 
 interface NodeDetailsProps {
   open: boolean
@@ -18,19 +16,10 @@ interface NodeDetailsProps {
   isDarkMode: boolean
 }
 
-export default function NodeDetails({
-  open,
-  setOpen,
-  selectedClaim,
-  claimImg,
-  startNode,
-  endNode,
-  isDarkMode
-}: NodeDetailsProps) {
+export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNode, endNode }: NodeDetailsProps) {
   const handleClose = () => setOpen(false)
 
   const theme = useTheme()
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const navigate = useNavigate()
 
   return (
@@ -43,10 +32,9 @@ export default function NodeDetails({
         <Button
           sx={{
             color: theme.palette.link,
-            textDecoration: 'underline',
             fontWeight: 500,
             borderRadius: '100px',
-            fontSize: 'clamp(12px, 2.5vw, 20px)',
+            fontSize: '20px',
             px: '2rem'
           }}
           onClick={handleClose}
@@ -59,12 +47,13 @@ export default function NodeDetails({
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
-              fontWeight: 500,
-              borderRadius: '100px',
-              fontSize: 'clamp(5px, 2.5vw, 20px)',
+              fontWeight: 600,
+              borderRadius: '24px',
+              fontSize: '20px',
               px: '2rem',
               marginRight: '15px',
-              width: { xs: '10px', sm: '150px' }
+              width: { xs: '10px', sm: '180px' },
+              height: '48px'
             }}
             onClick={() =>
               navigate({
@@ -80,11 +69,12 @@ export default function NodeDetails({
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
-              fontWeight: 500,
-              borderRadius: '100px',
-              fontSize: 'clamp(5px, 2.5vw, 20px)',
+              fontWeight: 600,
+              borderRadius: '24px',
+              fontSize: '20px',
               px: '2rem',
-              width: { xs: '10px', sm: '150px' }
+              width: { xs: '10px', sm: '180px' },
+              height: '48px'
             }}
             onClick={() =>
               navigate({

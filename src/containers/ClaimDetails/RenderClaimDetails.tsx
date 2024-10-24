@@ -50,15 +50,12 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
               flexGrow: 1
             }}
           >
-            <Typography sx={{ paddingRight: '13.25px 15px', fontSize: 'clamp(10px, 5vw, 28px)' }}>
-              {camelCaseToSimpleString(key)}:
-            </Typography>
+            <Typography variant='body2'>{camelCaseToSimpleString(key)}:</Typography>
             <Typography
               component='p'
               sx={{
                 overflowWrap: 'break-word',
-                width: '80%',
-                fontSize: 'clamp(10px, 5vw, 24px)'
+                width: '75%'
               }}
             >
               {displayText}
@@ -66,7 +63,7 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
                 <Typography
                   component='span'
                   onClick={() => handleToggleText(key)}
-                  sx={{ color: theme.palette.maintext, cursor: 'pointer', fontSize: 'clamp(10px, 5vw, 24px)' }}
+                  sx={{ color: theme.palette.maintext, cursor: 'pointer' }}
                 >
                   {showFullText[key] ? ' See less' : ' See more'}
                 </Typography>
