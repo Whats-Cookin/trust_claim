@@ -36,8 +36,8 @@ const Search = (homeProps: IHomeProps) => {
   const layoutOptions = {
     directed: !isMediumUp,
     fit: true,
-    spacingFactor: isMediumUp ? 0.7 : 1.1,
-    padding: isMediumUp ? 80 : 0
+    spacingFactor: isMediumUp ? 1 : 1.1,
+    padding: isMediumUp ? 150 : 0
   }
 
   const runCy = (cyInstance: Cytoscape.Core | undefined) => {

@@ -24,7 +24,8 @@ const Redirection: React.FC<RedirectionProps> = ({ externalLink, onContinue, onC
       justifyContent='center'
       alignItems='center'
       sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.2)'
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        backdropFilter: 'blur(2px)'
       }}
     >
       <Box
