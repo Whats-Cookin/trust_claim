@@ -8,7 +8,6 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
-import NewClaim from './AddNewClaim'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
@@ -22,7 +21,6 @@ const Search = (homeProps: IHomeProps) => {
   const ref = useRef<any>(null)
   const query = new URLSearchParams(search).get('query')
   const [showDetails, setShowDetails] = useState<boolean>(false)
-  const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
@@ -140,12 +138,17 @@ const Search = (homeProps: IHomeProps) => {
     const claim = event.target
     const currentClaim = claim.data('raw')
 
-    if (currentClaim) {
+    if (claim.isNode() && currentClaim) {
+      setSelectedClaim(currentClaim)
+      navigate('/claim')
+    } else if (claim.isEdge() && currentClaim) {
       setSelectedClaim(currentClaim)
       navigate({
         pathname: '/validate',
         search: `?subject=${BACKEND_BASE_URL}/claims/${currentClaim.claimId}`
       })
+    } else {
+      console.warn('Right-click target is neither a node nor a valid edge with claimId')
     }
   }
 
