@@ -31,6 +31,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
+import Redirection from '../../components/RedirectPage'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 const PAGE_LIMIT = 50
@@ -63,7 +64,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
     : displayName
 
   return (
-    <Typography variant='h6' sx={{ marginBottom: '10px', color: theme.palette.texts }} fontWeight='bold'>
+    <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
       <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
       <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
     </Typography>
@@ -109,6 +110,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
+
+  const [showNotification, setShowNotification] = useState<boolean>(false)
+  const [externalLink, setExternalLink] = useState<string>('')
+
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -215,6 +220,29 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     navigate('/claim')
   }
 
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+    e.preventDefault()
+
+    const allowedDomains = ['https://live.linkedtrust.us', 'https://dev.linkedtrust.us', 'https://linkedtrust.us']
+    const isInternal = allowedDomains.some(domain => url.startsWith(domain))
+
+    if (!isInternal) {
+      setShowNotification(true)
+      setExternalLink(url)
+    } else {
+      window.open(url, '_blank', 'noopener noreferrer')
+    }
+  }
+
+  const handleContinue = () => {
+    setShowNotification(false)
+    window.open(externalLink, '_blank')
+  }
+
+  const handleCancel = () => {
+    setShowNotification(false)
+  }
+
   function getSearchFromParams() {
     return new URLSearchParams(location.search).get('query')
   }
@@ -229,14 +257,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
-                  variant='h6'
+                  variant='body1'
                   component='div'
                   sx={{
                     color: theme.palette.texts,
                     textAlign: 'center',
-                    marginLeft: isMediumScreen ? '0' : '1rem',
-                    fontSize: '23px',
-                    fontWeight: 'bold'
+                    marginLeft: isMediumScreen ? '0' : '1rem'
                   }}
                 >
                   Recent Claims
@@ -271,6 +297,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         <CardContent>
                           <Link
                             to={claim.link}
+                            onClick={e => handleLinkClick(e, claim.link)}
                             target='_blank'
                             rel='noopener noreferrer'
                             style={{ textDecoration: 'none' }}
@@ -286,6 +313,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           </Typography>
                           {claim.statement && (
                             <Typography
+                              variant='body2'
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
@@ -536,7 +564,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             </MainContainer>
           ) : (
             <MainContainer sx={{ textAlign: 'center' }}>
-              <Typography variant='h6'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
+              <Typography variant='body2'>No results found{searchTerm ? ` for ${searchTerm}` : '.'}</Typography>
             </MainContainer>
           )}
 
@@ -571,6 +599,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
             </Fab>
           )}
         </>
+      )}
+      {showNotification && (
+        <Redirection externalLink={externalLink} onContinue={handleContinue} onCancel={handleCancel} />
       )}
     </>
   )

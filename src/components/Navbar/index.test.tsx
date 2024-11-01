@@ -25,7 +25,7 @@ describe('Navbar component', () => {
         setIsNavbarVisible={jest.fn()}
       />
     )
-    const trustClaimsText = screen.getByText('Linked Claims')
+    const trustClaimsText = screen.getByText('Linked Trust')
     expect(trustClaimsText).toBeInTheDocument()
 
     const profileDropdown = screen.getByRole('button', { name: '' })

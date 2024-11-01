@@ -69,14 +69,16 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   }
 
   const handleSaveImage = () => {
-    if (currentImage) {
+    if (currentImage && currentImage.url && currentImage.url.trim() !== '') {
       append(currentImage as unknown as TFieldValues['images'][number])
       setHiddenImages([...hiddenImages, currentImage])
       setCurrentImage(null)
       setOpen(false)
+    } else {
+      setCurrentImage(null)
+      setOpen(false)
     }
   }
-
   const handleEffectiveDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (currentImage) {
       const newEffectiveDate = new Date(e.target.value)

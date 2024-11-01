@@ -4,35 +4,41 @@ import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
-import { useLocation } from 'react-router-dom'
+import { BACKEND_BASE_URL } from '../../utils/settings'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
-import NewClaim from './AddNewClaim'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
-import NodeDetails from './NodeDetails'
+import NodeDetails from '../../components/NodeDetails'
+import { s } from 'vitest/dist/types-e3c9754d'
+import { set } from 'lodash'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
   const theme = useTheme()
   const { setLoading, setSnackbarMessage, toggleSnackbar, isDarkMode } = homeProps
   const ref = useRef<any>(null)
+  const cyRef = useRef<Cytoscape.Core | null>(null)
   const query = new URLSearchParams(search).get('query')
   const [showDetails, setShowDetails] = useState<boolean>(false)
-  const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
+  const [startNode, setStartNode] = useState<any>(null)
+  const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
   const isMediumUp = useMediaQuery(theme.breakpoints.up('md'))
+
+  const navigate = useNavigate()
 
   const layoutName = isMediumUp ? 'circle' : 'breadthfirst'
   const layoutOptions = {
     directed: !isMediumUp,
     fit: true,
-    spacingFactor: isMediumUp ? 0.7 : 1.1,
-    padding: isMediumUp ? 80 : 0
+    spacingFactor: isMediumUp ? 1 : 1.1,
+    padding: isMediumUp ? 150 : 0
   }
 
   const runCy = (cyInstance: Cytoscape.Core | undefined) => {
@@ -111,10 +117,14 @@ const Search = (homeProps: IHomeProps) => {
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
     const currentClaim = event?.target?.data('raw')?.claim
+    const endNode = event?.target?.data('raw')?.endNode
+    const startNode = event?.target?.data('raw')?.claim
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
       setShowDetails(true)
+      setStartNode(startNode)
+      setEndNode(endNode)
     }
   }
 
@@ -137,9 +147,17 @@ const Search = (homeProps: IHomeProps) => {
     const claim = event.target
     const currentClaim = claim.data('raw')
 
-    if (currentClaim) {
+    if (claim.isNode() && currentClaim) {
       setSelectedClaim(currentClaim)
-      setOpenNewClaim(true)
+      navigate('/claim')
+    } else if (claim.isEdge() && currentClaim) {
+      setSelectedClaim(currentClaim)
+      navigate({
+        pathname: '/validate',
+        search: `?subject=${BACKEND_BASE_URL}/claims/${currentClaim.claimId}`
+      })
+    } else {
+      console.warn('Right-click target is neither a node nor a valid edge with claimId')
     }
   }
 
@@ -168,10 +186,12 @@ const Search = (homeProps: IHomeProps) => {
   }, [query, cy])
 
   useEffect(() => {
-    if (!cy || !showDetails) {
-      setCy(Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions)))
+    if (!cyRef.current && ref.current) {
+      const newCy = Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions))
+      setCy(newCy)
+      cyRef.current = newCy
     }
-  }, [theme, isMediumUp, showDetails])
+  }, [theme, layoutName, layoutOptions])
 
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
@@ -180,28 +200,32 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [])
 
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowDetails(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [showDetails])
+
   return (
     <>
       <MainContainer>
-        {showDetails ? (
+        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />{' '}
+        {showDetails && (
           <NodeDetails
             open={showDetails}
             setOpen={setShowDetails}
             selectedClaim={selectedClaim}
             isDarkMode={isDarkMode}
             claimImg={selectedClaim.img || ''}
+            startNode={startNode}
+            endNode={endNode}
           />
-        ) : (
-          <Box ref={ref} sx={styles.cy} />
         )}
-        <NewClaim
-          open={openNewClaim}
-          setOpen={setOpenNewClaim}
-          selectedClaim={selectedClaim}
-          setLoading={setLoading}
-          setSnackbarMessage={setSnackbarMessage}
-          toggleSnackbar={toggleSnackbar}
-        />
       </MainContainer>
       <GraphinfButton />
     </>

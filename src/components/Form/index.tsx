@@ -127,14 +127,6 @@ export const Form = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const tooltipPlacement = isMobile ? 'top' : 'left'
 
-  // State to manage visibility of additional info section
-  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false) // State to manage visibility
-
-  const toggleAdditionalInfo = () => {
-    setShowAdditionalInfo(prev => !prev) // Toggle the state
-  }
-
-  // Fetch initial data when the component mounts
   useEffect(() => {
     const QUERY = `
       query {
@@ -180,7 +172,7 @@ export const Form = ({
         const confidenceAsNumber = Number(confidence)
         const starsAsNumber = Number(stars)
         const amtAsNumber = Number(amt)
-
+        const validImages = images.filter(img => img.url && img.url.trim() !== '')
         const payload = {
           subject,
           claim,
@@ -195,9 +187,7 @@ export const Form = ({
           amt: amtAsNumber,
           issuerId: did,
           name,
-          images: images.map(img => ({
-            ...img
-          }))
+          images: validImages
         }
 
         setLoading(true)
