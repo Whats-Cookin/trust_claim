@@ -4,10 +4,10 @@ import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
-import { useLocation } from 'react-router-dom'
+import { BACKEND_BASE_URL } from '../../utils/settings'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
-import NewClaim from './AddNewClaim'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
@@ -24,13 +24,14 @@ const Search = (homeProps: IHomeProps) => {
   const cyRef = useRef<Cytoscape.Core | null>(null)
   const query = new URLSearchParams(search).get('query')
   const [showDetails, setShowDetails] = useState<boolean>(false)
-  const [openNewClaim, setOpenNewClaim] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [startNode, setStartNode] = useState<any>(null)
   const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
   const isMediumUp = useMediaQuery(theme.breakpoints.up('md'))
+
+  const navigate = useNavigate()
 
   const layoutName = isMediumUp ? 'circle' : 'breadthfirst'
   const layoutOptions = {
@@ -146,9 +147,17 @@ const Search = (homeProps: IHomeProps) => {
     const claim = event.target
     const currentClaim = claim.data('raw')
 
-    if (currentClaim) {
+    if (claim.isNode() && currentClaim) {
       setSelectedClaim(currentClaim)
-      setOpenNewClaim(true)
+      navigate('/claim')
+    } else if (claim.isEdge() && currentClaim) {
+      setSelectedClaim(currentClaim)
+      navigate({
+        pathname: '/validate',
+        search: `?subject=${BACKEND_BASE_URL}/claims/${currentClaim.claimId}`
+      })
+    } else {
+      console.warn('Right-click target is neither a node nor a valid edge with claimId')
     }
   }
 
@@ -217,14 +226,6 @@ const Search = (homeProps: IHomeProps) => {
             endNode={endNode}
           />
         )}
-        <NewClaim
-          open={openNewClaim}
-          setOpen={setOpenNewClaim}
-          selectedClaim={selectedClaim}
-          setLoading={setLoading}
-          setSnackbarMessage={setSnackbarMessage}
-          toggleSnackbar={toggleSnackbar}
-        />
       </MainContainer>
       <GraphinfButton />
     </>
