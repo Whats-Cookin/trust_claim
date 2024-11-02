@@ -401,8 +401,7 @@ export const Form = ({
                         },
 
                         '& .MuiOutlinedInput-notchedOutline': {
-                          border: 'none',
-                          
+                          border: 'none'
                         }
                       }}
                       margin='dense'
