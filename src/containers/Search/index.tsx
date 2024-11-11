@@ -14,7 +14,7 @@ import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
 import NodeDetails from './NodeDetails'
 
-const  DEFAULT_PREVIEW_ID = '118499'
+const DEFAULT_PREVIEW_ID = '118499'
 
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
@@ -167,7 +167,6 @@ const Search = (homeProps: IHomeProps) => {
     if (query && cy) {
       fetchQueryClaims(encodeURIComponent(query), page.current)
     } else if (!query) {
-
       fetchQueryClaims(DEFAULT_PREVIEW_ID, page.current)
     }
   }, [query, cy])
