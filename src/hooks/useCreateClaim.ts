@@ -77,7 +77,7 @@ function preparePayload<T extends { images: ImageI[] }>(
       images.push(image.file)
       return {
         metadata: image.metadata,
-        effectiveDate: image.effectiveDate,
+        effectiveDate: image.effectiveDate
       } as Omit<ImageI, 'file' | 'url'>
     })
   }
