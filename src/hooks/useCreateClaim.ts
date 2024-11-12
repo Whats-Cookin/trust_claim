@@ -1,14 +1,13 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import axios from '../axiosInstance'
-import { PublishClaim } from '../composedb/compose'
+import { ImageI } from '../components/Form/imageUploading'
 import { authenticateCeramic, ceramic, composeClient } from '../composedb'
+import { PublishClaim } from '../composedb/compose'
 
 export function useCreateClaim() {
   const createClaim = useCallback(async (payload: any) => {
-    let res,
-      claim,
-      message = 'Something went wrong!',
-      isSuccess = false
+    let message = 'Something went wrong!'
+    let isSuccess = false
     try {
       // TODO better way of checking the login method
 
@@ -35,6 +34,7 @@ export function useCreateClaim() {
           console.log('Error trying to publish claim to ceramic: ' + err)
         }
       }
+
       // if we got a claim, include the address
       console.log('publish claim returned: ' + JSON.stringify(claim))
       if (claim) {
@@ -47,7 +47,9 @@ export function useCreateClaim() {
         }
       }
       console.log('Saving to database with payload: ' + JSON.stringify(payload))
-      res = await axios.post('/api/claim', payload)
+
+      const { images, dto } = preparePayload(payload)
+      const res = await axios.post('/api/claim/v2', generateFormData(dto, images))
 
       if (res.status === 201) {
         message = 'Claim submitted successfully!'
@@ -62,4 +64,35 @@ export function useCreateClaim() {
   }, [])
 
   return { createClaim }
+}
+
+function preparePayload<T extends { images: ImageI[] }>(
+  payload: T
+): { dto: Omit<T, 'images'> & { images: Omit<ImageI, 'file' | 'url'>[] }; images: File[] } {
+  console.log({ imagePayload: payload.images })
+  const images: File[] = []
+  const dto = {
+    ...payload,
+    images: payload.images.map(image => {
+      images.push(image.file)
+      return { metadata: image.metadata, effectiveDate: image.effectiveDate, signature: '==' } as Omit<
+        ImageI,
+        'file' | 'url'
+      >
+    })
+  }
+
+  return { images, dto }
+}
+
+function generateFormData(dto: unknown, images: File[]): FormData {
+  const form = new FormData()
+
+  form.append('dto', new Blob([JSON.stringify(dto)], { type: 'application/json' }))
+
+  for (const img of images) {
+    form.append('images', img)
+  }
+
+  return form
 }
