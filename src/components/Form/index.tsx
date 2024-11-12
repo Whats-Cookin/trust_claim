@@ -1,36 +1,36 @@
 import {
-  useTheme,
-  useMediaQuery,
-  TextField,
+  Box,
   Button,
-  FormControl,
-  MenuItem,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Rating,
+  Divider,
+  FormControl,
   FormHelperText,
-  Box,
-  Typography,
-  Tooltip,
+  InputAdornment,
+  InputLabel,
   ListSubheader,
-  Divider
+  MenuItem,
+  OutlinedInput,
+  Rating,
+  TextField,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material'
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import IHomeProps from '../../containers/Form/types'
+import { useEffect } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
-import { useCreateClaim } from '../../hooks/useCreateClaim'
+import { useNavigate } from 'react-router-dom'
 import { composeClient } from '../../composedb'
-import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
-import ImageUploader from './imageUploading'
-import MainContainer from '../MainContainer'
+import IHomeProps from '../../containers/Form/types'
+import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { checkAuth } from '../../utils/authUtils'
+import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
+import MainContainer from '../MainContainer'
+import ImageUploader from './imageUploading'
 import SignInAlert from './SignInAlert'
 
 const tooltips = {
@@ -193,7 +193,7 @@ export const Form = ({
         setLoading(true)
 
         try {
-          const { message, isSuccess } = await timeoutPromise(createClaim(payload), 1000)
+          const { message, isSuccess } = await timeoutPromise(createClaim(payload), 10_000)
 
           if (message) {
             setSnackbarMessage(message)

@@ -17,14 +17,14 @@ import {
 } from '@mui/material'
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
 
-interface ImageI {
+export interface ImageI {
+  file: File
   url: string
   metadata: {
     description: string
     caption: string
   }
   effectiveDate: Date
-  createdDate: Date
 }
 
 interface ImageUploaderProps<TFieldValues extends FieldValues> {
@@ -45,25 +45,25 @@ const ImageUploader = <TFieldValues extends FieldValues>({
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    if (files) {
-      Array.from(files).forEach(file => {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          const newImage: ImageI = {
-            url: reader.result as string,
-            metadata: {
-              description: '',
-              caption: ''
-            },
-            effectiveDate: new Date(),
-            createdDate: new Date()
-          }
-          setCurrentImage(newImage)
-          setOpen(true)
+    if (!files || !files?.length) return
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const newImage: ImageI = {
+          file: file,
+          url: reader.result as string,
+          metadata: {
+            description: '',
+            caption: ''
+          },
+          effectiveDate: new Date()
         }
-        reader.readAsDataURL(file)
-      })
-    }
+        setCurrentImage(newImage)
+        setOpen(true)
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   const handleSaveImage = () => {
