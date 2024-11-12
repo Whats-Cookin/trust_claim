@@ -75,10 +75,10 @@ function preparePayload<T extends { images: ImageI[] }>(
     ...payload,
     images: payload.images.map(image => {
       images.push(image.file)
-      return { metadata: image.metadata, effectiveDate: image.effectiveDate, signature: '==' } as Omit<
-        ImageI,
-        'file' | 'url'
-      >
+      return {
+        metadata: image.metadata,
+        effectiveDate: image.effectiveDate,
+      } as Omit<ImageI, 'file' | 'url'>
     })
   }
 
