@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React from 'react'
 import axios from '../../axiosInstance'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -14,6 +14,7 @@ import RegisterIllustration from '../../assets/images/RegisterIllustration.svg'
 import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import MobileRegister from './MobileRegister'
+import { handleAuth } from '../../utils/authUtils'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: IRegisterProps) => {
   const theme = useTheme()
@@ -33,16 +34,27 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
         setSnackbarMessage('Both email and password are required fields.')
       } else {
         const signupUrl = '/auth/signup'
+        const loginUrl = '/auth/login'
         const data = { email, password }
+
         await axios.post(signupUrl, data)
+
+        const {
+          data: { accessToken, refreshToken }
+        } = await axios.post(loginUrl, data)
+
+        handleAuth(accessToken, refreshToken)
         setLoading(false)
-        navigate('/login')
+        navigate('/feed')
       }
     } catch (err: any) {
       setLoading(false)
       toggleSnackbar(true)
-      setSnackbarMessage(err.response.data.message)
-      console.error('err', err.response.data.message)
+      if (err.message === 'Request failed with status code 409') {
+        setSnackbarMessage('This email is already registered.')
+      } else {
+        setSnackbarMessage(err.message || 'An error occurred')
+      }
     }
   })
 
