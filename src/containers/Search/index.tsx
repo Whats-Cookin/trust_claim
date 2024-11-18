@@ -16,6 +16,8 @@ import NodeDetails from '../../components/NodeDetails'
 import { s } from 'vitest/dist/types-e3c9754d'
 import { set } from 'lodash'
 
+const DEFAULT_PREVIEW_ID = '118499'
+
 const Search = (homeProps: IHomeProps) => {
   const search = useLocation().search
   const theme = useTheme()
@@ -65,7 +67,7 @@ const Search = (homeProps: IHomeProps) => {
         const parsedClaims = parseMultipleNodes(res.data.nodes)
         cy.elements().remove()
         cy.add(parsedClaims)
-      } else {
+      } else if (!res.data.nodes.length) {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
       }
@@ -182,6 +184,8 @@ const Search = (homeProps: IHomeProps) => {
   useEffect(() => {
     if (query && cy) {
       fetchQueryClaims(encodeURIComponent(query), page.current)
+    } else if (!query) {
+      fetchQueryClaims(DEFAULT_PREVIEW_ID, page.current)
     }
   }, [query, cy])
 
