@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   DialogActions,
-  DialogContent,
   DialogTitle,
   Divider,
   FormControl,
@@ -11,7 +10,6 @@ import {
   InputLabel,
   ListSubheader,
   MenuItem,
-  OutlinedInput,
   Rating,
   TextField,
   Tooltip,
@@ -20,14 +18,12 @@ import {
   useTheme
 } from '@mui/material'
 import IHomeProps from '../../containers/Form/types'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
 import { composeClient } from '../../composedb'
-import IHomeProps from '../../containers/Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { checkAuth } from '../../utils/authUtils'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
