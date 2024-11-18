@@ -120,7 +120,10 @@ export const Form = ({
   const { createClaim } = useCreateClaim()
   const isAuthenticated = checkAuth()
   const navigate = useNavigate()
+
+  // Authantication
   const did = localStorage.getItem('did')
+  const accessToken = localStorage.getItem('accessToken')
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -184,7 +187,7 @@ export const Form = ({
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
           amt: amtAsNumber,
-          issuerId: did,
+          issuerId: did ?? accessToken,
           name,
           images: validImages
         }
