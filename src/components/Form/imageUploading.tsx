@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react'
-import { Upload, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import {
   TextField,
   IconButton,
@@ -13,9 +13,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Button
+  Button,
+  useMediaQuery
 } from '@mui/material'
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 export interface ImageI {
   file: File
@@ -85,6 +87,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   }
 
   const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <Box sx={{ mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
@@ -96,10 +99,12 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '100%',
-              height: 150,
-              border: '2px dashed grey',
+              width: isMobile ? '326px' : '400px',
+              margin: isMobile ? '0 ' : 'auto',
+              height: 180,
+              border: `5px dashed ${theme.palette.input}`,
               borderRadius: 2,
+
               cursor: 'pointer',
               transition: 'border-color 0.3s',
               '&:hover': {
@@ -107,7 +112,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               }
             }}
           >
-            <Upload style={{ width: 40, height: 40, marginBottom: 10, color: 'grey' }} />
+            <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
               <strong>Click to upload</strong> or drag and drop
             </Typography>

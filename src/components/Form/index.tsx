@@ -19,9 +19,11 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material'
+import IHomeProps from '../../containers/Form/types'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { useEffect } from 'react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { composeClient } from '../../composedb'
@@ -32,6 +34,7 @@ import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import MainContainer from '../MainContainer'
 import ImageUploader from './imageUploading'
 import SignInAlert from './SignInAlert'
+import CircleIcon from '@mui/icons-material/Circle'
 
 const tooltips = {
   claim: [
@@ -113,7 +116,6 @@ export const Form = ({
       ] as ImageI[]
     }
   })
-
   const imageFieldArray = useFieldArray({
     control,
     name: 'images'
@@ -151,6 +153,7 @@ export const Form = ({
     getData()
   }, [])
 
+  // Handle form submission
   const onSubmit = handleSubmit(
     async ({
       subject,
@@ -259,7 +262,7 @@ export const Form = ({
       'quality:fun',
       'quality:literary',
       'quality:relevance',
-      'quality:self-improvment',
+      'quality:self-improvement',
       'quality:historical',
       'quality:theological',
       'quality:adventure',
@@ -279,32 +282,40 @@ export const Form = ({
     howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
   }
 
-  let titleText = 'Make a Claim'
+  let titleText = 'Create claim'
 
   const displayHowKnownText = {
     first_hand: 'First Hand',
     second_hand: 'Second Hand',
     website: 'Website',
     physical_document: 'Physical Document'
-  } as any
-
-  const displayClaimText = {
-    related_to: 'Related To',
+  }
+  type DisplayClaimText = {
+    [key: string]: string
+  }
+  const displayClaimText: DisplayClaimText = {
+    related_to: 'Related to',
     impact: 'Impact',
     rated: 'Rated',
     report: 'Report'
-  } as any
+  }
 
   if (selectedClaim) {
     titleText = selectedClaim.entType === 'CLAIM' ? 'Do you want to validate?' : 'What do you have to say about'
+  }
+  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false)
+  const toggleAdditionalInfo = () => {
+    setShowAdditionalInfo(!showAdditionalInfo)
   }
 
   return (
     <MainContainer
       flexRowOnDesktop={true}
       sx={{
-        overflow: 'hidden',
-        background: `linear-gradient(to bottom, ${theme.palette.menuBackground} 75%, ${theme.palette.buttons} 25%)`
+        background: isMobile ? theme.palette.cardBackground : theme.palette.menuBackground,
+        display: 'flex',
+        flexDirection: 'column',
+        width: isMobile ? '100%' : '95%'
       }}
     >
       {/* Alert for user to sign in */}
@@ -316,11 +327,11 @@ export const Form = ({
           width: '32%'
         }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ p: isMobile ? 1 : 2 }}>
           <Typography
             variant='h4'
             sx={{
-              fontSize: isMobile ? '40px' : '32px',
+              fontSize: isMobile ? '20px' : '14px',
               color: theme.palette.texts,
               fontWeight: 'bold',
               textWrap: 'nowrap'
@@ -333,655 +344,437 @@ export const Form = ({
                 backgroundColor: theme.palette.maintext,
                 marginTop: '2px',
                 borderRadius: '2px',
-                width: isMobile ? '220px' : '175px'
+                width: isMobile ? '64px' : '100px'
               }}
             />
           </Typography>
           {selectedClaim?.name && selectedClaim?.entType !== 'CLAIM' && <Typography>{selectedClaim.name}</Typography>}
         </DialogTitle>
-        <Typography
-          sx={{
-            color: theme.palette.texts,
-            marginTop: isMobile ? '32px' : '232px',
-            lineHeight: isMobile ? '1.5' : '1.2',
-            fontSize: isMobile ? '18px' : '40px',
-            fontWeight: '500'
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: isMobile ? 'row' : 'column',
-              alignItems: 'flex-start',
-              mb: '7px'
-            }}
-          >
-            <Box
-              sx={{
-                lineHeight: isMobile ? '1.5em' : '2em',
-                fontSize: isMobile ? '18px' : '40px',
-                marginRight: '10px',
-                color: theme.palette.texts
-              }}
-            >
-              Strengthening
-            </Box>
-            <Box sx={{ lineHeight: isMobile ? '1.5em' : '2em' }}></Box>
-            <span
-              style={{
-                backgroundColor: theme.palette.pageBackground,
-                color: theme.palette.texts,
-                fontSize: isMobile ? '23px' : '45px',
-                fontWeight: '700',
-                zIndex: 3,
-                paddingRight: isMobile ? '603px' : '0'
-              }}
-            >
-              Trust
-            </span>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column' }}>
-            <Box
-              sx={{
-                lineHeight: isMobile ? '1.5em' : '2em',
-                fontSize: isMobile ? '18px' : '40px',
-                marginRight: '10px',
-                color: theme.palette.texts
-              }}
-            >
-              Safeguarding
-            </Box>
-            <span
-              style={{
-                color: theme.palette.texts,
-                display: isMobile ? 'inline-block' : 'none',
-                fontSize: isMobile ? '18px' : '40px',
-                marginRight: '10px'
-              }}
-            >
-              {' '}
-              your{' '}
-            </span>
-            <Box
-              sx={{
-                lineHeight: isMobile ? '1.5em' : '2em',
-                fontSize: isMobile ? '18px' : '40px'
-              }}
-            >
-              <span
-                style={{
-                  display: isMobile ? 'none' : 'inline-block',
-                  color: theme.palette.texts,
-                  fontSize: isMobile ? '18px' : '40px',
-                  marginRight: '10px'
-                }}
-              >
-                your{' '}
-              </span>
-              <span
-                style={{
-                  backgroundColor: theme.palette.pageBackground,
-                  fontSize: isMobile ? '23px' : '45px',
-                  fontWeight: '700',
-                  paddingRight: isMobile ? '536px' : '0',
-                  width: '100px',
-                  color: theme.palette.texts
-                }}
-              >
-                Future.
-              </span>
-            </Box>
-          </Box>
-        </Typography>
       </Box>
+
       <Box
         sx={{
-          backgroundColor: theme.palette.pageBackground,
-          boxShadow: `0 0 30px ${theme.palette.shadows}`,
+          backgroundColor: theme.palette.cardBackground,
+          borderBottom: `0 0 30px ${theme.palette.shadows}`,
           borderRadius: '20px',
-          width: '100%',
-          marginRight: isMobile ? 0 : '0.972vw',
-          marginLeft: isMobile ? 0 : '105px',
-          marginTop: isMobile ? '41px' : '0',
-          marginBottom: isMobile ? '83px' : '1.3vh',
-          paddingTop: isMobile ? '4.123vh' : '3.5vh',
-          paddingBottom: isMobile ? '0.965vh' : '1.3vh',
-          paddingLeft: isMobile ? '4.6vw' : '3vw',
-          paddingRight: isMobile ? '4.6vw' : '3vw'
+          width: isMobile ? '358px' : '800px',
+          margin: isMobile ? 0 : '0 auto',
+          padding: isMobile ? 0 : '20px'
         }}
       >
-        <DialogContent>
-          <form style={{ padding: '5px' }} onSubmit={onSubmit}>
-            <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <Tooltip title='Enter the name associated with the claim' placement={tooltipPlacement} arrow>
-                <TextField
-                  {...register('name', { required: { value: true, message: 'Name is required' } })}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Name *'
-                  key='name'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.name)}
-                  helperText={errors.name ? errors.name.message : ''}
-                />
-              </Tooltip>
-              <Tooltip
-                title='You should put the link to the site or social media account where the claim was created'
-                placement={tooltipPlacement}
-                arrow
-                sx={{ backgroundColor: theme.palette.maintext }}
-              >
-                <TextField
-                  {...register('subject', { required: { value: true, message: 'subject is required' } })}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Subject *'
-                  key='subject'
-                  disabled={!!selectedClaim?.nodeUri}
-                  type='text'
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject?.message}
-                />
-              </Tooltip>
-              <Tooltip title='For evaluation being made' placement={tooltipPlacement} arrow>
-                <TextField
-                  select
-                  label='Claim'
-                  {...register('claim', { required: { value: true, message: 'claim is required' } })}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.texts
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  error={Boolean(errors.claim)}
-                  helperText={errors.claim?.message}
-                >
-                  {inputOptions.claim.map((claimText: string, index: number) => (
-                    <MenuItem
+        <form onSubmit={onSubmit}>
+          <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
+          {/* Basic Information Section */}
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, paddingLeft: '12px' }}>
+              <CircleIcon sx={{ width: isMobile ? '7px' : '10px', height: isMobile ? '8px' : '10px', mr: 1 }} />
+              <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>Basic information</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '760px', pt: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px' }}>
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: 'Montserrat',
+                      fontSize: isMobile ? '10px' : '16px',
+                      fontWeight: 500,
+                      lineHeight: isMobile ? '12.19px' : '19.5px',
+                      ml: 1.5,
+                      mb: 1
+                    }}
+                  >
+                    Subject name
+                  </Typography>
+                  <Tooltip title='The person or entity involved in the claim' placement={tooltipPlacement} arrow>
+                    <TextField
+                      {...register('name', { required: { value: true, message: 'Name is required' } })}
                       sx={{
-                        backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.texts,
-                        '&:hover': {
-                          backgroundColor: theme.palette.formBackground
+                        ml: 1,
+                        mr: 1,
+                        width: isMobile ? '326px' : '350px',
+                        '& .MuiInputBase-input': {
+                          backgroundColor: theme.palette.input,
+                          height: isMobile ? '34px' : '44px',
+                          padding: '0 12px',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: isMobile ? '12px' : '16px',
+                          fontFamily: 'Montserrat'
                         },
-                        '&.Mui-selected': {
-                          backgroundColor: theme.palette.formBackground,
-                          '&:hover': {
-                            backgroundColor: theme.palette.formBackground
-                          }
-                        },
-                        '&:active': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '::selection': {
-                          backgroundColor: theme.palette.formBackground
-                        }
-                      }}
-                      value={claimText}
-                      key={claimText}
-                    >
-                      <Tooltip title={tooltips.claim[index]} placement={tooltipPlacement} arrow>
-                        <Box sx={{ width: '100%', height: '100%' }}>{displayClaimText[claimText] || claimText}</Box>
-                      </Tooltip>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-              <Tooltip title='The method or source of the claim' placement={tooltipPlacement} arrow>
-                <TextField
-                  select
-                  label='How Known'
-                  {...register('howKnown')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                >
-                  {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                    <MenuItem
-                      sx={{
-                        backgroundColor: theme.palette.menuBackground,
-                        color: theme.palette.texts,
-                        '&:hover': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '&.Mui-selected': {
-                          backgroundColor: theme.palette.formBackground,
-                          '&:hover': {
-                            backgroundColor: theme.palette.formBackground
-                          }
-                        },
-                        '&:active': {
-                          backgroundColor: theme.palette.formBackground
-                        },
-                        '::selection': {
-                          backgroundColor: theme.palette.formBackground
-                        }
-                      }}
-                      value={howKnownMapping[howKnownText]}
-                      key={howKnownText}
-                    >
-                      <Tooltip title={tooltips.howKnown[index]} placement={tooltipPlacement} arrow>
-                        <Box sx={{ width: '100%', height: '100%' }}>
-                          {displayHowKnownText[howKnownText] || howKnownText}
-                        </Box>
-                      </Tooltip>
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Tooltip>
-              <Tooltip title='Additional details or context about the claim' placement={tooltipPlacement} arrow>
-                <TextField
-                  {...register('statement')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Statement'
-                  key='statement'
-                  type='text'
-                  multiline={true}
-                  maxRows={4}
-                />
-              </Tooltip>
-              <Tooltip title='You should put your site here' placement={tooltipPlacement} arrow>
-                <TextField
-                  {...register('sourceURI')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Source URI'
-                  key='sourceURI'
-                  type='text'
-                />
-              </Tooltip>
-              <Tooltip
-                title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
-                placement={tooltipPlacement}
-                arrow
-              >
-                <TextField
-                  {...register('confidence')}
-                  sx={{
-                    ml: 1,
-                    mr: 1,
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiInputLabel-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiFormHelperText-root': {
-                      color: theme.palette.texts
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: theme.palette.icons
-                    }
-                  }}
-                  margin='dense'
-                  variant='standard'
-                  fullWidth
-                  label='Confidence'
-                  key='confidence'
-                  type='number'
-                  inputProps={{
-                    min: 0.0,
-                    max: 1.0,
-                    step: 0.1
-                  }}
-                />
-              </Tooltip>
 
-              {selectedClaim?.entType !== 'CLAIM' && (
-                <>
-                  {watchClaim === 'rated' && (
-                    <>
-                      <Tooltip title='A specific dimension being evaluated or rated' placement={tooltipPlacement} arrow>
-                        <TextField
-                          select
-                          label='Aspect'
-                          {...register('aspect')}
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none'
+                        }
+                      }}
+                      margin='dense'
+                      variant='outlined'
+                      fullWidth
+                      disabled={Boolean(selectedClaim?.nodeUri)}
+                      type='text'
+                      error={Boolean(errors.name)}
+                      helperText={errors.name ? errors.name.message : ''}
+                    />
+                  </Tooltip>
+                </Box>
+                <Box>
+                  <Typography
+                    sx={{
+                      fontFamily: 'Montserrat',
+                      fontSize: isMobile ? '10px' : '16px',
+                      fontWeight: 500,
+                      lineHeight: isMobile ? '12.19px' : '19.5px',
+                      ml: 1.5,
+                      mb: 1
+                    }}
+                  >
+                    Claim
+                  </Typography>
+
+                  <Tooltip title='For evaluation being made' placement={tooltipPlacement} arrow>
+                    <TextField
+                      select
+                      {...register('claim', { required: { value: true, message: 'claim is required' } })}
+                      sx={{
+                        ml: 1,
+                        mr: 1,
+                        width: isMobile ? '326px' : '350px',
+                        height: isMobile ? '34px' : '45px',
+                        '& .MuiInputBase-input': {
+                          color: theme.palette.texts,
+                          backgroundColor: theme.palette.input,
+                          border: 'none',
+                          borderRadius: '6px',
+                          p: '6px 12px',
+                          fontSize: isMobile ? '12px' : '16px',
+                          fontFamily: 'Montserrat'
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          border: 'none'
+                        },
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none',
+                          outline: 'none'
+                        }
+                      }}
+                      margin='dense'
+                      variant='outlined'
+                      fullWidth
+                      error={Boolean(errors.claim)}
+                      helperText={errors.claim?.message}
+                    >
+                      {inputOptions.claim.map((claimText: string, index: number) => (
+                        <MenuItem
                           sx={{
-                            ml: 1,
-                            mr: 1,
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              color: theme.palette.texts
+                            backgroundColor: theme.palette.menuBackground,
+                            color: theme.palette.texts,
+                            fontSize: isMobile ? '10px' : '16px',
+
+                            '&:hover': {
+                              backgroundColor: theme.palette.formBackground
                             },
-                            '& .MuiInputLabel-root': {
-                              color: theme.palette.texts
+                            '&.Mui-selected': {
+                              backgroundColor: theme.palette.formBackground,
+                              '&:hover': {
+                                backgroundColor: theme.palette.formBackground
+                              }
                             },
-                            '& .MuiFormHelperText-root': {
-                              color: theme.palette.texts
+                            '&:active': {
+                              backgroundColor: theme.palette.formBackground
                             },
-                            '& .MuiSvgIcon-root': {
-                              color: theme.palette.icons
+                            '::selection': {
+                              backgroundColor: theme.palette.formBackground
                             }
                           }}
-                          margin='dense'
-                          variant='standard'
-                          fullWidth
+                          value={claimText}
+                          key={claimText}
                         >
-                          {/* Impact Category */}
-                          <ListSubheader
-                            sx={{
-                              backgroundColor: theme.palette.menuBackground,
-                              color: theme.palette.texts,
-                              textAlign: 'center',
-                              '&:hover': {
-                                backgroundColor: theme.palette.formBackground
-                              }
-                            }}
-                          >
-                            Impact
-                          </ListSubheader>
-                          <Divider sx={{ backgroundColor: theme.palette.divider }} />
-                          {inputOptions.aspect
-                            .filter(aspectText => aspectText.startsWith('impact:'))
-                            .map((aspectText, index) => (
-                              <MenuItem
-                                sx={{
-                                  backgroundColor: theme.palette.menuBackground,
-                                  color: theme.palette.texts,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
-                                    color: theme.palette.primary.contrastText // Adjust text color on hover
-                                  },
-                                  '&.Mui-selected': {
-                                    backgroundColor: theme.palette.formBackground,
-                                    '&:hover': {
-                                      backgroundColor: theme.palette.primary.light // Maintain hover color when selected
-                                    }
-                                  },
-                                  '&:active': {
-                                    backgroundColor: theme.palette.formBackground
-                                  },
-                                  '::selection': {
-                                    backgroundColor: theme.palette.formBackground
-                                  }
-                                }}
-                                value={aspectText}
-                                key={aspectText}
-                              >
-                                <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
-                                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
-                                </Tooltip>
-                              </MenuItem>
-                            ))}
-
-                          {/* Quality Category */}
-                          <ListSubheader
-                            sx={{
-                              backgroundColor: theme.palette.menuBackground,
-                              color: theme.palette.texts,
-                              textAlign: 'center',
-                              '&:hover': {
-                                backgroundColor: theme.palette.formBackground
-                              }
-                            }}
-                          >
-                            Quality
-                          </ListSubheader>
-                          <Divider sx={{ backgroundColor: theme.palette.divider }} />
-                          {inputOptions.aspect
-                            .filter(aspectText => aspectText.startsWith('quality:'))
-                            .map((aspectText, index) => (
-                              <MenuItem
-                                sx={{
-                                  backgroundColor: theme.palette.menuBackground,
-                                  color: theme.palette.texts,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
-                                    color: theme.palette.primary.contrastText // Adjust text color on hover
-                                  },
-                                  '&.Mui-selected': {
-                                    backgroundColor: theme.palette.formBackground,
-                                    '&:hover': {
-                                      backgroundColor: theme.palette.primary.light // Maintain hover color when selected
-                                    }
-                                  },
-                                  '&:active': {
-                                    backgroundColor: theme.palette.formBackground
-                                  },
-                                  '::selection': {
-                                    backgroundColor: theme.palette.formBackground
-                                  }
-                                }}
-                                value={aspectText}
-                                key={aspectText}
-                              >
-                                <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
-                                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
-                                </Tooltip>
-                              </MenuItem>
-                            ))}
-
-                          {/* Report Category */}
-                          <ListSubheader
-                            sx={{
-                              backgroundColor: theme.palette.menuBackground,
-                              color: theme.palette.texts,
-                              textAlign: 'center',
-                              '&:hover': {
-                                backgroundColor: theme.palette.formBackground
-                              }
-                            }}
-                          >
-                            Report
-                          </ListSubheader>
-                          <Divider sx={{ backgroundColor: theme.palette.divider }} />
-                          {inputOptions.aspect
-                            .filter(aspectText => aspectText.startsWith('report:'))
-                            .map((aspectText, index) => (
-                              <MenuItem
-                                sx={{
-                                  backgroundColor: theme.palette.menuBackground,
-                                  color: theme.palette.texts,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
-                                    color: theme.palette.primary.contrastText // Adjust text color on hover
-                                  },
-                                  '&.Mui-selected': {
-                                    backgroundColor: theme.palette.formBackground,
-                                    '&:hover': {
-                                      backgroundColor: theme.palette.primary.light // Maintain hover color when selected
-                                    }
-                                  },
-                                  '&:active': {
-                                    backgroundColor: theme.palette.formBackground
-                                  },
-                                  '::selection': {
-                                    backgroundColor: theme.palette.formBackground
-                                  }
-                                }}
-                                value={aspectText}
-                                key={aspectText}
-                              >
-                                <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
-                                  <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
-                                </Tooltip>
-                              </MenuItem>
-                            ))}
-                        </TextField>
-                      </Tooltip>
-
-                      <Controller
-                        name='stars'
-                        control={control}
-                        rules={{ required: { value: true, message: 'Rating is required' } }}
-                        render={({ field: { onChange, value }, fieldState: { error } }) => (
-                          <Tooltip title='A rating associated with the claim' placement={tooltipPlacement} arrow>
-                            <FormControl
-                              sx={{
-                                ml: 1,
-                                mr: 1,
-                                width: '100%',
-                                '& .MuiInputBase-root': {
-                                  borderBottom: `1px solid ${theme.palette.texts}`,
-                                  overflow: 'hidden'
-                                },
-                                '& .MuiFormControl-root': {
-                                  boxSizing: 'border-box'
-                                }
-                              }}
-                              fullWidth
-                              error={!!error}
-                            >
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'space-between',
-                                  mb: 1,
-                                  overflow: 'hidden'
-                                }}
-                              >
-                                <Typography sx={{ color: theme.palette.texts }}>Review Rating *</Typography>
-                                <Rating
-                                  name='stars'
-                                  value={value}
-                                  onChange={(e, newValue) => onChange(newValue)}
-                                  precision={1}
-                                  sx={{
-                                    color: theme.palette.stars,
-                                    '& .MuiRating-icon': { color: theme.palette.stars },
-                                    fontSize: '1.5rem',
-                                    lineHeight: '1.2'
-                                  }}
-                                  size='large'
-                                />
-                              </Box>
-                              <FormHelperText>{error?.message}</FormHelperText>
-                            </FormControl>
+                          <Tooltip title={tooltips.claim[index]} placement={tooltipPlacement} arrow>
+                            <Box sx={{ width: '100%', height: '100%' }}>{displayClaimText[claimText] || claimText}</Box>
                           </Tooltip>
-                        )}
-                      />
-                    </>
-                  )}
-                  {watchClaim === 'impact' && (
-                    <FormControl fullWidth sx={{ mt: 1, width: '100%' }}>
-                      <InputLabel htmlFor='outlined-adornment-amount'>Value</InputLabel>
-                      <OutlinedInput
-                        {...register('amt')}
-                        id='outlined-adornment-amount'
-                        startAdornment={<InputAdornment position='start'>$</InputAdornment>}
-                        label='Amount'
-                      />
-                    </FormControl>
-                  )}
-                  {watchClaim === 'related' && (
-                    <Tooltip title='What entity is the subject related to?' placement={tooltipPlacement} arrow>
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Tooltip>
+                </Box>
+              </Box>
+              <Box sx={{ pt: 4 }}>
+                <Typography
+                  sx={{
+                    fontFamily: 'Montserrat',
+                    fontSize: isMobile ? '10px' : '16px',
+                    fontWeight: 500,
+                    lineHeight: isMobile ? '12.19px' : '19.5px',
+                    ml: 1.5,
+                    mb: 1
+                  }}
+                >
+                  Subject URL
+                </Typography>
+                <Tooltip title='The web link where the claim was created' placement={tooltipPlacement} arrow>
+                  <TextField
+                    {...register('subject', { required: { value: true, message: 'subject is required' } })}
+                    sx={{
+                      ml: 1,
+                      mr: 1,
+                      width: isMobile ? '326px' : '750px',
+                      '& .MuiInputBase-input': {
+                        backgroundColor: theme.palette.input,
+                        height: isMobile ? '34px' : '44px',
+                        padding: '0 12px',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: isMobile ? '12px' : '16px',
+                        fontFamily: 'Montserrat'
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        border: 'none'
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                        outline: 'none'
+                      }
+                    }}
+                    margin='dense'
+                    variant='outlined'
+                    fullWidth
+                    disabled={Boolean(selectedClaim?.nodeUri)}
+                    type='text'
+                    error={Boolean(errors.subject)}
+                    helperText={errors.subject ? errors.subject.message : ''}
+                  />
+                </Tooltip>
+              </Box>
+              <Box sx={{ pt: 4 }}>
+                <Typography
+                  sx={{
+                    fontFamily: 'Montserrat',
+                    fontSize: isMobile ? '10px' : '16px',
+                    fontWeight: 500,
+                    lineHeight: isMobile ? '12.19px' : '19.5px',
+                    ml: 1.5
+                  }}
+                >
+                  Statement
+                </Typography>
+                <Tooltip title='Additional details or context about the claim' placement={tooltipPlacement} arrow>
+                  <TextField
+                    {...register('statement', { required: { value: true, message: 'statement is required' } })}
+                    sx={{
+                      ml: 1,
+                      mr: 1,
+                      mb: isMobile ? 1 : 2,
+                      width: isMobile ? '326px' : '750px',
+                      '& .MuiInputBase-input': {
+                        backgroundColor: theme.palette.input,
+                        height: isMobile ? '63px' : '115px',
+                        padding: '0 12px',
+                        border: 'none',
+                        borderRadius: '6px',
+
+                        fontSize: isMobile ? '12px' : '16px',
+                        fontFamily: 'Montserrat'
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        border: 'none'
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                        outline: 'none'
+                      }
+                    }}
+                    margin='dense'
+                    variant='outlined'
+                    fullWidth
+                    disabled={Boolean(selectedClaim?.nodeUri)}
+                    type='text'
+                    error={Boolean(errors.statement)}
+                    helperText={errors.statement ? errors.statement.message : ''}
+                  />
+                </Tooltip>
+              </Box>
+            </Box>
+            {!showAdditionalInfo && (
+              <DialogActions
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+
+                  columnGap: 3
+                }}
+              >
+                <Button
+                  onClick={toggleAdditionalInfo}
+                  variant='contained'
+                  size='large'
+                  sx={{
+                    width: isMobile ? '35%' : 'auto',
+                    hight: isMobile ? '10px' : '40px',
+                    color: theme.palette.buttontext,
+                    left: isMobile ? '-5%' : 0,
+                    bgcolor: theme.palette.buttons,
+                    borderRadius: '6px',
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: isMobile ? '8px' : '14px',
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontWeight: 400,
+                      lineHeight: isMobile ? '9.75px' : '17.07px',
+                      textAlign: 'center',
+                      whiteSpace: 'nowrap',
+                      textTransform: 'none'
+                    }}
+                  >
+                    {showAdditionalInfo ? ' Additional Information' : 'Additional Information'}
+                  </Typography>
+                </Button>
+              </DialogActions>
+            )}
+          </Box>
+
+          {/* Additional Information Section */}
+          {showAdditionalInfo && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', pb: 2 }}>
+              <Box
+                sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', pb: 3, pt: 3, paddingLeft: '12px' }}
+              >
+                <CircleIcon sx={{ width: isMobile ? '7px' : '10px', height: isMobile ? '8px' : '10px', mr: 1 }} />
+                <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>
+                  Additional information
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', width: '760px', pt: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px' }}>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontFamily: 'Montserrat',
+                        fontSize: isMobile ? '10px' : '16px',
+                        fontWeight: 500,
+                        lineHeight: isMobile ? '12.19px' : '19.5px',
+                        ml: 1.5,
+                        mb: 1
+                      }}
+                    >
+                      How Known
+                    </Typography>
+                    <Tooltip title='The method or source of the claim' placement={tooltipPlacement} arrow>
                       <TextField
-                        {...register('object')}
+                        select
+                        {...register('howKnown')}
                         sx={{
                           ml: 1,
                           mr: 1,
-                          width: '100%',
+                          width: isMobile ? '326px' : '350px',
+                          height: isMobile ? '34px' : '45px',
                           '& .MuiInputBase-input': {
-                            color: theme.palette.texts
+                            color: theme.palette.texts,
+                            backgroundColor: theme.palette.input,
+                            border: 'none',
+                            borderRadius: '6px',
+                            p: '6px 12px',
+                            fontSize: isMobile ? '12px' : '16px',
+                            fontFamily: 'Montserrat'
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            border: 'none'
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                            outline: 'none'
+                          }
+                        }}
+                        margin='dense'
+                        variant='outlined'
+                        fullWidth
+                      >
+                        {inputOptions.howKnown.map((howKnownText: string, index: number) => (
+                          <MenuItem
+                            sx={{
+                              height: '44px',
+                              backgroundColor: theme.palette.menuBackground,
+                              color: theme.palette.texts,
+                              fontSize: 16,
+                              '&:hover': {
+                                backgroundColor: theme.palette.input
+                              },
+                              '&.Mui-selected': {
+                                backgroundColor: theme.palette.input,
+                                '&:hover': {
+                                  backgroundColor: theme.palette.input
+                                }
+                              },
+                              '& .MuiInputBase-input': {
+                                color: theme.palette.texts,
+                                fontWeight: '500',
+                                fontSize: 16
+                              },
+                              '&:active': {
+                                backgroundColor: theme.palette.input
+                              },
+                              '::selection': {
+                                backgroundColor: theme.palette.input
+                              },
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
+                            value={howKnownMapping[howKnownText]}
+                            key={howKnownText}
+                          >
+                            <Tooltip title={tooltips.howKnown[index]} placement={tooltipPlacement} arrow>
+                              <Box sx={{ width: '100%', height: '100%' }}>
+                                {displayHowKnownText[howKnownText as keyof typeof displayHowKnownText] || howKnownText}{' '}
+                              </Box>
+                            </Tooltip>
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Tooltip>
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontFamily: 'Montserrat',
+                        fontSize: isMobile ? '10px' : '16px',
+                        fontWeight: 500,
+                        lineHeight: isMobile ? '12.19px' : '19.5px',
+                        ml: 1.5,
+                        mb: 1
+                      }}
+                    >
+                      Confidence
+                    </Typography>
+                    <Tooltip
+                      title='Option is used to express the level of confidence associated with the claim, providing an indication of its reliability or certainty.'
+                      placement={tooltipPlacement}
+                      arrow
+                    >
+                      <TextField
+                        {...register('confidence')}
+                        sx={{
+                          ml: 1,
+                          mr: 1,
+                          width: isMobile ? '326px' : '350px',
+                          '& .MuiInputBase-input': {
+                            backgroundColor: theme.palette.input,
+                            height: isMobile ? '34px' : '44px',
+                            padding: '0 12px',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontSize: isMobile ? '12px' : '16px',
+                            fontFamily: 'Montserrat'
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            border: 'none'
+                          },
+                          '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                            outline: 'none'
                           },
                           '& .MuiInputLabel-root': {
                             color: theme.palette.texts
@@ -994,71 +787,479 @@ export const Form = ({
                           }
                         }}
                         margin='dense'
-                        variant='standard'
+                        variant='outlined'
                         fullWidth
-                        label='Object'
-                        key='object'
-                        type='text'
+                        type='number'
+                        key='confidence'
+                        inputProps={{
+                          min: 0.0,
+                          max: 1.0,
+                          step: 0.1
+                        }}
                       />
                     </Tooltip>
-                  )}
-                </>
-              )}
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label='Effective Date'
-                  value={watchEffectiveDate}
-                  onChange={(newValue: any) => setValue('effectiveDate', newValue)}
-                  renderInput={(params: any) => (
+                  </Box>
+                </Box>
+                <Box sx={{ pt: 4 }}>
+                  <Typography
+                    sx={{
+                      fontFamily: 'Montserrat',
+                      fontSize: isMobile ? '10px' : '16px',
+                      fontWeight: 500,
+                      lineHeight: isMobile ? '12.19px' : '19.5px',
+                      ml: 1.5,
+                      mb: 1
+                    }}
+                  >
+                    Source URL
+                  </Typography>
+                  <Tooltip title='You should put your site here' placement={tooltipPlacement} arrow>
                     <TextField
-                      {...params}
+                      {...register('sourceURI', { required: { value: true, message: 'sourceURI is required' } })}
                       sx={{
                         ml: 1,
                         mr: 1,
-                        width: '100%',
+                        width: isMobile ? '326px' : '750px',
                         '& .MuiInputBase-input': {
-                          color: theme.palette.texts
+                          backgroundColor: theme.palette.input,
+                          height: isMobile ? '34px' : '44px',
+                          padding: '0 12px',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: isMobile ? '12px' : '16px',
+                          fontFamily: 'Montserrat'
                         },
-                        '& .MuiInputLabel-root': {
-                          color: theme.palette.texts
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          border: 'none'
                         },
-                        '& .MuiFormHelperText-root': {
-                          color: theme.palette.texts
-                        },
-                        '& .MuiSvgIcon-root': {
-                          color: theme.palette.icons
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none',
+                          outline: 'none'
                         }
                       }}
-                      variant='standard'
+                      margin='dense'
+                      variant='outlined'
+                      fullWidth
+                      disabled={Boolean(selectedClaim?.nodeUri)}
+                      type='text'
+                      error={Boolean(errors.sourceURI)}
+                      helperText={errors.sourceURI ? errors.sourceURI.message : ''}
                     />
+                  </Tooltip>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px', pt: 4 }}>
+                  {selectedClaim?.entType !== 'CLAIM' && (
+                    <>
+                      {watchClaim === 'rated' && (
+                        <>
+                          <Box>
+                            <Typography
+                              sx={{
+                                fontFamily: 'Montserrat',
+                                fontSize: isMobile ? '10px' : '16px',
+                                fontWeight: 500,
+                                lineHeight: isMobile ? '12.19px' : '19.5px',
+                                ml: 1.5,
+                                mb: 1
+                              }}
+                            >
+                              Aspect
+                            </Typography>
+                            <Tooltip
+                              title='A specific dimension being evaluated or rated'
+                              placement={tooltipPlacement}
+                              arrow
+                            >
+                              <TextField
+                                select
+                                {...register('aspect')}
+                                sx={{
+                                  ml: 1,
+                                  mr: 1,
+                                  width: isMobile ? '326px' : '350px',
+                                  height: isMobile ? '34px' : '45px',
+                                  '& .MuiInputBase-input': {
+                                    color: theme.palette.texts,
+                                    backgroundColor: theme.palette.input,
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    p: '6px 12px',
+                                    fontSize: isMobile ? '12px' : '16px',
+                                    fontFamily: 'Montserrat'
+                                  },
+                                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    border: 'none'
+                                  },
+                                  '& .MuiOutlinedInput-notchedOutline': {
+                                    border: 'none',
+                                    outline: 'none'
+                                  }
+                                }}
+                                margin='dense'
+                                variant='outlined'
+                                fullWidth
+                              >
+                                {/* Impact Category */}
+                                <ListSubheader
+                                  sx={{
+                                    backgroundColor: theme.palette.menuBackground,
+                                    color: theme.palette.texts,
+                                    textAlign: 'center',
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.formBackground
+                                    }
+                                  }}
+                                >
+                                  Impact
+                                </ListSubheader>
+                                <Divider sx={{ backgroundColor: theme.palette.divider }} />
+                                {inputOptions.aspect
+                                  .filter(aspectText => aspectText.startsWith('impact:'))
+                                  .map((aspectText, index) => (
+                                    <MenuItem
+                                      sx={{
+                                        backgroundColor: theme.palette.menuBackground,
+                                        color: theme.palette.texts,
+                                        '&:hover': {
+                                          backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
+                                          color: theme.palette.primary.contrastText // Adjust text color on hover
+                                        },
+                                        '&.Mui-selected': {
+                                          backgroundColor: theme.palette.formBackground,
+                                          '&:hover': {
+                                            backgroundColor: theme.palette.primary.light // Maintain hover color when selected
+                                          }
+                                        },
+                                        '&:active': {
+                                          backgroundColor: theme.palette.formBackground
+                                        },
+                                        '::selection': {
+                                          backgroundColor: theme.palette.formBackground
+                                        }
+                                      }}
+                                      value={aspectText}
+                                      key={aspectText}
+                                    >
+                                      <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
+                                        <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
+                                      </Tooltip>
+                                    </MenuItem>
+                                  ))}
+
+                                {/* Quality Category */}
+                                <ListSubheader
+                                  sx={{
+                                    backgroundColor: theme.palette.menuBackground,
+                                    color: theme.palette.texts,
+                                    textAlign: 'center',
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.formBackground
+                                    }
+                                  }}
+                                >
+                                  Quality
+                                </ListSubheader>
+                                <Divider sx={{ backgroundColor: theme.palette.divider }} />
+                                {inputOptions.aspect
+                                  .filter(aspectText => aspectText.startsWith('quality:'))
+                                  .map((aspectText, index) => (
+                                    <MenuItem
+                                      sx={{
+                                        backgroundColor: theme.palette.menuBackground,
+                                        color: theme.palette.texts,
+                                        '&:hover': {
+                                          backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
+                                          color: theme.palette.primary.contrastText // Adjust text color on hover
+                                        },
+                                        '&.Mui-selected': {
+                                          backgroundColor: theme.palette.formBackground,
+                                          '&:hover': {
+                                            backgroundColor: theme.palette.primary.light // Maintain hover color when selected
+                                          }
+                                        },
+                                        '&:active': {
+                                          backgroundColor: theme.palette.formBackground
+                                        },
+                                        '::selection': {
+                                          backgroundColor: theme.palette.formBackground
+                                        }
+                                      }}
+                                      value={aspectText}
+                                      key={aspectText}
+                                    >
+                                      <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
+                                        <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
+                                      </Tooltip>
+                                    </MenuItem>
+                                  ))}
+
+                                {/* Report Category */}
+                                <ListSubheader
+                                  sx={{
+                                    backgroundColor: theme.palette.menuBackground,
+                                    color: theme.palette.texts,
+                                    textAlign: 'center',
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.formBackground
+                                    }
+                                  }}
+                                >
+                                  Report
+                                </ListSubheader>
+                                <Divider sx={{ backgroundColor: theme.palette.divider }} />
+                                {inputOptions.aspect
+                                  .filter(aspectText => aspectText.startsWith('report:'))
+                                  .map((aspectText, index) => (
+                                    <MenuItem
+                                      sx={{
+                                        backgroundColor: theme.palette.menuBackground,
+                                        color: theme.palette.texts,
+                                        '&:hover': {
+                                          backgroundColor: theme.palette.primary.light, // Change this to the color you want on hover
+                                          color: theme.palette.primary.contrastText // Adjust text color on hover
+                                        },
+                                        '&.Mui-selected': {
+                                          backgroundColor: theme.palette.formBackground,
+                                          '&:hover': {
+                                            backgroundColor: theme.palette.primary.light // Maintain hover color when selected
+                                          }
+                                        },
+                                        '&:active': {
+                                          backgroundColor: theme.palette.formBackground
+                                        },
+                                        '::selection': {
+                                          backgroundColor: theme.palette.formBackground
+                                        }
+                                      }}
+                                      value={aspectText}
+                                      key={aspectText}
+                                    >
+                                      <Tooltip title={tooltips.aspect[index]} placement={tooltipPlacement} arrow>
+                                        <Box sx={{ width: '100%', height: '100%' }}>{aspectText.split(':')[1]}</Box>
+                                      </Tooltip>
+                                    </MenuItem>
+                                  ))}
+                              </TextField>
+                            </Tooltip>
+
+                            <Controller
+                              name='stars'
+                              control={control}
+                              rules={{ required: { value: true, message: 'Rating is required' } }}
+                              render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                <Tooltip title='A rating associated with the claim' placement={tooltipPlacement} arrow>
+                                  <FormControl
+                                    sx={{
+                                      ml: 1,
+                                      mr: 1,
+                                      width: '100%',
+                                      '& .MuiInputBase-root': {
+                                        borderBottom: `1px solid ${theme.palette.texts}`,
+                                        overflow: 'hidden'
+                                      },
+                                      '& .MuiFormControl-root': {
+                                        boxSizing: 'border-box'
+                                      }
+                                    }}
+                                    fullWidth
+                                    error={!!error}
+                                  >
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: isMobile ? 'flex-start' : 'space-between',
+                                        mb: 1,
+                                        overflow: 'hidden',
+                                        mt: 1
+                                      }}
+                                    >
+                                      <Typography
+                                        sx={{
+                                          color: theme.palette.texts,
+                                          fontFamily: 'Montserrat',
+                                          fontSize: isMobile ? '10px' : '16px',
+                                          fontWeight: 500,
+                                          lineHeight: isMobile ? '12.19px' : '19.5px',
+                                          mr: isMobile ? 5 : 0
+                                        }}
+                                      >
+                                        Review Rating{' '}
+                                      </Typography>
+                                      <Rating
+                                        name='stars'
+                                        value={value}
+                                        onChange={(e, newValue) => onChange(newValue)}
+                                        precision={1}
+                                        sx={{
+                                          color: theme.palette.stars,
+                                          '& .MuiRating-icon': { color: theme.palette.stars },
+                                          fontSize: '1.3rem',
+                                          lineHeight: '1.2'
+                                        }}
+                                        size='small'
+                                      />
+                                    </Box>
+                                    <FormHelperText>{error?.message}</FormHelperText>
+                                  </FormControl>
+                                </Tooltip>
+                              )}
+                            />
+                          </Box>
+                        </>
+                      )}
+                      {watchClaim === 'impact' && (
+                        <Box sx={{}}>
+                          <Typography
+                            sx={{
+                              fontFamily: 'Montserrat',
+                              fontSize: isMobile ? '10px' : '16px',
+                              fontWeight: 500,
+                              lineHeight: isMobile ? '12.19px' : '19.5px',
+                              ml: 1.5,
+                              mb: 1
+                            }}
+                          >
+                            Value
+                          </Typography>
+                          <TextField
+                            {...register('amt')}
+                            fullWidth
+                            variant='outlined'
+                            sx={{
+                              ml: 1,
+                              mr: 1,
+                              width: isMobile ? '326px' : '350px',
+                              '& .MuiInputBase-root': {
+                                backgroundColor: theme.palette.input,
+                                height: isMobile ? '34px' : '44px',
+                                padding: '0 12px',
+                                borderRadius: '6px',
+                                fontSize: isMobile ? '12px' : '16px',
+                                fontFamily: 'Montserrat'
+                              },
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none' // Removes border on the outline
+                              }
+                            }}
+                            margin='dense'
+                            InputProps={{
+                              startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                            }}
+                            error={Boolean(errors.amt)}
+                            helperText={errors.amt?.message}
+                          />
+                        </Box>
+                      )}
+                      {watchClaim === 'related' && (
+                        <Tooltip title='What entity is the subject related to?' placement={tooltipPlacement} arrow>
+                          <TextField
+                            {...register('object')}
+                            sx={{
+                              ml: 1,
+                              mr: 1,
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                color: theme.palette.texts
+                              },
+                              '& .MuiInputLabel-root': {
+                                color: theme.palette.texts
+                              },
+                              '& .MuiFormHelperText-root': {
+                                color: theme.palette.texts
+                              },
+                              '& .MuiSvgIcon-root': {
+                                color: theme.palette.icons
+                              }
+                            }}
+                            margin='dense'
+                            variant='outlined'
+                            fullWidth
+                            label='Object'
+                            key='object'
+                            type='text'
+                          />
+                        </Tooltip>
+                      )}
+                    </>
                   )}
-                />
-              </LocalizationProvider>
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontFamily: 'Montserrat',
+                        fontSize: isMobile ? '10px' : '16px',
+                        fontWeight: 500,
+                        lineHeight: isMobile ? '12.19px' : '19.5px',
+                        ml: 1.5,
+                        mb: 1
+                      }}
+                    >
+                      Effective Date
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        value={watchEffectiveDate}
+                        onChange={(newValue: any) => setValue('effectiveDate', newValue)}
+                        renderInput={(params: any) => (
+                          <TextField
+                            {...params}
+                            sx={{
+                              ml: 1,
+                              mr: 1,
+                              width: isMobile ? '326px' : '350px',
+                              '& .MuiInputBase-input': {
+                                backgroundColor: theme.palette.input,
+                                height: isMobile ? '34px' : '44px',
+                                padding: '0 12px',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontSize: isMobile ? '12px' : '16px',
+                                fontFamily: 'Montserrat'
+                              },
+                              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                border: 'none'
+                              },
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none',
+                                outline: 'none'
+                              }
+                            }}
+                            margin='dense'
+                            variant='outlined'
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                </Box>
+              </Box>
+
+              <DialogActions>
+                <Button
+                  onClick={onSubmit}
+                  variant='contained'
+                  sx={{
+                    width: isMobile ? 'auto' : '180px',
+
+                    color: theme.palette.buttontext,
+                    bgcolor: theme.palette.buttons,
+                    borderRadius: '24px',
+                    m: 'auto',
+                    textTransform: 'none',
+                    fontSize: isMobile ? '16px' : '20px',
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  Submit
+                </Button>
+                {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
+              </DialogActions>
             </Box>
-          </form>
-        </DialogContent>
-        <DialogActions
-          sx={{ display: 'flex', justifyContent: isMobile ? 'center' : 'flex-end', width: '100%', columnGap: 3 }}
-        >
-          <Button
-            onClick={onSubmit}
-            variant='contained'
-            size='medium'
-            sx={{
-              width: isMobile ? '50%' : '20%',
-              color: theme.palette.buttontext,
-              bgcolor: theme.palette.buttons,
-              borderRadius: '80px',
-              m: 'auto',
-              '&:hover': {
-                backgroundColor: theme.palette.buttonHover
-              }
-            }}
-          >
-            Submit
-          </Button>
-          {!!onCancel && <Button onClick={onCancel}>Cancel</Button>}
-        </DialogActions>
+          )}
+        </form>
       </Box>
     </MainContainer>
   )
