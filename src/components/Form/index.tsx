@@ -184,7 +184,6 @@ export const Form = ({
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
           amt: amtAsNumber,
-          issuerId: did,
           name,
           images: validImages
         }
