@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react'
-import { Upload, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import {
   TextField,
   IconButton,
@@ -13,18 +13,20 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Button
+  Button,
+  useMediaQuery
 } from '@mui/material'
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
-interface ImageI {
+export interface ImageI {
+  file: File
   url: string
   metadata: {
     description: string
     caption: string
   }
   effectiveDate: Date
-  createdDate: Date
 }
 
 interface ImageUploaderProps<TFieldValues extends FieldValues> {
@@ -45,36 +47,38 @@ const ImageUploader = <TFieldValues extends FieldValues>({
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    if (files) {
-      Array.from(files).forEach(file => {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          const newImage: ImageI = {
-            url: reader.result as string,
-            metadata: {
-              description: '',
-              caption: ''
-            },
-            effectiveDate: new Date(),
-            createdDate: new Date()
-          }
-          setCurrentImage(newImage)
-          setOpen(true)
+    if (!files || !files?.length) return
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const newImage: ImageI = {
+          file: file,
+          url: reader.result as string,
+          metadata: {
+            description: '',
+            caption: ''
+          },
+          effectiveDate: new Date()
         }
-        reader.readAsDataURL(file)
-      })
-    }
+        setCurrentImage(newImage)
+        setOpen(true)
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   const handleSaveImage = () => {
-    if (currentImage) {
+    if (currentImage && currentImage.url && currentImage.url.trim() !== '') {
       append(currentImage as unknown as TFieldValues['images'][number])
       setHiddenImages([...hiddenImages, currentImage])
       setCurrentImage(null)
       setOpen(false)
+    } else {
+      setCurrentImage(null)
+      setOpen(false)
     }
   }
-
   const handleEffectiveDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (currentImage) {
       const newEffectiveDate = new Date(e.target.value)
@@ -83,6 +87,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   }
 
   const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <Box sx={{ mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
@@ -94,10 +99,12 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '100%',
-              height: 150,
-              border: '2px dashed grey',
+              width: isMobile ? '326px' : '400px',
+              margin: isMobile ? '0 ' : 'auto',
+              height: 180,
+              border: `5px dashed ${theme.palette.input}`,
               borderRadius: 2,
+
               cursor: 'pointer',
               transition: 'border-color 0.3s',
               '&:hover': {
@@ -105,7 +112,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               }
             }}
           >
-            <Upload style={{ width: 40, height: 40, marginBottom: 10, color: 'grey' }} />
+            <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
               <strong>Click to upload</strong> or drag and drop
             </Typography>

@@ -125,6 +125,7 @@ const RenderClaimInfo = ({
             )}
 
             <Typography
+              variant='body2'
               sx={{
                 color: theme.palette.cardDate,
                 fontWeight: 500,
@@ -138,29 +139,28 @@ const RenderClaimInfo = ({
               })}
             </Typography>
             {claim.statement && (
-              <Typography variant='body1'>
-                <Typography
-                  sx={{
-                    padding: '5px 1 1 5px',
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word',
-                    marginBottom: '12px',
-                    fontWeight: 500,
-                    fontSize: '16px',
-                    color: theme.palette.texts,
-                    mt: '10px'
-                  }}
-                >
-                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 500)}
-                  {(isStatementLong || hasExtraDetails) && (
-                    <MuiLink
-                      onClick={handleToggleExpand}
-                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
-                    >
-                      {isExpanded ? 'Show Less' : 'See More'}
-                    </MuiLink>
-                  )}
-                </Typography>
+              <Typography
+                variant='body2'
+                sx={{
+                  padding: '5px 1 1 5px',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  marginBottom: '12px',
+                  fontWeight: 500,
+                  fontSize: '16px',
+                  color: theme.palette.texts,
+                  mt: '10px'
+                }}
+              >
+                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 500)}
+                {(isStatementLong || hasExtraDetails) && (
+                  <MuiLink
+                    onClick={handleToggleExpand}
+                    sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
+                  >
+                    {isExpanded ? 'Show Less' : 'See More'}
+                  </MuiLink>
+                )}
               </Typography>
             )}
           </Box>
@@ -171,6 +171,7 @@ const RenderClaimInfo = ({
             {otherEntries.map(([key, value]) => (
               <Typography
                 key={key}
+                variant='body2'
                 sx={{
                   color: theme.palette.texts,
                   fontWeight: 500,
@@ -228,7 +229,7 @@ const RenderClaimInfo = ({
               ([key, value]) => value && !excludedKeys.includes(key) && !chipKeys.includes(key) && key !== 'statement'
             )
             .map(([key, value]) => (
-              <Typography key={key} variant='body1' sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+              <Typography key={key} variant='body2' sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
                 <strong>{key}:</strong>&nbsp;
                 {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
                   <MuiLink

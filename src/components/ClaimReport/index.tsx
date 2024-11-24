@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   Container,
   Typography,
@@ -10,11 +10,15 @@ import {
   CircularProgress,
   Box,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Button
 } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
+import backSvg from '../../assets/images/back.svg'
+import { height } from '@mui/system'
 
 interface Claim {
   statement: string | null
@@ -40,6 +44,7 @@ const DonationReport: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+  const navigate = useNavigate()
 
   const url = `${BACKEND_BASE_URL}/api/report/${claimId}`
 
@@ -49,10 +54,8 @@ const DonationReport: React.FC = () => {
       try {
         const response = await axios.get(url)
         setReportData(response.data)
-        console.log('Fetched report data:', response.data)
       } catch (err) {
         setError('Failed to fetch report data')
-        console.error('Error fetching report data:', err)
       } finally {
         setIsLoading(false)
       }
@@ -103,13 +106,11 @@ const DonationReport: React.FC = () => {
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
           <Typography
-            component='div'
+            variant='body1'
             sx={{
               color: theme.palette.texts,
               textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              fontSize: '20px',
-              fontWeight: '700'
+              marginLeft: isMediumScreen ? '0' : '1rem'
             }}
           >
             Claim Report
@@ -135,13 +136,11 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                component='div'
+                variant='body2'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '20px',
-                  fontWeight: '700'
+                  marginLeft: isMediumScreen ? '0' : '1rem'
                 }}
               >
                 Validations
@@ -177,7 +176,7 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                component='div'
+                variant='body2'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
@@ -214,6 +213,60 @@ const DonationReport: React.FC = () => {
             )}
           </>
         )}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
+          <Button
+            component={Link}
+            to='/feed'
+            sx={{
+              color: theme.palette.link,
+              fontWeight: 500,
+              borderRadius: '24px',
+              fontSize: 'clamp(12px, 2.5vw, 18px)',
+              px: '2rem'
+            }}
+          >
+            <img src={backSvg} alt='arrow' style={{ width: '10px', marginRight: '10px' }} />
+            BACK
+          </Button>
+          <Box display='flex'>
+            <Button
+              component={Link}
+              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claimId}`}
+              sx={{
+                color: theme.palette.buttontext,
+                bgcolor: theme.palette.buttons,
+                fontWeight: 600,
+                borderRadius: '24px',
+                fontSize: 'clamp(12px, 2.5vw, 18px)',
+                px: '2rem',
+                marginRight: '15px',
+                width: { xs: '10px', sm: '180px' },
+                height: '48px'
+              }}
+            >
+              Validate
+            </Button>
+            <Button
+              component={Link}
+              to={`/search?query=${claimId}`}
+              startIcon={<ShareOutlinedIcon />}
+              variant='text'
+              sx={{
+                p: '4px',
+                fontWeight: 600,
+                borderRadius: '24px',
+                fontSize: 'clamp(12px, 2.5vw, 18px)',
+                px: '2rem',
+                width: { xs: '10px', sm: '220px' },
+                bgcolor: theme.palette.buttons,
+                color: theme.palette.sidecolor,
+                height: '48px'
+              }}
+            >
+              Graph View
+            </Button>
+          </Box>
+        </Box>
       </Box>
     </Box>
   )

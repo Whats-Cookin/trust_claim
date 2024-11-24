@@ -5,3 +5,8 @@ export const checkAuth = () => {
   const did = localStorage.getItem('did')
   return !!((did && ethAddress) || (accessToken && refreshToken))
 }
+
+export const handleAuth = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem('accessToken', accessToken)
+  localStorage.setItem('refreshToken', refreshToken)
+}

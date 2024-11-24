@@ -16,12 +16,12 @@ const SearchBar = () => {
   const isSmallScreen = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
-    const newName = new URLSearchParams(location.search).get('name') ?? ''
-    setSearchVal(newName)
+    const currentQuery = new URLSearchParams(location.search).get('query') ?? ''
+    setSearchVal(currentQuery)
   }, [location.search])
 
   const handleSearch = () => {
-    if (searchVal.trim() !== '') {
+    if (searchVal) {
       navigate({
         pathname: location.pathname === '/search' ? '/search' : '/feed',
         search: `?query=${searchVal}`
@@ -45,18 +45,6 @@ const SearchBar = () => {
       })
     }
   }
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
 
   return (
     <Box
