@@ -5,7 +5,7 @@ import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
@@ -70,6 +70,8 @@ const Explore = (homeProps: IHomeProps) => {
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
+      console.error("Graph rendering error: ", err)
+      console.trace()
     } finally {
       setLoading(false)
       runCy(cy)
@@ -145,14 +147,19 @@ const Explore = (homeProps: IHomeProps) => {
       
       cy.elements().remove() // Clear any existing elements
       
-      let nodes: any[] = []
-      let edges: any[] = []
-      parseMultipleNodes(nodes, edges, claimRes.data)
+//      let nodes: any[] = []
+//      let edges: any[] = []
+      console.log("Result was : " + JSON.stringify(claimRes.data))
+//      parseSingleNode(nodes, edges, claimRes.data)
+      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
+      console.log("Adding nodes: " + nodes)
       cy.add({ nodes, edges } as any)
 
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
+      console.error("Graph rendering error: ", err)
+      console.trace()
     } finally {
       setLoading(false)
       runCy(cy)
