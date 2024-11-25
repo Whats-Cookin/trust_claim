@@ -21,9 +21,10 @@ const SearchBar = () => {
   }, [location.search])
 
   const handleSearch = () => {
+    // we only search in the feed, we explore the graph by clicking into it
     if (searchVal) {
       navigate({
-        pathname: location.pathname === '/search' ? '/search' : '/feed',
+        pathname: location.pathname === '/feed',
         search: `?query=${searchVal}`
       })
     }

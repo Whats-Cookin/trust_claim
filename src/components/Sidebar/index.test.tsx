@@ -35,8 +35,11 @@ describe('Sidebar component', () => {
     const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
+/* // what we had a search, we do NOT want, just explore from graph
+   // we may LATER add a real search of advanced filters for the feed
     const searchButton = screen.getByText('Search')
     expect(searchButton).toBeInTheDocument()
+*/
 
     const createButton = screen.getByText('Claim')
     expect(createButton).toBeInTheDocument()
@@ -68,8 +71,9 @@ describe('Sidebar component', () => {
     const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
-    const searchButton = screen.getByText('Search')
+/*    const searchButton = screen.getByText('Search')
     expect(searchButton).toBeInTheDocument()
+*/
 
     const loginButton = screen.getByText('Login')
     expect(loginButton).toBeInTheDocument()

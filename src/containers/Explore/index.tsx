@@ -5,7 +5,7 @@ import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
@@ -16,15 +16,12 @@ import NodeDetails from '../../components/NodeDetails'
 import { s } from 'vitest/dist/types-e3c9754d'
 import { set } from 'lodash'
 
-const DEFAULT_PREVIEW_ID = '118499'
-
-const Search = (homeProps: IHomeProps) => {
-  const search = useLocation().search
+const Explore = (homeProps: IHomeProps) => {
+  const { nodeId } = useParams<{ nodeId: string }>()
   const theme = useTheme()
   const { setLoading, setSnackbarMessage, toggleSnackbar, isDarkMode } = homeProps
   const ref = useRef<any>(null)
   const cyRef = useRef<Cytoscape.Core | null>(null)
-  const query = new URLSearchParams(search).get('query')
   const [showDetails, setShowDetails] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [startNode, setStartNode] = useState<any>(null)
@@ -56,30 +53,6 @@ const Search = (homeProps: IHomeProps) => {
     })
   }
 
-  const fetchQueryClaims = async (query: string, page: number) => {
-    setLoading(true)
-    try {
-      const res = await axios.get(`/api/node/search?page=${page}&limit=5`, {
-        params: { search: query }
-      })
-
-      if (res.data.nodes.length > 0 && cy) {
-        const parsedClaims = parseMultipleNodes(res.data.nodes)
-        cy.elements().remove()
-        cy.add(parsedClaims)
-      } else if (!res.data.nodes.length) {
-        setSnackbarMessage('No results found')
-        toggleSnackbar(true)
-      }
-    } catch (err: any) {
-      toggleSnackbar(true)
-      setSnackbarMessage(err.message)
-    } finally {
-      setLoading(false)
-      runCy(cy)
-    }
-  }
-
   const fetchRelatedClaims = async (id: string, page: number) => {
     setLoading(true)
     try {
@@ -97,6 +70,8 @@ const Search = (homeProps: IHomeProps) => {
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
+      console.error("Graph rendering error: ", err)
+      console.trace()
     } finally {
       setLoading(false)
       runCy(cy)
@@ -163,6 +138,34 @@ const Search = (homeProps: IHomeProps) => {
     }
   }
 
+  const initializeGraph = async (claimId: string) => {
+    setLoading(true)
+    try {
+      // First fetch the central node
+      const claimRes = await axios.get(`/api/claim_graph/${claimId}`)
+      if (!cy) return
+      
+      cy.elements().remove() // Clear any existing elements
+      
+//      let nodes: any[] = []
+//      let edges: any[] = []
+      console.log("Result was : " + JSON.stringify(claimRes.data))
+//      parseSingleNode(nodes, edges, claimRes.data)
+      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
+      console.log("Adding nodes: " + nodes)
+      cy.add({ nodes, edges } as any)
+
+    } catch (err: any) {
+      toggleSnackbar(true)
+      setSnackbarMessage(err.message)
+      console.error("Graph rendering error: ", err)
+      console.trace()
+    } finally {
+      setLoading(false)
+      runCy(cy)
+    }
+  }
+
   useEffect(() => {
     if (cy) {
       cy.on('tap', 'node', handleNodeClick)
@@ -181,13 +184,12 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy])
 
+  // Replace the removed useEffect with this one
   useEffect(() => {
-    if (query && cy) {
-      fetchQueryClaims(encodeURIComponent(query), page.current)
-    } else if (!query) {
-      fetchQueryClaims(DEFAULT_PREVIEW_ID, page.current)
+    if (nodeId && cy) {
+      initializeGraph(nodeId)
     }
-  }, [query, cy])
+  }, [nodeId, cy])
 
   useEffect(() => {
     if (!cyRef.current && ref.current) {
@@ -236,4 +238,4 @@ const Search = (homeProps: IHomeProps) => {
   )
 }
 
-export default Search
+export default Explore
