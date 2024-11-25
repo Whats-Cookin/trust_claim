@@ -12,7 +12,17 @@ export default defineConfig({
     open: true
   },
   build: {
-    sourcemap: false
+    sourcemap: false,
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Ignore "use client" warnings
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && 
+            warning.message.includes('"use client"')) {
+          return
+        }
+        warn(warning)
+      }
+    }
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
