@@ -136,29 +136,20 @@ const Explore = (homeProps: IHomeProps) => {
     }
   }
 
-  const initializeGraph = async (nodeId: string) => {
+  const initializeGraph = async (claimId: string) => {
     setLoading(true)
     try {
       // First fetch the central node
-      const nodeRes = await axios.get(`/api/node/${nodeId}`)
+      const claimRes = await axios.get(`/api/claim_graph/${claimId}`)
       if (!cy) return
       
       cy.elements().remove() // Clear any existing elements
       
       let nodes: any[] = []
       let edges: any[] = []
-      parseSingleNode(nodes, edges, nodeRes.data)
+      parseMultipleNodes(nodes, edges, claimRes.data)
       cy.add({ nodes, edges } as any)
 
-      // Then fetch related claims for the node
-      // You might want to modify the API to support a depth parameter
-      const relatedRes = await axios.get(`/api/node/${nodeId}?page=1&limit=10`)
-      if (relatedRes.data) {
-        let newNodes: any[] = []
-        let newEdges: any[] = []
-        parseSingleNode(newNodes, newEdges, relatedRes.data)
-        cy.add({ nodes: newNodes, edges: newEdges } as any)
-      }
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
