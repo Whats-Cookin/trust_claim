@@ -16,15 +16,12 @@ import NodeDetails from '../../components/NodeDetails'
 import { s } from 'vitest/dist/types-e3c9754d'
 import { set } from 'lodash'
 
-const DEFAULT_PREVIEW_ID = '118499'
-
-const Search = (homeProps: IHomeProps) => {
-  const search = useLocation().search
+const Explore = (homeProps: IHomeProps) => {
+  const { nodeId } = useParams<{ nodeId: string }>()
   const theme = useTheme()
   const { setLoading, setSnackbarMessage, toggleSnackbar, isDarkMode } = homeProps
   const ref = useRef<any>(null)
   const cyRef = useRef<Cytoscape.Core | null>(null)
-  const query = new URLSearchParams(search).get('query')
   const [showDetails, setShowDetails] = useState<boolean>(false)
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [startNode, setStartNode] = useState<any>(null)
@@ -54,30 +51,6 @@ const Search = (homeProps: IHomeProps) => {
       fit: { eles: cyInstance.elements(), padding: 20 },
       duration: 1000
     })
-  }
-
-  const fetchQueryClaims = async (query: string, page: number) => {
-    setLoading(true)
-    try {
-      const res = await axios.get(`/api/node/search?page=${page}&limit=5`, {
-        params: { search: query }
-      })
-
-      if (res.data.nodes.length > 0 && cy) {
-        const parsedClaims = parseMultipleNodes(res.data.nodes)
-        cy.elements().remove()
-        cy.add(parsedClaims)
-      } else if (!res.data.nodes.length) {
-        setSnackbarMessage('No results found')
-        toggleSnackbar(true)
-      }
-    } catch (err: any) {
-      toggleSnackbar(true)
-      setSnackbarMessage(err.message)
-    } finally {
-      setLoading(false)
-      runCy(cy)
-    }
   }
 
   const fetchRelatedClaims = async (id: string, page: number) => {
@@ -163,6 +136,38 @@ const Search = (homeProps: IHomeProps) => {
     }
   }
 
+  const initializeGraph = async (nodeId: string) => {
+    setLoading(true)
+    try {
+      // First fetch the central node
+      const nodeRes = await axios.get(`/api/node/${nodeId}`)
+      if (!cy) return
+      
+      cy.elements().remove() // Clear any existing elements
+      
+      let nodes: any[] = []
+      let edges: any[] = []
+      parseSingleNode(nodes, edges, nodeRes.data)
+      cy.add({ nodes, edges } as any)
+
+      // Then fetch related claims for the node
+      // You might want to modify the API to support a depth parameter
+      const relatedRes = await axios.get(`/api/node/${nodeId}?page=1&limit=10`)
+      if (relatedRes.data) {
+        let newNodes: any[] = []
+        let newEdges: any[] = []
+        parseSingleNode(newNodes, newEdges, relatedRes.data)
+        cy.add({ nodes: newNodes, edges: newEdges } as any)
+      }
+    } catch (err: any) {
+      toggleSnackbar(true)
+      setSnackbarMessage(err.message)
+    } finally {
+      setLoading(false)
+      runCy(cy)
+    }
+  }
+
   useEffect(() => {
     if (cy) {
       cy.on('tap', 'node', handleNodeClick)
@@ -181,13 +186,12 @@ const Search = (homeProps: IHomeProps) => {
     }
   }, [cy])
 
+  // Replace the removed useEffect with this one
   useEffect(() => {
-    if (query && cy) {
-      fetchQueryClaims(encodeURIComponent(query), page.current)
-    } else if (!query) {
-      fetchQueryClaims(DEFAULT_PREVIEW_ID, page.current)
+    if (nodeId && cy) {
+      initializeGraph(nodeId)
     }
-  }, [query, cy])
+  }, [nodeId, cy])
 
   useEffect(() => {
     if (!cyRef.current && ref.current) {
@@ -236,4 +240,4 @@ const Search = (homeProps: IHomeProps) => {
   )
 }
 
-export default Search
+export default Explore
