@@ -97,16 +97,6 @@ const Sidebar: React.FC<SidebarProps> = ({
             }}
           />
         </ListItemButton>
-        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/search') }} onClick={() => navigate('/search')}>
-          <Search sx={iconStyle} />
-          <ListItemText
-            primary='Search'
-            sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
-            primaryTypographyProps={{
-              variant: 'body2'
-            }}
-          />
-        </ListItemButton>
         {isAuth && (
           <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
             <AddCircleOutlineOutlinedIcon sx={iconStyle} />
