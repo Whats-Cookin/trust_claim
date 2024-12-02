@@ -70,7 +70,7 @@ const Explore = (homeProps: IHomeProps) => {
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
-      console.error("Graph rendering error: ", err)
+      console.error('Graph rendering error: ', err)
       console.trace()
     } finally {
       setLoading(false)
@@ -144,21 +144,20 @@ const Explore = (homeProps: IHomeProps) => {
       // First fetch the central node
       const claimRes = await axios.get(`/api/claim_graph/${claimId}`)
       if (!cy) return
-      
-      cy.elements().remove() // Clear any existing elements
-      
-//      let nodes: any[] = []
-//      let edges: any[] = []
-      console.log("Result was : " + JSON.stringify(claimRes.data))
-//      parseSingleNode(nodes, edges, claimRes.data)
-      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
-      console.log("Adding nodes: " + nodes)
-      cy.add({ nodes, edges } as any)
 
+      cy.elements().remove() // Clear any existing elements
+
+      //      let nodes: any[] = []
+      //      let edges: any[] = []
+      console.log('Result was : ' + JSON.stringify(claimRes.data))
+      //      parseSingleNode(nodes, edges, claimRes.data)
+      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
+      console.log('Adding nodes: ' + nodes)
+      cy.add({ nodes, edges } as any)
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)
-      console.error("Graph rendering error: ", err)
+      console.error('Graph rendering error: ', err)
       console.trace()
     } finally {
       setLoading(false)

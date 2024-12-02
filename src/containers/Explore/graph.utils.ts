@@ -74,13 +74,13 @@ const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
 
-  console.log("About to parse each node from " + JSON.stringify(data))
+  console.log('About to parse each node from ' + JSON.stringify(data))
   data.forEach((node: any) => {
     // adding subject node
-    console.log("Parsing node " + JSON.stringify(node))
+    console.log('Parsing node ' + JSON.stringify(node))
     parseSingleNode(nodes, edges, node)
   })
-  console.log("FINALLY returning nodes " + JSON.stringify(nodes) + " and EDGES " + JSON.stringify(edges))
+  console.log('FINALLY returning nodes ' + JSON.stringify(nodes) + ' and EDGES ' + JSON.stringify(edges))
   return { nodes, edges }
 }
 
@@ -111,12 +111,12 @@ const getNodeData = (node: any) => {
 }
 
 const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
-  console.log("IN single node node is " + JSON.stringify(node))
+  console.log('IN single node node is ' + JSON.stringify(node))
   // adding subject node
   if (node.name && node.nodeUri) {
     const nodeData = getNodeData(node)
     if (nodeData) {
-        nodes.push(nodeData)
+      nodes.push(nodeData)
     }
   }
 
@@ -128,7 +128,7 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
       if (e.endNode) {
         const nodeData = getNodeData(e.endNode)
         if (nodeData) {
-           nodes.push(nodeData)
+          nodes.push(nodeData)
         }
       }
     })
@@ -152,7 +152,7 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
 
       const nodeData = getNodeData(e.startNode)
       if (nodeData) {
-         nodes.push(nodeData)
+        nodes.push(nodeData)
       }
     })
 
@@ -169,7 +169,7 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
     )
   }
 
-  console.log("Returning Nodes " + JSON.stringify(nodes) + " and edges " + JSON.stringify(edges))
+  console.log('Returning Nodes ' + JSON.stringify(nodes) + ' and edges ' + JSON.stringify(edges))
   return { nodes, edges }
 }
 
