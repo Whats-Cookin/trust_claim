@@ -99,7 +99,6 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              width: isMobile ? '326px' : '400px',
               margin: isMobile ? '0 ' : 'auto',
               height: 180,
               border: `5px dashed ${theme.palette.input}`,

@@ -311,7 +311,7 @@ export const Form = ({
         background: isMobile ? theme.palette.cardBackground : theme.palette.menuBackground,
         display: 'flex',
         flexDirection: 'column',
-        width: isMobile ? '100%' : '95%'
+        width: '95%'
       }}
     >
       {/* Alert for user to sign in */}
@@ -353,9 +353,10 @@ export const Form = ({
           backgroundColor: theme.palette.cardBackground,
           borderBottom: `0 0 30px ${theme.palette.shadows}`,
           borderRadius: '20px',
-          width: isMobile ? '358px' : '800px',
+          width: isMobile ? '250px' : '800px',
           margin: isMobile ? 0 : '0 auto',
-          padding: isMobile ? 0 : '20px'
+          padding: isMobile ? 0 : '20px',
+          alignSelf: 'center'
         }}
       >
         <form onSubmit={onSubmit}>
@@ -366,7 +367,7 @@ export const Form = ({
               <CircleIcon sx={{ width: isMobile ? '7px' : '10px', height: isMobile ? '8px' : '10px', mr: 1 }} />
               <Typography sx={{ fontSize: isMobile ? '12px' : '18px', fontWeight: 500 }}>Basic information</Typography>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '760px', pt: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', pt: 2 }}>
               <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px' }}>
                 <Box>
                   <Typography
@@ -387,7 +388,7 @@ export const Form = ({
                       sx={{
                         ml: 1,
                         mr: 1,
-                        width: isMobile ? '326px' : '350px',
+                        width: isMobile ? '250px' : '350px',
                         '& .MuiInputBase-input': {
                           backgroundColor: theme.palette.input,
                           height: isMobile ? '34px' : '44px',
@@ -433,7 +434,7 @@ export const Form = ({
                       sx={{
                         ml: 1,
                         mr: 1,
-                        width: isMobile ? '326px' : '350px',
+                        width: isMobile ? '250px' : '360px',
                         height: isMobile ? '34px' : '45px',
                         '& .MuiInputBase-input': {
                           color: theme.palette.texts,
@@ -512,7 +513,6 @@ export const Form = ({
                     sx={{
                       ml: 1,
                       mr: 1,
-                      width: isMobile ? '326px' : '750px',
                       '& .MuiInputBase-input': {
                         backgroundColor: theme.palette.input,
                         height: isMobile ? '34px' : '44px',
@@ -559,7 +559,6 @@ export const Form = ({
                       ml: 1,
                       mr: 1,
                       mb: isMobile ? 1 : 2,
-                      width: isMobile ? '326px' : '750px',
                       '& .MuiInputBase-input': {
                         backgroundColor: theme.palette.input,
                         height: isMobile ? '63px' : '115px',
@@ -595,30 +594,26 @@ export const Form = ({
                   display: 'flex',
                   justifyContent: 'flex-end',
 
-                  columnGap: 3
+                  columnGap: 3,
+                  width: '100%'
                 }}
               >
                 <Button
                   onClick={toggleAdditionalInfo}
-                  variant='contained'
                   size='large'
                   sx={{
                     width: isMobile ? '35%' : 'auto',
-                    hight: isMobile ? '10px' : '40px',
-                    color: theme.palette.buttontext,
+                    height: isMobile ? '10px' : '40px',
                     left: isMobile ? '-5%' : 0,
-                    bgcolor: theme.palette.buttons,
-                    borderRadius: '6px',
-                    '&:hover': {
-                      backgroundColor: theme.palette.buttonHover
-                    }
+                    color: theme.palette.buttons,
+                    borderRadius: '6px'
                   }}
                 >
                   <Typography
                     sx={{
-                      fontSize: isMobile ? '8px' : '14px',
+                      fontSize: isMobile ? '10px' : '20px',
                       fontFamily: 'Montserrat, sans-serif',
-                      fontWeight: 400,
+                      fontWeight: 500,
                       lineHeight: isMobile ? '9.75px' : '17.07px',
                       textAlign: 'center',
                       whiteSpace: 'nowrap',
@@ -627,6 +622,24 @@ export const Form = ({
                   >
                     {showAdditionalInfo ? ' Additional Information' : 'Additional Information'}
                   </Typography>
+                </Button>
+                <Button
+                  onClick={onSubmit}
+                  variant='contained'
+                  sx={{
+                    width: isMobile ? '50px' : '140px',
+                    height: '40px',
+                    color: theme.palette.buttontext,
+                    bgcolor: theme.palette.buttons,
+                    borderRadius: '24px',
+                    textTransform: 'none',
+                    fontSize: isMobile ? '10px' : '20px',
+                    '&:hover': {
+                      backgroundColor: theme.palette.buttonHover
+                    }
+                  }}
+                >
+                  Submit
                 </Button>
               </DialogActions>
             )}
@@ -643,7 +656,7 @@ export const Form = ({
                   Additional information
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', width: '760px', pt: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', pt: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '30px' }}>
                   <Box>
                     <Typography
@@ -665,7 +678,7 @@ export const Form = ({
                         sx={{
                           ml: 1,
                           mr: 1,
-                          width: isMobile ? '326px' : '350px',
+                          width: isMobile ? '250px' : '350px',
                           height: isMobile ? '34px' : '45px',
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
@@ -755,7 +768,7 @@ export const Form = ({
                         sx={{
                           ml: 1,
                           mr: 1,
-                          width: isMobile ? '326px' : '350px',
+                          width: isMobile ? '250px' : '350px',
                           '& .MuiInputBase-input': {
                             backgroundColor: theme.palette.input,
                             height: isMobile ? '34px' : '44px',
@@ -815,7 +828,6 @@ export const Form = ({
                       sx={{
                         ml: 1,
                         mr: 1,
-                        width: isMobile ? '326px' : '750px',
                         '& .MuiInputBase-input': {
                           backgroundColor: theme.palette.input,
                           height: isMobile ? '34px' : '44px',
@@ -872,7 +884,7 @@ export const Form = ({
                                 sx={{
                                   ml: 1,
                                   mr: 1,
-                                  width: isMobile ? '326px' : '350px',
+                                  width: isMobile ? '250px' : '350px',
                                   height: isMobile ? '34px' : '45px',
                                   '& .MuiInputBase-input': {
                                     color: theme.palette.texts,
@@ -1125,7 +1137,6 @@ export const Form = ({
                             sx={{
                               ml: 1,
                               mr: 1,
-                              width: isMobile ? '326px' : '350px',
                               '& .MuiInputBase-root': {
                                 backgroundColor: theme.palette.input,
                                 height: isMobile ? '34px' : '44px',
@@ -1202,7 +1213,7 @@ export const Form = ({
                             sx={{
                               ml: 1,
                               mr: 1,
-                              width: isMobile ? '326px' : '350px',
+                              width: isMobile ? '250px' : '350px',
                               '& .MuiInputBase-input': {
                                 backgroundColor: theme.palette.input,
                                 height: isMobile ? '34px' : '44px',
