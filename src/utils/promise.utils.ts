@@ -15,7 +15,3 @@ export async function timeoutPromise<T extends Promise<K>, K = Awaited<T>>(
 ): Promise<K> {
   return Promise.race([promise, rejectAfter(timeoutAfter)]) as Promise<K>
 }
-
-export function sleep(ms: number = 0): Promise<void> {
-  return new Promise((res, _rej) => setTimeout(res, ms))
-}

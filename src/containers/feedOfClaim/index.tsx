@@ -32,7 +32,6 @@ import { AddCircleOutlineOutlined } from '@mui/icons-material'
 import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
-import { sleep } from '../../utils/promise.utils'
 
 const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
 const PAGE_LIMIT = 50
@@ -89,13 +88,13 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-async function fetchClaims(nextPage: string | null, query?: string) {
-  const res = await axios.get(`${BACKEND_BASE_URL}/api/claims/v3`, {
+async function fetchClaims(page: number, query?: string) {
+  const res = await axios.get(`${BACKEND_BASE_URL}/api/claimsfeed2`, {
     timeout: 60000,
     params: {
       limit: PAGE_LIMIT,
-      search: query || undefined,
-      nextPage: nextPage || undefined
+      search: query,
+      page
     }
   })
   return res
@@ -123,20 +122,20 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const [isLastPage, setIsLastPage] = useState(false)
   const initialPageLoad = useRef(true)
-  const nextPage = useRef<string | null>(null)
+  const fetchingPage = useRef(1)
 
   const isAuth = checkAuth()
 
   useMemo(() => {
     if (isLoading && !initialPageLoad.current) return
     initialPageLoad.current = false
+    fetchingPage.current = 1
     setIsLastPage(false)
     setIsLoading(true)
-    fetchClaims(null, searchTerm)
+    fetchClaims(1, searchTerm)
       .then(({ data }) => {
-        claimsRef.current = data.claims
-        nextPage.current = data.nextPage
-        if (data.claims.length < PAGE_LIMIT) {
+        claimsRef.current = data
+        if (data.length < PAGE_LIMIT) {
           setIsLastPage(true)
         }
         setClaims(claimsRef.current)
@@ -165,22 +164,21 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   async function loadNextPage() {
-    if (isLastPage || loadingNextPage) return
+    if (isLastPage) return
+
+    const currentPage = Math.ceil(claimsRef.current.length / PAGE_LIMIT)
+    const nextPage = currentPage + 1
+
+    if (fetchingPage.current >= nextPage) return
+    fetchingPage.current = nextPage
 
     try {
       setLoadingNextPage(true)
-
-      // To give room for the spinner to render
-      await sleep()
-
-      const { data } = await fetchClaims(nextPage.current, searchTerm)
-
-      claimsRef.current = claimsRef.current.concat(data.claims)
-      nextPage.current = data.nextPage
-
-      if (data.claims.length < PAGE_LIMIT) {
+      const { data } = await fetchClaims(nextPage, searchTerm)
+      if (data.length < PAGE_LIMIT) {
         setIsLastPage(true)
       }
+      claimsRef.current = claimsRef.current.concat(data)
       setClaims(claimsRef.current)
     } catch (err) {
       console.error(err)
@@ -202,7 +200,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const handleSchema = async (claim: ImportedClaim) => {
     navigate({
-      pathname: `/explore/${claim.claim_id}`
+      pathname: `/explore/${claim.claim_id}`,
     })
   }
 
