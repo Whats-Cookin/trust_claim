@@ -129,213 +129,209 @@ export const Form = ({
   };
 
   return (
-    <MainContainer
-      flexRowOnDesktop={true}
-  sx={{
-    backgroundColor: theme.palette.cardBackground,
-    padding: '20px',
-    width: isMobile ? '100%' : '95%',
-    maxWidth: '800px',
-    margin: '0 auto', 
-    display: 'flex', 
-    justifyContent: 'center',
-    alignItems: 'center'
-  }}
-
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Claim Type Selection */}
-        <Box sx={{ mb: 4 }}>
-          <Typography sx={{ mb: 2 }}>
-            What kind of claim would you like to make?
-          </Typography>
-          <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
-            {Object.entries(CLAIM_TYPES).map(([type, info]) => (
-              <Button
-                key={type}
-                onClick={() => handleClaimTypeSelect(type)}
-                variant={selectedClaimType === type ? 'contained' : 'outlined'}
-                sx={{ justifyContent: 'flex-start', p: 2 }}
-              >
-                {info.label}
-              </Button>
-            ))}
-          </Box>
-        </Box>
-
-        {selectedClaimType && (
-          <>
-            {/* Basic Information */}
+    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <MainContainer
+        flexRowOnDesktop={true}
+        sx={{
+          backgroundColor: theme.palette.cardBackground,
+          padding: '20px',
+          width: '100%',
+          maxWidth: '800px'
+        }}
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Claim Type Selection - only show if no type selected */}
+          {!selectedClaimType ? (
             <Box sx={{ mb: 4 }}>
-              <TextField
-                {...register('name')}
-                label="Name of what you're making a claim about"
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                {...register('subject', { required: true })}
-                label="Link to what you're making a claim about"
-                fullWidth
-                sx={{ mb: 2 }}
-                error={Boolean(errors.subject)}
-                helperText={errors.subject ? 'This field is required' : ''}
-              />
-              <TextField
-                {...register('statement', { required: true })}
-                label="Describe your claim"
-                multiline
-                rows={4}
-                fullWidth
-                error={Boolean(errors.statement)}
-                helperText={errors.statement ? 'This field is required' : ''}
-              />
+              <Typography sx={{ mb: 2 }}>
+                What kind of claim would you like to make?
+              </Typography>
+              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
+                {Object.entries(CLAIM_TYPES).map(([type, info]) => (
+                  <Button
+                    key={type}
+                    onClick={() => handleClaimTypeSelect(type)}
+                    variant='outlined'
+                    sx={{ justifyContent: 'flex-start', p: 2 }}
+                  >
+                    {info.label}
+                  </Button>
+                ))}
+              </Box>
             </Box>
+          ) : (
+            <>
+              {/* Basic Information */}
+              <Box sx={{ mb: 4 }}>
+                <TextField
+                  {...register('name')}
+                  label="Name of what you're making a claim about"
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  {...register('subject', { required: true })}
+                  label="Link to what you're making a claim about"
+                  fullWidth
+                  sx={{ mb: 2 }}
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject ? 'This field is required' : ''}
+                />
+                <TextField
+                  {...register('statement', { required: true })}
+                  label="Describe your claim"
+                  multiline
+                  rows={4}
+                  fullWidth
+                  error={Boolean(errors.statement)}
+                  helperText={errors.statement ? 'This field is required' : ''}
+                />
+              </Box>
 
-            {/* Claim Type Specific Fields */}
-            <Box sx={{ mb: 4 }}>
-              {selectedClaimType === 'rated' && (
-                <>
+              {/* Claim Type Specific Fields */}
+              <Box sx={{ mb: 4 }}>
+                {selectedClaimType === 'rated' && (
+                  <>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <InputLabel>Aspect</InputLabel>
+                      <Select {...register('aspect')}>
+                        {CLAIM_TYPES.rated.aspects.map(aspect => (
+                          <MenuItem key={aspect} value={aspect}>
+                            {aspect.split(':')[1]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <Controller
+                      name="stars"
+                      control={control}
+                      render={({ field }) => (
+                        <Box sx={{ mb: 2 }}>
+                          <Typography>Rating</Typography>
+                          <Rating {...field} />
+                        </Box>
+                      )}
+                    />
+                  </>
+                )}
+
+                {selectedClaimType === 'impact' && (
+                  <>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <InputLabel>Impact Type</InputLabel>
+                      <Select {...register('aspect')}>
+                        {CLAIM_TYPES.impact.aspects.map(aspect => (
+                          <MenuItem key={aspect} value={aspect}>
+                            {aspect.split(':')[1]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <TextField
+                      {...register('amt')}
+                      label="Value"
+                      type="number"
+                      fullWidth
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>
+                      }}
+                    />
+                  </>
+                )}
+
+                {selectedClaimType === 'report' && (
                   <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel>Aspect</InputLabel>
+                    <InputLabel>Report Type</InputLabel>
                     <Select {...register('aspect')}>
-                      {CLAIM_TYPES.rated.aspects.map(aspect => (
+                      {CLAIM_TYPES.report.aspects.map(aspect => (
                         <MenuItem key={aspect} value={aspect}>
                           {aspect.split(':')[1]}
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
-                  <Controller
-                    name="stars"
-                    control={control}
-                    render={({ field }) => (
-                      <Box sx={{ mb: 2 }}>
-                        <Typography>Rating</Typography>
-                        <Rating {...field} />
-                      </Box>
-                    )}
-                  />
-                </>
-              )}
+                )}
 
-              {selectedClaimType === 'impact' && (
-                <>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel>Impact Type</InputLabel>
-                    <Select {...register('aspect')}>
-                      {CLAIM_TYPES.impact.aspects.map(aspect => (
-                        <MenuItem key={aspect} value={aspect}>
-                          {aspect.split(':')[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <TextField
-                    {...register('amt')}
-                    label="Value"
-                    type="number"
-                    fullWidth
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">$</InputAdornment>
-                    }}
-                  />
-                </>
-              )}
+                {selectedClaimType === 'related_to' && (
+                  <>
+                    <TextField
+                      {...register('object')}
+                      label="Related To (URL)"
+                      fullWidth
+                      sx={{ mb: 2 }}
+                    />
+                    <FormControl fullWidth>
+                      <InputLabel>Relationship Type</InputLabel>
+                      <Select {...register('aspect')}>
+                        {CLAIM_TYPES.related_to.aspects.map(aspect => (
+                          <MenuItem key={aspect} value={aspect}>
+                            {aspect.split(':')[1]}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </>
+                )}
+              </Box>
 
-              {selectedClaimType === 'report' && (
+              {/* Common Bottom Fields */}
+              <Box sx={{ mb: 4 }}>
                 <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>Report Type</InputLabel>
-                  <Select {...register('aspect')}>
-                    {CLAIM_TYPES.report.aspects.map(aspect => (
-                      <MenuItem key={aspect} value={aspect}>
-                        {aspect.split(':')[1]}
-                      </MenuItem>
-                    ))}
+                  <InputLabel>How do you know this?</InputLabel>
+                  <Select {...register('howKnown')} defaultValue="FIRST_HAND">
+                    <MenuItem value="FIRST_HAND">First Hand</MenuItem>
+                    <MenuItem value="SECOND_HAND">Second Hand</MenuItem>
+                    <MenuItem value="WEB_DOCUMENT">Website</MenuItem>
+                    <MenuItem value="PHYSICAL_DOCUMENT">Physical Document</MenuItem>
                   </Select>
                 </FormControl>
-              )}
 
-              {selectedClaimType === 'related_to' && (
-                <>
-                  <TextField
-                    {...register('object')}
-                    label="Related To (URL)"
-                    fullWidth
-                    sx={{ mb: 2 }}
+                <TextField
+                  {...register('sourceURI')}
+                  label={watchHowKnown === 'FIRST_HAND' ? 
+                    "Your home page or social media link" : 
+                    "Where did you find the information"}
+                  fullWidth
+                  sx={{ mb: 2 }}
+                />
+
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Controller
+                    name="effectiveDate"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        label="When did this happen?"
+                        value={field.value}
+                        onChange={field.onChange}
+                        renderInput={(params) => <TextField {...params} fullWidth />}
+                      />
+                    )}
                   />
-                  <FormControl fullWidth>
-                    <InputLabel>Relationship Type</InputLabel>
-                    <Select {...register('aspect')}>
-                      {CLAIM_TYPES.related_to.aspects.map(aspect => (
-                        <MenuItem key={aspect} value={aspect}>
-                          {aspect.split(':')[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </>
-              )}
-            </Box>
+                </LocalizationProvider>
+              </Box>
 
-            {/* Common Bottom Fields */}
-            <Box sx={{ mb: 4 }}>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>How do you know this?</InputLabel>
-                <Select {...register('howKnown')} defaultValue="FIRST_HAND">
-                  <MenuItem value="FIRST_HAND">First Hand</MenuItem>
-                  <MenuItem value="SECOND_HAND">Second Hand</MenuItem>
-                  <MenuItem value="WEB_DOCUMENT">Website</MenuItem>
-                  <MenuItem value="PHYSICAL_DOCUMENT">Physical Document</MenuItem>
-                </Select>
-              </FormControl>
+              {/* Optional Image Upload */}
+              <Box sx={{ mb: 4 }}>
+                <Typography sx={{ mb: 1 }}>Add supporting image (optional)</Typography>
+                <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
+              </Box>
 
-              <TextField
-                {...register('sourceURI')}
-                label={watchHowKnown === 'FIRST_HAND' ? 
-                  "Your home page or social media link" : 
-                  "Where did you find the information"}
-                fullWidth
-                sx={{ mb: 2 }}
-              />
-
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Controller
-                name="effectiveDate"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    label="When did this happen?"
-                    value={field.value}
-                    onChange={field.onChange}
-                    renderInput={(params) => <TextField {...params} fullWidth />}
-                  />
+              {/* Submit Buttons */}
+              <DialogActions sx={{ justifyContent: 'flex-end', gap: 2 }}>
+                {onCancel && (
+                  <Button onClick={onCancel}>
+                    Cancel
+                  </Button>
                 )}
-              />
-            </LocalizationProvider>
-
-            </Box>
-
-            {/* Optional Image Upload */}
-            <Box sx={{ mb: 4 }}>
-              <Typography sx={{ mb: 1 }}>Add supporting image (optional)</Typography>
-              <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
-            </Box>
-
-            {/* Submit Buttons */}
-            <DialogActions sx={{ justifyContent: 'flex-end', gap: 2 }}>
-              {onCancel && (
-                <Button onClick={onCancel}>
-                  Cancel
+                <Button type="submit" variant="contained" color="primary">
+                  Submit
                 </Button>
-              )}
-              <Button type="submit" variant="contained" color="primary">
-                Submit
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </form>
-    </MainContainer>
+              </DialogActions>
+            </>
+          )}
+        </form>
+      </MainContainer>
+    </Box>
   );
 };
