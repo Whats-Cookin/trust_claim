@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { BACKEND_BASE_URL } from '../utils/settings'
+import { getAuthHeaders, handleAuthSuccess, clearAuth } from '../utils/authUtils'
 
 const instance = axios.create({
   baseURL: BACKEND_BASE_URL,
@@ -8,24 +9,25 @@ const instance = axios.create({
 
 instance.interceptors.request.use(config => {
   const route = config.url?.split('/')[1]
-  const accessToken = localStorage.getItem('accessToken')
-  if (accessToken !== 'undefined' && route !== 'auth' && config.headers) {
-    config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : ''
+  if (route !== 'auth' && config.headers) {
+    const headers = getAuthHeaders()
+    config.headers = { ...config.headers, ...headers }
   }
   return config
 })
 
-type HaultedReqCb = (newAccessToken: string) => void
+type HaltedReqCb = (newAccessToken: string) => void
 
 let isRefreshing = false
-const tokenSubscribers: HaultedReqCb[] = []
+const tokenSubscribers: HaltedReqCb[] = []
 
 const onRefreshed = (newAccessToken: string) => {
   tokenSubscribers.forEach(cb => cb(newAccessToken))
+  tokenSubscribers.length = 0 // Clear array
 }
 
-const subscribeTokenRefresh = (haultedReqCb: HaultedReqCb) => {
-  tokenSubscribers.push(haultedReqCb)
+const subscribeTokenRefresh = (haltedReqCb: HaltedReqCb) => {
+  tokenSubscribers.push(haltedReqCb)
 }
 
 instance.interceptors.response.use(
@@ -33,35 +35,40 @@ instance.interceptors.response.use(
   async error => {
     const originalReq = error.config
     const errorResponse = error.response
-    if (errorResponse?.status === 401 && errorResponse.data.message === 'jwt expired') {
-      if (!isRefreshing) {
-        const refreshToken = localStorage.getItem('refreshToken')
+    
+    if (errorResponse?.status === 401) {
+      if (errorResponse.data.message === 'jwt expired' && !isRefreshing) {
         isRefreshing = true
-        instance
-          .post('/auth/refresh_token', { refreshToken })
-          .then(res => {
-            const {
-              data: { accessToken, refreshToken }
-            } = res
-            localStorage.setItem('accessToken', accessToken)
-            localStorage.setItem('refreshToken', refreshToken)
-
-            isRefreshing = false
-            onRefreshed(accessToken)
-          })
-          .catch((err: AxiosError) => {
-            console.error('Token could not be refreshed', err.message)
-          })
+        const refreshToken = localStorage.getItem('refreshToken')
+        
+        try {
+          const res = await instance.post('/auth/refresh_token', { refreshToken })
+          const { accessToken, refreshToken: newRefreshToken } = res.data
+          
+          handleAuthSuccess({ accessToken, refreshToken: newRefreshToken })
+          isRefreshing = false
+          onRefreshed(accessToken)
+          
+          originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
+          return instance(originalReq)
+        } catch (err) {
+          clearAuth()
+          window.location.href = '/login'
+          return Promise.reject(err)
+        }
       }
 
-      return new Promise(resolve => {
-        subscribeTokenRefresh(accessToken => {
-          originalReq.headers.Authorization = `Bearer ${accessToken}`
-          resolve(instance(originalReq))
+      if (isRefreshing) {
+        return new Promise(resolve => {
+          subscribeTokenRefresh(accessToken => {
+            originalReq.headers.Authorization = `Bearer ${accessToken}`
+            resolve(instance(originalReq))
+          })
         })
-      })
+      }
     }
-    return Promise.reject(new Error(error.message))
+    
+    return Promise.reject(error)
   }
 )
 

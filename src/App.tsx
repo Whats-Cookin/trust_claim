@@ -18,6 +18,7 @@ import ClaimDetails from './containers/ClaimDetails'
 import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
+import { checkAuth } from './utils/authUtils'
 import './App.css'
 
 const App = () => {
@@ -34,13 +35,6 @@ const App = () => {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const checkAuth = () => {
-    const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
-    const ethAddress = localStorage.getItem('ethAddress')
-    const did = localStorage.getItem('did')
-    return !!((did && ethAddress) || (accessToken && refreshToken))
-  }
 
   useEffect(() => {
     if (location.pathname === '/') {
