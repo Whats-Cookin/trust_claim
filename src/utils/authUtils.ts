@@ -19,7 +19,7 @@ export const handleAuthSuccess = (authData: AuthState) => {
 export const checkAuth = () => {
   const accessToken = localStorage.getItem('accessToken')
   const refreshToken = localStorage.getItem('refreshToken')
-  const ethAddress = localStorage.getItem('ethAddress')
+  const ethAddress = localStorage.getItem('ethAddress') || undefined
   const did = localStorage.getItem('did')
   
   // JWT auth is primary authentication method
@@ -66,7 +66,7 @@ export const initializeDIDAuth = async (ceramic: CeramicApi, compose: ComposeCli
     if (session?.did) {
       handleAuthSuccess({
         did: session.did.parent,
-        ethAddress: localStorage.getItem('ethAddress') // Keep existing ethAddress
+        ethAddress: localStorage.getItem('ethAddress') || undefined // Keep existing ethAddress
       })
       return true
     }

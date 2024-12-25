@@ -23,7 +23,7 @@ const tokenSubscribers: HaltedReqCb[] = []
 
 const onRefreshed = (newAccessToken: string) => {
   tokenSubscribers.forEach(cb => cb(newAccessToken))
-  tokenSubscribers.length = 0 // Clear array
+  tokenSubscribers.length = 0  // Clear array after processing
 }
 
 const subscribeTokenRefresh = (haltedReqCb: HaltedReqCb) => {
@@ -61,7 +61,7 @@ instance.interceptors.response.use(
       if (isRefreshing) {
         return new Promise(resolve => {
           subscribeTokenRefresh(accessToken => {
-            originalReq.headers.Authorization = `Bearer ${accessToken}`
+            originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
             resolve(instance(originalReq))
           })
         })

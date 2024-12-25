@@ -64,13 +64,29 @@ export const Form = ({
 
   const [selectedClaimType, setSelectedClaimType] = useState<string>('');
 
+  interface FormData {
+    name: string;
+    subject: string;
+    claim: string;
+    object: string;
+    statement: string;
+    aspect: string;
+    howKnown: string;
+    sourceURI: string;
+    effectiveDate: Date;
+    confidence: number;
+    stars: number | null;
+    amt: number | null;
+    images: { id: string }[];  // Add proper type for images
+  }
+
   const {
     register,
     handleSubmit,
     control,
     watch,
     formState: { errors }
-  } = useForm({
+  } = useForm<FormData>({
     defaultValues: {
       name: '',
       subject: '',
