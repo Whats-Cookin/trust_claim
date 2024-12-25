@@ -33,6 +33,7 @@ export function useCreateClaim() {
       }
 
       const { images, dto } = preparePayload(payload)
+      console.log('Sending payload:', dto)
       const res = await axios.post('/api/claim/v2', generateFormData(dto, images))
 
       if (res.status === 201) {
