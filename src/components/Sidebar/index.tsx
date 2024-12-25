@@ -7,6 +7,8 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
+import { clearAuth } from '../../utils/authUtils'
+
 
 interface SidebarProps {
   isAuth: boolean
@@ -31,10 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('did')
-    localStorage.removeItem('ethAddress')
+    clearAuth()
     navigate('/login')
   }
 

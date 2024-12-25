@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import axios from '../../axiosInstance'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -13,71 +13,55 @@ import styles from './styles'
 import ILoginProps from './types'
 import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
 import { getAccountId } from '@didtools/pkh-ethereum'
-import { authenticateCeramic, ceramic, composeClient } from '../../composedb'
+import { ceramic, composeClient } from '../../composedb'
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 import { GoogleLogin } from '@react-oauth/google'
+import { handleAuthSuccess, initializeDIDAuth } from '../../utils/authUtils'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
+
 const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
   const location = useLocation()
+  const navigate = useNavigate()
+  
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
-  const navigate = useNavigate()
 
-  const handleAuth = (accessToken: string, refreshToken: string) => {
-    localStorage.setItem('accessToken', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
+  const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
+    handleAuthSuccess({ accessToken, refreshToken })
     setLoading(false)
-    navigate('/')
-  }
-
-  const onSubmit = handleSubmit(async ({ email, password }) => {
-    try {
-      if (!email || !password) {
-        toggleSnackbar(true)
-        setSnackbarMessage('Both email and password are required fields.')
-      } else {
-        setLoading(true)
-        const loginUrl = '/auth/login'
-        const data = { email, password }
-        const {
-          data: { accessToken, refreshToken }
-        } = await axios.post(loginUrl, data)
-        handleAuth(accessToken, refreshToken)
-        if (location.state?.from) {
-          navigate(location.state?.from)
-        }
-      }
-    } catch (err: any) {
-      setLoading(false)
-      toggleSnackbar(true)
-      setSnackbarMessage('User not Found!')
-      console.error('Error: ', err?.message)
-    }
-  })
+    navigate(location.state?.from || '/')
+  }, [navigate, location.state?.from, setLoading])
 
   const handleWalletAuth = async () => {
-    const ethProvider = window.ethereum
-    const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-    const accountId = await getAccountId(ethProvider, addresses[0])
-    if (accountId) {
-      localStorage.setItem('ethAddress', accountId.address)
-      try {
-        await authenticateCeramic(ceramic, composeClient)
-        navigate('/')
-      } catch (e) {
-        console.log(`Error trying to authenticate ceramic: ${e}`)
+    try {
+      const ethProvider = window.ethereum
+      const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
+      const accountId = await getAccountId(ethProvider, addresses[0])
+
+      if (accountId) {
+        handleAuthSuccess({ ethAddress: accountId.address })
+        
+        // Initialize DID authentication
+        const success = await initializeDIDAuth(ceramic, composeClient)
+        if (success) {
+          navigate(location.state?.from || '/')
+        } else {
+          throw new Error('DID authentication failed')
+        }
+      } else {
+        throw new Error('No account ID returned')
       }
-      if ((location as any).state?.from) {
-        navigate((location as any).state.from)
-      }
-    } else {
+    } catch (e) {
+      console.error('Wallet auth error:', e)
+      toggleSnackbar(true)
+      setSnackbarMessage('Failed to authenticate with wallet')
       navigate('/login')
     }
   }
@@ -86,6 +70,28 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
     event.preventDefault()
     handleWalletAuth()
   }
+
+  const onSubmit = handleSubmit(async ({ email, password }) => {
+    try {
+      if (!email || !password) {
+        toggleSnackbar(true)
+        setSnackbarMessage('Both email and password are required fields.')
+        return
+      }
+      
+      setLoading(true)
+      const {
+        data: { accessToken, refreshToken }
+      } = await axios.post('/auth/login', { email, password })
+      
+      handleAuth(accessToken, refreshToken)
+    } catch (err: any) {
+      setLoading(false)
+      toggleSnackbar(true)
+      setSnackbarMessage('User not Found!')
+      console.error('Login error:', err?.message)
+    }
+  })
 
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
@@ -250,16 +256,23 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                   type='icon'
                   shape='circle'
                   onSuccess={async credentialResponse => {
-                    const {
-                      data: { accessToken, refreshToken }
-                    } = await axios.post('/auth/google', {
-                      googleAuthCode: credentialResponse.credential
-                    })
-
-                    handleAuth(accessToken, refreshToken)
+                    try {
+                      const {
+                        data: { accessToken, refreshToken }
+                      } = await axios.post('/auth/google', {
+                        googleAuthCode: credentialResponse.credential
+                      })
+                      handleAuth(accessToken, refreshToken)
+                    } catch (err) {
+                      console.error('Google auth error:', err)
+                      toggleSnackbar(true)
+                      setSnackbarMessage('Google authentication failed')
+                    }
                   }}
                   onError={() => {
-                    console.log('Login Failed')
+                    console.error('Google Login Failed')
+                    toggleSnackbar(true)
+                    setSnackbarMessage('Google authentication failed')
                   }}
                 />
               </Box>
