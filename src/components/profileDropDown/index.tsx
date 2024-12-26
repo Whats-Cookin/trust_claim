@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Menu, IconButton, Button, Box, Fade, Tooltip } from '@mui/material'
 import MenuOpenIcon from '@mui/icons-material/MenuOpen'
 import { useNavigate } from 'react-router-dom'
+import { clearAuth } from '../../utils/authUtils'
 
 const ProfileDropdown = ({ isAuth }: any) => {
   const navigate = useNavigate()
@@ -19,11 +20,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('did')
-    localStorage.removeItem('ethAddress')
-
+    clearAuth()
     handleNavigate('/login')
   }
 
@@ -45,7 +42,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   return (
     <Box id='menu'>
       <Tooltip
-        title={undefined}
+        title=""
         disableFocusListener
         disableHoverListener={disableTooltip}
         disableTouchListener

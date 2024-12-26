@@ -3,6 +3,7 @@ import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 import { Home, Search, AddCircleOutlineOutlined, LightModeOutlined, DarkMode, Logout, Login } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import { clearAuth } from '../../utils/authUtils'
 
 interface BottomNavProps {
   isAuth: boolean
@@ -16,10 +17,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
   const theme = useTheme()
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('did')
-    localStorage.removeItem('ethAddress')
+    clearAuth()
     navigate('/login')
   }
 

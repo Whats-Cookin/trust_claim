@@ -19,10 +19,10 @@
     "@didtools/pkh-ethereum": "^0.1.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/lab": "^5.0.0-alpha.173",
-    "@mui/material": "^5.8.2",
-    "@mui/system": "^5.11.15",
+    "@mui/icons-material": "5.8.2",
+    "@mui/lab": "5.0.0-alpha.173",
+    "@mui/material": "5.8.2",
+    "@mui/system": "5.8.2",
     "@mui/x-date-pickers": "^5.0.0-alpha.5",
     "@react-oauth/google": "^0.12.1",
     "@types/styled-components": "^5.1.34",
@@ -40,7 +40,7 @@
     "react-hook-form": "^7.43.9",
     "react-router-dom": "^6.3.0",
     "source-map-support": "^0.5.21",
-    "styled-components": "^6.1.11",
+    "styled-components": "^5.3.11",
     "update": "^0.7.4"
   },
   "devDependencies": {
@@ -66,7 +66,7 @@
     "jsdom": "^21.1.1",
     "prettier": "^2.8.7",
     "ts-prune": "^0.10.3",
-    "typescript": "^4.6.3",
+    "typescript": "5.7.2",
     "vite": "^4.1.4",
     "vitest": "^0.30.0"
   },
