@@ -539,7 +539,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '500',
+                            fontWeight: 400,
                             fontSize: 16
                           }
                         }
@@ -555,7 +555,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '500',
+                            fontWeight: 400,
                             fontSize: 16
                           }
                         }}
@@ -579,7 +579,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               },
                               '& .MuiInputBase-input': {
                                 color: theme.palette.texts,
-                                fontWeight: '500',
+                                fontWeight: 400,
                                 fontSize: 16
                               },
                               '&:active': {
@@ -646,7 +646,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     '& .MuiInputBase-input': {
                                       color: theme.palette.texts,
                                       fontSize: 16,
-                                      fontWeight: '500'
+                                      fontWeight: 400
                                     }
                                   }}
                                   margin='normal'
@@ -698,7 +698,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '500',
+                            fontWeight: 400,
                             fontSize: 16
                           }
                         }
@@ -739,7 +739,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 size='large'
                 sx={{
                   fontSize: '18px',
-                  fontWeight: '500',
+                  fontWeight: 400,
                   height: '48px',
                   width: '180px',
                   color: theme.palette.buttontext,

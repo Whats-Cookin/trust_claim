@@ -68,7 +68,7 @@ const Redirection: React.FC<RedirectionProps> = ({ externalLink, onContinue, onC
             variant='h5'
             sx={{
               color: theme.palette.texts,
-              fontWeight: '500',
+              fontWeight: 400,
               fontSize: '20px',
               m: '10px',
               width: '95%'
@@ -83,7 +83,7 @@ const Redirection: React.FC<RedirectionProps> = ({ externalLink, onContinue, onC
             <Button
               sx={{
                 fontSize: '1rem',
-                fontWeight: '600',
+                fontWeight: 500,
                 borderRadius: '50px',
                 color: theme.palette.link,
                 textDecoration: 'underline',
@@ -96,7 +96,7 @@ const Redirection: React.FC<RedirectionProps> = ({ externalLink, onContinue, onC
             <Button
               sx={{
                 fontSize: '1rem',
-                fontWeight: '600',
+                fontWeight: 500,
                 borderRadius: '50px',
                 color: theme.palette.texts,
                 backgroundColor: theme.palette.buttons,

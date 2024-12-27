@@ -217,7 +217,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 right: '51%',
                 transform: 'translateX(50%)',
                 textAlign: 'center',
-                fontWeight: '600',
+                fontWeight: 500,
                 fontSize: '2.5rem',
                 position: 'absolute',
                 marginBottom: '20px',

@@ -182,7 +182,7 @@ const DonationReport: React.FC = () => {
                   textAlign: 'center',
                   marginLeft: isMediumScreen ? '0' : '1rem',
                   fontSize: '20px',
-                  fontWeight: '700'
+                  fontWeight: 600
                 }}
               >
                 Related Attestations
@@ -219,9 +219,9 @@ const DonationReport: React.FC = () => {
             to='/feed'
             sx={{
               color: theme.palette.link,
-              fontWeight: 500,
+              fontWeight: 400,
               borderRadius: '24px',
-              fontSize: 'clamp(12px, 2.5vw, 18px)',
+              fontSize: 'clamp(0.75rem, 2vw, 1rem)',
               px: '2rem'
             }}
           >
@@ -235,9 +235,9 @@ const DonationReport: React.FC = () => {
               sx={{
                 color: theme.palette.buttontext,
                 bgcolor: theme.palette.buttons,
-                fontWeight: 600,
+                fontWeight: 500,
                 borderRadius: '24px',
-                fontSize: 'clamp(12px, 2.5vw, 18px)',
+                fontSize: 'clamp(0.75rem, 2vw, 1rem)',
                 px: '2rem',
                 marginRight: '15px',
                 width: { xs: '10px', sm: '180px' },
@@ -253,9 +253,9 @@ const DonationReport: React.FC = () => {
               variant='text'
               sx={{
                 p: '4px',
-                fontWeight: 600,
+                fontWeight: 500,
                 borderRadius: '24px',
-                fontSize: 'clamp(12px, 2.5vw, 18px)',
+                fontSize: 'clamp(0.75rem, 2.5vw, 1rem)',
                 px: '2rem',
                 width: { xs: '10px', sm: '220px' },
                 bgcolor: theme.palette.buttons,
@@ -364,10 +364,10 @@ function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
               width: '3vw',
               height: '3vw',
               fontSize: '3vw',
-              minWidth: '18px',
-              minHeight: '18px',
-              maxWidth: '24px',
-              maxHeight: '24px'
+              minWidth: '16px',
+              minHeight: '16px',
+              maxWidth: '20px',
+              maxHeight: '20px'
             }}
           />
         ))}
