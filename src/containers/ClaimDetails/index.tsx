@@ -148,7 +148,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
             backgroundColor: '#4C726F',
             color: '#F2FAF9',
             borderRadius: '91px',
-            fontWeight: '700',
+            fontWeight: 600,
             fontSize: isMediumScreen ? '12px' : '18px',
             width: '14vw',
             mb: '-35px',

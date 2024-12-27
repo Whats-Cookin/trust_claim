@@ -104,18 +104,25 @@ const darkModeTheme = createTheme({
       `
     }
   },
-  typography: {
-    fontFamily: 'Montserrat',
-    body1: {
-      fontSize: '20px',
-      fontWeight: 700
+    typography: {
+      fontFamily: 'Montserrat',
+      body1: {
+        fontSize: '0.875rem',  // 14px
+        fontWeight: 400,
+        lineHeight: 1.5,
+        '@media (min-width:600px)': {
+          fontSize: '0.9375rem' // 15px on larger screens
+        }
+      },
+      body2: {
+        fontSize: '0.8125rem', // 13px
+        fontWeight: 300,
+        lineHeight: 1.43,
+        '@media (min-width:600px)': {
+          fontSize: '0.875rem'  // 14px on larger screens
+        }
+      }
     },
-    body2: {
-      fontSize: '16px',
-      fontWeight: 500
-    }
-  },
-
   palette: {
     mode: 'dark',
     background: {
@@ -179,17 +186,25 @@ const lightModeTheme = createTheme({
       `
     }
   },
-  typography: {
-    fontFamily: 'Montserrat',
-    body1: {
-      fontSize: '20px',
-      fontWeight: 700
+    typography: {
+      fontFamily: 'Montserrat',
+      body1: {
+        fontSize: '0.875rem',  // 14px
+        fontWeight: 400,
+        lineHeight: 1.5,
+        '@media (min-width:600px)': {
+          fontSize: '0.9375rem' // 15px on larger screens
+        }
+      },
+      body2: {
+        fontSize: '0.8125rem', // 13px
+        fontWeight: 300,
+        lineHeight: 1.43,
+        '@media (min-width:600px)': {
+          fontSize: '0.875rem'  // 14px on larger screens
+        }
+      }
     },
-    body2: {
-      fontSize: '16px',
-      fontWeight: 500
-    }
-  },
   palette: {
     mode: 'light',
     background: {

@@ -105,7 +105,7 @@ const RenderClaimInfo = ({
                 sx={{
                   color: theme.palette.texts,
                   fontSize: 20,
-                  fontWeight: 600,
+                  fontWeight: 500,
                   display: 'flex',
                   flexWrap: 'wrap',
                   alignItems: 'center',
@@ -128,7 +128,7 @@ const RenderClaimInfo = ({
               variant='body2'
               sx={{
                 color: theme.palette.cardDate,
-                fontWeight: 500,
+                fontWeight: 400,
                 fontSize: '16px'
               }}
             >
@@ -146,7 +146,7 @@ const RenderClaimInfo = ({
                   wordBreak: 'break-word',
                   overflowWrap: 'break-word',
                   marginBottom: '12px',
-                  fontWeight: 500,
+                  fontWeight: 400,
                   fontSize: '16px',
                   color: theme.palette.texts,
                   mt: '10px'
@@ -174,7 +174,7 @@ const RenderClaimInfo = ({
                 variant='body2'
                 sx={{
                   color: theme.palette.texts,
-                  fontWeight: 500,
+                  fontWeight: 400,
                   fontSize: '16px'
                 }}
               >
@@ -182,7 +182,7 @@ const RenderClaimInfo = ({
                   style={{
                     minWidth: '150px',
                     display: 'inline-block',
-                    fontWeight: 600
+                    fontWeight: 500
                   }}
                 >
                   {key}:

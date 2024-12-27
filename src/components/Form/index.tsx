@@ -145,14 +145,14 @@ export const Form = ({
   };
 
   return (
-    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mx: 'auto' }}>
       <MainContainer
         flexRowOnDesktop={true}
         sx={{
           backgroundColor: theme.palette.cardBackground,
           padding: '20px',
           width: '100%',
-          maxWidth: '800px'
+          maxWidth: '800px',
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>

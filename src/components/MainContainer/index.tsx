@@ -29,7 +29,7 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
 
         width: '95%',
         backgroundColor: theme.palette.menuBackground,
-        borderRadius: isMobile ? '20px' : '20px 0px 0px 40px',
+        borderRadius: '20px',
         padding: '20px',
         ...(sx ?? {})
       }}

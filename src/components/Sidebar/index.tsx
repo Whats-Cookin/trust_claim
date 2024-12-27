@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.sidecolor, width: '26px', height: '26px' }
+  const iconStyle = { color: theme.palette.sidecolor, width: '1.25rem', height: '1.25rem' }
 
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
