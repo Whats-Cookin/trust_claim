@@ -107,19 +107,19 @@ const darkModeTheme = createTheme({
     typography: {
       fontFamily: 'Montserrat',
       body1: {
-        fontSize: '0.875rem',  // 14px
+        fontSize: '1rem',
         fontWeight: 400,
         lineHeight: 1.5,
         '@media (min-width:600px)': {
-          fontSize: '0.9375rem' // 15px on larger screens
+          fontSize: '1.25rem'
         }
       },
       body2: {
-        fontSize: '0.8125rem', // 13px
+        fontSize: '0.875rem',
         fontWeight: 300,
         lineHeight: 1.43,
         '@media (min-width:600px)': {
-          fontSize: '0.875rem'  // 14px on larger screens
+          fontSize: '1rem'
         }
       }
     },
@@ -189,19 +189,19 @@ const lightModeTheme = createTheme({
     typography: {
       fontFamily: 'Montserrat',
       body1: {
-        fontSize: '0.875rem',  // 14px
+        fontSize: '1rem',
         fontWeight: 400,
         lineHeight: 1.5,
         '@media (min-width:600px)': {
-          fontSize: '0.9375rem' // 15px on larger screens
+          fontSize: '1.25rem'
         }
       },
       body2: {
-        fontSize: '0.8125rem', // 13px
+        fontSize: '0.875rem',
         fontWeight: 300,
         lineHeight: 1.43,
         '@media (min-width:600px)': {
-          fontSize: '0.875rem'  // 14px on larger screens
+          fontSize: '1rem'
         }
       }
     },
