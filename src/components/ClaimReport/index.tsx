@@ -221,7 +221,7 @@ const DonationReport: React.FC = () => {
               color: theme.palette.link,
               fontWeight: 400,
               borderRadius: '24px',
-              fontSize: 'clamp(0.75rem, 2vw, 1rem)',
+              fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
               px: '2rem'
             }}
           >
@@ -237,7 +237,7 @@ const DonationReport: React.FC = () => {
                 bgcolor: theme.palette.buttons,
                 fontWeight: 500,
                 borderRadius: '24px',
-                fontSize: 'clamp(0.75rem, 2vw, 1rem)',
+                fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
                 px: '2rem',
                 marginRight: '15px',
                 width: { xs: '10px', sm: '180px' },
@@ -255,7 +255,7 @@ const DonationReport: React.FC = () => {
                 p: '4px',
                 fontWeight: 500,
                 borderRadius: '24px',
-                fontSize: 'clamp(0.75rem, 2.5vw, 1rem)',
+                fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
                 px: '2rem',
                 width: { xs: '10px', sm: '220px' },
                 bgcolor: theme.palette.buttons,
