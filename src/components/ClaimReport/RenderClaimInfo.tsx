@@ -63,7 +63,7 @@ const RenderClaimInfo = ({
   }, [isExpanded])
 
   const claimImage = claim.image ? claim.image : null
-  const isStatementLong = claim.statement && claim.statement.length > 500
+  const isStatementLong = claim.statement && claim.statement.length > 1000
 
   return (
     <>
@@ -152,7 +152,7 @@ const RenderClaimInfo = ({
                   mt: '10px'
                 }}
               >
-                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 500)}
+                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 1000)}
                 {(isStatementLong || hasExtraDetails) && (
                   <MuiLink
                     onClick={handleToggleExpand}
