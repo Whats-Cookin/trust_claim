@@ -69,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             textWrap: 'wrap'
           }}
         >
-          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '20px', height: '20px', marginRight: '16px' }} />
+          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '16px' }} />
           <Typography
             variant='body1'
             sx={{

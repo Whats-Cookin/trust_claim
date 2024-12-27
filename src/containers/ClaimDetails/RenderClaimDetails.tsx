@@ -37,7 +37,7 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
         if (EXCLUDED_FIELDS.includes(key) || value == null || value === '') return null
         if (key === 'effectiveDate') value = formatDate(value) // Format the date
 
-        const displayText = key === 'statement' && !showFullText[key] ? truncateText(value, 60) : value
+        const displayText = key === 'statement' && !showFullText[key] ? truncateText(value, 120) : value
 
         return (
           <Box
@@ -59,7 +59,7 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
               }}
             >
               {displayText}
-              {key === 'statement' && value.length > 60 && (
+              {key === 'statement' && value.length > 120 && (
                 <Typography
                   component='span'
                   onClick={() => handleToggleText(key)}
