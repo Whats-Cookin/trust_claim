@@ -55,8 +55,12 @@ function preparePayload<T extends { images: ImageI[] }>(
   payload: T
 ): { dto: Omit<T, 'images'> & { images: Omit<ImageI, 'file' | 'url'>[] }; images: File[] } {
   const images: File[] = []
+
+  const did = localStorage.getItem('did')
+
   const dto = {
     ...payload,
+    ...(did && { issuerId: did }),
     images: payload.images.map(image => {
       images.push(image.file)
       return {
