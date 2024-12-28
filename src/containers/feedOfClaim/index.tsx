@@ -34,7 +34,7 @@ import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
 
-const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
+const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
 interface LocalClaim {
