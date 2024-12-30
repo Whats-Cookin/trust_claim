@@ -32,9 +32,9 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
         <Button
           sx={{
             color: theme.palette.link,
-            fontWeight: 500,
+            fontWeight: 400,
             borderRadius: '100px',
-            fontSize: 'clamp(12px, 2.5vw, 20px)',
+            fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
             px: '2rem'
           }}
           onClick={handleClose}
@@ -49,9 +49,9 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
-              fontWeight: 600,
+              fontWeight: 500,
               borderRadius: '24px',
-              fontSize: 'clamp(10px, 2.5vw, 20px)',
+              fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
               px: '2rem',
               marginRight: '15px',
               width: { xs: '10px', sm: '180px' },
@@ -67,9 +67,9 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
-              fontWeight: 600,
+              fontWeight: 500,
               borderRadius: '24px',
-              fontSize: 'clamp(10px, 2.5vw, 20px)',
+              fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
               px: '2rem',
               width: { xs: '10px', sm: '180px' },
               height: '48px'

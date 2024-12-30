@@ -90,8 +90,8 @@ const SearchBar = () => {
         sx={{
           flex: 1,
           input: {
-            fontSize: isSmallScreen ? '14px' : '17px',
-            fontWeight: '600',
+            fontSize: isSmallScreen ? '12px' : '14px',
+            fontWeight: 500,
             textAlign: 'left',
             color: theme.palette.searchBarText,
             letterSpacing: '1px'

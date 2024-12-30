@@ -145,7 +145,7 @@ const MobileRegister = ({
               sx={{
                 color: theme.palette.darkinputtext,
                 textAlign: 'center',
-                fontWeight: '600',
+                fontWeight: 500,
                 fontSize: '2.5rem',
                 marginBottom: '20px'
               }}

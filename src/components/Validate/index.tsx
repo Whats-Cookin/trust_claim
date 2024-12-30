@@ -30,12 +30,15 @@ import ImageUploader from '../Form/imageUploading'
 import MainContainer from '../MainContainer'
 
 const FIRST_HAND = 'FIRST_HAND'
+const SECOND_HAND = 'SECOND_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
 const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
 const FIRST_HAND_REJECTED = 'FIRST_HAND_REJECTED'
 const WEB_DOCUMENT_REJECTED = 'WEB_DOCUMENT_REJECTED'
 
 const CLAIM_RATED = 'rated'
+const CLAIM_VALIDATED = 'validated'
+const CLAIM_REJECTED = 'rejected'
 const CLAIM_IMPACT = 'impact'
 
 interface ImageI {
@@ -118,7 +121,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     images: []
   }
 
-  const { handleSubmit, reset, control, register } = useForm<FormData>({ defaultValues })
+  const { handleSubmit, reset, control, register, watch } = useForm<FormData>({ defaultValues })
+  const watchHowKnown = watch('howKnown')
 
   const {
     fields: imageFields,
@@ -134,20 +138,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     control,
     name: 'images'
   })
-
-  const howKnownMapping: { [key: string]: string } = {
-    first_hand: 'FIRST_HAND',
-    second_hand: 'SECOND_HAND',
-    website: 'WEB_DOCUMENT',
-    physical_document: 'PHYSICAL_DOCUMENT'
-  }
-
-  // const displayHowKnownText = {
-  //   first_hand: 'First Hand',
-  //   second_hand: 'Second Hand',
-  //   website: 'Website',
-  //   physical_document: 'Physical Document'
-  // } as any
 
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
@@ -174,18 +164,23 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         sourceURI,
         howKnown,
         effectiveDate: effectiveDateAsString,
-        claim: CLAIM_RATED,
+        claim: CLAIM_VALIDATED,
         images
       }
+
+      console.log("In submit, payload is")
+      console.log(payload)
 
       if (howKnown === FIRST_HAND_BENEFIT) {
         payload.claim = CLAIM_IMPACT
         payload.amt = amt
         payload.howKnown = FIRST_HAND
       } else if (howKnown === FIRST_HAND_REJECTED) {
+        payload.claim = CLAIM_REJECTED
         payload.score = -1
         payload.howKnown = FIRST_HAND
       } else if (howKnown === WEB_DOCUMENT_REJECTED) {
+        payload.claim = CLAIM_REJECTED
         payload.score = -1
         payload.howKnown = WEB_DOCUMENT
       }
@@ -196,15 +191,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
       setLoading(false)
       toggleSnackbar(true)
-      setSnackbarMessage(message)
       if (isSuccess) {
+        setSnackbarMessage('Success! ' + message)
         setTimeout(() => {
           navigate('/feed')
         }, 3000)
         reset()
       } else {
-        toggleSnackbar(true)
-        setSnackbarMessage('Subject and Claims are required fields.')
+        setSnackbarMessage('An error occurred: ' + message)
       }
     }
   })
@@ -228,15 +222,26 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
 
   const inputOptions = {
-    howKnown: ['first_hand', 'second_hand', 'website', 'physical_document']
+    howKnown: [
+      { value: FIRST_HAND, text: 'validate first hand' },
+      { value: SECOND_HAND, text: 'validate second hand' },
+      { value: WEB_DOCUMENT, text: 'validate from source' },
+
+      // these are not valid to return to server, will be modified in handler
+      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
+      { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
+      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
+    ]
   }
 
   const tooltips = {
     howKnown: [
-      'The information is known directly from personal experience or firsthand knowledge.',
-      'The information is known from someone else who has firsthand knowledge or experience.',
-      'The information is known from a website as a source.',
-      'The information is known from a physical document, such as a paper document or certificate.'
+      'I can validate this claim from personal experience or firsthand knowledge.',
+      'Validate this claim based on information from someone else who has firsthand knowledge or experience.',
+      'Validate this claim based on information known from a website or other source.',
+      'I personally benefited directly from the claim described',
+      'I do NOT validate this claim, I reject it based on personal experience or firsthand knowledge.',
+      'I do NOT validate this claim, I reject it based on information from a website or source'
     ]
   }
 
@@ -337,30 +342,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     borderRadius: '20px'
                   }}
                 >
-                  {/* <Box
-                    sx={{
-                      border: '20px ',
-                      borderRadius: '8px',
-                      height: '328px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: theme.palette.input,
-                      textWrap: 'wrap',
-                      p: '3',
-                      marginBottom: '45px'
-                    }}
-                  >
-                    <img
-                      src={sourceThumbnail || placeholderImage}
-                      alt='Source Thumbnail'
-                      style={{ maxWidth: '100%', maxHeight: '100%' }}
-                      onError={e => {
-                        e.currentTarget.src = placeholderImage
-                        e.currentTarget.style.objectFit = 'contain'
-                      }}
-                    />
-                  </Box> */}
                   <Box sx={{ height: '545', width: '535' }}>
                     {issuerValue && (
                       <Box sx={{ display: 'flex' }}>
@@ -524,6 +505,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
+
                     <Typography variant='body2'>How Known</Typography>
                     <FormControl
                       fullWidth
@@ -539,82 +521,159 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           },
                           '& .MuiInputBase-input': {
                             color: theme.palette.texts,
-                            fontWeight: '500',
+                            fontWeight: 400,
                             fontSize: 16
                           }
                         }
                       }}
                     >
-                      <Select
-                        sx={{
-                          '& .MuiSelect-icon': {
-                            color: '#0A1C1D'
-                          },
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            border: 'none'
-                          },
-                          '& .MuiInputBase-input': {
-                            color: theme.palette.texts,
-                            fontWeight: '500',
-                            fontSize: 16
-                          }
-                        }}
-                      >
-                        {inputOptions.howKnown.map((howKnownText: string, index: number) => (
-                          <MenuItem
-                            key={howKnownText}
-                            value={howKnownMapping[howKnownText]}
+                      <Controller
+                        name="howKnown"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <Select
+                            {...field}
                             sx={{
-                              backgroundColor: theme.palette.input,
-                              color: theme.palette.texts,
-                              fontSize: 16,
-                              '&:hover': {
-                                backgroundColor: theme.palette.input
+                              '& .MuiSelect-icon': {
+                                color: '#0A1C1D'
                               },
-                              '&.Mui-selected': {
-                                backgroundColor: theme.palette.input,
-                                '&:hover': {
-                                  backgroundColor: theme.palette.input
-                                }
+                              '& .MuiOutlinedInput-notchedOutline': {
+                                border: 'none'
                               },
                               '& .MuiInputBase-input': {
                                 color: theme.palette.texts,
-                                fontWeight: '500',
+                                fontWeight: 400,
                                 fontSize: 16
-                              },
-                              '&:active': {
-                                backgroundColor: theme.palette.input
-                              },
-                              '::selection': {
-                                backgroundColor: theme.palette.input
-                              },
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center'
+                              }
                             }}
                           >
-                            <Box sx={{ flexGrow: 1 }}>{howKnownText}</Box>
-                            {isMobile && (
-                              <Tooltip
-                                title={tooltips.howKnown[index]}
-                                placement='right'
-                                arrow
-                                TransitionComponent={Fade}
-                                open={openTooltipIndex === index}
-                                onClose={() => setOpenTooltipIndex(null)}
-                                disableFocusListener
-                                disableHoverListener
-                                disableTouchListener
+                        {inputOptions.howKnown.map((option, index: number) => (
+                          <MenuItem
+                            key={option.value}
+                            value={option.value}
+                                sx={{
+                                  backgroundColor: theme.palette.input,
+                                  color: theme.palette.texts,
+                                  fontSize: 16,
+                                  '&:hover': {
+                                    backgroundColor: theme.palette.input
+                                  },
+                                  '&.Mui-selected': {
+                                    backgroundColor: theme.palette.input,
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.input
+                                    }
+                                  },
+                                  '& .MuiInputBase-input': {
+                                    color: theme.palette.texts,
+                                    fontWeight: 400,
+                                    fontSize: 16
+                                  },
+                                  '&:active': {
+                                    backgroundColor: theme.palette.input
+                                  },
+                                  '::selection': {
+                                    backgroundColor: theme.palette.input
+                                  },
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center'
+                                }}
                               >
-                                <IconButton size='small' onClick={() => handleTooltipToggle(index)}>
-                                  <HelpIcon sx={{ color: '#0ABAB5' }} />
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                                <Box sx={{ flexGrow: 1 }}>{option.text}</Box>
+                                {isMobile && (
+                                  <Tooltip
+                                    title={tooltips.howKnown[index]}
+                                    placement='right'
+                                    arrow
+                                    TransitionComponent={Fade}
+                                    open={openTooltipIndex === index}
+                                    onClose={() => setOpenTooltipIndex(null)}
+                                    disableFocusListener
+                                    disableHoverListener
+                                    disableTouchListener
+                                  >
+                                    <IconButton size='small' onClick={() => handleTooltipToggle(index)}>
+                                      <HelpIcon sx={{ color: '#0ABAB5' }} />
+                                    </IconButton>
+                                  </Tooltip>
+                                )}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )}
+                      />
                     </FormControl>
+
+                    {watchHowKnown === FIRST_HAND && (
+                      <>
+                        <Typography variant='body2'>Your Website</Typography>
+                        <Controller
+                          name="sourceURI"
+                          control={control}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              sx={{
+                                width: '100%',
+                                backgroundColor: theme.palette.input,
+                                '& .MuiOutlinedInput-root': {
+                                  '& fieldset': {
+                                    borderColor: 'transparent'
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: 'transparent'
+                                  },
+                                  '& .MuiInputBase-input': {
+                                    color: theme.palette.texts,
+                                    fontWeight: 400,
+                                    fontSize: 16
+                                  }
+                                }
+                              }}
+                              margin='normal'
+                            />
+                          )}
+                        />
+                      </>
+                    )}
+
+                    {watchHowKnown === WEB_DOCUMENT && (
+                      <>
+                        <Typography variant='body2'>Source URL</Typography>
+                        <Controller
+                          name="sourceURI"
+                          control={control}
+                          defaultValue=""
+                          render={({ field }) => (
+                            <TextField
+                              {...field}
+                              sx={{
+                                width: '100%',
+                                backgroundColor: theme.palette.input,
+                                '& .MuiOutlinedInput-root': {
+                                  '& fieldset': {
+                                    borderColor: 'transparent'
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: 'transparent'
+                                  },
+                                  '& .MuiInputBase-input': {
+                                    color: theme.palette.texts,
+                                    fontWeight: 400,
+                                    fontSize: 16
+                                  }
+                                }
+                              }}
+                              margin='normal'
+                            />
+                          )}
+                        />
+                      </>
+                    )}
+
                     <Typography variant='body2'>Effective Date</Typography>
                     <FormControl fullWidth sx={{ mt: 1 }}>
                       <Controller
@@ -646,7 +705,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                     '& .MuiInputBase-input': {
                                       color: theme.palette.texts,
                                       fontSize: 16,
-                                      fontWeight: '500'
+                                      fontWeight: 400
                                     }
                                   }}
                                   margin='normal'
@@ -673,6 +732,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         )}
                       />
                     </FormControl>
+
                     <Typography
                       variant='body2'
                       sx={{
@@ -681,30 +741,39 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     >
                       Explain here
                     </Typography>
-                    <TextField
-                      multiline
-                      rows={4}
-                      sx={{
-                        width: '100%',
-                        hight: '179px',
-                        backgroundColor: theme.palette.input,
-                        border: 'none',
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: 'transparent'
-                          },
-                          '&:hover fieldset': {
-                            borderColor: 'transparent'
-                          },
-                          '& .MuiInputBase-input': {
-                            color: theme.palette.texts,
-                            fontWeight: '500',
-                            fontSize: 16
-                          }
-                        }
-                      }}
-                      margin='normal'
+                    <Controller
+                      name="statement"
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          multiline
+                          rows={4}
+                          sx={{
+                            width: '100%',
+                            height: '179px',
+                            backgroundColor: theme.palette.input,
+                            border: 'none',
+                            '& .MuiOutlinedInput-root': {
+                              '& fieldset': {
+                                borderColor: 'transparent'
+                              },
+                              '&:hover fieldset': {
+                                borderColor: 'transparent'
+                              },
+                              '& .MuiInputBase-input': {
+                                color: theme.palette.texts,
+                                fontWeight: 400,
+                                fontSize: 16
+                              }
+                            }
+                          }}
+                          margin='normal'
+                        />
+                      )}
                     />
+
                     <Typography
                       variant='body2'
                       sx={{
@@ -739,7 +808,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 size='large'
                 sx={{
                   fontSize: '18px',
-                  fontWeight: '500',
+                  fontWeight: 400,
                   height: '48px',
                   width: '180px',
                   color: theme.palette.buttontext,

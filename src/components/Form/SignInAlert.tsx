@@ -105,7 +105,7 @@ export default function SignInAlert() {
             variant='h5'
             sx={{
               color: theme.palette.texts,
-              fontWeight: '700',
+              fontWeight: 600,
               fontSize: '34px'
             }}
           >
@@ -116,7 +116,7 @@ export default function SignInAlert() {
             variant='h5'
             sx={{
               color: theme.palette.texts,
-              fontWeight: '500',
+              fontWeight: 400,
               fontSize: '20px'
             }}
           >
@@ -129,7 +129,7 @@ export default function SignInAlert() {
               bottom: '-25px',
               color: 'white',
               fontSize: { xs: '1rem', lg: '1.5rem' },
-              fontWeight: '600',
+              fontWeight: 500,
               borderRadius: '50px',
               backgroundColor: theme.palette.buttons,
               px: { xs: '1.5rem', lg: '3rem' }

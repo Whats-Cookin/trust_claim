@@ -34,7 +34,7 @@ import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
 
-const CLAIM_ROOT_URL = 'https://live.linkedtrust.us/claims'
+const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
 interface LocalClaim {
@@ -57,7 +57,7 @@ const extractSourceName = (url: string) => {
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   const displayName = extractProfileName(claim.name)
   const theme = useTheme()
-  const highlightedName = searchTerm
+  const highlightedName = searchTerm.trim()
     ? displayName.replace(
         new RegExp(`(${searchTerm})`, 'gi'),
         (match: string) => `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
@@ -75,7 +75,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
 const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   const displayLink = extractSourceName(claim.source_link)
   const theme = useTheme()
-  const highlightedLink = searchTerm
+  const highlightedLink = searchTerm.trim()
     ? displayLink.replace(
         new RegExp(`(${searchTerm})`, 'gi'),
         (match: string) => `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
@@ -321,15 +321,19 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 color: theme.palette.texts
                               }}
                             >
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: claim.statement.replace(
-                                    new RegExp(`(${searchTerm})`, 'gi'),
-                                    (match: any) =>
-                                      `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
-                                  )
-                                }}
-                              />
+
+                           <span
+                              dangerouslySetInnerHTML={{
+                                __html: searchTerm
+                                  ? claim.statement.replace(
+                                      new RegExp(`(${searchTerm})`, 'gi'),
+                                      (match: any) =>
+                                        `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
+                                    )
+                                  : claim.statement
+                              }}
+                            />
+
                             </Typography>
                           )}
                         </CardContent>

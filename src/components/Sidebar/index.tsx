@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.sidecolor, width: '26px', height: '26px' }
+  const iconStyle = { color: theme.palette.sidecolor, width: '1.5rem', height: '1.5rem' }
 
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
@@ -56,7 +56,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       variant='permanent'
       sx={{
         '& .MuiDrawer-paper': {
-          width: isOpen ? '19.6vw' : '4.8vw',
           minWidth: isOpen ? 200 : 40,
           boxSizing: 'border-box',
           backgroundColor: theme.palette.menuBackground,

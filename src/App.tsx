@@ -114,11 +114,11 @@ const App = () => {
             backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '19.6vw' : '4.8vw',
+            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '14.4vw' : '1.0vw',
             width:
               isMediumScreen || isLoginPage || isRegisterPage
                 ? '100%'
-                : `calc(100% - ${isSidebarOpen ? '19.6vw' : '4.8vw'})`,
+                : `calc(100% - ${isSidebarOpen ? '14.4vw' : '1.0vw'})`,
             transition: 'margin-left 0.3s, width 0.3s'
           }}
         >
