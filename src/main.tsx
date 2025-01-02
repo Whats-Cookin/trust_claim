@@ -9,11 +9,11 @@ import App from './App'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <App />
       </GoogleOAuthProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  // </React.StrictMode>
 )

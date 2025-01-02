@@ -9,6 +9,7 @@ import Login from './containers/Login'
 import Register from './containers/Register'
 import Form from './containers/Form'
 import Explore from './containers/Explore'
+import GraphV2 from './containers/GraphV2'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
@@ -139,6 +140,7 @@ const App = () => {
               <Route path='report/:claimId' element={<ClaimReport />} />
               <Route path='claims/:claimId' element={<ClaimDetails {...commonProps} />} />
               <Route path='explore/:nodeId' element={<Explore {...commonProps} />} />
+              <Route path='explore/v2/:nodeId' element={<GraphV2 {...commonProps} />} />
               <Route path='claim' element={<Form {...commonProps} />} />
               <Route path='register' element={<Register {...commonProps} />} />
               <Route path='login' element={<Login {...commonProps} />} />
