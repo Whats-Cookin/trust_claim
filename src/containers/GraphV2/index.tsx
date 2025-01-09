@@ -1,4 +1,6 @@
 import '@xyflow/react/dist/style.css'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import { ReactFlow, useNodesState, useEdgesState, Background } from '@xyflow/react'
 import { Box } from '@mui/material'
 import IHomeProps from '../Form/types'
@@ -6,15 +8,16 @@ import { useClaimGraph } from './hooks'
 import styles from './styles'
 import Node from './Node'
 import Edge from './Edge'
-import { useEffect } from 'react'
 
 const GraphV2 = (homeProps: IHomeProps) => {
-  const { initialNodes, initialEdges, isLoading, error }: any = useClaimGraph('118550')
+  const { nodeId } = useParams<{ nodeId: string }>()
+  const { initialNodes, initialEdges, isLoading, error }: any = useClaimGraph(nodeId as string)
 
   const [nodes, _setNodes, onNodesChange] = useNodesState([])
   const [edges, _setEdges, onEdgesChange] = useEdgesState([])
 
-  return (<>
+  return (
+    <>
       {!isLoading && (
         <ReactFlow
           nodes={initialNodes}
@@ -24,17 +27,17 @@ const GraphV2 = (homeProps: IHomeProps) => {
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           fitView
           fitViewOptions={{ padding: 0.8 }}
-        //   nodeTypes={{
-        //     custom: Node
-        //   }}
-        //   edgeTypes={{ custom: Edge }}
-        nodesConnectable={false}
+          //   nodeTypes={{
+          //     custom: Node
+          //   }}
+          //   edgeTypes={{ custom: Edge }}
+          nodesConnectable={false}
         >
           <Background />
         </ReactFlow>
       )}
-  </>)
-  
+    </>
+  )
 }
 
 export default GraphV2
