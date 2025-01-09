@@ -202,7 +202,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const handleSchema = async (claim: ImportedClaim) => {
     navigate({
-      pathname: `/explore/${claim.claim_id}`
+      pathname: `/explore/v2/${claim.claim_id}`
     })
   }
 
@@ -321,19 +321,17 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 color: theme.palette.texts
                               }}
                             >
-
-                           <span
-                              dangerouslySetInnerHTML={{
-                                __html: searchTerm
-                                  ? claim.statement.replace(
-                                      new RegExp(`(${searchTerm})`, 'gi'),
-                                      (match: any) =>
-                                        `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
-                                    )
-                                  : claim.statement
-                              }}
-                            />
-
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: searchTerm
+                                    ? claim.statement.replace(
+                                        new RegExp(`(${searchTerm})`, 'gi'),
+                                        (match: any) =>
+                                          `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
+                                      )
+                                    : claim.statement
+                                }}
+                              />
                             </Typography>
                           )}
                         </CardContent>

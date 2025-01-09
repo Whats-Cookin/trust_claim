@@ -248,7 +248,7 @@ const DonationReport: React.FC = () => {
             </Button>
             <Button
               component={Link}
-              to={`/explore/${claimId}`}
+              to={`/explore/v2/${claimId}`}
               startIcon={<ShareOutlinedIcon />}
               variant='text'
               sx={{
