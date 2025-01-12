@@ -21,7 +21,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import MainContainer from '../MainContainer'
-import ImageUploader from './imageUploading'
+import ImageUploader, { ImageI } from './imageUploading'
 import { HowKnown } from '../../enums'
 
 const CLAIM_TYPES = {
@@ -49,15 +49,6 @@ const CLAIM_TYPES = {
   }
 }
 
-interface FormImage {
-  metadata: {
-    captian: string
-    description: string
-  } | null
-  effectiveDate: Date | null
-  digestMultibase: string | null
-}
-
 interface FormData {
   stars: number | null
   amt: number | null
@@ -70,7 +61,7 @@ interface FormData {
   effectiveDate: Date | null
   claimAddress: string | null
   aspect: string | null
-  images: FormImage[]
+  images: ImageI[]
   claim: string
   object: string | null
 }

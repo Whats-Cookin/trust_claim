@@ -33,7 +33,7 @@ export function useCreateClaim() {
       }
 
       const { images, dto } = preparePayload(payload)
-      console.log('Sending payload:', dto)
+      console.log('Sending payload:', dto, images)
       const res = await axios.post('/api/claim/v2', generateFormData(dto, images))
 
       if (res.status === 201) {
@@ -41,9 +41,8 @@ export function useCreateClaim() {
         isSuccess = true
       }
     } catch (err: any) {
-      if (err.response) {
-        message = err.response.data.message
-      }
+      message = err.response?.data.message || 'Something went wrong'
+      console.error(err.response?.data)
     }
     return { message, isSuccess }
   }, [])
