@@ -41,6 +41,16 @@ const CLAIM_VALIDATED = 'validated'
 const CLAIM_REJECTED = 'rejected'
 const CLAIM_IMPACT = 'impact'
 
+const HOW_KNOWN = {
+  SecondHand: 'SECOND_HAND',
+  FirstHand: 'FIRST_HAND',
+  WebDocument: 'WEB_DOCUMENT',
+  FirstHandBenefit: 'FIRST_HAND_BENEFIT',
+  FirstHandRejected: 'FIRST_HAND_REJECTED',
+  WebDocumentRejected: 'WEB_DOCUMENT_REJECTED'
+} as const
+type HowKnown = (typeof HOW_KNOWN)[keyof typeof HOW_KNOWN]
+
 interface ImageI {
   url: string
   metadata: {
@@ -168,7 +178,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         images
       }
 
-      console.log("In submit, payload is")
+      console.log('In submit, payload is')
       console.log(payload)
 
       if (howKnown === FIRST_HAND_BENEFIT) {
@@ -505,7 +515,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
-
                     <Typography variant='body2'>How Known</Typography>
                     <FormControl
                       fullWidth
@@ -528,9 +537,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       }}
                     >
                       <Controller
-                        name="howKnown"
+                        name='howKnown'
                         control={control}
-                        defaultValue=""
+                        defaultValue=''
                         render={({ field }) => (
                           <Select
                             {...field}
@@ -548,10 +557,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               }
                             }}
                           >
-                        {inputOptions.howKnown.map((option, index: number) => (
-                          <MenuItem
-                            key={option.value}
-                            value={option.value}
+                            {inputOptions.howKnown.map((option, index: number) => (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
                                 sx={{
                                   backgroundColor: theme.palette.input,
                                   color: theme.palette.texts,
@@ -610,9 +619,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       <>
                         <Typography variant='body2'>Your Website</Typography>
                         <Controller
-                          name="sourceURI"
+                          name='sourceURI'
                           control={control}
-                          defaultValue=""
+                          defaultValue=''
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -644,9 +653,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       <>
                         <Typography variant='body2'>Source URL</Typography>
                         <Controller
-                          name="sourceURI"
+                          name='sourceURI'
                           control={control}
-                          defaultValue=""
+                          defaultValue=''
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -742,9 +751,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       Explain here
                     </Typography>
                     <Controller
-                      name="statement"
+                      name='statement'
                       control={control}
-                      defaultValue=""
+                      defaultValue=''
                       render={({ field }) => (
                         <TextField
                           {...field}
