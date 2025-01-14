@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, DragEvent } from 'react'
 import { X } from 'lucide-react'
 import {
   TextField,
@@ -23,8 +23,8 @@ export interface ImageI {
   file: File
   url: string
   metadata: {
-    description: string
-    caption: string
+    captian: string | null
+    description: string | null
   }
   effectiveDate: Date
 }
@@ -45,10 +45,31 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   const [currentImage, setCurrentImage] = useState<ImageI | null>(null)
   const [hiddenImages, setHiddenImages] = useState<ImageI[]>([])
 
+  const [isDragging, setIsDragging] = useState<boolean>(false)
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>): void => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (): void => {
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>): void => {
+    e.preventDefault()
+    setIsDragging(false)
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'))
+    readFiles(files)
+  }
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files || !files?.length) return
+    readFiles(files)
+  }
 
+  const readFiles = (files: FileList | File[]) => {
     Array.from(files).forEach(file => {
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -56,8 +77,8 @@ const ImageUploader = <TFieldValues extends FieldValues>({
           file: file,
           url: reader.result as string,
           metadata: {
-            description: '',
-            caption: ''
+            captian: null as string | null,
+            description: null as string | null
           },
           effectiveDate: new Date()
         }
@@ -111,6 +132,11 @@ const ImageUploader = <TFieldValues extends FieldValues>({
                 borderColor: theme.palette.borderColor
               }
             }}
+            style={{ borderColor: isDragging ? theme.palette.borderColor : theme.palette.input }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            role='presentation'
           >
             <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
@@ -204,9 +230,12 @@ const ImageUploader = <TFieldValues extends FieldValues>({
                 variant='outlined'
                 size='small'
                 sx={{ mb: 2 }}
-                value={currentImage.metadata.caption}
+                value={currentImage.metadata.captian}
                 onChange={e =>
-                  setCurrentImage({ ...currentImage, metadata: { ...currentImage.metadata, caption: e.target.value } })
+                  setCurrentImage({
+                    ...currentImage,
+                    metadata: { ...currentImage.metadata, captian: e.target.value }
+                  })
                 }
               />
               <TextField
