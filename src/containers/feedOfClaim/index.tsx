@@ -202,7 +202,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const handleSchema = async (claim: ImportedClaim) => {
     navigate({
-      pathname: `/explore/${claim.claim_id}`
+      pathname: `/explore/v2/${claim.claim_id}`
     })
   }
 
