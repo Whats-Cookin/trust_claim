@@ -35,19 +35,13 @@ export const useClaimGraph = (claimId: string) => {
   return { initialEdges, initialNodes, isLoading, error }
 }
 
-const transformNodes = (nodes: any[], centerX = 400, centerY = 300, radius = 200) => {
+const transformNodes = (nodes: any[]) => { 
   const uniqueNodes = Array.from(new Map(nodes.map(node => [node.data.id, node])).values())
 
-  return uniqueNodes.map((node, index) => {
-    const angle = (2 * Math.PI * index) / uniqueNodes.length
-
+  return uniqueNodes.map((node) => {
     return {
       id: node.data.id,
       type: 'custom',
-      position: {
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle)
-      },
       data: {
         label: node.data.label,
         image: node.data.image,
@@ -97,33 +91,40 @@ const transformData = (graphData: any[]) => {
 
 const getLayoutedElements = (nodes: any, edges: any, direction = 'TB') => {
   const isHorizontal = direction === 'LR'
-  dagreGraph.setGraph({ rankdir: direction })
-   
+  dagreGraph.setGraph({
+    rankdir: direction,
+    nodesep: 250, 
+    ranksep: 250, 
+    edgesep: 220, 
+    marginx: 250, 
+    marginy: 250, 
+  });
+
   nodes.forEach((node: any) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
   })
-   
+
   edges.forEach((edge: any) => {
     dagreGraph.setEdge(edge.source, edge.target)
   })
-   
+
   dagre.layout(dagreGraph)
-   
+
   const newNodes = nodes.map((node: any) => {
     const nodeWithPosition = dagreGraph.node(node.id)
-      const newNode = {
-        ...node,
-        targetPosition: isHorizontal ? 'left' : 'top',
-        sourcePosition: isHorizontal ? 'right' : 'bottom',
+    const newNode = {
+      ...node,
+      targetPosition: isHorizontal ? 'left' : 'top',
+      sourcePosition: isHorizontal ? 'right' : 'bottom',
 
-        position: {
-          x: nodeWithPosition.x - nodeWidth / 2,
+      position: {
+        x: nodeWithPosition.x - nodeWidth / 2,
         y: nodeWithPosition.y - nodeHeight / 2
       }
     }
-   
+
     return newNode
   })
-   
+
   return { nodes: newNodes, edges }
 }

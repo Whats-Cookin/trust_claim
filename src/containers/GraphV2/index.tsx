@@ -8,6 +8,7 @@ import { useClaimGraph } from './hooks'
 import styles from './styles'
 import Node from './Node'
 import Edge from './Edge'
+import MainContainer from '../../components/MainContainer'
 
 const GraphV2 = (homeProps: IHomeProps) => {
   const { nodeId } = useParams<{ nodeId: string }>()
@@ -18,6 +19,7 @@ const GraphV2 = (homeProps: IHomeProps) => {
 
   return (
     <>
+    <MainContainer  sx={{height: '100vh'}}>
       {!isLoading && (
         <ReactFlow
           nodes={initialNodes}
@@ -27,15 +29,18 @@ const GraphV2 = (homeProps: IHomeProps) => {
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           fitView
           fitViewOptions={{ padding: 0.8 }}
-          //   nodeTypes={{
-          //     custom: Node
-          //   }}
-          //   edgeTypes={{ custom: Edge }}
+            nodeTypes={{
+              custom: Node
+            }}
+            edgeTypes={{ custom: Edge }}
           nodesConnectable={false}
+
         >
-          <Background />
+         
         </ReactFlow>
       )}
+
+</MainContainer>
     </>
   )
 }

@@ -1,65 +1,61 @@
 import { Handle, Position } from '@xyflow/react'
-import { Box, Typography, Avatar, Tooltip } from '@mui/material'
+import { Box, Typography, Avatar } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
-const Node = ({ data }: any) => {
+const PersonNode = ({ data }: any) => {
   const theme = useTheme()
-  
+
   return (
     <Box
       sx={{
-        padding: '15px',
-        borderRadius: '12px',
-        background: theme.palette.menuBackground,
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        minWidth: '180px',
-        maxWidth: '250px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}
     >
       <Handle type='target' position={Position.Top} />
-      
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-        {data.image && (
-          <Avatar 
-            src={data.image}
-            alt={data.label}
-            sx={{ width: 40, height: 40, border: `2px solid ${theme.palette.primary.main}` }}
-          />
-        )}
-        <Tooltip title={data.raw?.descrip || ''}>
-          <Typography 
-            variant='h6'
-            sx={{
-              color: theme.palette.texts,
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              wordWrap: 'break-word',
-              lineHeight: 1.2
-            }}
-          >
-            {data.label}
-          </Typography>
-        </Tooltip>
-      </Box>
-
-      {data.raw?.entType && (
+      <Avatar
+        src={data.image}
+        alt={data.label}
+        sx={{
+          width: 100,
+          height: 100,
+          borderRadius: '50%',
+          marginBottom: '8px',
+          border : '2px solid #96B1AC', // Teal border for avatar
+        }}
+      />
+      <Box
+        sx={{
+          padding: '8px 15px',
+          borderRadius: '8px',
+          backgroundColor: "#96B1AC", // Teal background for text box
+          textAlign: 'center',
+        }}
+      >
+        <Typography
+          variant='subtitle1'
+          sx={{
+            color: theme.palette.texts, // White text
+            fontWeight: 600,
+            fontSize: '0.9rem',
+          }}
+        >
+          {data.label}
+        </Typography>
         <Typography
           variant='caption'
           sx={{
-            color: theme.palette.maintext,
-            backgroundColor: theme.palette.action.hover,
-            padding: '4px 8px',
-            borderRadius: '12px',
-            fontSize: '0.7rem'
+            color: theme.palette.maintext, // Lighter text for job title
+            fontSize: '0.75rem',
           }}
         >
-          {data.raw.entType}
+          {data.jobTitle}
         </Typography>
-      )}
-
+      </Box>
       <Handle type='source' position={Position.Bottom} />
     </Box>
   )
 }
 
-export default Node
+export default PersonNode
