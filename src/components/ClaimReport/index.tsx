@@ -19,6 +19,7 @@ import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
 import { height } from '@mui/system'
+import ClaimDetails from './ClaimDetails'
 
 interface Claim {
   statement: string | null
@@ -124,13 +125,8 @@ const DonationReport: React.FC = () => {
             />
           </Typography>
         </Box>
-        <MyCard
-          data={reportData.data.claim.claim}
-          theme={theme}
-          isLargeScreen={isLargeScreen}
-          setSelectedIndex={setSelectedIndex}
-          handleMenuClose={() => setSelectedIndex(null)}
-        />
+
+        <ClaimDetails theme={theme} data={reportData.data} />
 
         {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
           <>
