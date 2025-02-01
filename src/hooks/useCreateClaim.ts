@@ -37,7 +37,7 @@ export function useCreateClaim() {
       const res = await axios.post('/api/claim/v2', generateFormData(dto, images))
 
       if (res.status === 201) {
-        message = 'Claim submitted successfully!'
+        message = 'Claim submitted successfully!' 
         isSuccess = true
       }
     } catch (err: any) {

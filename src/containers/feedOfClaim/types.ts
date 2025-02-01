@@ -10,6 +10,16 @@ export interface IHomeProps {
 export interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
+
+export interface FeedEntries {
+  claims: any[]
+  credentials: any[]
+}
+
+export interface FetchClaimsResponse {
+  feedEntries: FeedEntries
+  nextPage: string | null
+}
 export type Claim = {
   claim_id: number
   statement: string

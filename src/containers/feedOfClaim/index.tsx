@@ -7,7 +7,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import { Claim as ImportedClaim, IHomeProps } from './types'
+import { Claim as ImportedClaim, IHomeProps, FeedEntries, FetchClaimsResponse } from './types'
 import {
   Box,
   Button,
@@ -89,7 +89,7 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-async function fetchClaims(nextPage: string | null, query?: string) {
+async function fetchClaims(nextPage: string | null, query?: string): Promise<FetchClaimsResponse> {
   const res = await axios.get(`${BACKEND_BASE_URL}/api/claims/v3`, {
     timeout: 60000,
     params: {
@@ -98,11 +98,13 @@ async function fetchClaims(nextPage: string | null, query?: string) {
       nextPage: nextPage || undefined
     }
   })
-  return res
+  return res.data
 }
 
 const FeedClaim: React.FC<IHomeProps> = () => {
   const [claims, setClaims] = useState<ImportedClaim[]>([])
+  const [credentials, setCredentials] = useState<any[]>([])
+  const credentialsRef = useRef<any[]>([])
   const claimsRef = useRef<ImportedClaim[]>([])
 
   const location = useLocation()
@@ -132,13 +134,30 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     initialPageLoad.current = false
     setIsLastPage(false)
     setIsLoading(true)
+
     fetchClaims(null, searchTerm)
-      .then(({ data }) => {
-        claimsRef.current = data.claims
+      .then(data => {
+        const claimsList = (data.feedEntries.claims || []).map(item => ({
+          ...item,
+          type: 'claim',
+          effective_date: new Date(item.effective_date).getTime()
+        }))
+
+        const credentialsList = (data.feedEntries.credentials || []).map(item => ({
+          ...item,
+          type: 'credential',
+          effective_date: new Date(item.issuance_date).getTime()
+        }))
+
+        const sortedEntries = [...claimsList, ...credentialsList].sort((a, b) => b.effective_date - a.effective_date)
+
+        claimsRef.current = sortedEntries
         nextPage.current = data.nextPage
-        if (data.claims.length < PAGE_LIMIT) {
+
+        if (!data.nextPage) {
           setIsLastPage(true)
         }
+
         setClaims(claimsRef.current)
       })
       .catch(err => console.error(err))
@@ -169,18 +188,32 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
     try {
       setLoadingNextPage(true)
-
-      // To give room for the spinner to render
       await sleep()
+      const data = await fetchClaims(nextPage.current, searchTerm)
 
-      const { data } = await fetchClaims(nextPage.current, searchTerm)
+      const claimsList = (data.feedEntries.claims || []).map(item => ({
+        ...item,
+        type: 'claim',
+        effective_date: new Date(item.effective_date).getTime()
+      }))
 
-      claimsRef.current = claimsRef.current.concat(data.claims)
+      const credentialsList = (data.feedEntries.credentials || []).map(item => ({
+        ...item,
+        type: 'credential',
+        effective_date: new Date(item.issuance_date).getTime()
+      }))
+
+      // دمج وترتيب البيانات بترتيب تنازلي حسب التاريخ
+      claimsRef.current = [...claimsRef.current, ...claimsList, ...credentialsList].sort(
+        (a, b) => b.effective_date - a.effective_date
+      )
+
       nextPage.current = data.nextPage
 
-      if (data.claims.length < PAGE_LIMIT) {
+      if (!data.nextPage) {
         setIsLastPage(true)
       }
+
       setClaims(claimsRef.current)
     } catch (err) {
       console.error(err)
@@ -253,7 +286,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
         <Loader open={isLoading} />
       ) : (
         <>
-          {claims.length > 0 ? (
+          {claims.length > 0 || credentials.length > 0 ? (
             <MainContainer>
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
@@ -277,6 +310,43 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   />
                 </Typography>
               </Box>
+              {credentials.map((credential: any, index: number) => (
+                <Grow in={true} timeout={1000} key={credential.credential_id}>
+                  <Box sx={{ marginBottom: '15px' }}>
+                    <Card
+                      sx={{
+                        maxWidth: 'fit',
+                        height: 'fit',
+                        borderRadius: '20px',
+                        display: isMediumScreen ? 'column' : 'row',
+                        backgroundColor:
+                          selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
+                        backgroundImage: 'none',
+                        filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
+                        color: theme.palette.texts
+                      }}
+                    >
+                      <CardContent>
+                        <Typography variant='h6' sx={{ marginBottom: '10px' }}>
+                          {credential.credential_subject.name}
+                        </Typography>
+                        <Typography variant='body2' sx={{ marginBottom: '10px' }}>
+                          Issued by: {credential.issuer.id}
+                        </Typography>
+                        <Typography variant='body2' sx={{ marginBottom: '10px' }}>
+                          Valid from {new Date(credential.issuance_date).toLocaleDateString()} to
+                          {new Date(credential.expiration_date).toLocaleDateString()}
+                        </Typography>
+                        {credential.credential_subject.achievement && (
+                          <Typography variant='body2' sx={{ marginBottom: '10px' }}>
+                            Achievement: {credential.credential_subject.achievement[0].name}
+                          </Typography>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Box>
+                </Grow>
+              ))}
               {claims.map((claim: any, index: number) => (
                 <Grow in={true} timeout={1000} key={claim.claim_id}>
                   <Box sx={{ marginBottom: '15px' }}>
