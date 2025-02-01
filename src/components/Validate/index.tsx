@@ -261,7 +261,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     }
   }
   const handleItemSelect = () => {
-    setOpenTooltipIndex(null) 
+    setOpenTooltipIndex(null)
   }
 
   return (
@@ -601,11 +601,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                   placement={isTouchDevice ? 'top' : 'right'}
                                   arrow
                                   TransitionComponent={Fade}
-                                  open={isTouchDevice ? openTooltipIndex === index : undefined} 
-                                  onClose={() => setOpenTooltipIndex(null)} 
-                                  disableFocusListener={isTouchDevice} 
-                                  disableHoverListener={isTouchDevice} 
-                                  disableTouchListener={isTouchDevice} 
+                                  open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                  onClose={() => setOpenTooltipIndex(null)}
+                                  disableFocusListener={isTouchDevice}
+                                  disableHoverListener={isTouchDevice}
+                                  disableTouchListener={isTouchDevice}
                                 >
                                   <Box
                                     sx={{
@@ -620,8 +620,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                       <IconButton
                                         size='small'
                                         onClick={e => {
-                                          e.stopPropagation() 
-                                          handleTooltipToggle(index) 
+                                          e.stopPropagation()
+                                          handleTooltipToggle(index)
                                         }}
                                       >
                                         <HelpIcon sx={{ color: '#0ABAB5' }} />
