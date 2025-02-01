@@ -18,12 +18,12 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
-import { height } from '@mui/system'
 
 interface Claim {
   statement: string | null
   subject: string
   id: string
+  images: any[]
   [key: string]: any
 }
 
@@ -299,9 +299,16 @@ function MyCard({
     >
       {data.image ? (
         <Grid container spacing={isLargeScreen ? 4 : 2}>
-          <Grid item xs={12} md={6}>
-            <img src={data.image} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
-          </Grid>
+            <Grid item xs={12} md={6}>
+            {data.image.includes('.mp4') ? (
+              <video controls style={{ width: '100%', height: 'auto' }}>
+              <source src={data.image} type="video/mp4" />
+              Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img src={data.image} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+            )}
+            </Grid>
           <Grid item xs={12} md={6}>
             <CardContent>
               <RenderClaimInfo
