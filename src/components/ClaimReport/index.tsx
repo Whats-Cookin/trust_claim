@@ -23,7 +23,6 @@ interface Claim {
   statement: string | null
   subject: string
   id: string
-  images: any[]
   [key: string]: any
 }
 
@@ -126,6 +125,7 @@ const DonationReport: React.FC = () => {
         </Box>
         <MyCard
           data={reportData.data.claim.claim}
+          img={reportData.data.claim.image}
           theme={theme}
           isLargeScreen={isLargeScreen}
           setSelectedIndex={setSelectedIndex}
@@ -162,6 +162,7 @@ const DonationReport: React.FC = () => {
                   <MyCard
                     key={validation.id}
                     data={validation}
+                    img={validation.image}
                     theme={theme}
                     isLargeScreen={isLargeScreen}
                     setSelectedIndex={setSelectedIndex}
@@ -204,6 +205,7 @@ const DonationReport: React.FC = () => {
                   <MyCard
                     key={attestation.id}
                     data={attestation}
+                    img={attestation.image}
                     theme={theme}
                     isLargeScreen={isLargeScreen}
                     setSelectedIndex={setSelectedIndex}
@@ -274,12 +276,14 @@ const DonationReport: React.FC = () => {
 
 function MyCard({
   data,
+  img,
   theme,
   setSelectedIndex,
   handleMenuClose,
   isLargeScreen
 }: Readonly<{
   data: any
+  img: any
   theme: any
   setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
   handleMenuClose: () => void
@@ -297,16 +301,16 @@ function MyCard({
         marginBottom: '2rem'
       }}
     >
-      {data.image ? (
+      {img ? (
         <Grid container spacing={isLargeScreen ? 4 : 2}>
             <Grid item xs={12} md={6}>
-            {data.image.includes('.mp4') ? (
+            {img.includes('.mp4') ? (
               <video controls style={{ width: '100%', height: 'auto' }}>
-              <source src={data.image} type="video/mp4" />
+              <source src={img} type="video/mp4" />
               Your browser does not support the video tag.
               </video>
             ) : (
-              <img src={data.image} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+              <img src={img} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
             )}
             </Grid>
           <Grid item xs={12} md={6}>
