@@ -10,7 +10,7 @@ const PersonNode = ({ data }: any) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'center'
       }}
     >
       <Handle type='target' position={Position.Top} />
@@ -22,15 +22,15 @@ const PersonNode = ({ data }: any) => {
           height: 100,
           borderRadius: '50%',
           marginBottom: '8px',
-          border : '2px solid #96B1AC', // Teal border for avatar
+          border: '2px solid #96B1AC' // Teal border for avatar
         }}
       />
       <Box
         sx={{
           padding: '8px 15px',
           borderRadius: '8px',
-          backgroundColor: "#96B1AC", // Teal background for text box
-          textAlign: 'center',
+          backgroundColor: '#96B1AC', // Teal background for text box
+          textAlign: 'center'
         }}
       >
         <Typography
@@ -38,7 +38,7 @@ const PersonNode = ({ data }: any) => {
           sx={{
             color: theme.palette.texts, // White text
             fontWeight: 600,
-            fontSize: '0.9rem',
+            fontSize: '0.9rem'
           }}
         >
           {data.label}
@@ -47,7 +47,7 @@ const PersonNode = ({ data }: any) => {
           variant='caption'
           sx={{
             color: theme.palette.maintext, // Lighter text for job title
-            fontSize: '0.75rem',
+            fontSize: '0.75rem'
           }}
         >
           {data.jobTitle}

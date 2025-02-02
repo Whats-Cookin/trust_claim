@@ -3,9 +3,9 @@ import dagre from '@dagrejs/dagre'
 import axios from '../../axiosInstance'
 import { parseMultipleNodes } from '../Explore/graph.utils'
 
-const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
-const nodeWidth = 172;
-const nodeHeight = 36;
+const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
+const nodeWidth = 172
+const nodeHeight = 36
 
 export const useClaimGraph = (claimId: string) => {
   const [initialNodes, setInitialNodes] = useState(null)
@@ -35,10 +35,10 @@ export const useClaimGraph = (claimId: string) => {
   return { initialEdges, initialNodes, isLoading, error }
 }
 
-const transformNodes = (nodes: any[]) => { 
+const transformNodes = (nodes: any[]) => {
   const uniqueNodes = Array.from(new Map(nodes.map(node => [node.data.id, node])).values())
 
-  return uniqueNodes.map((node) => {
+  return uniqueNodes.map(node => {
     return {
       id: node.data.id,
       type: 'custom',
@@ -93,12 +93,12 @@ const getLayoutedElements = (nodes: any, edges: any, direction = 'TB') => {
   const isHorizontal = direction === 'LR'
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: 250, 
-    ranksep: 250, 
-    edgesep: 220, 
-    marginx: 250, 
-    marginy: 250, 
-  });
+    nodesep: 250,
+    ranksep: 250,
+    edgesep: 220,
+    marginx: 250,
+    marginy: 250
+  })
 
   nodes.forEach((node: any) => {
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })

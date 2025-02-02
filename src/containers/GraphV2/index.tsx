@@ -19,28 +19,24 @@ const GraphV2 = (homeProps: IHomeProps) => {
 
   return (
     <>
-    <MainContainer  sx={{height: '100vh'}}>
-      {!isLoading && (
-        <ReactFlow
-          nodes={initialNodes}
-          edges={initialEdges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
-          fitView
-          fitViewOptions={{ padding: 0.8 }}
+      <MainContainer sx={{ height: '100vh' }}>
+        {!isLoading && (
+          <ReactFlow
+            nodes={initialNodes}
+            edges={initialEdges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+            fitView
+            fitViewOptions={{ padding: 0.8 }}
             nodeTypes={{
               custom: Node
             }}
             edgeTypes={{ custom: Edge }}
-          nodesConnectable={false}
-
-        >
-         
-        </ReactFlow>
-      )}
-
-</MainContainer>
+            nodesConnectable={false}
+          ></ReactFlow>
+        )}
+      </MainContainer>
     </>
   )
 }
