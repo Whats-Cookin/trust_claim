@@ -36,7 +36,6 @@ const App = () => {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-
   useEffect(() => {
     if (location.pathname === '/') {
       navigate('/feed') // Redirect to /feed

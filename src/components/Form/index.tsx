@@ -12,72 +12,72 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment
-} from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { useCreateClaim } from '../../hooks/useCreateClaim';
-import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils';
-import MainContainer from '../MainContainer';
-import ImageUploader from './imageUploading';
+} from '@mui/material'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
+import { useCreateClaim } from '../../hooks/useCreateClaim'
+import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
+import MainContainer from '../MainContainer'
+import ImageUploader from './imageUploading'
 
 const CLAIM_TYPES = {
   rated: {
-    label: "Rate or Review",
-    aspects: ["quality:speed", "quality:excellence", "quality:affordable", "quality:technical", "quality:usefulness"]
+    label: 'Rate or Review',
+    aspects: ['quality:speed', 'quality:excellence', 'quality:affordable', 'quality:technical', 'quality:usefulness']
   },
   impact: {
-    label: "Impact Assessment",
-    aspects: ["impact:social", "impact:climate", "impact:work", "impact:financial", "impact:educational"]
+    label: 'Impact Assessment',
+    aspects: ['impact:social', 'impact:climate', 'impact:work', 'impact:financial', 'impact:educational']
   },
   report: {
-    label: "Report Issue",
-    aspects: ["report:scam", "report:spam", "report:misinfo", "report:abuse", "report:dangerous"]
+    label: 'Report Issue',
+    aspects: ['report:scam', 'report:spam', 'report:misinfo', 'report:abuse', 'report:dangerous']
   },
   related_to: {
-    label: "Relationship",
-    aspects: ["relationship:owns", "relationship:works-for", "relationship:works-with", "relationship:worked-on", "relationship:same-as"]
+    label: 'Relationship',
+    aspects: [
+      'relationship:owns',
+      'relationship:works-for',
+      'relationship:works-with',
+      'relationship:worked-on',
+      'relationship:same-as'
+    ]
   }
-};
-
-interface IFormProps {
-  toggleSnackbar?: (open: boolean) => void;
-  setSnackbarMessage?: (message: string) => void;
-  setLoading?: (loading: boolean) => void;
-  onCancel?: () => void;
-  selectedClaim?: any;
 }
 
-export const Form = ({ 
-  toggleSnackbar,
-  setSnackbarMessage,
-  setLoading,
-  onCancel,
-  selectedClaim 
-}: IFormProps) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const navigate = useNavigate();
-  const { createClaim } = useCreateClaim();
+interface IFormProps {
+  toggleSnackbar?: (open: boolean) => void
+  setSnackbarMessage?: (message: string) => void
+  setLoading?: (loading: boolean) => void
+  onCancel?: () => void
+  selectedClaim?: any
+}
 
-  const [selectedClaimType, setSelectedClaimType] = useState<string>('');
+export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel, selectedClaim }: IFormProps) => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const navigate = useNavigate()
+  const { createClaim } = useCreateClaim()
+
+  const [selectedClaimType, setSelectedClaimType] = useState<string>('')
 
   interface FormData {
-    name: string;
-    subject: string;
-    claim: string;
-    object: string;
-    statement: string;
-    aspect: string;
-    howKnown: string;
-    sourceURI: string;
-    effectiveDate: Date;
-    confidence: number;
-    stars: number | null;
-    amt: number | null;
-    images: { id: string }[];  // Add proper type for images
+    name: string
+    subject: string
+    claim: string
+    object: string
+    statement: string
+    aspect: string
+    howKnown: string
+    sourceURI: string
+    effectiveDate: Date
+    confidence: number
+    stars: number | null
+    amt: number | null
+    images: { id: string }[] // Add proper type for images
   }
 
   const {
@@ -102,47 +102,47 @@ export const Form = ({
       amt: null,
       images: []
     }
-  });
+  })
 
   const imageFieldArray = useFieldArray({
     control,
-    name: "images"
-  });
+    name: 'images'
+  })
 
-  const watchHowKnown = watch('howKnown');
-  const watchClaimType = watch('claim');
+  const watchHowKnown = watch('howKnown')
+  const watchClaimType = watch('claim')
 
   const handleClaimTypeSelect = (type: string) => {
-    setSelectedClaimType(type);
-  };
+    setSelectedClaimType(type)
+  }
 
   const onSubmit = async (formData: any) => {
-    if (setLoading) setLoading(true);
-    
+    if (setLoading) setLoading(true)
+
     try {
-      const response = await timeoutPromise(createClaim(formData), 10_000);
+      const response = await timeoutPromise(createClaim(formData), 10_000)
 
       if (response.message && setSnackbarMessage && toggleSnackbar) {
-        setSnackbarMessage(response.message);
-        toggleSnackbar(true);
+        setSnackbarMessage(response.message)
+        toggleSnackbar(true)
       }
 
       if (response.isSuccess) {
-        navigate('/feed');
+        navigate('/feed')
       }
     } catch (e) {
       if (e instanceof PromiseTimeoutError) {
-        navigate('/feed');
+        navigate('/feed')
       } else {
         if (setSnackbarMessage && toggleSnackbar) {
-          setSnackbarMessage('Failed to create claim');
-          toggleSnackbar(true);
+          setSnackbarMessage('Failed to create claim')
+          toggleSnackbar(true)
         }
       }
     } finally {
-      if (setLoading) setLoading(false);
+      if (setLoading) setLoading(false)
     }
-  };
+  }
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', mx: 'auto' }}>
@@ -152,16 +152,14 @@ export const Form = ({
           backgroundColor: theme.palette.cardBackground,
           padding: '20px',
           width: '100%',
-          maxWidth: '800px',
+          maxWidth: '800px'
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Claim Type Selection - only show if no type selected */}
           {!selectedClaimType ? (
             <Box sx={{ mb: 4 }}>
-              <Typography sx={{ mb: 2 }}>
-                What kind of claim would you like to make?
-              </Typography>
+              <Typography sx={{ mb: 2 }}>What kind of claim would you like to make?</Typography>
               <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
                 {Object.entries(CLAIM_TYPES).map(([type, info]) => (
                   <Button
@@ -195,7 +193,7 @@ export const Form = ({
                 />
                 <TextField
                   {...register('statement', { required: true })}
-                  label="Describe your claim"
+                  label='Describe your claim'
                   multiline
                   rows={4}
                   fullWidth
@@ -219,7 +217,7 @@ export const Form = ({
                       </Select>
                     </FormControl>
                     <Controller
-                      name="stars"
+                      name='stars'
                       control={control}
                       render={({ field }) => (
                         <Box sx={{ mb: 2 }}>
@@ -245,11 +243,11 @@ export const Form = ({
                     </FormControl>
                     <TextField
                       {...register('amt')}
-                      label="Value"
-                      type="number"
+                      label='Value'
+                      type='number'
                       fullWidth
                       InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>
+                        startAdornment: <InputAdornment position='start'>$</InputAdornment>
                       }}
                     />
                   </>
@@ -270,12 +268,7 @@ export const Form = ({
 
                 {selectedClaimType === 'related_to' && (
                   <>
-                    <TextField
-                      {...register('object')}
-                      label="Related To (URL)"
-                      fullWidth
-                      sx={{ mb: 2 }}
-                    />
+                    <TextField {...register('object')} label='Related To (URL)' fullWidth sx={{ mb: 2 }} />
                     <FormControl fullWidth>
                       <InputLabel>Relationship Type</InputLabel>
                       <Select {...register('aspect')}>
@@ -294,33 +287,35 @@ export const Form = ({
               <Box sx={{ mb: 4 }}>
                 <FormControl fullWidth sx={{ mb: 2 }}>
                   <InputLabel>How do you know this?</InputLabel>
-                  <Select {...register('howKnown')} defaultValue="FIRST_HAND">
-                    <MenuItem value="FIRST_HAND">First Hand</MenuItem>
-                    <MenuItem value="SECOND_HAND">Second Hand</MenuItem>
-                    <MenuItem value="WEB_DOCUMENT">Website</MenuItem>
-                    <MenuItem value="PHYSICAL_DOCUMENT">Physical Document</MenuItem>
+                  <Select {...register('howKnown')} defaultValue='FIRST_HAND'>
+                    <MenuItem value='FIRST_HAND'>First Hand</MenuItem>
+                    <MenuItem value='SECOND_HAND'>Second Hand</MenuItem>
+                    <MenuItem value='WEB_DOCUMENT'>Website</MenuItem>
+                    <MenuItem value='PHYSICAL_DOCUMENT'>Physical Document</MenuItem>
                   </Select>
                 </FormControl>
 
                 <TextField
                   {...register('sourceURI')}
-                  label={watchHowKnown === 'FIRST_HAND' ? 
-                    "Your home page or social media link" : 
-                    "Where did you find the information"}
+                  label={
+                    watchHowKnown === 'FIRST_HAND'
+                      ? 'Your home page or social media link'
+                      : 'Where did you find the information'
+                  }
                   fullWidth
                   sx={{ mb: 2 }}
                 />
 
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Controller
-                    name="effectiveDate"
+                    name='effectiveDate'
                     control={control}
                     render={({ field }) => (
                       <DatePicker
-                        label="When did this happen?"
+                        label='When did this happen?'
                         value={field.value}
                         onChange={field.onChange}
-                        renderInput={(params) => <TextField {...params} fullWidth />}
+                        renderInput={params => <TextField {...params} fullWidth />}
                       />
                     )}
                   />
@@ -335,12 +330,8 @@ export const Form = ({
 
               {/* Submit Buttons */}
               <DialogActions sx={{ justifyContent: 'flex-end', gap: 2 }}>
-                {onCancel && (
-                  <Button onClick={onCancel}>
-                    Cancel
-                  </Button>
-                )}
-                <Button type="submit" variant="contained" color="primary">
+                {onCancel && <Button onClick={onCancel}>Cancel</Button>}
+                <Button type='submit' variant='contained' color='primary'>
                   Submit
                 </Button>
               </DialogActions>
@@ -349,5 +340,5 @@ export const Form = ({
         </form>
       </MainContainer>
     </Box>
-  );
-};
+  )
+}

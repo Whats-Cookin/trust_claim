@@ -42,7 +42,7 @@ const ProfileDropdown = ({ isAuth }: any) => {
   return (
     <Box id='menu'>
       <Tooltip
-        title=""
+        title=''
         disableFocusListener
         disableHoverListener={disableTooltip}
         disableTouchListener

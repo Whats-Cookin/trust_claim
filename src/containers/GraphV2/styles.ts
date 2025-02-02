@@ -10,7 +10,7 @@ const styles = {
   },
   graph: {
     width: '100vw',
-    height: '86vh',
+    height: '100vh',
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',

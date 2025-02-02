@@ -9,7 +9,6 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
 import { clearAuth } from '../../utils/authUtils'
 
-
 interface SidebarProps {
   isAuth: boolean
   isOpen: boolean
