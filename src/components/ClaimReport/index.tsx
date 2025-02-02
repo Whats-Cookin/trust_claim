@@ -303,16 +303,16 @@ function MyCard({
     >
       {img ? (
         <Grid container spacing={isLargeScreen ? 4 : 2}>
-            <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             {img.includes('.mp4') ? (
               <video controls style={{ width: '100%', height: 'auto' }}>
-              <source src={img} type="video/mp4" />
-              Your browser does not support the video tag.
+                <source src={img} type='video/mp4' />
+                Your browser does not support the video tag.
               </video>
             ) : (
               <img src={img} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
             )}
-            </Grid>
+          </Grid>
           <Grid item xs={12} md={6}>
             <CardContent>
               <RenderClaimInfo
