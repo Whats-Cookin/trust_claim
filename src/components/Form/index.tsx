@@ -21,7 +21,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import MainContainer from '../MainContainer'
-import ImageUploader, { ImageI } from './imageUploading'
+import MediaUploader, { MediaI } from './imageUploading'
 import { HowKnown } from '../../enums'
 
 const CLAIM_TYPES = {
@@ -61,7 +61,7 @@ interface FormData {
   effectiveDate: Date | null
   claimAddress: string | null
   aspect: string | null
-  images: ImageI[]
+  images: MediaI[]
   claim: string
   object: string | null
 }
@@ -322,7 +322,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               {/* Optional Image Upload */}
               <Box sx={{ mb: 4 }}>
                 <Typography sx={{ mb: 1 }}>Add supporting image (optional)</Typography>
-                <ImageUploader fieldArray={imageFieldArray} control={control} register={register} />
+                <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
               </Box>
 
               {/* Submit Buttons */}
