@@ -228,9 +228,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     setIsExpanded(!isExpanded)
   }
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
-
   const inputOptions = {
     howKnown: [
       { value: FIRST_HAND, text: 'validate first hand' },
@@ -255,8 +252,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     ]
   }
 
+  const isTouchDevice = useMediaQuery('(hover: none)')
+  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
+
   const handleTooltipToggle = (index: number) => {
-    setOpenTooltipIndex(prevIndex => (prevIndex === index ? null : index))
+    if (isTouchDevice) {
+      setOpenTooltipIndex(prevIndex => (prevIndex === index ? null : index))
+    }
+  }
+  const handleItemSelect = () => {
+    setOpenTooltipIndex(null)
   }
 
   return (
@@ -561,6 +566,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               <MenuItem
                                 key={option.value}
                                 value={option.value}
+                                onClick={() => handleItemSelect()} // Close tooltips when selecting an item
                                 sx={{
                                   backgroundColor: theme.palette.input,
                                   color: theme.palette.texts,
@@ -590,24 +596,39 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                   alignItems: 'center'
                                 }}
                               >
-                                <Box sx={{ flexGrow: 1 }}>{option.text}</Box>
-                                {isMobile && (
-                                  <Tooltip
-                                    title={tooltips.howKnown[index]}
-                                    placement='right'
-                                    arrow
-                                    TransitionComponent={Fade}
-                                    open={openTooltipIndex === index}
-                                    onClose={() => setOpenTooltipIndex(null)}
-                                    disableFocusListener
-                                    disableHoverListener
-                                    disableTouchListener
+                                <Tooltip
+                                  title={tooltips.howKnown[index]}
+                                  placement={isTouchDevice ? 'top' : 'right'}
+                                  arrow
+                                  TransitionComponent={Fade}
+                                  open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                  onClose={() => setOpenTooltipIndex(null)}
+                                  disableFocusListener={isTouchDevice}
+                                  disableHoverListener={isTouchDevice}
+                                  disableTouchListener={isTouchDevice}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      width: '100%',
+                                      justifyContent: 'space-between'
+                                    }}
                                   >
-                                    <IconButton size='small' onClick={() => handleTooltipToggle(index)}>
-                                      <HelpIcon sx={{ color: '#0ABAB5' }} />
-                                    </IconButton>
-                                  </Tooltip>
-                                )}
+                                    <span>{option.text}</span>
+                                    {isTouchDevice && (
+                                      <IconButton
+                                        size='small'
+                                        onClick={e => {
+                                          e.stopPropagation()
+                                          handleTooltipToggle(index)
+                                        }}
+                                      >
+                                        <HelpIcon sx={{ color: '#0ABAB5' }} />
+                                      </IconButton>
+                                    )}
+                                  </Box>
+                                </Tooltip>
                               </MenuItem>
                             ))}
                           </Select>
