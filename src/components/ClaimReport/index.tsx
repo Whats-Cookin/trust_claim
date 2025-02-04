@@ -126,7 +126,6 @@ const DonationReport: React.FC = () => {
 
         <ClaimDetails theme={theme} data={reportData.data} />
 
-
         {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
