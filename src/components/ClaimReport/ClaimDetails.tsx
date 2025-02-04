@@ -37,18 +37,32 @@ const truncateText = (text: string, length: number) => {
 }
 
 const exportClaimData = (claimData: any) => {
-  const jsonString = JSON.stringify(claimData, null, 2)
-  const blob = new Blob([jsonString], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
+  if (!claimData) {
+    console.error('exportClaimData: claimData is null or undefined.')
+    return
+  }
 
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `claim_${claimData.id}.json`
-  document.body.appendChild(link)
-  link.click()
+  if (!claimData.id) {
+    console.error('exportClaimData: claimData.id is unknown. Export is not allowed.')
+    return
+  }
 
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+  try {
+    const jsonString = JSON.stringify(claimData, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `claim_${claimData.id}.json`
+    document.body.appendChild(link)
+    link.click()
+
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error exporting claim data:', error)
+  }
 }
 
 const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
@@ -104,17 +118,19 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             alignItems={{ xs: 'flex-start', sm: 'center' }}
             justifyContent='space-between'
           >
-            <Stack direction='row' spacing={2} alignItems='center'>
-              <Typography variant='h6' color='white'>
+            <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
+              <Typography variant='h6' color='white' sx={{ minWidth: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                 {data.edge.startNode.name}
+                <Box component='span' sx={{ display: 'inline-flex', alignItems: 'center', ml: 1 }}>
+                  <CheckCircleOutlineOutlinedIcon sx={{ color: theme.palette.maintext, fontSize: 'inherit' }} />
+                  <Typography component='span' color={theme.palette.maintext} sx={{ ml: 0.5, fontSize: 'inherit' }}>
+                    Verified
+                  </Typography>
+                </Box>
               </Typography>
-              <Stack direction='row' spacing={1} alignItems='center'>
-                <CheckCircleOutlineOutlinedIcon sx={{ color: theme.palette.maintext }} />
-                <Typography color={theme.palette.maintext}>Verified</Typography>
-              </Stack>
             </Stack>
 
-            <Stack direction='row' flexWrap='wrap' spacing={{ xs: 0, sm: 2 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 0, sm: 2 }}>
               <Button
                 component={Link}
                 startIcon={<CheckCircleOutlineOutlinedIcon />}

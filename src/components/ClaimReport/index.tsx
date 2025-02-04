@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   Container,
   Typography,
@@ -18,7 +18,6 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
-import { height } from '@mui/system'
 import ClaimDetails from './ClaimDetails'
 
 interface Claim {
@@ -45,7 +44,6 @@ const DonationReport: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
-  const navigate = useNavigate()
 
   const url = `${BACKEND_BASE_URL}/api/report/${claimId}`
 
