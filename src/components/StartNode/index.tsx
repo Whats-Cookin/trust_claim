@@ -12,7 +12,7 @@ export default function StartNode({ selectedClaim, claimImg }: StartNodeProps) {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   return (
-    <Box sx={{ marginRight: { sm: '20px' }, width: { sm: '50%' } }}>
+    <Box sx={{ marginRight: { sm: '20px' }, width: { sm: '100%' } }}>
       <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
         <Typography
           variant='body1'
