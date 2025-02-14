@@ -224,44 +224,6 @@ const DonationReport: React.FC = () => {
             <img src={backSvg} alt='arrow' style={{ width: '10px', marginRight: '10px' }} />
             BACK
           </Button>
-          <Box display='flex'>
-            <Button
-              component={Link}
-              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claimId}`}
-              sx={{
-                color: theme.palette.buttontext,
-                bgcolor: theme.palette.buttons,
-                fontWeight: 500,
-                borderRadius: '24px',
-                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: '2rem',
-                marginRight: '15px',
-                width: { xs: '10px', sm: '180px' },
-                height: '48px'
-              }}
-            >
-              Validate
-            </Button>
-            <Button
-              component={Link}
-              to={`/explore/${claimId}`}
-              startIcon={<ShareOutlinedIcon />}
-              variant='text'
-              sx={{
-                p: '4px',
-                fontWeight: 500,
-                borderRadius: '24px',
-                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: '2rem',
-                width: { xs: '10px', sm: '220px' },
-                bgcolor: theme.palette.buttons,
-                color: theme.palette.sidecolor,
-                height: '48px'
-              }}
-            >
-              Graph View
-            </Button>
-          </Box>
         </Box>
       </Box>
     </Box>
