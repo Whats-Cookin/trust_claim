@@ -35,6 +35,7 @@ VITE_DID_PRIVATE_KEY='...'
 ## DEPLOYING to PRODUCTION
 ```
 ssh -i [key] ubuntu@68.183.144.184
+nvm use 20
 cd /data/trust_claim
 git pull
 yarn && yarn build
