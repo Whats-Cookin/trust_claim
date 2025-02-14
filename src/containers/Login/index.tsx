@@ -39,11 +39,14 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
 
   const navigate = useNavigate()
 
-  const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
-    handleAuthSuccess({ accessToken, refreshToken })
-    setLoading(false)
-    navigate(location.state?.from || '/')
-  }, [location.state?.from, navigate, setLoading])
+  const handleAuth = useCallback(
+    (accessToken: string, refreshToken: string) => {
+      handleAuthSuccess({ accessToken, refreshToken })
+      setLoading(false)
+      navigate(location.state?.from || '/')
+    },
+    [location.state?.from, navigate, setLoading]
+  )
 
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
@@ -66,7 +69,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     }
   }, [])
 
-
   const handleWalletAuth = async () => {
     try {
       const ethProvider = window.ethereum
@@ -75,16 +77,16 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
 
       if (accountId) {
         handleAuthSuccess({ ethAddress: accountId.address })
-          
-          // Initialize DID authentication
-          const success = await initializeDIDAuth(ceramic, composeClient)
-          if (success) {
-            navigate(location.state?.from || '/')
-          } else {
-            throw new Error('DID authentication failed')
-          }
+
+        // Initialize DID authentication
+        const success = await initializeDIDAuth(ceramic, composeClient)
+        if (success) {
+          navigate(location.state?.from || '/')
+        } else {
+          throw new Error('DID authentication failed')
+        }
       } else {
-         throw new Error('No account ID returned')
+        throw new Error('No account ID returned')
       }
     } catch (e) {
       console.error('Wallet auth error:', e)
@@ -329,7 +331,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                         console.error('Google auth error:', err)
                         toggleSnackbar(true)
                         setSnackbarMessage('Google authentication failed')
-                     }
+                      }
                     }}
                     onError={() => {
                       console.log('Login Failed')

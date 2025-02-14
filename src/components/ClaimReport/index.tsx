@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   Container,
   Typography,
@@ -18,7 +18,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
-import { height } from '@mui/system'
+import ClaimDetails from './ClaimDetails'
 
 interface Claim {
   statement: string | null
@@ -44,7 +44,6 @@ const DonationReport: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
-  const navigate = useNavigate()
 
   const url = `${BACKEND_BASE_URL}/api/report/${claimId}`
 
@@ -124,13 +123,8 @@ const DonationReport: React.FC = () => {
             />
           </Typography>
         </Box>
-        <MyCard
-          data={reportData.data.claim.claim}
-          theme={theme}
-          isLargeScreen={isLargeScreen}
-          setSelectedIndex={setSelectedIndex}
-          handleMenuClose={() => setSelectedIndex(null)}
-        />
+
+        <ClaimDetails theme={theme} data={reportData.data} />
 
         {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
           <>
@@ -162,6 +156,7 @@ const DonationReport: React.FC = () => {
                   <MyCard
                     key={validation.id}
                     data={validation}
+                    img={validation.image}
                     theme={theme}
                     isLargeScreen={isLargeScreen}
                     setSelectedIndex={setSelectedIndex}
@@ -204,6 +199,7 @@ const DonationReport: React.FC = () => {
                   <MyCard
                     key={attestation.id}
                     data={attestation}
+                    img={attestation.image}
                     theme={theme}
                     isLargeScreen={isLargeScreen}
                     setSelectedIndex={setSelectedIndex}
@@ -274,12 +270,14 @@ const DonationReport: React.FC = () => {
 
 function MyCard({
   data,
+  img,
   theme,
   setSelectedIndex,
   handleMenuClose,
   isLargeScreen
 }: Readonly<{
   data: any
+  img: any
   theme: any
   setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
   handleMenuClose: () => void
@@ -297,10 +295,17 @@ function MyCard({
         marginBottom: '2rem'
       }}
     >
-      {data.image ? (
+      {img ? (
         <Grid container spacing={isLargeScreen ? 4 : 2}>
           <Grid item xs={12} md={6}>
-            <img src={data.image} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+            {img.includes('.mp4') ? (
+              <video controls style={{ width: '100%', height: 'auto' }}>
+                <source src={img} type='video/mp4' />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img src={img} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+            )}
           </Grid>
           <Grid item xs={12} md={6}>
             <CardContent>

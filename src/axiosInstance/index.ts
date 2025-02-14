@@ -23,7 +23,7 @@ const tokenSubscribers: HaltedReqCb[] = []
 
 const onRefreshed = (newAccessToken: string) => {
   tokenSubscribers.forEach(cb => cb(newAccessToken))
-  tokenSubscribers.length = 0  // Clear array after processing
+  tokenSubscribers.length = 0 // Clear array after processing
 }
 
 const subscribeTokenRefresh = (haltedReqCb: HaltedReqCb) => {
@@ -35,20 +35,20 @@ instance.interceptors.response.use(
   async error => {
     const originalReq = error.config
     const errorResponse = error.response
-    
+
     if (errorResponse?.status === 401) {
       if (errorResponse.data.message === 'jwt expired' && !isRefreshing) {
         isRefreshing = true
         const refreshToken = localStorage.getItem('refreshToken')
-        
+
         try {
           const res = await instance.post('/auth/refresh_token', { refreshToken })
           const { accessToken, refreshToken: newRefreshToken } = res.data
-          
+
           handleAuthSuccess({ accessToken, refreshToken: newRefreshToken })
           isRefreshing = false
           onRefreshed(accessToken)
-          
+
           originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
           return instance(originalReq)
         } catch (err) {
@@ -67,7 +67,7 @@ instance.interceptors.response.use(
         })
       }
     }
-    
+
     return Promise.reject(error)
   }
 )

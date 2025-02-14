@@ -26,18 +26,21 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
   const theme = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
-  
+
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
 
-  const handleAuth = useCallback((accessToken: string, refreshToken: string) => {
-    handleAuthSuccess({ accessToken, refreshToken })
-    setLoading(false)
-    navigate(location.state?.from || '/')
-  }, [navigate, location.state?.from, setLoading])
+  const handleAuth = useCallback(
+    (accessToken: string, refreshToken: string) => {
+      handleAuthSuccess({ accessToken, refreshToken })
+      setLoading(false)
+      navigate(location.state?.from || '/')
+    },
+    [navigate, location.state?.from, setLoading]
+  )
 
   const handleWalletAuth = async () => {
     try {
@@ -47,7 +50,7 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
 
       if (accountId) {
         handleAuthSuccess({ ethAddress: accountId.address })
-        
+
         // Initialize DID authentication
         const success = await initializeDIDAuth(ceramic, composeClient)
         if (success) {
@@ -78,12 +81,12 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
         setSnackbarMessage('Both email and password are required fields.')
         return
       }
-      
+
       setLoading(true)
       const {
         data: { accessToken, refreshToken }
       } = await axios.post('/auth/login', { email, password })
-      
+
       handleAuth(accessToken, refreshToken)
     } catch (err: any) {
       setLoading(false)

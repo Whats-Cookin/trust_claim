@@ -41,6 +41,16 @@ const CLAIM_VALIDATED = 'validated'
 const CLAIM_REJECTED = 'rejected'
 const CLAIM_IMPACT = 'impact'
 
+const HOW_KNOWN = {
+  SecondHand: 'SECOND_HAND',
+  FirstHand: 'FIRST_HAND',
+  WebDocument: 'WEB_DOCUMENT',
+  FirstHandBenefit: 'FIRST_HAND_BENEFIT',
+  FirstHandRejected: 'FIRST_HAND_REJECTED',
+  WebDocumentRejected: 'WEB_DOCUMENT_REJECTED'
+} as const
+type HowKnown = (typeof HOW_KNOWN)[keyof typeof HOW_KNOWN]
+
 interface ImageI {
   url: string
   metadata: {
@@ -168,7 +178,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         images
       }
 
-      console.log("In submit, payload is")
+      console.log('In submit, payload is')
       console.log(payload)
 
       if (howKnown === FIRST_HAND_BENEFIT) {
@@ -218,9 +228,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     setIsExpanded(!isExpanded)
   }
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
-  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
-
   const inputOptions = {
     howKnown: [
       { value: FIRST_HAND, text: 'validate first hand' },
@@ -245,8 +252,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     ]
   }
 
+  const isTouchDevice = useMediaQuery('(hover: none)')
+  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
+
   const handleTooltipToggle = (index: number) => {
-    setOpenTooltipIndex(prevIndex => (prevIndex === index ? null : index))
+    if (isTouchDevice) {
+      setOpenTooltipIndex(prevIndex => (prevIndex === index ? null : index))
+    }
+  }
+  const handleItemSelect = () => {
+    setOpenTooltipIndex(null)
   }
 
   return (
@@ -505,7 +520,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
-
                     <Typography variant='body2'>How Known</Typography>
                     <FormControl
                       fullWidth
@@ -528,9 +542,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       }}
                     >
                       <Controller
-                        name="howKnown"
+                        name='howKnown'
                         control={control}
-                        defaultValue=""
+                        defaultValue=''
                         render={({ field }) => (
                           <Select
                             {...field}
@@ -548,10 +562,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               }
                             }}
                           >
-                        {inputOptions.howKnown.map((option, index: number) => (
-                          <MenuItem
-                            key={option.value}
-                            value={option.value}
+                            {inputOptions.howKnown.map((option, index: number) => (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                onClick={() => handleItemSelect()} // Close tooltips when selecting an item
                                 sx={{
                                   backgroundColor: theme.palette.input,
                                   color: theme.palette.texts,
@@ -581,24 +596,39 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                   alignItems: 'center'
                                 }}
                               >
-                                <Box sx={{ flexGrow: 1 }}>{option.text}</Box>
-                                {isMobile && (
-                                  <Tooltip
-                                    title={tooltips.howKnown[index]}
-                                    placement='right'
-                                    arrow
-                                    TransitionComponent={Fade}
-                                    open={openTooltipIndex === index}
-                                    onClose={() => setOpenTooltipIndex(null)}
-                                    disableFocusListener
-                                    disableHoverListener
-                                    disableTouchListener
+                                <Tooltip
+                                  title={tooltips.howKnown[index]}
+                                  placement={isTouchDevice ? 'top' : 'right'}
+                                  arrow
+                                  TransitionComponent={Fade}
+                                  open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                  onClose={() => setOpenTooltipIndex(null)}
+                                  disableFocusListener={isTouchDevice}
+                                  disableHoverListener={isTouchDevice}
+                                  disableTouchListener={isTouchDevice}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      width: '100%',
+                                      justifyContent: 'space-between'
+                                    }}
                                   >
-                                    <IconButton size='small' onClick={() => handleTooltipToggle(index)}>
-                                      <HelpIcon sx={{ color: '#0ABAB5' }} />
-                                    </IconButton>
-                                  </Tooltip>
-                                )}
+                                    <span>{option.text}</span>
+                                    {isTouchDevice && (
+                                      <IconButton
+                                        size='small'
+                                        onClick={e => {
+                                          e.stopPropagation()
+                                          handleTooltipToggle(index)
+                                        }}
+                                      >
+                                        <HelpIcon sx={{ color: '#0ABAB5' }} />
+                                      </IconButton>
+                                    )}
+                                  </Box>
+                                </Tooltip>
                               </MenuItem>
                             ))}
                           </Select>
@@ -610,9 +640,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       <>
                         <Typography variant='body2'>Your Website</Typography>
                         <Controller
-                          name="sourceURI"
+                          name='sourceURI'
                           control={control}
-                          defaultValue=""
+                          defaultValue=''
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -644,9 +674,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       <>
                         <Typography variant='body2'>Source URL</Typography>
                         <Controller
-                          name="sourceURI"
+                          name='sourceURI'
                           control={control}
-                          defaultValue=""
+                          defaultValue=''
                           render={({ field }) => (
                             <TextField
                               {...field}
@@ -742,9 +772,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       Explain here
                     </Typography>
                     <Controller
-                      name="statement"
+                      name='statement'
                       control={control}
-                      defaultValue=""
+                      defaultValue=''
                       render={({ field }) => (
                         <TextField
                           {...field}

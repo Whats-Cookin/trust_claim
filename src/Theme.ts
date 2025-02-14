@@ -104,25 +104,25 @@ const darkModeTheme = createTheme({
       `
     }
   },
-    typography: {
-      fontFamily: 'Montserrat',
-      body1: {
-        fontSize: '1rem',
-        fontWeight: 400,
-        lineHeight: 1.5,
-        '@media (min-width:600px)': {
-          fontSize: '1.25rem'
-        }
-      },
-      body2: {
-        fontSize: '0.875rem',
-        fontWeight: 300,
-        lineHeight: 1.43,
-        '@media (min-width:600px)': {
-          fontSize: '1rem'
-        }
+  typography: {
+    fontFamily: 'Montserrat',
+    body1: {
+      fontSize: '1rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
+      '@media (min-width:600px)': {
+        fontSize: '1.25rem'
       }
     },
+    body2: {
+      fontSize: '0.875rem',
+      fontWeight: 300,
+      lineHeight: 1.43,
+      '@media (min-width:600px)': {
+        fontSize: '1rem'
+      }
+    }
+  },
   palette: {
     mode: 'dark',
     background: {
@@ -186,25 +186,25 @@ const lightModeTheme = createTheme({
       `
     }
   },
-    typography: {
-      fontFamily: 'Montserrat',
-      body1: {
-        fontSize: '1rem',
-        fontWeight: 400,
-        lineHeight: 1.5,
-        '@media (min-width:600px)': {
-          fontSize: '1.25rem'
-        }
-      },
-      body2: {
-        fontSize: '0.875rem',
-        fontWeight: 300,
-        lineHeight: 1.43,
-        '@media (min-width:600px)': {
-          fontSize: '1rem'
-        }
+  typography: {
+    fontFamily: 'Montserrat',
+    body1: {
+      fontSize: '1rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
+      '@media (min-width:600px)': {
+        fontSize: '1.25rem'
       }
     },
+    body2: {
+      fontSize: '0.875rem',
+      fontWeight: 300,
+      lineHeight: 1.43,
+      '@media (min-width:600px)': {
+        fontSize: '1rem'
+      }
+    }
+  },
   palette: {
     mode: 'light',
     background: {

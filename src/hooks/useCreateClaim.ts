@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import axios from '../axiosInstance'
-import { ImageI } from '../components/Form/imageUploading'
+import { MediaI } from '../components/Form/imageUploading'
 import { ceramic, composeClient } from '../composedb'
 import { PublishClaim } from '../composedb/compose'
 import { canSignClaims, initializeDIDAuth } from '../utils/authUtils'
@@ -33,7 +33,7 @@ export function useCreateClaim() {
       }
 
       const { images, dto } = preparePayload(payload)
-      console.log('Sending payload:', dto)
+      console.log('Sending payload:', dto, images)
       const res = await axios.post('/api/claim/v2', generateFormData(dto, images))
 
       if (res.status === 201) {
@@ -41,9 +41,8 @@ export function useCreateClaim() {
         isSuccess = true
       }
     } catch (err: any) {
-      if (err.response) {
-        message = err.response.data.message
-      }
+      message = err.response?.data.message || 'Something went wrong'
+      console.error(err.response?.data)
     }
     return { message, isSuccess }
   }, [])
@@ -51,9 +50,9 @@ export function useCreateClaim() {
   return { createClaim }
 }
 
-function preparePayload<T extends { images: ImageI[] }>(
+function preparePayload<T extends { images: MediaI[] }>(
   payload: T
-): { dto: Omit<T, 'images'> & { images: Omit<ImageI, 'file' | 'url'>[] }; images: File[] } {
+): { dto: Omit<T, 'images'> & { images: Omit<MediaI, 'file' | 'url'>[] }; images: File[] } {
   const images: File[] = []
 
   const did = localStorage.getItem('did')
@@ -66,7 +65,7 @@ function preparePayload<T extends { images: ImageI[] }>(
       return {
         metadata: image.metadata,
         effectiveDate: image.effectiveDate
-      } as Omit<ImageI, 'file' | 'url'>
+      } as Omit<MediaI, 'file' | 'url'>
     })
   }
 

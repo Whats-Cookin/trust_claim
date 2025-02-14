@@ -35,7 +35,6 @@ const App = () => {
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-
   useEffect(() => {
     if (location.pathname === '/') {
       navigate('/feed') // Redirect to /feed
@@ -139,12 +138,17 @@ const App = () => {
               <Route path='report/:claimId' element={<ClaimReport />} />
               <Route path='claims/:claimId' element={<ClaimDetails {...commonProps} />} />
               <Route path='explore/:nodeId' element={<Explore {...commonProps} />} />
-              <Route path='claim' element={<Form {...commonProps} />} />
               <Route path='register' element={<Register {...commonProps} />} />
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
               {/* <Route path='cookie' element={<Cookie />} /> */}
+              <Route
+                path='claim'
+                element={
+                  checkAuth() ? <Form {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                }
+              />
               <Route
                 path='/rate'
                 element={

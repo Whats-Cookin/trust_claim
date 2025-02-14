@@ -32,6 +32,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
   return (
     <BottomNavigation
       sx={{
+        bottom: 0,
         position: 'fixed',
         height: '60px',
         width: '100%',

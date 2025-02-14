@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useState, DragEvent } from 'react'
 import { X } from 'lucide-react'
 import {
   TextField,
@@ -19,70 +19,96 @@ import {
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
-export interface ImageI {
+export interface MediaI {
   file: File
   url: string
   metadata: {
-    description: string
-    caption: string
+    caption: string | null
+    description: string | null
   }
   effectiveDate: Date
+  type: 'image' | 'video'
 }
 
-interface ImageUploaderProps<TFieldValues extends FieldValues> {
+interface MediaUploaderProps<TFieldValues extends FieldValues> {
   fieldArray: UseFieldArrayReturn<TFieldValues>
   control: Control<TFieldValues>
   register: UseFormRegister<TFieldValues>
 }
 
-const ImageUploader = <TFieldValues extends FieldValues>({
+const MediaUploader = <TFieldValues extends FieldValues>({
   fieldArray,
   register
-}: ImageUploaderProps<TFieldValues>) => {
+}: MediaUploaderProps<TFieldValues>) => {
   const { fields, append, remove } = fieldArray
 
   const [open, setOpen] = useState(false)
-  const [currentImage, setCurrentImage] = useState<ImageI | null>(null)
-  const [hiddenImages, setHiddenImages] = useState<ImageI[]>([])
+  const [currentMedia, setCurrentMedia] = useState<MediaI | null>(null)
+  const [hiddenMedia, setHiddenMedia] = useState<MediaI[]>([])
+
+  const [isDragging, setIsDragging] = useState<boolean>(false)
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>): void => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (): void => {
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>): void => {
+    e.preventDefault()
+    setIsDragging(false)
+    const files = Array.from(e.dataTransfer.files).filter(
+      file => file.type.startsWith('image/') || file.type.startsWith('video/')
+    )
+    readFiles(files)
+  }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files || !files?.length) return
+    readFiles(files)
+  }
 
+  const readFiles = (files: FileList | File[]) => {
     Array.from(files).forEach(file => {
       const reader = new FileReader()
       reader.onloadend = () => {
-        const newImage: ImageI = {
+        const newMedia: MediaI = {
           file: file,
           url: reader.result as string,
           metadata: {
-            description: '',
-            caption: ''
+            caption: null,
+            description: null
           },
-          effectiveDate: new Date()
+          effectiveDate: new Date(),
+          type: file.type.startsWith('image/') ? 'image' : 'video'
         }
-        setCurrentImage(newImage)
+        setCurrentMedia(newMedia)
         setOpen(true)
       }
       reader.readAsDataURL(file)
     })
   }
 
-  const handleSaveImage = () => {
-    if (currentImage && currentImage.url && currentImage.url.trim() !== '') {
-      append(currentImage as unknown as TFieldValues['images'][number])
-      setHiddenImages([...hiddenImages, currentImage])
-      setCurrentImage(null)
+  const handleSaveMedia = () => {
+    if (currentMedia && currentMedia.url && currentMedia.url.trim() !== '') {
+      append(currentMedia as unknown as TFieldValues['media'][number])
+      setHiddenMedia([...hiddenMedia, currentMedia])
+      setCurrentMedia(null)
       setOpen(false)
     } else {
-      setCurrentImage(null)
+      setCurrentMedia(null)
       setOpen(false)
     }
   }
+
   const handleEffectiveDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (currentImage) {
+    if (currentMedia) {
       const newEffectiveDate = new Date(e.target.value)
-      setCurrentImage({ ...currentImage, effectiveDate: newEffectiveDate })
+      setCurrentMedia({ ...currentMedia, effectiveDate: newEffectiveDate })
     }
   }
 
@@ -92,7 +118,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   return (
     <Box sx={{ mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
       <Box sx={{ mb: 4 }}>
-        <label htmlFor='image-upload'>
+        <label htmlFor='media-upload'>
           <Box
             sx={{
               display: 'flex',
@@ -104,54 +130,67 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               height: 180,
               border: `5px dashed ${theme.palette.input}`,
               borderRadius: 2,
-
               cursor: 'pointer',
               transition: 'border-color 0.3s',
               '&:hover': {
                 borderColor: theme.palette.borderColor
               }
             }}
+            style={{ borderColor: isDragging ? theme.palette.borderColor : theme.palette.input }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            role='presentation'
           >
             <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
               <strong>Click to upload</strong> or drag and drop
             </Typography>
             <Typography variant='caption' color='textSecondary' sx={{ textAlign: 'center' }}>
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
+              SVG, PNG, JPG, GIF, or MP4 (MAX. 800x400px)
             </Typography>
           </Box>
           <input
-            id='image-upload'
+            id='media-upload'
             type='file'
             style={{ display: 'none' }}
             onChange={handleFileChange}
-            accept='image/*'
+            accept='image/*, video/*'
             multiple
           />
         </label>
       </Box>
 
       {fields.map((field, index) => {
-        const imageField = field as unknown as ImageI
-        if (hiddenImages.some(hiddenImage => hiddenImage.url === imageField.url)) {
+        const mediaField = field as unknown as MediaI
+        if (hiddenMedia.some(hiddenMedia => hiddenMedia.url === mediaField.url)) {
           return null
         }
-        return imageField.url ? (
+        return mediaField.url ? (
           <Card key={field.id} sx={{ mb: 6, p: 2, border: '1px solid', borderColor: 'grey.300', borderRadius: 2 }}>
-            <CardMedia
-              component='img'
-              image={imageField.url}
-              alt={`Preview ${index + 1}`}
-              sx={{ width: '100%', height: 'auto', borderRadius: 1 }}
-            />
+            {mediaField.type === 'image' ? (
+              <CardMedia
+                component='img'
+                image={mediaField.url}
+                alt={`Preview ${index + 1}`}
+                sx={{ width: '100%', height: 'auto', borderRadius: 1 }}
+              />
+            ) : (
+              <CardMedia
+                component='video'
+                src={mediaField.url}
+                controls
+                sx={{ width: '100%', height: 'auto', borderRadius: 1 }}
+              />
+            )}
             <CardContent sx={{ position: 'relative' }}>
               <IconButton onClick={() => remove(index)} sx={{ position: 'absolute', top: 8, right: 8 }} color='error'>
                 <X />
               </IconButton>
               <Box sx={{ mt: 2 }}>
                 <TextField
-                  {...register(`images.${index}.metadata.caption` as Path<TFieldValues>)}
-                  id={`images.${index}.metadata.caption`}
+                  {...register(`media.${index}.metadata.caption` as Path<TFieldValues>)}
+                  id={`media.${index}.metadata.caption`}
                   label='Caption'
                   fullWidth
                   variant='outlined'
@@ -160,8 +199,8 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               </Box>
               <Box sx={{ mt: 2 }}>
                 <TextField
-                  {...register(`images.${index}.metadata.description` as Path<TFieldValues>)}
-                  id={`images.${index}.metadata.description`}
+                  {...register(`media.${index}.metadata.description` as Path<TFieldValues>)}
+                  id={`media.${index}.metadata.description`}
                   label='Description'
                   multiline
                   rows={3}
@@ -172,8 +211,8 @@ const ImageUploader = <TFieldValues extends FieldValues>({
               </Box>
               <Box sx={{ mt: 2 }}>
                 <TextField
-                  {...register(`images.${index}.effectiveDate` as Path<TFieldValues>)}
-                  id={`images.${index}.effectiveDate`}
+                  {...register(`media.${index}.effectiveDate` as Path<TFieldValues>)}
+                  id={`media.${index}.effectiveDate`}
                   label='Effective Date'
                   type='date'
                   fullWidth
@@ -188,25 +227,37 @@ const ImageUploader = <TFieldValues extends FieldValues>({
       })}
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth='sm' fullWidth>
-        <DialogTitle>Image Details</DialogTitle>
+        <DialogTitle>Media Details</DialogTitle>
         <DialogContent>
-          {currentImage && (
+          {currentMedia && (
             <>
-              <CardMedia
-                component='img'
-                image={currentImage.url}
-                alt='Image Preview'
-                sx={{ width: '100%', height: 'auto', mb: 2 }}
-              />
+              {currentMedia.type === 'image' ? (
+                <CardMedia
+                  component='img'
+                  image={currentMedia.url}
+                  alt='Image Preview'
+                  sx={{ width: '100%', height: 'auto', mb: 2 }}
+                />
+              ) : (
+                <CardMedia
+                  component='video'
+                  src={currentMedia.url}
+                  controls
+                  sx={{ width: '100%', height: 'auto', mb: 2 }}
+                />
+              )}
               <TextField
                 label='Caption'
                 fullWidth
                 variant='outlined'
                 size='small'
                 sx={{ mb: 2 }}
-                value={currentImage.metadata.caption}
+                value={currentMedia.metadata.caption}
                 onChange={e =>
-                  setCurrentImage({ ...currentImage, metadata: { ...currentImage.metadata, caption: e.target.value } })
+                  setCurrentMedia({
+                    ...currentMedia,
+                    metadata: { ...currentMedia.metadata, caption: e.target.value }
+                  })
                 }
               />
               <TextField
@@ -217,11 +268,11 @@ const ImageUploader = <TFieldValues extends FieldValues>({
                 variant='outlined'
                 size='small'
                 sx={{ mb: 2 }}
-                value={currentImage.metadata.description}
+                value={currentMedia.metadata.description}
                 onChange={e =>
-                  setCurrentImage({
-                    ...currentImage,
-                    metadata: { ...currentImage.metadata, description: e.target.value }
+                  setCurrentMedia({
+                    ...currentMedia,
+                    metadata: { ...currentMedia.metadata, description: e.target.value }
                   })
                 }
               />
@@ -233,7 +284,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
                 variant='outlined'
                 size='small'
                 sx={{ mb: 2 }}
-                value={currentImage.effectiveDate.toISOString().slice(0, 10)}
+                value={currentMedia.effectiveDate.toISOString().slice(0, 10)}
                 onChange={handleEffectiveDateChange}
               />
             </>
@@ -241,7 +292,7 @@ const ImageUploader = <TFieldValues extends FieldValues>({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleSaveImage} color='primary'>
+          <Button onClick={handleSaveMedia} color='primary'>
             Save
           </Button>
         </DialogActions>
@@ -250,4 +301,4 @@ const ImageUploader = <TFieldValues extends FieldValues>({
   )
 }
 
-export default ImageUploader
+export default MediaUploader
