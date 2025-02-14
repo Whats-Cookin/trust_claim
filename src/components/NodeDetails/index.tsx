@@ -26,7 +26,7 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: { xs: 'column', sm: 'row' } }}>
         <StartNode selectedClaim={startNode} claimImg={claimImg} />
-        <EndNode selectedClaim={endNode} claimImg={claimImg} />
+        {/* <EndNode selectedClaim={endNode} claimImg={claimImg} /> */}
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
         <Button
