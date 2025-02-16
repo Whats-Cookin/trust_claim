@@ -141,7 +141,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         <Stack spacing={3}>
           {/* Title and Actions Row */}
           <Stack
-            direction={{ xs: 'column', md: 'row' }}
+            direction={{ xs: 'column', md: 'column', lg: 'row' }}
             spacing={2}
             alignItems={{ xs: 'flex-start', sm: 'center' }}
             justifyContent='space-between'
@@ -152,7 +152,15 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </Typography>
             </Stack>
 
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 0, sm: 2 }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 2, sm: 2 }}
+              sx={{
+                width: '100%',
+                alignItems: { xs: 'center', sm: 'flex-start' },
+                justifyContent: { xs: 'center', sm: 'flex-end', md: 'center' }
+              }}
+            >
               <Button
                 component={Link}
                 startIcon={<CheckCircleOutlineOutlinedIcon />}
@@ -164,10 +172,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   fontWeight: 500,
                   borderRadius: '24px',
                   fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: '2rem',
-                  marginRight: '15px',
-                  marginBottom: { xs: '10px', sm: 0 },
-                  width: { xs: '100px', sm: '150px' },
+                  px: { xs: '1rem', sm: '2rem' },
+                  width: { xs: '100%', sm: 'auto' },
+                  minWidth: { xs: 'auto', sm: '150px' },
                   height: '48px',
                   whiteSpace: 'nowrap'
                 }}
@@ -186,105 +193,103 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   fontWeight: 500,
                   borderRadius: '24px',
                   fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: '2rem',
-                  marginRight: '15px',
-                  marginBottom: { xs: '10px', sm: 0 },
-                  width: { xs: '100px', sm: '120px' },
+                  px: { xs: '1rem', sm: '2rem' },
+                  width: { xs: '100%', sm: 'auto' },
+                  minWidth: { xs: 'auto', sm: '120px' },
                   height: '48px'
                 }}
               >
                 Validate
               </Button>
 
-              <Box>
-                <Button
-                  variant='outlined'
-                  startIcon={<ShareIcon />}
-                  onClick={handleShareClick}
-                  sx={{
-                    textTransform: 'none',
-                    color: theme.palette.buttontext,
-                    fontWeight: 500,
-                    borderRadius: '24px',
-                    fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                    px: '2rem',
-                    marginBottom: { xs: '10px', sm: 0 },
-                    marginRight: '15px',
-                    width: { xs: '100px', sm: '120px' },
-                    height: '48px'
-                  }}
-                >
-                  Share
-                </Button>
-                <Popover
-                  id={id}
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left'
-                  }}
-                  PaperProps={{
-                    sx: {
-                      padding: '20px',
-                      backgroundColor: theme.palette.formBackground,
-                      borderRadius: '12px'
-                    }
-                  }}
-                >
-                  <Typography
-                    variant='body1'
-                    sx={{
-                      color: 'white',
-                      fontWeight: 'bold',
-                      textAlign: 'left'
-                    }}
-                  >
-                    Copy Link
-                  </Typography>
-                  <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-                    <Box display='flex' justifyContent='center' alignItems='center'>
-                      <TextField
-                        value={currentUrl}
-                        variant='outlined'
-                        InputProps={{
-                          readOnly: true,
-                          sx: {
-                            color: 'white',
-                            backgroundColor: '#2f4f4f',
-                            borderRadius: '5px'
-                          },
-                          endAdornment: (
-                            <InputAdornment position='end'>
-                              <IconButton onClick={handleCopyLink}>
-                                <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
-                              </IconButton>
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Popover>
+              <Button
+                variant='outlined'
+                startIcon={<ShareIcon />}
+                onClick={handleShareClick}
+                sx={{
+                  textTransform: 'none',
+                  color: theme.palette.buttontext,
+                  fontWeight: 500,
+                  borderRadius: '24px',
+                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
+                  px: { xs: '1rem', sm: '2rem' },
+                  width: { xs: '100%', sm: 'auto' },
+                  minWidth: { xs: 'auto', sm: '120px' },
+                  height: '48px'
+                }}
+              >
+                Share
+              </Button>
 
-                {/* Snackbar */}
-                <Snackbar
-                  open={snackbarOpen}
-                  autoHideDuration={2000}
-                  onClose={() => setSnackbarOpen(false)}
-                  message='Link copied to clipboard!'
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left'
+                }}
+                PaperProps={{
+                  sx: {
+                    padding: '20px',
+                    backgroundColor: theme.palette.formBackground,
+                    borderRadius: '12px'
+                  }
+                }}
+              >
+                <Typography
+                  variant='body1'
                   sx={{
-                    '& .MuiSnackbarContent-root': {
-                      backgroundColor: theme.palette.cardBackground,
-                      color: theme.palette.buttontext,
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                      borderRadius: '8px'
-                    }
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textAlign: 'left'
                   }}
-                />
-              </Box>
+                >
+                  Copy Link
+                </Typography>
+                <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
+                  <Box display='flex' justifyContent='center' alignItems='center'>
+                    <TextField
+                      value={currentUrl}
+                      variant='outlined'
+                      InputProps={{
+                        readOnly: true,
+                        sx: {
+                          color: 'white',
+                          backgroundColor: '#2f4f4f',
+                          borderRadius: '5px'
+                        },
+                        endAdornment: (
+                          <InputAdornment position='end'>
+                            <IconButton onClick={handleCopyLink}>
+                              <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </Popover>
+
+              {/* Snackbar */}
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2000}
+                onClose={() => setSnackbarOpen(false)}
+                message='Link copied to clipboard!'
+                sx={{
+                  '& .MuiSnackbarContent-root': {
+                    backgroundColor: theme.palette.cardBackground,
+                    color: theme.palette.buttontext,
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    borderRadius: '8px'
+                  }
+                }}
+              />
+              {/* </Box> */}
 
               <Button
                 variant='outlined'
@@ -296,10 +301,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   fontWeight: 500,
                   borderRadius: '24px',
                   fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: '2rem',
-                  marginBottom: { xs: '10px', sm: 0 },
-                  marginRight: '15px',
-                  width: { xs: '100px', sm: '120px' },
+                  px: { xs: '1rem', sm: '2rem' },
+                  width: { xs: '100%', sm: 'auto' },
+                  minWidth: { xs: 'auto', sm: '120px' },
                   height: '48px'
                 }}
               >
