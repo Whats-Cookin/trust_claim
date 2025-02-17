@@ -15,6 +15,7 @@ import {
   Snackbar
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
@@ -23,7 +24,6 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState } from 'react'
-
 // import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
 // import Duration from '../../assets/duration.svg'
 
@@ -105,6 +105,12 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleLinkedInPost = () => {
+    const currentUrl = encodeURIComponent(window.location.href)
+    const linkedInShareUrl = `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${currentUrl}`
+    window.open(linkedInShareUrl, '_blank')
   }
 
   const handleCopyLink = () => {
@@ -269,6 +275,31 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                         )
                       }}
                     />
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mt: 2
+                    }}
+                  >
+                    <IconButton
+                      onClick={handleLinkedInPost} // Click to share on LinkedIn
+                      sx={{
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        width: '50px',
+                        height: '50px',
+                        '&:hover': { backgroundColor: '#f0f0f0' }
+                      }}
+                    >
+                      <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
+                    </IconButton>
+                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                      Post
+                    </Typography>
                   </Box>
                 </Box>
               </Popover>
