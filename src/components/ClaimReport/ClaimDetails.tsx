@@ -277,30 +277,30 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                     />
                   </Box>
                   <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mt: 2
+                    }}
+                  >
+                    <IconButton
+                      onClick={handleLinkedInPost} // Click to share on LinkedIn
                       sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mt: 2
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        width: '50px',
+                        height: '50px',
+                        '&:hover': { backgroundColor: '#f0f0f0' }
                       }}
                     >
-                      <IconButton
-                        onClick={handleLinkedInPost} // Click to share on LinkedIn
-                        sx={{
-                          borderRadius: '50%',
-                          backgroundColor: 'white',
-                          width: '50px',
-                          height: '50px',
-                          '&:hover': { backgroundColor: '#f0f0f0' }
-                        }}
-                      >
-                        <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
-                      </IconButton>
-                      <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                        Post
-                      </Typography>
-                    </Box>
+                      <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
+                    </IconButton>
+                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                      Post
+                    </Typography>
+                  </Box>
                 </Box>
               </Popover>
 
