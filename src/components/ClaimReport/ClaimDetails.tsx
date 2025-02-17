@@ -164,7 +164,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               sx={{
                 width: '100%',
                 alignItems: { xs: 'center', sm: 'flex-start' },
-                justifyContent: { xs: 'center', sm: 'flex-end', md: 'center' }
+                justifyContent: { xs: 'center', sm: 'center', md: 'felx-end', lg: 'flex-end' }
               }}
             >
               <Button
