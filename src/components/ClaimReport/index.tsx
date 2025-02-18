@@ -18,6 +18,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
+import ClaimDetails from './ClaimDetails'
 
 interface Claim {
   statement: string | null
