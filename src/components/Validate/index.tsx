@@ -97,7 +97,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       try {
         setLoading(true)
         const res = await axios.get(`/api/claim/${number}`)
-        console.log('Fetched data:', res.data); // Debugging log
+        console.log('Fetched data:', res.data) // Debugging log
 
         if (res.data.claim.subject) setSubjectValue(res.data.claim.subject)
         if (res.data.claim.statement) setStatementValue(res.data.claim.statement)
@@ -178,7 +178,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         claim: CLAIM_VALIDATED,
         images
       }
-      console.log('Payload before submission:', payload); // Debugging log
+      console.log('Payload before submission:', payload) // Debugging log
 
       console.log('In submit, payload is')
       console.log(payload)
@@ -200,28 +200,28 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       setLoading(true)
 
       try {
-        const { message, isSuccess } = await createClaim(payload);
-        console.log('Submission response:', { message, isSuccess }); // Debugging log
+        const { message, isSuccess } = await createClaim(payload)
+        console.log('Submission response:', { message, isSuccess }) // Debugging log
 
-        setLoading(false);
-        toggleSnackbar(true);
+        setLoading(false)
+        toggleSnackbar(true)
         if (isSuccess) {
-          setSnackbarMessage('Success! ' + message);
+          setSnackbarMessage('Success! ' + message)
           setTimeout(() => {
-            navigate('/feed');
-          }, 3000);
-          reset();
+            navigate('/feed')
+          }, 3000)
+          reset()
         } else {
-          setSnackbarMessage('An error occurred: ' + message);
+          setSnackbarMessage('An error occurred: ' + message)
         }
       } catch (error) {
-        console.error('Error during submission:', error); // Debugging log
-        setLoading(false);
-        setSnackbarMessage('An error occurred during submission.');
+        console.error('Error during submission:', error) // Debugging log
+        setLoading(false)
+        setSnackbarMessage('An error occurred during submission.')
       }
     }
-  });
-  
+  })
+
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
