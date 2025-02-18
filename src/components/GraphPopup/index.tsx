@@ -20,13 +20,6 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Link } from 'react-router-dom'
 import { useCallback, useEffect, useState } from 'react'
 
-const claim = {
-  id: 1,
-  name: 'Product Design',
-  statement:
-    'I developed this skill through hands-on experience and self-study. I have a strong understanding of design principles and tools.'
-}
-
 const truncateText = (text: string, length: number) => {
   if (text.length <= length) return text
   return `${text.substring(0, length)}...`
@@ -73,7 +66,10 @@ const GraphPopup = () => {
 
   const open = Boolean(anchorEl)
   const id = open ? 'share-popover' : undefined
-  const isStatementLong = claim.statement && claim.statement.length > 50
+  const statement =
+    'I developed this skill through hands-on experience and self-study. I have a strong understanding of design principles and tools.'
+
+  const isStatementLong = statement && statement.length > 50
 
   return (
     <StyledCard elevation={0}>
@@ -82,7 +78,7 @@ const GraphPopup = () => {
           {/* Header */}
           <Stack direction='row' alignItems='center' justifyContent='center' spacing={1}>
             <Typography variant='h6' component='div' sx={{ color: theme.palette.buttontext }}>
-              {claim.name}
+              Product Design
             </Typography>
             <CheckCircleOutlineOutlinedIcon sx={{ color: theme.palette.maintext, fontSize: 20 }} />
           </Stack>
@@ -95,7 +91,7 @@ const GraphPopup = () => {
           <Divider sx={{ color: theme.palette.date }} />
 
           {/* Description */}
-          {claim.statement && (
+          {statement && (
             <Box>
               <Typography color='white' sx={{ fontSize: '0.875rem !important', fontWeight: 500, display: 'inline' }}>
                 {'Description: '}
@@ -103,7 +99,7 @@ const GraphPopup = () => {
               <Typography
                 sx={{ fontSize: '0.875rem !important', fontWeight: 400, color: theme.palette.date, display: 'inline' }}
               >
-                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 50)}
+                {isExpanded || !isStatementLong ? statement : truncateText(statement, 50)}
                 {isStatementLong && (
                   <MuiLink
                     onClick={handleToggleExpand}
@@ -132,7 +128,7 @@ const GraphPopup = () => {
           <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
             <Button
               component={Link}
-              to={`/report/${claim.id}`}
+              to={`/report/1`}
               sx={{
                 textTransform: 'none',
                 color: theme.palette.buttontext,
