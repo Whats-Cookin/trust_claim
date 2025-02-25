@@ -287,7 +287,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         borderRadius: '20px',
                         display: isMediumScreen ? 'column' : 'row',
                         backgroundColor:
-                          selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
+                          claim.name === 'LinkedCreds'
+                            ? '#2a3a4a'
+                            : selectedIndex === index
+                            ? theme.palette.cardBackgroundBlur
+                            : theme.palette.cardBackground,
                         backgroundImage: 'none',
                         filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
                         color: theme.palette.texts
