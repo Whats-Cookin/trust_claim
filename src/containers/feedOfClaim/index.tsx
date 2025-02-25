@@ -71,10 +71,10 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
         <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
         <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
       </Typography>
-      
+
       {isCredential && (
-        <Box 
-          sx={{ 
+        <Box
+          sx={{
             display: 'flex',
             alignItems: 'center',
             backgroundColor: 'rgba(0, 150, 0, 0.1)',
@@ -86,8 +86,8 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
           }}
         >
           <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-          <Typography variant="caption" sx={{ color: 'white', fontWeight: 'bold',fontSize: '12px'}}>
-          LinkedCreds
+          <Typography variant='caption' sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
+            LinkedCreds
           </Typography>
         </Box>
       )}
