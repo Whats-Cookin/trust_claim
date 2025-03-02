@@ -16,6 +16,7 @@
 }
 
 .node-label {
+  width: 150px;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
