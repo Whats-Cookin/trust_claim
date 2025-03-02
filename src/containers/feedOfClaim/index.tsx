@@ -297,39 +297,38 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-
-                          <Link
-                            to={claim.link}
-                            onClick={e => handleLinkClick(e, claim.link)}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            style={{ textDecoration: 'none' }}
-                          >
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Link
+                              to={claim.link}
+                              onClick={e => handleLinkClick(e, claim.link)}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              style={{ textDecoration: 'none' }}
+                            >
                               <ClaimName claim={claim} searchTerm={searchTerm} />
-                              </Link>
-                              {claim && claim.claim && claim.claim === 'credential' && (
-                                <Box
-                                  sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    backgroundColor: 'rgba(0, 150, 0, 0.1)',
-                                    borderRadius: '12px',
-                                    padding: '2px 8px',
-                                    marginBottom: '10px',
-                                    marginLeft: '10px',
-                                    height: 'fit-content'
-                                  }}
+                            </Link>
+                            {claim && claim.claim && claim.claim === 'credential' && (
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  backgroundColor: 'rgba(0, 150, 0, 0.1)',
+                                  borderRadius: '12px',
+                                  padding: '2px 8px',
+                                  marginBottom: '10px',
+                                  marginLeft: '10px',
+                                  height: 'fit-content'
+                                }}
+                              >
+                                <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
+                                <Typography
+                                  variant='caption'
+                                  sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}
                                 >
-                                  <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-                                  <Typography
-                                    variant='caption'
-                                    sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}
-                                  >
-                                    {claim.claim}
-                                  </Typography>
-                                </Box>
-                              )}
+                                  {claim.claim}
+                                </Typography>
+                              </Box>
+                            )}
                           </Box>
 
                           <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
@@ -339,7 +338,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               day: 'numeric'
                             })}
                           </Typography>
-                          
+
                           {claim.statement && (
                             <Typography
                               variant='body2'
