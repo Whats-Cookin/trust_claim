@@ -57,7 +57,6 @@ const extractSourceName = (url: string) => {
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   const displayName = extractProfileName(claim.name)
   const theme = useTheme()
-  const isCredential = claim.name === 'LinkedCreds' || displayName === 'LinkedCreds'
   const highlightedName = searchTerm.trim()
     ? displayName.replace(
         new RegExp(`(${searchTerm})`, 'gi'),
@@ -71,26 +70,6 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
         <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
         <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
       </Typography>
-
-      {isCredential && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 150, 0, 0.1)',
-            borderRadius: '12px',
-            padding: '2px 8px',
-            marginBottom: '10px',
-            marginLeft: '10px',
-            height: 'fit-content'
-          }}
-        >
-          <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-          <Typography variant='caption' sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
-            LinkedCreds
-          </Typography>
-        </Box>
-      )}
     </Box>
   )
 }
@@ -310,11 +289,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         borderRadius: '20px',
                         display: isMediumScreen ? 'column' : 'row',
                         backgroundColor:
-                          claim.name === 'LinkedCreds'
-                            ? '#2a3a4a'
-                            : selectedIndex === index
-                            ? theme.palette.cardBackgroundBlur
-                            : theme.palette.cardBackground,
+                          selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
                         backgroundImage: 'none',
                         filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
                         color: theme.palette.texts
@@ -322,15 +297,40 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
-                          <Link
-                            to={claim.link}
-                            onClick={e => handleLinkClick(e, claim.link)}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            style={{ textDecoration: 'none' }}
-                          >
-                            <ClaimName claim={claim} searchTerm={searchTerm} />
-                          </Link>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Link
+                              to={claim.link}
+                              onClick={e => handleLinkClick(e, claim.link)}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <ClaimName claim={claim} searchTerm={searchTerm} />
+                            </Link>
+                            {claim && claim.claim && claim.claim === 'credential' && (
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  backgroundColor: 'rgba(0, 150, 0, 0.1)',
+                                  borderRadius: '12px',
+                                  padding: '2px 8px',
+                                  marginBottom: '10px',
+                                  marginLeft: '10px',
+                                  height: 'fit-content'
+                                }}
+                              >
+                                <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
+                                <Typography
+                                  variant='caption'
+                                  sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}
+                                >
+                                  {claim.claim}
+                                </Typography>
+                              </Box>
+                            )}
+                          </Box>
+
                           <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
                             {new Date(claim.effective_date).toLocaleDateString('en-US', {
                               year: 'numeric',
@@ -338,6 +338,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               day: 'numeric'
                             })}
                           </Typography>
+
                           {claim.statement && (
                             <Typography
                               variant='body2'

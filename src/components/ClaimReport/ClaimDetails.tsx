@@ -20,6 +20,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
 import CircleIcon from '@mui/icons-material/Circle'
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
@@ -156,6 +157,27 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <Typography variant='h6' color='white' sx={{ minWidth: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}>
                 {data.edge.startNode.name}
               </Typography>
+            </Stack>
+            <Stack spacing={1}>
+              {claim && claim.claim && claim.claim === 'credential' && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0, 150, 0, 0.1)',
+                    borderRadius: '12px',
+                    padding: '2px 8px',
+                    marginBottom: '10px',
+                    marginLeft: '10px',
+                    height: 'fit-content'
+                  }}
+                >
+                  <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
+                  <Typography variant='caption' sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
+                    {claim.claim}
+                  </Typography>
+                </Box>
+              )}
             </Stack>
 
             <Stack
