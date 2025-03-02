@@ -5,7 +5,7 @@ import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
 import axios from '../../axiosInstance'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
@@ -13,8 +13,6 @@ import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
 import NodeDetails from '../../components/NodeDetails'
-import { s } from 'vitest/dist/types-e3c9754d'
-import { set } from 'lodash'
 
 const Explore = (homeProps: IHomeProps) => {
   const { nodeId } = useParams<{ nodeId: string }>()
@@ -28,16 +26,17 @@ const Explore = (homeProps: IHomeProps) => {
   const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
-  const isMediumUp = useMediaQuery(theme.breakpoints.up('md'))
 
   const navigate = useNavigate()
 
-  const layoutName = isMediumUp ? 'circle' : 'breadthfirst'
+  const layoutName = 'concentric'
   const layoutOptions = {
-    directed: !isMediumUp,
     fit: true,
-    spacingFactor: isMediumUp ? 1 : 1.1,
-    padding: isMediumUp ? 150 : 0
+    avoidOverlap: true,
+    nodeSpacing: 50,
+    concentric: (node: any) => node.degree(),
+    levelWidth: (nodes: any) => nodes.maxDegree() / 2,
+    minNodeSpacing: 50
   }
 
   const runCy = (cyInstance: Cytoscape.Core | undefined) => {
