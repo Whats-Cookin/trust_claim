@@ -73,6 +73,21 @@ const generateLinkedInShareUrl = (credentialName: string, url: string) => {
   return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
 }
 
+const generateLinkedInCertificationUrl = (claim: any) => {
+  const baseLinkedInUrl = 'https://www.linkedin.com/profile/add'
+  const params = new URLSearchParams({
+    startTask: 'CERTIFICATION_NAME',
+    name: claim?.subject ?? 'Certification Name',
+    organizationName: 'LinkedTrust',
+    issueYear: '2024',
+    issueMonth: '8',
+    expirationYear: '2025',
+    expirationMonth: '8',
+    certUrl: claim.claimAddress
+  })
+  return `${baseLinkedInUrl}?${params.toString()}`
+}
+
 const exportClaimData = (claimData: any) => {
   if (!claimData) {
     console.error('exportClaimData: claimData is null or undefined.')
@@ -114,6 +129,11 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleLinkedInCertification = () => {
+    const linkedInUrl = generateLinkedInCertificationUrl(claim)
+    window.open(linkedInUrl, '_blank')
   }
 
   const handleLinkedInPost = () => {
@@ -318,6 +338,31 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                     </IconButton>
                     <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
                       Post
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mt: 2
+                    }}
+                  >
+                    <IconButton
+                      onClick={handleLinkedInCertification} // Click to share on LinkedIn
+                      sx={{
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        width: '50px',
+                        height: '50px',
+                        '&:hover': { backgroundColor: '#f0f0f0' }
+                      }}
+                    >
+                      <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
+                    </IconButton>
+                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                      Add to profile
                     </Typography>
                   </Box>
                 </Box>
