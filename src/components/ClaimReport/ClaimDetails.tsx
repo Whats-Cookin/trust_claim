@@ -64,6 +64,15 @@ const truncateText = (text: string, length: number) => {
   return `${text.substring(0, length)}...`
 }
 
+const generateLinkedInShareUrl = (credentialName: string, url: string) => {
+  const encodedUrl = encodeURIComponent(url)
+  const message = encodeURIComponent(
+    `Excited to share my verified ${credentialName} credential from LinkedTrust! Check it out here: ${url} Thanks to my validators for confirming my skills!`
+  )
+
+  return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
+}
+
 const exportClaimData = (claimData: any) => {
   if (!claimData) {
     console.error('exportClaimData: claimData is null or undefined.')
@@ -108,8 +117,10 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   }
 
   const handleLinkedInPost = () => {
-    const currentUrl = encodeURIComponent(window.location.href)
-    const linkedInShareUrl = `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${currentUrl}`
+    const currentUrl = window.location.href
+    const credentialName = data?.edge?.startNode?.name || 'a new'
+
+    const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
     window.open(linkedInShareUrl, '_blank')
   }
 
@@ -153,7 +164,15 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             justifyContent='space-between'
           >
             <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
-              <Typography variant='h6' color='white' sx={{ minWidth: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}>
+              <Typography
+                variant='h6'
+                color='white'
+                sx={{ minWidth: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}
+                component='a'
+                href={data.edge.startNode.nodeUri}
+                target='_blank'
+                rel='noopener noreferrer'
+              >
                 {data.edge.startNode.name}
               </Typography>
             </Stack>
