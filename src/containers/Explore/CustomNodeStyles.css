@@ -1,33 +1,40 @@
 .custom-node-container {
-  width: 180px;
-  height: 60px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  background-color: #557572;
   color: #ffffff;
-  font-size: 13px;
-  border-radius: 50px;
-  box-sizing: border-box;
-  overflow: visible;
-  padding: 0 5px 0 0;
+  font-size: 16px;
   cursor: pointer;
 }
 
 .node-icon {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   background-size: cover;
   background-position: center;
   border-radius: 50%;
 }
 
 .node-label {
-  flex: 1;
+  width: 150px;
   text-align: center;
-  word-wrap: break-word;
-  white-space: normal;
-  padding: 0 5px;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  border-radius: 25px;
+  margin: 5px;
+}
+
+.node-placeholder {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 50%;
 }
