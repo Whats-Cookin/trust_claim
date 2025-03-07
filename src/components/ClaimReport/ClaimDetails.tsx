@@ -19,14 +19,13 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
-import CircleIcon from '@mui/icons-material/Circle'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState } from 'react'
-// import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
-// import Duration from '../../assets/duration.svg'
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
+
 
 const TextLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.date
@@ -230,7 +229,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             >
               <Button
                 component={Link}
-                startIcon={<CheckCircleOutlineOutlinedIcon />}
+                startIcon={<HubOutlinedIcon />}
                 to={`/explore/${claim.id}`}
                 sx={{
                   textTransform: 'none',

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
@@ -409,7 +409,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             </Button>
                           </Link>
                           <Button
-                            startIcon={<ShareOutlinedIcon />}
+                            startIcon={<HubOutlinedIcon  />}
                             onClick={() => handleSchema(claim)}
                             variant='text'
                             sx={{
