@@ -175,7 +175,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               {/* Basic Information */}
               <Box sx={{ mb: 4 }}>
                 <TextField
-                  {...register('name',{ required: true })}
+                  {...register('name', { required: true })}
                   label="Name of what you're making a claim about"
                   fullWidth
                   sx={{ mb: 2 }}

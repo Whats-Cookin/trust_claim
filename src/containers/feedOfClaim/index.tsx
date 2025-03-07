@@ -409,7 +409,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             </Button>
                           </Link>
                           <Button
-                            startIcon={<HubOutlinedIcon  />}
+                            startIcon={<HubOutlinedIcon />}
                             onClick={() => handleSchema(claim)}
                             variant='text'
                             sx={{

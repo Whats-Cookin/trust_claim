@@ -26,7 +26,6 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState } from 'react'
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 
-
 const TextLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.date
 }))
