@@ -82,20 +82,25 @@ const Explore = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      const currentClaim = event.target.data('raw')
+      const currentClaim = event.target.data('raw').claimId
+      console.log({
+        currentClaim: currentClaim,
+        id: event.target.data('id')
+      });
+      
 
       if (currentClaim) {
         setSelectedClaim(currentClaim)
-        fetchRelatedClaims(event.target.data('id'), page.current)
+        // fetchRelatedClaims(event.target.data('id'), page.current)
       }
     }
   }
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-    const currentClaim = event?.target?.data('raw')?.claim
-    const endNode = event?.target?.data('raw')?.endNode
-    const startNode = event?.target?.data('raw')?.claim
+    const currentClaim = event?.target?.data('raw')?.claimId
+    const endNode = event?.target?.data('raw')?.endNodeId
+    const startNode = event?.target?.data('raw')?.startNodeId
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
@@ -150,9 +155,13 @@ const Explore = (homeProps: IHomeProps) => {
       //      let nodes: any[] = []
       //      let edges: any[] = []
       console.log('Result was : ' + JSON.stringify(claimRes.data))
-      //      parseSingleNode(nodes, edges, claimRes.data)
-      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
-      console.log('Adding nodes: ' + nodes)
+      //  parseSingleNode(nodes, edges, claimRes.data)
+      // const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
+      const {
+        data: { nodes, edges }
+      } = claimRes
+      // console.log('Adding nodes: ' + nodes)
+
       cy.add({ nodes, edges } as any)
     } catch (err: any) {
       toggleSnackbar(true)
@@ -224,7 +233,7 @@ const Explore = (homeProps: IHomeProps) => {
           <NodeDetails
             open={showDetails}
             setOpen={setShowDetails}
-            selectedClaim={selectedClaim}
+            selectedClaim={{ id: selectedClaim }}
             isDarkMode={isDarkMode}
             claimImg={selectedClaim.img || ''}
             startNode={startNode}
