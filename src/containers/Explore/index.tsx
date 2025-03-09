@@ -81,25 +81,20 @@ const Explore = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      const currentClaim = event.target.data('raw').claimId
-      console.log({
-        currentClaim: currentClaim,
-        id: event.target.data('id')
-      });
-      
-
-      if (currentClaim) {
+      const currentClaim = event.target.data('raw')
+      if (currentClaim && currentClaim.nodeId) {
         setSelectedClaim(currentClaim)
-        // fetchRelatedClaims(event.target.data('id'), page.current)
+        fetchRelatedClaims(currentClaim.nodeId, page.current)
       }
     }
   }
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-    const currentClaim = event?.target?.data('raw')?.claimId
-    const endNode = event?.target?.data('raw')?.endNodeId
-    const startNode = event?.target?.data('raw')?.startNodeId
+
+    const currentClaim = event?.target?.data('raw')?.startClaimId
+    const endNode = event?.target?.data('raw')?.endClaimId
+    const startNode = event?.target?.data('raw')?.startClaimId
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
@@ -151,8 +146,6 @@ const Explore = (homeProps: IHomeProps) => {
 
       cy.elements().remove() // Clear any existing elements
 
-      //      let nodes: any[] = []
-      //      let edges: any[] = []
       console.log('Result was : ' + JSON.stringify(claimRes.data))
       //  parseSingleNode(nodes, edges, claimRes.data)
       // const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
@@ -232,11 +225,11 @@ const Explore = (homeProps: IHomeProps) => {
           <NodeDetails
             open={showDetails}
             setOpen={setShowDetails}
-            selectedClaim={{ id: selectedClaim }}
+            selectedClaimId={selectedClaim}
             isDarkMode={isDarkMode}
             claimImg={selectedClaim.img || ''}
-            startNode={startNode}
-            endNode={endNode}
+            startNodeId={startNode}
+            endNodeId={endNode}
           />
         )}
       </MainContainer>
