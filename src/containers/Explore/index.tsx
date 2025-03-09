@@ -78,6 +78,17 @@ const Explore = (homeProps: IHomeProps) => {
   }
 
   const handleNodeClick = async (event: any) => {
+    event.preventDefault()
+    const currentClaim = event?.target?.data('raw')?.claimId
+
+    if (currentClaim) {
+      setSelectedClaim(currentClaim)
+      setShowDetails(true)
+      setStartNode(currentClaim)
+    }
+  }
+
+  const handleNodeRightClick = async (event: any) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
@@ -91,17 +102,7 @@ const Explore = (homeProps: IHomeProps) => {
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-
-    const currentClaim = event?.target?.data('raw')?.startClaimId
-    const endNode = event?.target?.data('raw')?.endClaimId
-    const startNode = event?.target?.data('raw')?.startClaimId
-
-    if (currentClaim) {
-      setSelectedClaim(currentClaim)
-      setShowDetails(true)
-      setStartNode(startNode)
-      setEndNode(endNode)
-    }
+    return
   }
 
   const handleMouseOver = (event: any) => {
@@ -170,13 +171,14 @@ const Explore = (homeProps: IHomeProps) => {
     if (cy) {
       cy.on('tap', 'node', handleNodeClick)
       cy.on('tap', 'edge', handleEdgeClick)
-      cy.on('cxttap', 'node,edge', handleMouseRightClick)
+      cy.on('cxttap', 'node', handleNodeRightClick)
       cy.on('mouseover', 'edge,node', handleMouseOver)
       cy.on('mouseout', 'edge,node', handleMouseOut)
       return () => {
         if (!cy) return
         cy.off('tap', 'node', handleNodeClick)
         cy.off('tap', 'edge', handleEdgeClick)
+        cy.off('cxttap', 'node', handleNodeRightClick)
         cy.off('cxttap', 'node,edge', handleMouseRightClick)
         cy.off('mouseover', 'edge,node', handleMouseOver)
         cy.off('mouseout', 'edge,node', handleMouseOut)

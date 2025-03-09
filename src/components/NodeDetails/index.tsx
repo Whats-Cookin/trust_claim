@@ -24,21 +24,21 @@ export default function NodeDetails({ setOpen, selectedClaimId, claimImg, startN
 
   const theme = useTheme()
   const [startNode, setStartNode] = useState<any>(null)
-  const [endNode, setEndNode] = useState<any>(null)
+  // const [endNode, setEndNode] = useState<any>(null)
 
   useEffect(() => {
     async function fetchNodeDetails(nodeId: string, setNode: any) {
       const claimRes = await axios.get(`/api/claim/${nodeId}`)
       setNode(claimRes.data.claim)
     }
-    Promise.all([fetchNodeDetails(startNodeId, setStartNode), fetchNodeDetails(endNodeId, setEndNode)])
-  }, [startNodeId, endNodeId])
+    fetchNodeDetails(startNodeId, setStartNode)
+  }, [startNodeId])
 
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: { xs: 'column', sm: 'row' } }}>
         <StartNode selectedClaim={startNode} claimImg={claimImg} />
-        <EndNode selectedClaim={endNode} claimImg={claimImg} />
+        {/* <EndNode selectedClaim={endNode} claimImg={claimImg} /> */}
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
         <Button
