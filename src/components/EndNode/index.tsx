@@ -22,7 +22,8 @@ export default function EndNode({ selectedClaim, claimImg }: EndNodeProps) {
             marginLeft: isMediumScreen ? '0' : '1rem'
           }}
         >
-          Node Details
+          {/* Node Details */}
+          End Node Details
           <Box
             sx={{
               width: '96px',

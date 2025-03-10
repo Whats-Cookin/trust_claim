@@ -6,21 +6,33 @@ import backSvg from '../../assets/images/back.svg'
 import StartNode from '../StartNode'
 import EndNode from '../EndNode'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import { useEffect, useState } from 'react'
+import axios from '../../axiosInstance'
 
 interface NodeDetailsProps {
   open: boolean
   setOpen: (open: boolean) => void
-  selectedClaim: any
-  startNode: any
-  endNode: any
+  selectedClaimId: string
+  startNodeId: string
+  endNodeId: string
   claimImg: string
   isDarkMode: boolean
 }
 
-export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNode, endNode }: NodeDetailsProps) {
+export default function NodeDetails({ setOpen, selectedClaimId, claimImg, startNodeId, endNodeId }: NodeDetailsProps) {
   const handleClose = () => setOpen(false)
 
   const theme = useTheme()
+  const [startNode, setStartNode] = useState<any>(null)
+  // const [endNode, setEndNode] = useState<any>(null)
+
+  useEffect(() => {
+    async function fetchNodeDetails(nodeId: string, setNode: any) {
+      const claimRes = await axios.get(`/api/claim/${nodeId}`)
+      setNode(claimRes.data.claim)
+    }
+    fetchNodeDetails(startNodeId, setStartNode)
+  }, [startNodeId])
 
   return (
     <>
@@ -45,7 +57,7 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
         <Box>
           <Button
             component={Link}
-            to={`/validate?subject=${BACKEND_BASE_URL}/claims/${selectedClaim.id}`}
+            to={`/validate?subject=${BACKEND_BASE_URL}/claims/${selectedClaimId}`}
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
@@ -63,7 +75,7 @@ export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNod
 
           <Button
             component={Link}
-            to={`/report/${selectedClaim.id}`}
+            to={`/report/${selectedClaimId}`}
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
