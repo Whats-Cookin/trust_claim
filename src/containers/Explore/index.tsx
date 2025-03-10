@@ -61,13 +61,11 @@ const Explore = (homeProps: IHomeProps) => {
   const fetchRelatedClaims = async (id: string, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/node/${id}?page=${page}&limit=5`)
+      const res = await axios.get(`/api/claim_graph/${id}/expand?page=${page}&limit=3`)
       if (res.data) {
-        let newNodes: any[] = []
-        let newEdges: any[] = []
-        parseSingleNode(newNodes, newEdges, res.data)
+        const { nodes, edges } = res.data
         if (!cy) return
-        cy.add({ nodes: newNodes, edges: newEdges } as any)
+        cy.add({ nodes, edges } as any)
       } else {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
@@ -85,9 +83,7 @@ const Explore = (homeProps: IHomeProps) => {
 
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
-
     const currentClaim = event?.target?.data('raw')
-
     if (currentClaim) {
       setSelectedClaim(currentClaim)
       setShowDetails(true)
@@ -100,9 +96,10 @@ const Explore = (homeProps: IHomeProps) => {
     event.preventDefault()
     if (originalEvent) {
       const currentClaim = event.target.data('raw')
-      if (currentClaim && currentClaim.nodeId) {
+      if (currentClaim && currentClaim.claimId) {
         setSelectedClaim(currentClaim)
-        fetchRelatedClaims(currentClaim.nodeId, page.current)
+        fetchRelatedClaims(currentClaim.claimId, currentClaim.page + 1)
+        event.target.data('raw').page += 1
       }
     }
   }
