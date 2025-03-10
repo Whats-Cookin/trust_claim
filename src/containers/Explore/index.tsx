@@ -13,7 +13,13 @@ import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
 import NodeDetails from '../../components/NodeDetails'
-
+import CredentialPopup from '../../components/CredentialDetails'
+interface ISelectedClaim {
+  claimId: string
+  claim: string
+  nodeId: string
+  img: string
+}
 const Explore = (homeProps: IHomeProps) => {
   const { nodeId } = useParams<{ nodeId: string }>()
   const theme = useTheme()
@@ -21,7 +27,7 @@ const Explore = (homeProps: IHomeProps) => {
   const ref = useRef<any>(null)
   const cyRef = useRef<Cytoscape.Core | null>(null)
   const [showDetails, setShowDetails] = useState<boolean>(false)
-  const [selectedClaim, setSelectedClaim] = useState<any>(null)
+  const [selectedClaim, setSelectedClaim] = useState<ISelectedClaim | null>(null)
   const [startNode, setStartNode] = useState<any>(null)
   const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
@@ -79,7 +85,8 @@ const Explore = (homeProps: IHomeProps) => {
 
   const handleNodeClick = async (event: any) => {
     event.preventDefault()
-    const currentClaim = event?.target?.data('raw')?.claimId
+
+    const currentClaim = event?.target?.data('raw')
 
     if (currentClaim) {
       setSelectedClaim(currentClaim)
@@ -179,7 +186,6 @@ const Explore = (homeProps: IHomeProps) => {
         cy.off('tap', 'node', handleNodeClick)
         cy.off('tap', 'edge', handleEdgeClick)
         cy.off('cxttap', 'node', handleNodeRightClick)
-        cy.off('cxttap', 'node,edge', handleMouseRightClick)
         cy.off('mouseover', 'edge,node', handleMouseOver)
         cy.off('mouseout', 'edge,node', handleMouseOut)
       }
@@ -222,18 +228,29 @@ const Explore = (homeProps: IHomeProps) => {
   return (
     <>
       <MainContainer>
-        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />{' '}
-        {showDetails && (
-          <NodeDetails
-            open={showDetails}
-            setOpen={setShowDetails}
-            selectedClaimId={selectedClaim}
-            isDarkMode={isDarkMode}
-            claimImg={selectedClaim.img || ''}
-            startNodeId={startNode}
-            endNodeId={endNode}
-          />
-        )}
+        <Box
+          ref={ref}
+          sx={{ ...styles.cy, display: showDetails && selectedClaim?.claim !== 'credential' ? 'none' : 'block' }}
+        />{' '}
+        {showDetails &&
+          selectedClaim &&
+          (selectedClaim.claim === 'credential' ? (
+            <CredentialPopup
+              isOpen={showDetails}
+              selectedClaimId={selectedClaim.claimId}
+              onClose={() => setShowDetails(false)}
+            />
+          ) : (
+            <NodeDetails
+              open={showDetails}
+              setOpen={setShowDetails}
+              selectedClaimId={selectedClaim.claimId}
+              isDarkMode={isDarkMode}
+              claimImg={selectedClaim.img || ''}
+              startNodeId={startNode.claimId}
+              endNodeId={endNode}
+            />
+          ))}
       </MainContainer>
       <GraphinfButton />
     </>
