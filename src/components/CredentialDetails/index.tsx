@@ -208,7 +208,7 @@ const CredentialDetails = ({ handleClose, selectedClaimId }: any) => {
             '&:hover': { bgcolor: '#00b096' },
             borderRadius: 1
           }}
-          onClick={() => navigate('/report/118800')}
+          onClick={() => navigate(`/report/${selectedClaimId}`)}
         >
           View Full Details
         </Button>
