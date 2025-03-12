@@ -24,6 +24,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import CircleIcon from '@mui/icons-material/Circle'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState } from 'react'
@@ -244,7 +245,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             >
               <Button
                 component={Link}
-                startIcon={<CheckCircleOutlineOutlinedIcon />}
+                startIcon={<HubOutlinedIcon />}
                 to={`/explore/${claim.id}`}
                 sx={{
                   textTransform: 'none',
