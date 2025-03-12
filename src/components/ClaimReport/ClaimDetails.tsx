@@ -19,12 +19,18 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
+import DataObjectIcon from '@mui/icons-material/DataObject'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import CircleIcon from '@mui/icons-material/Circle'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState } from 'react'
-import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
+import jsPDF from 'jspdf'
+// import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
+// import Duration from '../../assets/duration.svg'
 
 const TextLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.date
@@ -87,7 +93,7 @@ const generateLinkedInCertificationUrl = (claim: any) => {
   return `${baseLinkedInUrl}?${params.toString()}`
 }
 
-const exportClaimData = (claimData: any) => {
+const exportClaimData = (claimData: any, format: 'json' | 'pdf') => {
   if (!claimData) {
     console.error('exportClaimData: claimData is null or undefined.')
     return
@@ -99,18 +105,25 @@ const exportClaimData = (claimData: any) => {
   }
 
   try {
-    const jsonString = JSON.stringify(claimData, null, 2)
-    const blob = new Blob([jsonString], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `claim_${claimData.id}.json`
-    document.body.appendChild(link)
-    link.click()
-
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    if (format === 'json') {
+      const jsonString = JSON.stringify(claimData, null, 2)
+      const blob = new Blob([jsonString], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `claim_${claimData.id}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } else if (format === 'pdf') {
+      const pdf = new jsPDF()
+      pdf.setFont('helvetica', 'bold')
+      pdf.text(`Claim Data - ID: ${claimData.id}`, 10, 10)
+      pdf.setFont('helvetica', 'normal')
+      pdf.text(JSON.stringify(claimData, null, 2), 10, 20)
+      pdf.save(`claim_${claimData.id}.pdf`)
+    }
   } catch (error) {
     console.error('Error exporting claim data:', error)
   }
@@ -119,6 +132,7 @@ const exportClaimData = (claimData: any) => {
 const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [anchorExportEl, setAnchorExportEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [currentUrl, setCurrentUrl] = useState('')
 
@@ -150,6 +164,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleClose = () => {
     setAnchorEl(null)
+    setAnchorExportEl(null)
   }
 
   const handleToggleExpand = useCallback(() => {
@@ -157,7 +172,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   }, [])
 
   const open = Boolean(anchorEl)
+  const openEx = Boolean(anchorExportEl)
   const id = open ? 'share-popover' : undefined
+  const idEx = openEx ? 'export-popover' : undefined
   const claim = data.claim.claim
   const isStatementLong = claim.statement && claim.statement.length > 200
 
@@ -409,7 +426,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <Button
                 variant='outlined'
                 startIcon={<SystemUpdateAltIcon />}
-                onClick={() => exportClaimData(claim)}
+                onClick={event => setAnchorExportEl(event.currentTarget)}
                 sx={{
                   textTransform: 'none',
                   color: theme.palette.buttontext,
@@ -424,6 +441,87 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               >
                 Export
               </Button>
+
+              <Popover
+                id={idEx}
+                open={openEx}
+                anchorEl={anchorExportEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left'
+                }}
+                PaperProps={{
+                  sx: {
+                    padding: '20px',
+                    backgroundColor: theme.palette.formBackground,
+                    borderRadius: '12px'
+                  }
+                }}
+              >
+                <Typography
+                  variant='body1'
+                  sx={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textAlign: 'left'
+                  }}
+                >
+                  Export
+                </Typography>
+                <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mt: 2
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => exportClaimData(claim, 'json')}
+                      sx={{
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        width: '50px',
+                        height: '50px',
+                        '&:hover': { backgroundColor: '#f0f0f0' }
+                      }}
+                    >
+                      <DataObjectIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
+                    </IconButton>
+                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                      export as json
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mt: 2
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => exportClaimData(claim, 'pdf')}
+                      sx={{
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        width: '50px',
+                        height: '50px',
+                        '&:hover': { backgroundColor: '#f0f0f0' }
+                      }}
+                    >
+                      <PictureAsPdfIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
+                    </IconButton>
+                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                      export as pdf
+                    </Typography>
+                  </Box>
+                </Box>
+              </Popover>
             </Stack>
           </Stack>
 
