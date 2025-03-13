@@ -27,6 +27,15 @@ interface IHomeProps {
 
 const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   const { claimId } = useParams<{ claimId: string }>()
+  const navigate = useNavigate()
+  useEffect(() => {
+    navigate(`/report/${claimId}`)
+  }, [])
+  return <div>ClaimDetails Loading...</div>
+}
+
+const ClaimDetailsOld: React.FC<IHomeProps> = ({ isDarkMode }) => {
+  const { claimId } = useParams<{ claimId: string }>()
   const [isLoading, setIsLoading] = useState(false)
   const [claimData, setClaimData] = useState<Claim | null>(null)
   const [error, setError] = useState<string>('')
