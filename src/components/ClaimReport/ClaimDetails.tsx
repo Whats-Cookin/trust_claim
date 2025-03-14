@@ -84,9 +84,9 @@ const generateLinkedInCertificationUrl = (claim: any) => {
     issueMonth: '8',
     expirationYear: '2025',
     expirationMonth: '8',
-    certUrl: claim.claimAddress ?? window.location.href
+    certUrl: window.location.href
   })
-  return `${baseLinkedInUrl}?${params.toString()}`
+  return `${baseLinkedInUrl}?${params}`
 }
 
 const exportClaimData = (claimData: any) => {
@@ -138,7 +138,10 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   }
 
   const handleLinkedInPost = () => {
-    const credentialName = data?.edge?.startNode?.name || 'a new'
+    let credentialName = 'a new'
+    if (data?.edge?.startNode?.name && !data.edge.startNode.name.includes('https')) {
+      credentialName = data.edge.startNode.name
+    }
 
     const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
     window.open(linkedInShareUrl, '_blank')
