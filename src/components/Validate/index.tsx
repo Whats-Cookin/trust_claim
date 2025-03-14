@@ -799,7 +799,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       name='statement'
                       control={control}
                       defaultValue=''
-                      render={({ field }) => (
+                      rules={{
+                        required: 'This field is required' // Add required validation
+                      }}
+                      render={({ field, fieldState: { error } }) => (
                         <TextField
                           {...field}
                           multiline
@@ -824,6 +827,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             }
                           }}
                           margin='normal'
+                          error={Boolean(error)}
+                          helperText={error ? error.message : ''}
                         />
                       )}
                     />
