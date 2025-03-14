@@ -88,9 +88,9 @@ const generateLinkedInCertificationUrl = (claim: any) => {
     issueMonth: '8',
     expirationYear: '2025',
     expirationMonth: '8',
-    certUrl: claim.claimAddress
+    certUrl: window.location.href
   })
-  return `${baseLinkedInUrl}?${params.toString()}`
+  return `${baseLinkedInUrl}?${params}`
 }
 
 const exportClaimData = (claimData: any, format: 'json' | 'pdf') => {
@@ -150,16 +150,22 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   }
 
   const handleLinkedInPost = () => {
-    const currentUrl = window.location.href
-    const credentialName = data?.edge?.startNode?.name || 'a new'
+    let credentialName = 'a new'
+    if (data?.edge?.startNode?.name && !data.edge.startNode.name.includes('https')) {
+      credentialName = data.edge.startNode.name
+    }
 
     const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
     window.open(linkedInShareUrl, '_blank')
   }
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(currentUrl)
-    setSnackbarOpen(true)
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl)
+      setSnackbarOpen(true)
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+    }
   }
 
   const handleClose = () => {
@@ -177,6 +183,11 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const idEx = openEx ? 'export-popover' : undefined
   const claim = data.claim.claim
   const isStatementLong = claim.statement && claim.statement.length > 200
+
+  if (!claim) {
+    console.error('Export failed: claimData or claimData.id is missing.')
+    return
+  }
 
   return (
     <Card
@@ -213,7 +224,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </Typography>
             </Stack>
             <Stack spacing={1}>
-              {claim && claim.claim && claim.claim === 'credential' && (
+              {claim.claim === 'credential' && (
                 <Box
                   sx={{
                     display: 'flex',
