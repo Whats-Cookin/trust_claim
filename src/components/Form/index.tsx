@@ -181,12 +181,18 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   sx={{ mb: 2 }}
                 />
                 <TextField
-                  {...register('subject', { required: true })}
+                  {...register('subject', {
+                    required: 'This field is required',
+                    pattern: {
+                      value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+                      message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
+                    }
+                  })}
                   label="Link to what you're making a claim about"
                   fullWidth
                   sx={{ mb: 2 }}
                   error={Boolean(errors.subject)}
-                  helperText={errors.subject ? 'This field is required' : ''}
+                  helperText={errors.subject ? errors.subject.message : ''}
                 />
                 <TextField
                   {...register('statement', { required: true })}
@@ -293,7 +299,15 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                 </FormControl>
 
                 <TextField
-                  {...register('sourceURI')}
+                  {...register('sourceURI', {
+                    pattern: {
+                      value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \.-]*)*\/?$/,
+                      message:
+                        watchHowKnown === HowKnown.FIRST_HAND
+                          ? 'Please enter a valid home page or social media link (e.g., http://example.com or www.example.com)'
+                          : 'Please enter a valid source link (e.g., http://example.com or www.example.com)'
+                    }
+                  })}
                   label={
                     watchHowKnown === HowKnown.FIRST_HAND
                       ? 'Your home page or social media link'
@@ -301,6 +315,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   }
                   fullWidth
                   sx={{ mb: 2 }}
+                  error={Boolean(errors.sourceURI)} // Check for errors in `sourceURI`
+                  helperText={errors.sourceURI ? errors.sourceURI.message : ''} // Display `sourceURI` errors
                 />
 
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
