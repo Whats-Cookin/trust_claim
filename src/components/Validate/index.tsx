@@ -652,7 +652,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           name='sourceURI'
                           control={control}
                           defaultValue=''
-                          render={({ field }) => (
+                          rules={{
+                            pattern: {
+                              value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+                              message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
+                            }
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <TextField
                               {...field}
                               sx={{
@@ -673,6 +679,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 }
                               }}
                               margin='normal'
+                              error={Boolean(error)} // Show error state
+                              helperText={error ? error.message : ''} // Display error message
                             />
                           )}
                         />
@@ -686,7 +694,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           name='sourceURI'
                           control={control}
                           defaultValue=''
-                          render={({ field }) => (
+                          rules={{
+                            pattern: {
+                              value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+                              message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
+                            }
+                          }}
+                          render={({ field, fieldState: { error } }) => (
                             <TextField
                               {...field}
                               sx={{
@@ -707,12 +721,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 }
                               }}
                               margin='normal'
+                              error={Boolean(error)} // Show error state
+                              helperText={error ? error.message : ''} // Display error message
                             />
                           )}
                         />
                       </>
                     )}
-
                     <Typography variant='body2'>Effective Date</Typography>
                     <FormControl fullWidth sx={{ mt: 1 }}>
                       <Controller
@@ -784,7 +799,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       name='statement'
                       control={control}
                       defaultValue=''
-                      render={({ field }) => (
+                      rules={{
+                        required: 'This field is required' // Add required validation
+                      }}
+                      render={({ field, fieldState: { error } }) => (
                         <TextField
                           {...field}
                           multiline
@@ -809,6 +827,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             }
                           }}
                           margin='normal'
+                          error={Boolean(error)}
+                          helperText={error ? error.message : ''}
                         />
                       )}
                     />
