@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import Box from '@mui/material/Box'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
   Button,
@@ -14,7 +14,8 @@ import {
   IconButton,
   Link as MuiLink,
   Tooltip,
-  Fade
+  Fade,
+  FormHelperText
 } from '@mui/material'
 import { Controller, useForm, useFieldArray, Control } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
@@ -28,7 +29,7 @@ import placeholderImage from '../../assets/images/imgplaceholder.svg'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
 import MainContainer from '../MainContainer'
-
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 // Constants for How Known options
 const FIRST_HAND = 'FIRST_HAND'
 const SECOND_HAND = 'SECOND_HAND'
@@ -88,6 +89,7 @@ const URLInputField: React.FC<{
         control={control}
         defaultValue=''
         rules={{
+          required: 'This field is required',
           pattern: {
             value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
             message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
@@ -348,7 +350,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               }}
             >
               <Typography variant='body1'>
-                {`There’s a claim that`}
+                {`Validate that claim:`}
                 <Box
                   sx={{
                     height: '5px',
@@ -414,20 +416,30 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 >
                   {/* Issuer, Subject, Aspect, Confidence, Amount, Date, How Known, Statement */}
                   <Box sx={{ height: '545', width: '535' }}>
-                    {subjectValue && (
-                      <Box sx={{ display: 'flex', mt: 5, mb: 4 }}>
-                        <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
-                            Subject:
-                          </Typography>
+                    <Box sx={{ height: '545', width: '535' }}>
+                      {subjectValue && (
+                        <Box sx={{ display: 'flex', mt: 5, mb: 4 }}>
+                          <Box sx={{ width: '130px' }}>
+                            <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                              Subject:
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Link
+                              to={subjectValue}
+                              rel='noopener noreferrer'
+                              target='_blank'
+                              style={{ textDecoration: 'none', color: 'inherit' }} // Inherit text color and remove underline
+                            >
+                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                {subjectValue}
+                              </Typography>
+                              <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts }} />
+                            </Link>
+                          </Box>
                         </Box>
-                        <Box>
-                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                            {subjectValue}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    )}
+                      )}
+                    </Box>
                     {issuerValue && (
                       <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
@@ -595,8 +607,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
+                    <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
+                      {`Validator Information`}
+                    </Typography>
                     {/* How Known Select Field */}
-                    <Typography variant='body2'>How Known</Typography>
+                    <Typography variant='body2'>How Known(Required)</Typography>
                     <FormControl
                       fullWidth
                       margin='normal'
@@ -621,93 +636,102 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         name='howKnown'
                         control={control}
                         defaultValue=''
-                        render={({ field }) => (
-                          <Select
-                            {...field}
-                            sx={{
-                              '& .MuiSelect-icon': {
-                                color: '#0A1C1D'
-                              },
-                              '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none'
-                              },
-                              '& .MuiInputBase-input': {
-                                color: theme.palette.texts,
-                                fontWeight: 400,
-                                fontSize: 16
-                              }
-                            }}
-                          >
-                            {inputOptions.howKnown.map((option, index: number) => (
-                              <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                onClick={() => handleItemSelect()}
-                                sx={{
-                                  backgroundColor: theme.palette.input,
+                        rules={{
+                          required: 'This field is required' // This makes the field required
+                        }}
+                        render={({ field, fieldState: { error } }) => (
+                          <>
+                            <Select
+                              {...field}
+                              sx={{
+                                '& .MuiSelect-icon': {
+                                  color: '#0A1C1D'
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none'
+                                },
+                                '& .MuiInputBase-input': {
                                   color: theme.palette.texts,
-                                  fontSize: 16,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.input
-                                  },
-                                  '&.Mui-selected': {
+                                  fontWeight: 400,
+                                  fontSize: 16
+                                }
+                              }}
+                              error={Boolean(error)} // Pass the error state to the Select component
+                            >
+                              {inputOptions.howKnown.map((option, index: number) => (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  onClick={() => handleItemSelect()}
+                                  sx={{
                                     backgroundColor: theme.palette.input,
+                                    color: theme.palette.texts,
+                                    fontSize: 16,
                                     '&:hover': {
                                       backgroundColor: theme.palette.input
-                                    }
-                                  },
-                                  '& .MuiInputBase-input': {
-                                    color: theme.palette.texts,
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                  },
-                                  '&:active': {
-                                    backgroundColor: theme.palette.input
-                                  },
-                                  '::selection': {
-                                    backgroundColor: theme.palette.input
-                                  },
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center'
-                                }}
-                              >
-                                <Tooltip
-                                  title={tooltips.howKnown[index]}
-                                  placement={isTouchDevice ? 'top' : 'right'}
-                                  arrow
-                                  TransitionComponent={Fade}
-                                  open={isTouchDevice ? openTooltipIndex === index : undefined}
-                                  onClose={() => setOpenTooltipIndex(null)}
-                                  disableFocusListener={isTouchDevice}
-                                  disableHoverListener={isTouchDevice}
-                                  disableTouchListener={isTouchDevice}
+                                    },
+                                    '&.Mui-selected': {
+                                      backgroundColor: theme.palette.input,
+                                      '&:hover': {
+                                        backgroundColor: theme.palette.input
+                                      }
+                                    },
+                                    '& .MuiInputBase-input': {
+                                      color: theme.palette.texts,
+                                      fontWeight: 400,
+                                      fontSize: 16
+                                    },
+                                    '&:active': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    '::selection': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                  }}
                                 >
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      width: '100%',
-                                      justifyContent: 'space-between'
-                                    }}
+                                  <Tooltip
+                                    title={tooltips.howKnown[index]}
+                                    placement={isTouchDevice ? 'top' : 'right'}
+                                    arrow
+                                    TransitionComponent={Fade}
+                                    open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                    onClose={() => setOpenTooltipIndex(null)}
+                                    disableFocusListener={isTouchDevice}
+                                    disableHoverListener={isTouchDevice}
+                                    disableTouchListener={isTouchDevice}
                                   >
-                                    <span>{option.text}</span>
-                                    {isTouchDevice && (
-                                      <IconButton
-                                        size='small'
-                                        onClick={e => {
-                                          e.stopPropagation()
-                                          handleTooltipToggle(index)
-                                        }}
-                                      >
-                                        <HelpIcon sx={{ color: '#0ABAB5' }} />
-                                      </IconButton>
-                                    )}
-                                  </Box>
-                                </Tooltip>
-                              </MenuItem>
-                            ))}
-                          </Select>
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        justifyContent: 'space-between'
+                                      }}
+                                    >
+                                      <span>{option.text}</span>
+                                      {isTouchDevice && (
+                                        <IconButton
+                                          size='small'
+                                          onClick={e => {
+                                            e.stopPropagation()
+                                            handleTooltipToggle(index)
+                                          }}
+                                        >
+                                          <HelpIcon sx={{ color: '#0ABAB5' }} />
+                                        </IconButton>
+                                      )}
+                                    </Box>
+                                  </Tooltip>
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {error && (
+                              <FormHelperText error>{error.message}</FormHelperText> // Display error message
+                            )}
+                          </>
                         )}
                       />
                     </FormControl>
@@ -717,12 +741,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       watchHowKnown === SECOND_HAND ||
                       watchHowKnown === FIRST_HAND_BENEFIT ||
                       watchHowKnown === FIRST_HAND_REJECTED) && (
-                      <URLInputField control={control} label='Your Website' />
+                      <URLInputField control={control} label='Your Website (Required)' />
                     )}
                     {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
-                      <URLInputField control={control} label='Source URL' />
+                      <URLInputField control={control} label='Source URL (Required)' />
                     )}
-
+                    <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
+                      {`Claim Validation Details `}
+                    </Typography>
                     {/* Effective Date Field */}
                     <Typography variant='body2'>Effective Date</Typography>
                     <FormControl fullWidth sx={{ mt: 1 }}>
@@ -790,7 +816,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         p: '5px'
                       }}
                     >
-                      Explain here
+                      Validation Statement (Required)
                     </Typography>
                     <Controller
                       name='statement'
@@ -837,7 +863,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         margin: '10px'
                       }}
                     >
-                      Upload Image or Video
+                      Upload supporting Evidence (Optional)
                     </Typography>
                     <ImageUploader
                       fieldArray={{
