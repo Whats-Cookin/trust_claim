@@ -257,7 +257,16 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       ) : (
         <>
           {claims.length > 0 ? (
-            <MainContainer sx={{ width: '800px', marginLeft: 'auto', marginRight: '25%', backgroundColor: '#FFFFFF' ,mt:'150px' ,boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'}}>
+            <MainContainer
+              sx={{
+                width: '800px',
+                marginLeft: 'auto',
+                marginRight: '25%',
+                backgroundColor: '#FFFFFF',
+                mt: '150px',
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
+              }}
+            >
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
                   sx={{
@@ -304,16 +313,16 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Tooltip 
-                              title="View the original credential"
+                            <Tooltip
+                              title='View the original credential'
                               arrow
-                              placement="left"
+                              placement='left'
                               componentsProps={{
                                 tooltip: {
                                   sx: {
-                                    bgcolor: "#222222",
+                                    bgcolor: '#222222',
                                     color: '#FFFFFF',
-                                   
+
                                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
                                     padding: '8px 16px',
                                     fontSize: '14px',
@@ -389,8 +398,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           )}
                         </CardContent>
                         {/* moka work here  */}
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end' , m:"20px"}}>
-                        {claim.stars && (
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
+                          {claim.stars && (
                             <Box
                               sx={{
                                 display: 'flex',
@@ -434,8 +443,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             mt: '10px',
                             mb: '10px',
                             pl: '20px',
-                            pr: '20px',
-                         
+                            pr: '20px'
                           }}
                         >
                           <Button
@@ -443,7 +451,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             startIcon={<VerifiedOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                             variant='outlined'
                             sx={{
-                             
                               fontSize: isMediumScreen ? '8px' : '16px',
                               textTransform: 'none',
                               marginRight: '10px',
@@ -451,7 +458,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
-                 
+
                               '&:hover': {
                                 backgroundColor: '#F1F4F6',
                                 borderColor: '#F1F4F6'

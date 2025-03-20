@@ -159,7 +159,7 @@ const darkModeTheme = createTheme({
     shadows: '#00000040',
     sidecolor: '#ffffff',
     darkinputtext: '#ffffff',
-    input:'#2D6A4F ',
+    input: '#2D6A4F ',
     greenColor: '#2D6A4F'
   },
   breakpoints: {

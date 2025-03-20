@@ -59,10 +59,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         transition: 'transform 0.3s ease-in-out',
         flexDirection: 'row',
         display: isSmallScreen ? displayValue : 'block',
-        p:'20px '
+        p: '20px '
       }}
     >
-
       <Toolbar sx={{ display: 'flex' }}>
         <Box
           sx={{
@@ -70,7 +69,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             justifyContent: 'flex-start',
             alignItems: 'center',
             width: '50%',
-            
+
             textWrap: 'wrap'
           }}
         >
@@ -89,7 +88,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             LinkedTrust
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' ,}}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
           <SearchBar />
         </Box>
       </Toolbar>
