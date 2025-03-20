@@ -1,6 +1,6 @@
 import React from 'react'
 import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery } from '@mui/material'
-import {  DarkMode, Logout, Login, Search } from '@mui/icons-material'
+import { DarkMode, Logout, Login, Search } from '@mui/icons-material'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
@@ -14,12 +14,7 @@ interface SidebarProps {
   isNavbarVisible: boolean
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
-  isAuth,
-  toggleTheme,
-  isDarkMode,
-  isNavbarVisible
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNavbarVisible }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const location = useLocation()
@@ -74,29 +69,46 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       <List sx={{ padding: '30px' }}>
         <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
-          <HomeOutlinedIcon  sx={getIconStyle('/feed')} />
-          <ListItemText primary='Home' primaryTypographyProps={{ variant: 'body2', color: '#212529', fontWeight: 'bold', fontSize: '14px' ,fontFamily: 'Montserrat'}} />
+          <HomeOutlinedIcon sx={getIconStyle('/feed')} />
+          <ListItemText
+            primary='Home'
+            primaryTypographyProps={{
+              variant: 'body2',
+              color: '#212529',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              fontFamily: 'Montserrat'
+            }}
+          />
         </ListItemButton>
-
-
-
-
 
         <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/SearchBar') }} onClick={() => navigate('/SearchBar')}>
           <Search sx={getIconStyle('/SearchBar')} />
-          <ListItemText primary='Search' primaryTypographyProps={{ variant: 'body2', color: '#212529', fontWeight: 'bold', fontSize: '14px' ,fontFamily: 'Montserrat'}} />
+          <ListItemText
+            primary='Search'
+            primaryTypographyProps={{
+              variant: 'body2',
+              color: '#212529',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              fontFamily: 'Montserrat'
+            }}
+          />
         </ListItemButton>
-
-
-
-
-
-
 
         {isAuth && (
           <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
             <AddCircleOutlineOutlinedIcon sx={getIconStyle('/claim')} />
-            <ListItemText primary='Claim' primaryTypographyProps={{ variant: 'body2', color: '#212529', fontWeight: 'bold', fontSize: '14px' ,fontFamily: 'Montserrat'}} />
+            <ListItemText
+              primary='Claim'
+              primaryTypographyProps={{
+                variant: 'body2',
+                color: '#212529',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                fontFamily: 'Montserrat'
+              }}
+            />
           </ListItemButton>
         )}
 
@@ -106,18 +118,37 @@ const Sidebar: React.FC<SidebarProps> = ({
           ) : (
             <DarkMode sx={getIconStyle('/theme')} />
           )}
-          <ListItemText primary={isDarkMode ? 'Light' : 'Dark'} primaryTypographyProps={{ variant: 'body2', color: '#212529', fontWeight: 'bold', fontSize: '14px' ,fontFamily: 'Montserrat'}} />
+          <ListItemText
+            primary={isDarkMode ? 'Light' : 'Dark'}
+            primaryTypographyProps={{ variant: 'body2', color: '#212529', fontSize: '14px', fontFamily: 'Montserrat' }}
+          />
         </ListItemButton>
 
         {isAuth ? (
           <ListItemButton sx={{ gap: '20px', minHeight: '65px' }} onClick={handleLogout}>
             <Logout sx={getIconStyle('/logout')} />
-            <ListItemText primary='Log out' primaryTypographyProps={{ variant: 'body2', color: '#212529', fontWeight: 'bold', fontSize: '14px' ,fontFamily: 'Montserrat'}} />
+            <ListItemText
+              primary='Log out'
+              primaryTypographyProps={{
+                variant: 'body2',
+                color: '#212529',
+                fontSize: '14px',
+                fontFamily: 'Montserrat'
+              }}
+            />
           </ListItemButton>
         ) : (
           <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
             <Login sx={getIconStyle('/login')} />
-            <ListItemText primary='Login' primaryTypographyProps={{ variant: 'body2', color: '#212529', fontWeight: 'bold', fontSize: '14px' ,fontFamily: 'Montserrat'}} />
+            <ListItemText
+              primary='Login'
+              primaryTypographyProps={{
+                variant: 'body2',
+                color: '#212529',
+                fontSize: '14px',
+                fontFamily: 'Montserrat'
+              }}
+            />
           </ListItemButton>
         )}
       </List>
