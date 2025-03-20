@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           justifyContent: 'space-between',
           overflow: 'hidden',
           borderRight: 'none',
-          borderRadius: '0 20px 40px 0',
+          borderRadius: '0 8px 8px 0',
           marginTop: isNavbarVisible && !isAuthPage ? '150px' : '0',
           height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 150px)' : '100vh',
           boxShadow: '1px 1px 10px rgba(0, 0, 0, 0.25)'
@@ -75,7 +75,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             primary='Home'
             primaryTypographyProps={{
               variant: 'body2',
-
               fontSize: '14px',
               fontFamily: 'Montserrat'
             }}

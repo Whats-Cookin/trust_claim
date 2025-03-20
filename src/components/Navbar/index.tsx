@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
     <AppBar
       position='fixed'
       sx={{
-        backgroundColor: theme.palette.pageBackground,
+        backgroundColor: "#FFFFFF"  ,
         color: theme.palette.texts,
         backgroundImage: 'none',
         boxShadow: '1px 1px 10px rgba(209, 213, 219, 0.5)',
@@ -69,7 +69,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             justifyContent: 'flex-start',
             alignItems: 'center',
             width: '50%',
-
             textWrap: 'wrap'
           }}
         >
