@@ -32,6 +32,7 @@ declare module '@mui/material/styles' {
     sidecolor: string
     darkinputtext: string
     input: string
+    greenColor: string
   }
 
   interface PaletteOptions {
@@ -65,6 +66,7 @@ declare module '@mui/material/styles' {
     sidecolor?: string
     darkinputtext?: string
     input: string
+    greenColor: string
   }
 
   interface TypographyVariants {
@@ -157,7 +159,8 @@ const darkModeTheme = createTheme({
     shadows: '#00000040',
     sidecolor: '#ffffff',
     darkinputtext: '#ffffff',
-    input: '#425655'
+    input:'#2D6A4F ',
+    greenColor: '#2D6A4F'
   },
   breakpoints: {
     values: {
@@ -238,7 +241,8 @@ const lightModeTheme = createTheme({
     shadows: '#00000020',
     sidecolor: '#0A1C1D',
     darkinputtext: '#0A1C1D',
-    input: '#E6F0EE'
+    input: '#E6F0EE',
+    greenColor: '#2D6A4F'
   },
   breakpoints: {
     values: {

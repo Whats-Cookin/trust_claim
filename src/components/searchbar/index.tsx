@@ -3,6 +3,7 @@ import { Box, TextField, IconButton, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
 
 const SearchBar = () => {
   const theme = useTheme()
@@ -53,47 +54,43 @@ const SearchBar = () => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        width: 'auto',
+        width: '400px',
+        height: '40px',
         position: 'relative',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        border: '1px solid #DEE2E6',
+        borderRadius: '6px',
+        ':hover': {
+          border: '1px solid #5DAE7B'
+        },
+        ':focus': {
+          border: '1px solid #5DAE7B'
+        }
       }}
     >
       <IconButton
         type='button'
-        sx={{ color: theme.palette.searchBarText, zIndex: 1 }}
+        sx={{ color: '#495057', zIndex: 1 }}
         aria-label='search'
         onClick={handleSearch}
         className='search-btn'
       >
         <SearchIcon />
       </IconButton>
+
       <TextField
         value={searchVal}
         onChange={handleInputChange}
         onKeyUp={handleSearchKeypress}
         variant='standard'
-        placeholder='Type to search...'
-        InputProps={{
-          sx: {
-            color: 'white',
-            '&::before': {
-              borderBottom: `2px solid ${theme.palette.searchBarText}`
-            },
-            '&:hover:not(.Mui-disabled)::before': {
-              borderBottom: `2px solid ${theme.palette.searchBarText}`
-            },
-            '&.Mui-focused::before': {
-              borderBottom: `2px solid ${theme.palette.searchBarText}`
-            }
-          }
-        }}
+        placeholder='search for Claims, Credentials...'
         sx={{
           flex: 1,
           input: {
             fontSize: isSmallScreen ? '12px' : '14px',
             fontWeight: 500,
             textAlign: 'left',
-            color: theme.palette.searchBarText,
+            color: '#495057',
             letterSpacing: '1px'
           },
           minWidth: isSmallScreen ? '155px' : '180px',
@@ -101,10 +98,33 @@ const SearchBar = () => {
           width: isSmallScreen ? '35vw' : '25vw',
           overflow: 'hidden',
           position: 'absolute',
-          right: 0
+          right: 0,
+          '& .MuiInput-underline:before': {
+            borderBottom: 'none'
+          },
+          '& .MuiInput-underline:after': {
+            borderBottom: 'none'
+          },
+          '& .MuiInput-underline:hover:before': {
+            borderBottom: 'none'
+          },
+          '& .MuiInput-underline.Mui-focused:after': {
+            borderBottom: 'none'
+          }
         }}
         className='search-txt'
       />
+      <Box sx={{ position: 'absolute', right: 0, top: 0, bottom: 0, display: 'flex', alignItems: 'center' }}>
+        <IconButton
+          type='button'
+          sx={{ color: '#495057', zIndex: 1 }}
+          aria-label='search'
+          onClick={handleSearch}
+          className='search-btn'
+        >
+          <FilterAltOutlinedIcon />
+        </IconButton>
+      </Box>
     </Box>
   )
 }

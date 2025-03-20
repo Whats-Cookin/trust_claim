@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
 import Logo from '../../assets/logolinkedtrust.svg'
+import { bool } from 'prop-types'
 
 interface NavbarProps {
   isAuth: boolean
@@ -50,15 +51,18 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         backgroundColor: theme.palette.pageBackground,
         color: theme.palette.texts,
         backgroundImage: 'none',
-        boxShadow: 'none',
+        boxShadow: '1px 1px 10px rgba(209, 213, 219, 0.5)',
         width: '100%',
+        height: '100px',
         zIndex: 999,
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.3s ease-in-out',
         flexDirection: 'row',
-        display: isSmallScreen ? displayValue : 'block'
+        display: isSmallScreen ? displayValue : 'block',
+        p:'20px '
       }}
     >
+
       <Toolbar sx={{ display: 'flex' }}>
         <Box
           sx={{
@@ -66,23 +70,26 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             justifyContent: 'flex-start',
             alignItems: 'center',
             width: '50%',
+            
             textWrap: 'wrap'
           }}
         >
-          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '16px' }} />
+          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '10px' }} />
           <Typography
             variant='body1'
             sx={{
-              color: theme.palette.maintext,
+              color: '#2D6A4F',
               flexWrap: 'wrap',
               fontSize: isSmallScreen ? '20px' : '20px',
-              transition: 'opacity 0.3s'
+              transition: 'opacity 0.3s',
+              fontFamily: 'Montserrat',
+              fontWeight: 'bold'
             }}
           >
-            Linked Trust
+            LinkedTrust
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' ,}}>
           <SearchBar />
         </Box>
       </Toolbar>

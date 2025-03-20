@@ -18,7 +18,10 @@ const colors = {
   '#DFDFDF': 'theme.palette.searchBarText', // Search bar text
   '#008a7cdc': 'theme.palette.borderColor', // Border color
   '#00000040': 'theme.palette.shadows', // Shadow color
-  '#425655': 'theme.palette.input' // inputFiled
+  '#425655': 'theme.palette.input' ,// inputFiled
+  '#2D6A4F': 'theme.palette.greenColor' // Sidebar color,
+
+
 }
 
 export default colors
