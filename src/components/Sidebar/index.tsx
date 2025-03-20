@@ -36,7 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
     transition: 'background-color 0.3s, box-shadow 0.3s',
     minHeight: '65px',
     color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
-    borderRadius: '8px'
+    borderRadius: '8px',
+    padding: '0 20px'
   })
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -67,15 +68,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
         }
       }}
     >
-      <List sx={{ padding: '30px' }}>
+      <List sx={{ padding: '40px' }}>
         <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
           <HomeOutlinedIcon sx={getIconStyle('/feed')} />
           <ListItemText
             primary='Home'
             primaryTypographyProps={{
               variant: 'body2',
-              color: '#212529',
-              fontWeight: 'bold',
+
               fontSize: '14px',
               fontFamily: 'Montserrat'
             }}
@@ -88,8 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             primary='Search'
             primaryTypographyProps={{
               variant: 'body2',
-              color: '#212529',
-              fontWeight: 'bold',
+
               fontSize: '14px',
               fontFamily: 'Montserrat'
             }}
@@ -103,8 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
               primary='Claim'
               primaryTypographyProps={{
                 variant: 'body2',
-                color: '#212529',
-                fontWeight: 'bold',
+
                 fontSize: '14px',
                 fontFamily: 'Montserrat'
               }}
