@@ -101,8 +101,7 @@ const DonationReport: React.FC = () => {
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
           padding: '25px',
-          right: '3%',
-         
+          right: '3%'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>

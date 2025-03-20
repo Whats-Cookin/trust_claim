@@ -224,7 +224,7 @@ const Explore = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <MainContainer sx={{width:'80%', marginTop:'130px'}} >
+      <MainContainer sx={{ width: '80%', marginTop: '130px' }}>
         <Box
           ref={ref}
           sx={{ ...styles.cy, display: showDetails && selectedClaim?.claim !== 'credential' ? 'none' : 'block' }}

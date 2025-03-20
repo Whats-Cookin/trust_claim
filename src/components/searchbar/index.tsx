@@ -92,7 +92,7 @@ const SearchBar = () => {
             textAlign: 'left',
             color: '#495057',
             letterSpacing: '1px',
-            fontFamily:'Roboto'
+            fontFamily: 'Roboto'
           },
           minWidth: isSmallScreen ? '155px' : '180px',
           maxWidth: isSmallScreen ? '260px' : '360px',
