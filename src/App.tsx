@@ -98,8 +98,6 @@ const App = () => {
         {!isLoginPage && !isRegisterPage && (
           <Sidebar
             isAuth={checkAuth()}
-            isOpen={isSidebarOpen}
-            toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             toggleTheme={toggleTheme}
             isDarkMode={isDarkMode}
             isNavbarVisible={isNavbarVisible}
