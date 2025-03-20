@@ -21,13 +21,7 @@ describe('Sidebar component', () => {
 
     render(
       <MemoryRouter>
-        <Sidebar
-          isAuth={true}
-       
-          toggleTheme={toggleTheme}
-          isDarkMode={true}
-          isNavbarVisible={true}
-        />
+        <Sidebar isAuth={true} toggleTheme={toggleTheme} isDarkMode={true} isNavbarVisible={true} />
       </MemoryRouter>
     )
 
@@ -56,9 +50,14 @@ describe('Sidebar component', () => {
 
     render(
       <MemoryRouter>
-        <Sidebar isAuth={false} isDarkMode={true} isNavbarVisible={true} toggleTheme={function (): void {
-          throw new Error('Function not implemented.')
-        } } />
+        <Sidebar
+          isAuth={false}
+          isDarkMode={true}
+          isNavbarVisible={true}
+          toggleTheme={function (): void {
+            throw new Error('Function not implemented.')
+          }}
+        />
       </MemoryRouter>
     )
 

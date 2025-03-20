@@ -100,16 +100,16 @@ const SearchBar = () => {
           position: 'absolute',
           right: 0,
           '& .MuiInput-underline:before': {
-           borderBottom: 'none !important'
+            borderBottom: 'none !important'
           },
           '& .MuiInput-underline:after': {
-           borderBottom: 'none !important'
+            borderBottom: 'none !important'
           },
           '& .MuiInput-underline:hover:before': {
-           borderBottom: 'none !important'
+            borderBottom: 'none !important'
           },
           '& .MuiInput-underline.Mui-focused:after': {
-           borderBottom: 'none !important'
+            borderBottom: 'none !important'
           }
         }}
         className='search-txt'
