@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import Box from '@mui/material/Box'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
   Button,
@@ -14,9 +14,10 @@ import {
   IconButton,
   Link as MuiLink,
   Tooltip,
-  Fade
+  Fade,
+  FormHelperText
 } from '@mui/material'
-import { Controller, useForm, useFieldArray } from 'react-hook-form'
+import { Controller, useForm, useFieldArray, Control } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { useQueryParams } from '../../hooks'
@@ -28,7 +29,8 @@ import placeholderImage from '../../assets/images/imgplaceholder.svg'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
 import MainContainer from '../MainContainer'
-
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+// Constants for How Known options
 const FIRST_HAND = 'FIRST_HAND'
 const SECOND_HAND = 'SECOND_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -49,6 +51,7 @@ const HOW_KNOWN = {
   FirstHandRejected: 'FIRST_HAND_REJECTED',
   WebDocumentRejected: 'WEB_DOCUMENT_REJECTED'
 } as const
+
 type HowKnown = (typeof HOW_KNOWN)[keyof typeof HOW_KNOWN]
 
 interface ImageI {
@@ -69,6 +72,57 @@ interface FormData {
   howKnown: string
   effectiveDate: Date
   images: ImageI[]
+}
+
+// Reusable URL Input Field Component
+const URLInputField: React.FC<{
+  control: Control<FormData>
+  label: string
+}> = ({ control, label }) => {
+  const theme = useTheme()
+
+  return (
+    <>
+      <Typography variant='body2'>{label}</Typography>
+      <Controller
+        name='sourceURI'
+        control={control}
+        defaultValue=''
+        rules={{
+          required: 'This field is required',
+          pattern: {
+            value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+            message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
+          }
+        }}
+        render={({ field, fieldState: { error } }) => (
+          <TextField
+            {...field}
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.input,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'transparent'
+                },
+                '&:hover fieldset': {
+                  borderColor: 'transparent'
+                },
+                '& .MuiInputBase-input': {
+                  color: theme.palette.texts,
+                  fontWeight: 400,
+                  fontSize: 16
+                }
+              }
+            }}
+            margin='normal'
+            error={Boolean(error)}
+            helperText={error ? error.message : ''}
+          />
+        )}
+      />
+    </>
+  )
 }
 
 const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
@@ -104,7 +158,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         if (res.data.claim.amt) setAmtValue(res.data.claim.amt)
         if (res.data.claim.aspect) setAspectValue(res.data.claim.aspect)
         if (res.data.claim.confidence !== undefined) setConfidenceValue(res.data.claim.confidence)
-        if (res.data.claim.source_name) setIssuerValue(res.data.claim.source_name)
+        if (res.data.claim.sourceURI) setIssuerValue(res.data.claim.sourceURI)
         if (res.data.claim.source_thumbnail) setSourceThumbnail(res.data.claim.source_thumbnail)
         if (res.data.claim.howKnown) setHowKnownValue(res.data.claim.howKnown)
 
@@ -133,7 +187,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   }
 
   const { handleSubmit, reset, control, register, watch } = useForm<FormData>({ defaultValues })
-  const watchHowKnown = watch('howKnown')
+  const watchHowKnown = watch('howKnown') as HowKnown
 
   const {
     fields: imageFields,
@@ -178,10 +232,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         claim: CLAIM_VALIDATED,
         images
       }
-      console.log('Payload before submission:', payload) // Debugging log
-
-      console.log('In submit, payload is')
-      console.log(payload)
 
       if (howKnown === FIRST_HAND_BENEFIT) {
         payload.claim = CLAIM_IMPACT
@@ -242,8 +292,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       { value: FIRST_HAND, text: 'validate first hand' },
       { value: SECOND_HAND, text: 'validate second hand' },
       { value: WEB_DOCUMENT, text: 'validate from source' },
-
-      // these are not valid to return to server, will be modified in handler
       { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
       { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
       { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
@@ -291,6 +339,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           }}
         >
           <Box sx={{ width: '100%', p: '0' }}>
+            {/* Form Content */}
             <Box
               sx={{
                 m: '15px',
@@ -301,7 +350,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               }}
             >
               <Typography variant='body1'>
-                {`There’s a claim that`}
+                {`Validate that claim:`}
                 <Box
                   sx={{
                     height: '5px',
@@ -348,11 +397,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 sx={{
                   width: isMediumScreen ? '95%' : '45%',
                   height: 'auto',
-                  top: '210px',
-                  left: '212px',
                   borderRadius: '20px',
                   backgroundColor: theme.palette.cardBackground,
-                  mt: 0
+                  mt: 0,
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' // Add shadow for depth
                 }}
               >
                 <Card
@@ -366,115 +414,145 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     borderRadius: '20px'
                   }}
                 >
+                  {/* Issuer, Subject, Aspect, Confidence, Amount, Date, How Known, Statement */}
                   <Box sx={{ height: '545', width: '535' }}>
+                    <Box sx={{ height: '545', width: '535' }}>
+                      {subjectValue && (
+                        <Box sx={{ display: 'flex', mt: 5, mb: 4 }}>
+                          <Box sx={{ width: '130px' }}>
+                            <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                              Subject:
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Link
+                              to={subjectValue}
+                              rel='noopener noreferrer'
+                              target='_blank'
+                              style={{ textDecoration: 'none', color: 'inherit' }} // Inherit text color and remove underline
+                            >
+                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                {subjectValue}
+                              </Typography>
+                              <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts }} />
+                            </Link>
+                          </Box>
+                        </Box>
+                      )}
+                    </Box>
                     {issuerValue && (
-                      <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>Issuer :</Typography>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Issuer:
+                          </Typography>
                         </Box>
                         <Box>
-                          <Typography variant='body2'>{issuerValue}</Typography>
-                        </Box>
-                      </Box>
-                    )}
-                    {subjectValue && (
-                      <Box sx={{ display: 'flex' }}>
-                        <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>Subject :</Typography>
-                        </Box>
-                        <Box>
-                          <Typography variant='body2'>{subjectValue}</Typography>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {issuerValue}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
                     {aspectValue && (
-                      <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>Aspect :</Typography>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Aspect:
+                          </Typography>
                         </Box>
                         <Box>
-                          <Typography variant='body2'>{aspectValue}</Typography>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {aspectValue}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
                     {confidenceValue !== null && (
-                      <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>Confidence :</Typography>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Confidence:
+                          </Typography>
                         </Box>
                         <Box>
-                          <Typography variant='body2'>{confidenceValue}</Typography>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {confidenceValue}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
                     {amtValue && (
-                      <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>Amount:</Typography>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Amount:
+                          </Typography>
                         </Box>
                         <Box>
-                          <Typography variant='body2'>{amtValue}</Typography>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {amtValue}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
                     {effectiveDateValue && (
-                      <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>Date :</Typography>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Date:
+                          </Typography>
                         </Box>
                         <Box>
-                          <Typography variant='body2'>{effectiveDateValue}</Typography>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {effectiveDateValue}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
                     {howKnownValue && (
-                      <Box sx={{ display: 'flex' }}>
+                      <Box sx={{ display: 'flex', mb: 4 }}>
                         <Box sx={{ width: '130px' }}>
-                          <Typography variant='body2'>How Known :</Typography>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            How Known:
+                          </Typography>
                         </Box>
                         <Box>
-                          <Typography variant='body2'>{howKnownValue}</Typography>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {howKnownValue}
+                          </Typography>
                         </Box>
                       </Box>
                     )}
                     {statementValue && (
-                      <Typography
-                        variant='body2'
-                        component='span'
-                        sx={{
-                          padding: '5px 1 1 5px',
-                          wordBreak: 'break-word',
-                          color: theme.palette.texts
-                        }}
-                      >
-                        Statement :
-                        <Typography variant='body2'>
-                          <Typography
-                            variant='body2'
-                            component='span'
-                            sx={{
-                              padding: '5px 1 1 5px',
-                              wordBreak: 'break-word',
-                              color: theme.palette.texts
-                            }}
-                          >
-                            {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
-                            {isStatementLong && (
-                              <MuiLink
-                                onClick={handleToggleExpand}
-                                sx={{
-                                  cursor: 'pointer',
-                                  marginLeft: '5px',
-                                  color: theme.palette.link,
-                                  textDecoration: 'none'
-                                }}
-                              >
-                                {isExpanded ? 'Show Less' : 'See More'}
-                              </MuiLink>
-                            )}
-                          </Typography>
+                      <Box sx={{ display: 'flex', mb: 5, mt: 4 }}>
+                        <Typography variant='body2' sx={{ fontWeight: 'bold', mr: 4 }}>
+                          Statement:
                         </Typography>
-                      </Typography>
+                        <Typography
+                          variant='body2'
+                          sx={{
+                            padding: '5px 1 1 5px',
+                            wordBreak: 'break-word',
+                            color: theme.palette.texts
+                          }}
+                        >
+                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
+                          {isStatementLong && (
+                            <MuiLink
+                              onClick={handleToggleExpand}
+                              sx={{
+                                cursor: 'pointer',
+                                marginLeft: '5px',
+                                color: theme.palette.link,
+                                textDecoration: 'none'
+                              }}
+                            >
+                              {isExpanded ? 'Show Less' : 'See More'}
+                            </MuiLink>
+                          )}
+                        </Typography>
+                      </Box>
                     )}
                   </Box>
                 </Card>
@@ -529,7 +607,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 >
                   <Box sx={{ height: '544', width: '100%' }}>
-                    <Typography variant='body2'>How Known</Typography>
+                    <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
+                      {`Validator Information`}
+                    </Typography>
+                    {/* How Known Select Field */}
+                    <Typography variant='body2'>How Known(Required)</Typography>
                     <FormControl
                       fullWidth
                       margin='normal'
@@ -554,180 +636,120 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         name='howKnown'
                         control={control}
                         defaultValue=''
-                        render={({ field }) => (
-                          <Select
-                            {...field}
-                            sx={{
-                              '& .MuiSelect-icon': {
-                                color: '#0A1C1D'
-                              },
-                              '& .MuiOutlinedInput-notchedOutline': {
-                                border: 'none'
-                              },
-                              '& .MuiInputBase-input': {
-                                color: theme.palette.texts,
-                                fontWeight: 400,
-                                fontSize: 16
-                              }
-                            }}
-                          >
-                            {inputOptions.howKnown.map((option, index: number) => (
-                              <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                onClick={() => handleItemSelect()} // Close tooltips when selecting an item
-                                sx={{
-                                  backgroundColor: theme.palette.input,
+                        rules={{
+                          required: 'This field is required' // This makes the field required
+                        }}
+                        render={({ field, fieldState: { error } }) => (
+                          <>
+                            <Select
+                              {...field}
+                              sx={{
+                                '& .MuiSelect-icon': {
+                                  color: '#0A1C1D'
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none'
+                                },
+                                '& .MuiInputBase-input': {
                                   color: theme.palette.texts,
-                                  fontSize: 16,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.input
-                                  },
-                                  '&.Mui-selected': {
+                                  fontWeight: 400,
+                                  fontSize: 16
+                                }
+                              }}
+                              error={Boolean(error)} // Pass the error state to the Select component
+                            >
+                              {inputOptions.howKnown.map((option, index: number) => (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  onClick={() => handleItemSelect()}
+                                  sx={{
                                     backgroundColor: theme.palette.input,
+                                    color: theme.palette.texts,
+                                    fontSize: 16,
                                     '&:hover': {
                                       backgroundColor: theme.palette.input
-                                    }
-                                  },
-                                  '& .MuiInputBase-input': {
-                                    color: theme.palette.texts,
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                  },
-                                  '&:active': {
-                                    backgroundColor: theme.palette.input
-                                  },
-                                  '::selection': {
-                                    backgroundColor: theme.palette.input
-                                  },
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center'
-                                }}
-                              >
-                                <Tooltip
-                                  title={tooltips.howKnown[index]}
-                                  placement={isTouchDevice ? 'top' : 'right'}
-                                  arrow
-                                  TransitionComponent={Fade}
-                                  open={isTouchDevice ? openTooltipIndex === index : undefined}
-                                  onClose={() => setOpenTooltipIndex(null)}
-                                  disableFocusListener={isTouchDevice}
-                                  disableHoverListener={isTouchDevice}
-                                  disableTouchListener={isTouchDevice}
+                                    },
+                                    '&.Mui-selected': {
+                                      backgroundColor: theme.palette.input,
+                                      '&:hover': {
+                                        backgroundColor: theme.palette.input
+                                      }
+                                    },
+                                    '& .MuiInputBase-input': {
+                                      color: theme.palette.texts,
+                                      fontWeight: 400,
+                                      fontSize: 16
+                                    },
+                                    '&:active': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    '::selection': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                  }}
                                 >
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      width: '100%',
-                                      justifyContent: 'space-between'
-                                    }}
+                                  <Tooltip
+                                    title={tooltips.howKnown[index]}
+                                    placement={isTouchDevice ? 'top' : 'right'}
+                                    arrow
+                                    TransitionComponent={Fade}
+                                    open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                    onClose={() => setOpenTooltipIndex(null)}
+                                    disableFocusListener={isTouchDevice}
+                                    disableHoverListener={isTouchDevice}
+                                    disableTouchListener={isTouchDevice}
                                   >
-                                    <span>{option.text}</span>
-                                    {isTouchDevice && (
-                                      <IconButton
-                                        size='small'
-                                        onClick={e => {
-                                          e.stopPropagation()
-                                          handleTooltipToggle(index)
-                                        }}
-                                      >
-                                        <HelpIcon sx={{ color: '#0ABAB5' }} />
-                                      </IconButton>
-                                    )}
-                                  </Box>
-                                </Tooltip>
-                              </MenuItem>
-                            ))}
-                          </Select>
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        justifyContent: 'space-between'
+                                      }}
+                                    >
+                                      <span>{option.text}</span>
+                                      {isTouchDevice && (
+                                        <IconButton
+                                          size='small'
+                                          onClick={e => {
+                                            e.stopPropagation()
+                                            handleTooltipToggle(index)
+                                          }}
+                                        >
+                                          <HelpIcon sx={{ color: '#0ABAB5' }} />
+                                        </IconButton>
+                                      )}
+                                    </Box>
+                                  </Tooltip>
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {error && (
+                              <FormHelperText error>{error.message}</FormHelperText> // Display error message
+                            )}
+                          </>
                         )}
                       />
                     </FormControl>
 
-                    {watchHowKnown === FIRST_HAND && (
-                      <>
-                        <Typography variant='body2'>Your Website</Typography>
-                        <Controller
-                          name='sourceURI'
-                          control={control}
-                          defaultValue=''
-                          rules={{
-                            pattern: {
-                              value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
-                              message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
-                            }
-                          }}
-                          render={({ field, fieldState: { error } }) => (
-                            <TextField
-                              {...field}
-                              sx={{
-                                width: '100%',
-                                backgroundColor: theme.palette.input,
-                                '& .MuiOutlinedInput-root': {
-                                  '& fieldset': {
-                                    borderColor: 'transparent'
-                                  },
-                                  '&:hover fieldset': {
-                                    borderColor: 'transparent'
-                                  },
-                                  '& .MuiInputBase-input': {
-                                    color: theme.palette.texts,
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                  }
-                                }
-                              }}
-                              margin='normal'
-                              error={Boolean(error)} // Show error state
-                              helperText={error ? error.message : ''} // Display error message
-                            />
-                          )}
-                        />
-                      </>
+                    {/* URL Input Field */}
+                    {(watchHowKnown === FIRST_HAND ||
+                      watchHowKnown === SECOND_HAND ||
+                      watchHowKnown === FIRST_HAND_BENEFIT ||
+                      watchHowKnown === FIRST_HAND_REJECTED) && (
+                      <URLInputField control={control} label='Your Website (Required)' />
                     )}
-
-                    {watchHowKnown === WEB_DOCUMENT && (
-                      <>
-                        <Typography variant='body2'>Source URL</Typography>
-                        <Controller
-                          name='sourceURI'
-                          control={control}
-                          defaultValue=''
-                          rules={{
-                            pattern: {
-                              value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
-                              message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
-                            }
-                          }}
-                          render={({ field, fieldState: { error } }) => (
-                            <TextField
-                              {...field}
-                              sx={{
-                                width: '100%',
-                                backgroundColor: theme.palette.input,
-                                '& .MuiOutlinedInput-root': {
-                                  '& fieldset': {
-                                    borderColor: 'transparent'
-                                  },
-                                  '&:hover fieldset': {
-                                    borderColor: 'transparent'
-                                  },
-                                  '& .MuiInputBase-input': {
-                                    color: theme.palette.texts,
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                  }
-                                }
-                              }}
-                              margin='normal'
-                              error={Boolean(error)} // Show error state
-                              helperText={error ? error.message : ''} // Display error message
-                            />
-                          )}
-                        />
-                      </>
+                    {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
+                      <URLInputField control={control} label='Source URL (Required)' />
                     )}
+                    <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
+                      {`Claim Validation Details `}
+                    </Typography>
+                    {/* Effective Date Field */}
                     <Typography variant='body2'>Effective Date</Typography>
                     <FormControl fullWidth sx={{ mt: 1 }}>
                       <Controller
@@ -787,20 +809,21 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       />
                     </FormControl>
 
+                    {/* Statement Field */}
                     <Typography
                       variant='body2'
                       sx={{
                         p: '5px'
                       }}
                     >
-                      Explain here
+                      Validation Statement (Required)
                     </Typography>
                     <Controller
                       name='statement'
                       control={control}
                       defaultValue=''
                       rules={{
-                        required: 'This field is required' // Add required validation
+                        required: 'This field is required'
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <TextField
@@ -833,13 +856,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       )}
                     />
 
+                    {/* Image Uploader */}
                     <Typography
                       variant='body2'
                       sx={{
                         margin: '10px'
                       }}
                     >
-                      Upload image
+                      Upload supporting Evidence (Optional)
                     </Typography>
                     <ImageUploader
                       fieldArray={{
@@ -860,6 +884,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 </Card>
               </Box>
             </Box>
+
+            {/* Submit Button */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: '27px' }}>
               <Button
                 onClick={onSubmit}
