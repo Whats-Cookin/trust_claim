@@ -33,7 +33,7 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
-
+import { Medal, ShieldCheck, CircleCheck } from 'lucide-react'
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
@@ -87,7 +87,41 @@ const extractSourceName = (url: string) => {
   const match = regex.exec(url)
   return match ? match[1].replace(/\./g, ' ') : url
 }
+const Badge = (claim: any) => {
+  const bgColor = claim.claim === 'credential' ? '#cce6ff' : claim.claim === 'claim' ? '#c0efd7' : '#f8e8cc'
+  const icon =
+    claim.claim === 'credential' ? (
+      <Medal size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+    ) : claim.claim === 'claim' ? (
+      <CircleCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+    ) : (
+      <ShieldCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+    )
+  const color = claim.claim === 'credential' ? '#0052e0' : claim.claim === 'claim' ? '#2d6a4f' : '#e08a00'
 
+  return (
+    claim.claim && (
+      <Box
+        sx={{
+          display: 'inline-block',
+          alignItems: 'center',
+          backgroundColor: bgColor,
+          borderRadius: '12px',
+          padding: '2px 8px',
+          marginBottom: '10px',
+          marginLeft: '10px',
+          height: 'fit-content',
+          color: color
+        }}
+      >
+        {icon}
+        <Typography variant='caption' sx={{ color: color, fontWeight: '600', fontSize: '12px' }}>
+          {claim.claim === 'validated' ? 'Validation' : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1)}
+        </Typography>
+      </Box>
+    )
+  )
+}
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.name
   if (claim.curator) {
@@ -347,6 +381,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             >
                               <ClaimName claim={claim} searchTerm={searchTerm} />
                             </Link>
+                            <Badge claim={claim.claim} />
                             {claim && claim.claim && claim.claim === 'credential' && (
                               <Box
                                 sx={{
