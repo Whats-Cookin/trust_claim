@@ -31,13 +31,18 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const queryParams = useQueryParams()
+  const githubAuthCode = queryParams.get('code')
+  const accessToken = queryParams.get('accessToken')
+  const refreshToken = queryParams.get('refreshToken')
+
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
-
-  const navigate = useNavigate()
 
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
@@ -48,8 +53,11 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     [location.state?.from, navigate, setLoading]
   )
 
-  const queryParams = useQueryParams()
-  const githubAuthCode = queryParams.get('code')
+  useEffect(() => {
+    if (accessToken && refreshToken) {
+      handleAuth(accessToken, refreshToken)
+    }
+  }, [])
 
   useEffect(() => {
     if (githubAuthCode) {
@@ -77,9 +85,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
 
       if (accountId) {
         handleAuthSuccess({ ethAddress: accountId.address })
-
         // Initialize DID authentication
-        const success = await initializeDIDAuth(ceramic, composeClient)
+        const success: boolean = await initializeDIDAuth(ceramic, composeClient)
         if (success) {
           navigate(location.state?.from || '/')
         } else {
