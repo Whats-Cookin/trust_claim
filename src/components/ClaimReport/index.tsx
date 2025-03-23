@@ -96,7 +96,7 @@ const DonationReport: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
-          mt: '95px',
+          mt: '20%',
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',

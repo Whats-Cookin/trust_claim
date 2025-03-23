@@ -56,7 +56,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
           sx={{ ...getActiveStyle('/claim'), color: theme.palette.sidecolor }}
         />
       )}
-      <BottomNavigationAction
+      {/* <BottomNavigationAction
         label={isDarkMode ? 'Light' : 'Dark'}
         icon={isDarkMode ? <LightModeOutlined /> : <DarkMode />}
         onClick={toggleTheme}
@@ -66,7 +66,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
           marginBottom: '4px',
           color: theme.palette.sidecolor
         }}
-      />
+      /> */}
       {isAuth ? (
         <BottomNavigationAction
           label='Logout'

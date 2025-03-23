@@ -51,34 +51,45 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         backgroundColor: '#FFFFFF',
         color: theme.palette.texts,
         backgroundImage: 'none',
-        boxShadow: '1px 1px 10px rgba(209, 213, 219, 0.5)',
+        boxShadow: '0 0.1rem 0.6rem rgba(209, 213, 219, 0.5)',
         width: '100%',
-        height: '100px',
+        // height: { xs: '70px', md: '100px' },
         zIndex: 999,
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.3s ease-in-out',
+        display: 'flex',
         flexDirection: 'row',
-        display: isSmallScreen ? displayValue : 'block',
-        p: '20px '
+        p: { xs: theme.spacing(1), md: theme.spacing(2.5) },
+        maxWidth: '1920px',
+        margin: '0 auto',
+        height: '100px'
       }}
     >
-      <Toolbar sx={{ display: 'flex' }}>
+      <Toolbar sx={{ display: 'flex', width: '100%' }}>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center',
             width: '50%',
-            textWrap: 'wrap'
+            flexWrap: 'wrap'
           }}
         >
-          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '10px' }} />
+          <Box
+            component='img'
+            src={Logo}
+            alt='LinkedTrust Logo'
+            sx={{
+              width: { xs: '24px', md: '28px' },
+              height: { xs: '24px', md: '28px' },
+              mr: { xs: 1, md: 2 }
+            }}
+          />
           <Typography
             variant='body1'
             sx={{
               color: '#2D6A4F',
-              flexWrap: 'wrap',
-              fontSize: isSmallScreen ? '20px' : '20px',
+              fontSize: { xs: 'clamp(16px, 4vw, 20px)', md: '20px' },
               transition: 'opacity 0.3s',
               fontFamily: 'Montserrat',
               fontWeight: 'bold'
@@ -87,6 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             LinkedTrust
           </Typography>
         </Box>
+
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
           <SearchBar />
         </Box>
