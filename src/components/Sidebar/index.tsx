@@ -48,56 +48,31 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
 
   return (
     <Drawer
-    variant="permanent"
-    sx={{
-      '& .MuiDrawer-paper': {
-        minWidth: { xs: 160, md: 200, lg: 240 },
-        boxSizing: 'border-box',
-        backgroundColor: '#FFFFFF',
-        color: '#212529',
-        transition: 'width 0.3s, opacity 0.3s, margin-top 0.3s',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        overflow: 'hidden',
-        borderRight: 'none',
-        borderRadius: '0 8px 8px 0',
-        marginTop: isNavbarVisible && !isAuthPage ? { xs: '100px', md: '150px' } : '0',
-        height: isNavbarVisible && !isAuthPage ? { xs: 'calc(100vh - 100px)', md: 'calc(100vh - 150px)' } : '100vh',
-        boxShadow: '1px 1px 10px rgba(0, 0, 0, 0.25)'
-      }
-    }}
-  >
-    <List sx={{ padding: { xs: theme.spacing(2), md: theme.spacing(5) } }}>
-      <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
-        <HomeOutlinedIcon sx={getIconStyle('/feed')} />
-        <ListItemText
-          primary="Home"
-          primaryTypographyProps={{
-            variant: 'body2',
-            fontSize: { xs: '12px', md: '14px' },
-            fontFamily: 'Montserrat'
-          }}
-        />
-      </ListItemButton>
-  
-      <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/SearchBar') }} onClick={() => navigate('/SearchBar')}>
-        <Search sx={getIconStyle('/SearchBar')} />
-        <ListItemText
-          primary="Search"
-          primaryTypographyProps={{
-            variant: 'body2',
-            fontSize: { xs: '12px', md: '14px' },
-            fontFamily: 'Montserrat'
-          }}
-        />
-      </ListItemButton>
-  
-      {isAuth && (
-        <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
-          <AddCircleOutlineOutlinedIcon sx={getIconStyle('/claim')} />
+      variant='permanent'
+      sx={{
+        '& .MuiDrawer-paper': {
+          minWidth: { xs: 160, md: 200, lg: 240 },
+          boxSizing: 'border-box',
+          backgroundColor: '#FFFFFF',
+          color: '#212529',
+          transition: 'width 0.3s, opacity 0.3s, margin-top 0.3s',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          overflow: 'hidden',
+          borderRight: 'none',
+          borderRadius: '0 8px 8px 0',
+          marginTop: isNavbarVisible && !isAuthPage ? { xs: '100px', md: '150px' } : '0',
+          height: isNavbarVisible && !isAuthPage ? { xs: 'calc(100vh - 100px)', md: 'calc(100vh - 150px)' } : '100vh',
+          boxShadow: '1px 1px 10px rgba(0, 0, 0, 0.25)'
+        }
+      }}
+    >
+      <List sx={{ padding: { xs: theme.spacing(2), md: theme.spacing(5) } }}>
+        <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
+          <HomeOutlinedIcon sx={getIconStyle('/feed')} />
           <ListItemText
-            primary="Claim"
+            primary='Home'
             primaryTypographyProps={{
               variant: 'body2',
               fontSize: { xs: '12px', md: '14px' },
@@ -105,9 +80,40 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             }}
           />
         </ListItemButton>
-      )}
-  
-      {/* <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={toggleTheme}>
+
+        <ListItemButton
+          sx={{ gap: theme.spacing(2), ...getActiveStyle('/SearchBar') }}
+          onClick={() => navigate('/SearchBar')}
+        >
+          <Search sx={getIconStyle('/SearchBar')} />
+          <ListItemText
+            primary='Search'
+            primaryTypographyProps={{
+              variant: 'body2',
+              fontSize: { xs: '12px', md: '14px' },
+              fontFamily: 'Montserrat'
+            }}
+          />
+        </ListItemButton>
+
+        {isAuth && (
+          <ListItemButton
+            sx={{ gap: theme.spacing(2), ...getActiveStyle('/claim') }}
+            onClick={() => navigate('/claim')}
+          >
+            <AddCircleOutlineOutlinedIcon sx={getIconStyle('/claim')} />
+            <ListItemText
+              primary='Claim'
+              primaryTypographyProps={{
+                variant: 'body2',
+                fontSize: { xs: '12px', md: '14px' },
+                fontFamily: 'Montserrat'
+              }}
+            />
+          </ListItemButton>
+        )}
+
+        {/* <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={toggleTheme}>
         {isDarkMode ? <LightModeOutlinedIcon sx={getIconStyle('/theme')} /> : <DarkMode sx={getIconStyle('/theme')} />}
         <ListItemText
           primary={isDarkMode ? 'Light' : 'Dark'}
@@ -119,38 +125,41 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           }}
         />
       </ListItemButton> */}
-  
-      {isAuth ? (
-        <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={handleLogout}>
-          <Logout sx={getIconStyle('/logout')} />
-          <ListItemText
-            primary="Log out"
-            primaryTypographyProps={{
-              variant: 'body2',
-              color: '#212529',
-              fontSize: { xs: '12px', md: '14px' },
-              fontFamily: 'Montserrat'
-            }}
-          />
-        </ListItemButton>
-      ) : (
-        <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
-          <Login sx={getIconStyle('/login')} />
-          <ListItemText
-            primary="Login"
-            primaryTypographyProps={{
-              variant: 'body2',
-              color: '#212529',
-              fontSize: { xs: '12px', md: '14px' },
-              fontFamily: 'Montserrat'
-            }}
-          />
-        </ListItemButton>
-      )}
-    </List>
-  
-    <Footer />
-  </Drawer>
+
+        {isAuth ? (
+          <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={handleLogout}>
+            <Logout sx={getIconStyle('/logout')} />
+            <ListItemText
+              primary='Log out'
+              primaryTypographyProps={{
+                variant: 'body2',
+                color: '#212529',
+                fontSize: { xs: '12px', md: '14px' },
+                fontFamily: 'Montserrat'
+              }}
+            />
+          </ListItemButton>
+        ) : (
+          <ListItemButton
+            sx={{ gap: theme.spacing(2), ...getActiveStyle('/login') }}
+            onClick={() => navigate('/login')}
+          >
+            <Login sx={getIconStyle('/login')} />
+            <ListItemText
+              primary='Login'
+              primaryTypographyProps={{
+                variant: 'body2',
+                color: '#212529',
+                fontSize: { xs: '12px', md: '14px' },
+                fontFamily: 'Montserrat'
+              }}
+            />
+          </ListItemButton>
+        )}
+      </List>
+
+      <Footer />
+    </Drawer>
   )
 }
 

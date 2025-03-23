@@ -263,7 +263,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 marginLeft: 'auto',
                 marginRight: '20%',
                 backgroundColor: '#FFFFFF',
-              
+
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
             >
