@@ -111,7 +111,8 @@ const App = () => {
             backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '14.4vw' : '1.0vw',
+            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '15.1vw' : '1.0vw',
+            marginTop: '100px',
             width:
               isMediumScreen || isLoginPage || isRegisterPage
                 ? '100%'
