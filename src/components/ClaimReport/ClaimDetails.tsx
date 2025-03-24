@@ -169,8 +169,8 @@ const ButtonContainer = styled(Box)(({ theme }) => ({
 }))
 
 const ActionButton = styled(Box)(({ theme }) => ({
-  display: 'flex', 
-  alignItems: 'center', 
+  display: 'flex',
+  alignItems: 'center',
   gap: 2,
   cursor: 'pointer',
   background: 'none',
@@ -191,7 +191,7 @@ const ButtonText = styled(Typography)(({ theme }) => ({
 }))
 
 const ButtonIcon = styled(Box)(({ theme }) => ({
-  width: '24px', 
+  width: '24px',
   height: '24px',
   position: 'relative',
   '&::before, &::after': {
@@ -368,9 +368,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         <Stack spacing={3}>
           <CertificateContainer>
             <Box
-              component="img"
+              component='img'
               src={badge}
-              alt="Certificate Badge"
+              alt='Certificate Badge'
               sx={{
                 width: '150px',
                 height: '150px',
@@ -384,15 +384,15 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 }
               }}
             />
-            
+
             <CertificateTitle>Certificate</CertificateTitle>
             <CertificateSubtitle>OF SKILL VALIDATION</CertificateSubtitle>
-            
+
             <RecipientName>{claim.curator}</RecipientName>
             <SkillTitle>{data.edge.startNode.name}</SkillTitle>
-            
+
             <Description>
-              {claim.statement || "This certificate validates the skills and expertise demonstrated by the recipient."}
+              {claim.statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
             </Description>
 
             <EndorsementSection>
@@ -400,16 +400,16 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <EndorsementGrid>
                 {data.validations?.map((validation: any, index: number) => (
                   <EndorsementCard key={index}>
-                    <Typography variant="h6" sx={{ color: '#2D6A4F', fontWeight: 500 }}>
+                    <Typography variant='h6' sx={{ color: '#2D6A4F', fontWeight: 500 }}>
                       {validation.name}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                    <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
                       {truncateText(validation.comment, 50)}
                     </Typography>
-                    <MuiLink 
-                      component="button" 
-                      onClick={() => {}} 
-                      sx={{ 
+                    <MuiLink
+                      component='button'
+                      onClick={() => {}}
+                      sx={{
                         mt: 1,
                         color: '#2D6A4F',
                         textDecoration: 'none',
@@ -430,12 +430,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
                 </Typography>
               </Box>
-              <Typography color="textSecondary">
-                {new Date(claim.timestamp).toLocaleDateString()}
-              </Typography>
-              <Typography color="textSecondary">
-                ID: {claim.id}
-              </Typography>
+              <Typography color='textSecondary'>{new Date(claim.timestamp).toLocaleDateString()}</Typography>
+              <Typography color='textSecondary'>ID: {claim.id}</Typography>
             </IssuerSection>
           </CertificateContainer>
 
@@ -457,7 +453,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <ButtonText>Validate</ButtonText>
             </ActionButton>
 
-            <ActionButton onClick={(e) => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
+            <ActionButton onClick={e => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
