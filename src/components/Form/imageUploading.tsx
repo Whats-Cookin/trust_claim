@@ -17,7 +17,7 @@ import {
   useMediaQuery
 } from '@mui/material'
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import PermMediaIcon from '@mui/icons-material/PermMedia'
 
 export interface MediaI {
   file: File
@@ -122,18 +122,33 @@ const MediaUploader = <TFieldValues extends FieldValues>({
           <Box
             sx={{
               display: 'flex',
+              width: '100%',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              width: isMobile ? '326px' : '400px',
               margin: isMobile ? '0 ' : 'auto',
               height: 180,
-              border: `5px dashed ${theme.palette.input}`,
+              // border: `5px dashed ${theme.palette.input}`,
               borderRadius: 2,
               cursor: 'pointer',
               transition: 'border-color 0.3s',
               '&:hover': {
                 borderColor: theme.palette.borderColor
+              },
+              backgroundColor: theme.palette.input,
+              border: 'none',
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'transparent'
+                },
+                '&:hover fieldset': {
+                  borderColor: 'transparent'
+                },
+                '& .MuiInputBase-input': {
+                  color: theme.palette.texts,
+                  fontWeight: 400,
+                  fontSize: 16
+                }
               }
             }}
             style={{ borderColor: isDragging ? theme.palette.borderColor : theme.palette.input }}
@@ -142,9 +157,9 @@ const MediaUploader = <TFieldValues extends FieldValues>({
             onDrop={handleDrop}
             role='presentation'
           >
-            <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
+            <PermMediaIcon style={{ width: 40, height: 40, marginBottom: 10 }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
-              <strong>Click to upload</strong> or drag and drop
+              <strong> + Add Media</strong>
             </Typography>
             <Typography variant='caption' color='textSecondary' sx={{ textAlign: 'center' }}>
               SVG, PNG, JPG, GIF, or MP4 (MAX. 800x400px)
