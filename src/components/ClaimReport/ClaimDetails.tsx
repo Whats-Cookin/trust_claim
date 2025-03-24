@@ -29,6 +29,7 @@ import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState } from 'react'
 import jsPDF from 'jspdf'
+import badge from '../../assets/images/badge.svg'
 // import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
 // import Duration from '../../assets/duration.svg'
 
@@ -54,6 +55,156 @@ const MediaContainer = styled(Box)(({ theme }) => ({
   }
 }))
 
+const CertificateContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(4),
+  backgroundColor: 'white',
+  borderRadius: '20px',
+  margin: '20px 0',
+  position: 'relative',
+  color: '#000',
+  boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+  border: '1px solid rgba(0, 0, 0, 0.1)'
+}))
+
+const CertificateTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '36px',
+  fontWeight: 600,
+  marginBottom: theme.spacing(1),
+  textAlign: 'center',
+  color: '#2D6A4F'
+}))
+
+const CertificateSubtitle = styled(Typography)(({ theme }) => ({
+  fontSize: '16px',
+  color: '#666',
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  textTransform: 'uppercase',
+  letterSpacing: '2px'
+}))
+
+const RecipientName = styled(Typography)(({ theme }) => ({
+  fontSize: '32px',
+  fontFamily: "'Roboto', sans-serif",
+  fontWeight: 500,
+  marginBottom: theme.spacing(3),
+  textAlign: 'center',
+  color: '#2D6A4F'
+}))
+
+const SkillTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '20px',
+  fontWeight: 500,
+  marginBottom: theme.spacing(3),
+  textAlign: 'center',
+  color: '#333'
+}))
+
+const Description = styled(Typography)(({ theme }) => ({
+  fontSize: '16px',
+  color: '#666',
+  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  maxWidth: '600px',
+  lineHeight: '1.6'
+}))
+
+const EndorsementSection = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxWidth: '800px',
+  marginTop: theme.spacing(4),
+  padding: theme.spacing(2),
+  backgroundColor: '#f8f9fa',
+  borderRadius: '12px'
+}))
+
+const EndorsementTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '16px',
+  color: '#2D6A4F',
+  marginBottom: theme.spacing(2),
+  fontWeight: 500
+}))
+
+const EndorsementGrid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: theme.spacing(2),
+  marginBottom: theme.spacing(4)
+}))
+
+const EndorsementCard = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(2),
+  backgroundColor: 'white',
+  borderRadius: '8px',
+  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.05)',
+  border: '1px solid rgba(0, 0, 0, 0.05)'
+}))
+
+const IssuerSection = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  width: '100%',
+  marginTop: theme.spacing(4),
+  padding: theme.spacing(2, 0),
+  borderTop: '1px solid rgba(0, 0, 0, 0.1)'
+}))
+
+const ButtonContainer = styled(Box)(({ theme }) => ({
+  width: '100%',
+  maxWidth: '740px',
+  height: '61px',
+  background: '#FEFEFF',
+  boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
+  borderRadius: '8px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '0 20px',
+  margin: '20px auto',
+  position: 'relative'
+}))
+
+const ActionButton = styled(Box)(({ theme }) => ({
+  display: 'flex', 
+  alignItems: 'center', 
+  gap: 2,
+  cursor: 'pointer',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  '&:hover': {
+    opacity: 0.8
+  }
+})) as typeof Box
+
+const ButtonText = styled(Typography)(({ theme }) => ({
+  fontFamily: 'Roboto',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '16px',
+  lineHeight: '19px',
+  color: '#2D6A4F'
+}))
+
+const ButtonIcon = styled(Box)(({ theme }) => ({
+  width: '24px', 
+  height: '24px',
+  position: 'relative',
+  '&::before, &::after': {
+    content: '""',
+    position: 'absolute',
+    border: '2px solid #2D6A4F',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0
+  }
+}))
+
 const isVideoUrl = (url: string): boolean => {
   try {
     const parsedUrl = new URL(url)
@@ -61,6 +212,16 @@ const isVideoUrl = (url: string): boolean => {
     return ['mp4', 'webm', 'ogg'].includes(extension || '')
   } catch {
     return false
+  }
+}
+
+const extractProfileName = (url: string): string => {
+  try {
+    const urlObj = new URL(url)
+    const pathParts = urlObj.pathname.split('/')
+    return pathParts[pathParts.length - 1] || url
+  } catch {
+    return url
   }
 }
 
@@ -130,7 +291,6 @@ const exportClaimData = (claimData: any, format: 'json' | 'pdf') => {
 }
 
 const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
-  const [isExpanded, setIsExpanded] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [anchorExportEl, setAnchorExportEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -142,6 +302,14 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleValidate = () => {
+    window.location.href = `/validate/${data.claim.claim.id}`
+  }
+
+  const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorExportEl(event.currentTarget as unknown as HTMLButtonElement)
   }
 
   const handleLinkedInCertification = () => {
@@ -173,16 +341,11 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     setAnchorExportEl(null)
   }
 
-  const handleToggleExpand = useCallback(() => {
-    setIsExpanded(prev => !prev)
-  }, [])
-
   const open = Boolean(anchorEl)
   const openEx = Boolean(anchorExportEl)
   const id = open ? 'share-popover' : undefined
   const idEx = openEx ? 'export-popover' : undefined
   const claim = data.claim.claim
-  const isStatementLong = claim.statement && claim.statement.length > 200
 
   if (!claim) {
     console.error('Export failed: claimData or claimData.id is missing.')
@@ -203,445 +366,302 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     >
       <CardContent>
         <Stack spacing={3}>
-          {/* Title and Actions Row */}
-          <Stack
-            direction={{ xs: 'column', md: 'column', lg: 'row' }}
-            spacing={2}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            justifyContent='space-between'
-          >
-            <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
-              <Typography
-                variant='h6'
-                color='white'
-                sx={{ minWidth: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}
-                component='a'
-                href={data.edge.startNode.nodeUri}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                {data.edge.startNode.name}
-              </Typography>
-            </Stack>
-            <Stack spacing={1}>
-              {claim.claim === 'credential' && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0, 150, 0, 0.1)',
-                    borderRadius: '12px',
-                    padding: '2px 8px',
-                    marginBottom: '10px',
-                    marginLeft: '10px',
-                    height: 'fit-content'
-                  }}
-                >
-                  <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-                  <Typography variant='caption' sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
-                    {claim.claim}
-                  </Typography>
-                </Box>
-              )}
-            </Stack>
-
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={{ xs: 2, sm: 2 }}
+          <CertificateContainer>
+            <Box
+              component="img"
+              src={badge}
+              alt="Certificate Badge"
               sx={{
-                width: '100%',
-                alignItems: { xs: 'center', sm: 'flex-start' },
-                justifyContent: { xs: 'center', sm: 'center', md: 'felx-end', lg: 'flex-end' }
+                width: '150px',
+                height: '150px',
+                display: 'block',
+                margin: '0 auto',
+                marginBottom: '30px',
+                filter: 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.1))',
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                  transform: 'scale(1.05)'
+                }
               }}
-            >
-              <Button
-                component={Link}
-                startIcon={<HubOutlinedIcon />}
-                to={`/explore/${claim.id}`}
-                sx={{
-                  textTransform: 'none',
-                  color: theme.palette.buttontext,
-                  bgcolor: theme.palette.buttons,
-                  fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
-                  width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '150px' },
-                  height: '48px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Graph View
-              </Button>
+            />
+            
+            <CertificateTitle>Certificate</CertificateTitle>
+            <CertificateSubtitle>OF SKILL VALIDATION</CertificateSubtitle>
+            
+            <RecipientName>{claim.curator}</RecipientName>
+            <SkillTitle>{data.edge.startNode.name}</SkillTitle>
+            
+            <Description>
+              {claim.statement || "This certificate validates the skills and expertise demonstrated by the recipient."}
+            </Description>
 
-              <Button
-                component={Link}
-                startIcon={<CheckCircleOutlineOutlinedIcon />}
-                to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
-                sx={{
-                  textTransform: 'none',
-                  color: theme.palette.buttontext,
-                  bgcolor: theme.palette.buttons,
-                  fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
-                  width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
-                }}
-              >
-                Validate
-              </Button>
+            <EndorsementSection>
+              <EndorsementTitle>Endorsed by:</EndorsementTitle>
+              <EndorsementGrid>
+                {data.validations?.map((validation: any, index: number) => (
+                  <EndorsementCard key={index}>
+                    <Typography variant="h6" sx={{ color: '#2D6A4F', fontWeight: 500 }}>
+                      {validation.name}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                      {truncateText(validation.comment, 50)}
+                    </Typography>
+                    <MuiLink 
+                      component="button" 
+                      onClick={() => {}} 
+                      sx={{ 
+                        mt: 1,
+                        color: '#2D6A4F',
+                        textDecoration: 'none',
+                        '&:hover': { textDecoration: 'underline' }
+                      }}
+                    >
+                      see all
+                    </MuiLink>
+                  </EndorsementCard>
+                ))}
+              </EndorsementGrid>
+            </EndorsementSection>
 
-              <Button
-                variant='outlined'
-                startIcon={<ShareIcon />}
-                onClick={handleShareClick}
-                sx={{
-                  textTransform: 'none',
-                  color: theme.palette.buttontext,
-                  fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
-                  width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
-                }}
-              >
-                Share
-              </Button>
-
-              <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left'
-                }}
-                PaperProps={{
-                  sx: {
-                    padding: '20px',
-                    backgroundColor: theme.palette.formBackground,
-                    borderRadius: '12px'
-                  }
-                }}
-              >
-                <Typography
-                  variant='body1'
-                  sx={{
-                    color: 'white',
-                    fontWeight: 'bold',
-                    textAlign: 'left'
-                  }}
-                >
-                  Copy Link
+            <IssuerSection>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F' }} />
+                <Typography sx={{ color: '#2D6A4F' }}>
+                  {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
                 </Typography>
-                <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-                  <Box display='flex' justifyContent='center' alignItems='center'>
-                    <TextField
-                      value={currentUrl}
-                      variant='outlined'
-                      InputProps={{
-                        readOnly: true,
-                        sx: {
-                          color: 'white',
-                          backgroundColor: '#2f4f4f',
-                          borderRadius: '5px'
-                        },
-                        endAdornment: (
-                          <InputAdornment position='end'>
-                            <IconButton onClick={handleCopyLink}>
-                              <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
-                            </IconButton>
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mt: 2
-                    }}
-                  >
-                    <IconButton
-                      onClick={handleLinkedInPost} // Click to share on LinkedIn
-                      sx={{
-                        borderRadius: '50%',
-                        backgroundColor: 'white',
-                        width: '50px',
-                        height: '50px',
-                        '&:hover': { backgroundColor: '#f0f0f0' }
-                      }}
-                    >
-                      <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
-                    </IconButton>
-                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                      Post
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mt: 2
-                    }}
-                  >
-                    <IconButton
-                      onClick={handleLinkedInCertification} // Click to share on LinkedIn
-                      sx={{
-                        borderRadius: '50%',
-                        backgroundColor: 'white',
-                        width: '50px',
-                        height: '50px',
-                        '&:hover': { backgroundColor: '#f0f0f0' }
-                      }}
-                    >
-                      <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
-                    </IconButton>
-                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                      Add to profile
-                    </Typography>
-                  </Box>
-                </Box>
-              </Popover>
+              </Box>
+              <Typography color="textSecondary">
+                {new Date(claim.timestamp).toLocaleDateString()}
+              </Typography>
+              <Typography color="textSecondary">
+                ID: {claim.id}
+              </Typography>
+            </IssuerSection>
+          </CertificateContainer>
 
-              {/* Snackbar */}
-              <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={2000}
-                onClose={() => setSnackbarOpen(false)}
-                message='Link copied to clipboard!'
-                sx={{
-                  '& .MuiSnackbarContent-root': {
-                    backgroundColor: theme.palette.cardBackground,
-                    color: theme.palette.buttontext,
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    borderRadius: '8px'
-                  }
+          <ButtonContainer>
+            <ActionButton onClick={handleExportClick}>
+              <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
+              <ButtonText>Export</ButtonText>
+            </ActionButton>
+
+            <Box component={Link} to={`/explore/${claim.id}`} sx={{ textDecoration: 'none' }}>
+              <ActionButton>
+                <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
+                <ButtonText>Graph View</ButtonText>
+              </ActionButton>
+            </Box>
+
+            <ActionButton onClick={handleValidate}>
+              <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
+              <ButtonText>Validate</ButtonText>
+            </ActionButton>
+
+            <ActionButton onClick={(e) => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
+              <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
+              <ButtonText>Share</ButtonText>
+            </ActionButton>
+          </ButtonContainer>
+        </Stack>
+
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          PaperProps={{
+            sx: {
+              padding: '20px',
+              backgroundColor: theme.palette.formBackground,
+              borderRadius: '12px'
+            }
+          }}
+        >
+          <Typography
+            variant='body1'
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+              textAlign: 'left'
+            }}
+          >
+            Copy Link
+          </Typography>
+          <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
+            <Box display='flex' justifyContent='center' alignItems='center'>
+              <TextField
+                value={currentUrl}
+                variant='outlined'
+                InputProps={{
+                  readOnly: true,
+                  sx: {
+                    color: 'white',
+                    backgroundColor: '#2f4f4f',
+                    borderRadius: '5px'
+                  },
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={handleCopyLink}>
+                        <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
+                      </IconButton>
+                    </InputAdornment>
+                  )
                 }}
               />
-              {/* </Box> */}
-
-              <Button
-                variant='outlined'
-                startIcon={<SystemUpdateAltIcon />}
-                onClick={event => setAnchorExportEl(event.currentTarget)}
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: 2
+              }}
+            >
+              <IconButton
+                onClick={handleLinkedInPost}
                 sx={{
-                  textTransform: 'none',
-                  color: theme.palette.buttontext,
-                  fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
-                  width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  width: '50px',
+                  height: '50px',
+                  '&:hover': { backgroundColor: '#f0f0f0' }
                 }}
               >
-                Export
-              </Button>
-
-              <Popover
-                id={idEx}
-                open={openEx}
-                anchorEl={anchorExportEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left'
-                }}
-                PaperProps={{
-                  sx: {
-                    padding: '20px',
-                    backgroundColor: theme.palette.formBackground,
-                    borderRadius: '12px'
-                  }
-                }}
-              >
-                <Typography
-                  variant='body1'
-                  sx={{
-                    color: 'white',
-                    fontWeight: 'bold',
-                    textAlign: 'left'
-                  }}
-                >
-                  Export
-                </Typography>
-                <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mt: 2
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => exportClaimData(claim, 'json')}
-                      sx={{
-                        borderRadius: '50%',
-                        backgroundColor: 'white',
-                        width: '50px',
-                        height: '50px',
-                        '&:hover': { backgroundColor: '#f0f0f0' }
-                      }}
-                    >
-                      <DataObjectIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
-                    </IconButton>
-                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                      export as json
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mt: 2
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => exportClaimData(claim, 'pdf')}
-                      sx={{
-                        borderRadius: '50%',
-                        backgroundColor: 'white',
-                        width: '50px',
-                        height: '50px',
-                        '&:hover': { backgroundColor: '#f0f0f0' }
-                      }}
-                    >
-                      <PictureAsPdfIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
-                    </IconButton>
-                    <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                      export as pdf
-                    </Typography>
-                  </Box>
-                </Box>
-              </Popover>
-            </Stack>
-          </Stack>
-
-          {data.claim.image && <MediaContent url={data.claim.image} />}
-
-          {/* Info Sections */}
-          <Stack spacing={3}>
-            {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <PermIdentityOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
-              <Box>
-                <TextLabel variant='body2' gutterBottom>
-                  Issuer
-                </TextLabel>
-                <Typography variant='body1'>Ahlam Sayed</Typography>
-              </Box>
-            </Box> */}
-
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
-                <TextLabel variant='body2' gutterBottom>
-                  Issued On
-                </TextLabel>
-              </Box>
-              <Box>
-                <Typography variant='body1'>
-                  {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </Typography>
-              </Box>
-            </Box>
-
-            {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ mr: '10px' }}>
-                <img src={Duration} alt='duration icon' />
-              </Box>
-              <Box>
-                <TextLabel variant='body2' gutterBottom>
-                  Duration
-                </TextLabel>
-                <Typography variant='body1'>1 Year</Typography>
-              </Box>
-            </Box> */}
-          </Stack>
-
-          <Stack spacing={3}>
-            {claim.statement && (
-              <Box>
-                <Typography color='white'>
-                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
-                  {isStatementLong && (
-                    <MuiLink
-                      onClick={handleToggleExpand}
-                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
-                    >
-                      {isExpanded ? 'Show Less' : 'See More'}
-                    </MuiLink>
-                  )}
-                </Typography>
-              </Box>
-            )}
-
-            {/* <Box>
-              <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='white'>
-                  Earned through
-                </Typography>
-              </Stack>
-              <Typography color='white'>
-                I developed this skill through hands-on experience, designing solutions for real-world challenges. By
-                collaborating with teams, learning from feedback, and staying curious about user needs, I've honed my
-                ability to create meaningful, intuitive, and impactful designs.
+                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
+              </IconButton>
+              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                Post
               </Typography>
-            </Box> */}
-
-            <Box>
-              <Stack spacing={1}>
-                <MuiLink
-                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
-                  target='_blank'
-                  href={claim.subject}
-                >
-                  {claim.subject}
-                </MuiLink>
-                <MuiLink
-                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
-                  target='_blank'
-                  href={claim.sourceURI}
-                >
-                  {claim.sourceURI}
-                </MuiLink>
-              </Stack>
             </Box>
-
-            <Box>
-              {/* <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='white'>
-                  Validation Summary
-                </Typography>
-              </Stack> */}
-              <Typography color='white'>{data.validations.length} Recommendations</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: 2
+              }}
+            >
+              <IconButton
+                onClick={handleLinkedInCertification}
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  width: '50px',
+                  height: '50px',
+                  '&:hover': { backgroundColor: '#f0f0f0' }
+                }}
+              >
+                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
+              </IconButton>
+              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                Add to profile
+              </Typography>
             </Box>
-          </Stack>
-        </Stack>
+          </Box>
+        </Popover>
+
+        <Popover
+          id={idEx}
+          open={openEx}
+          anchorEl={anchorExportEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          PaperProps={{
+            sx: {
+              padding: '20px',
+              backgroundColor: theme.palette.formBackground,
+              borderRadius: '12px'
+            }
+          }}
+        >
+          <Typography
+            variant='body1'
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+              textAlign: 'left'
+            }}
+          >
+            Export
+          </Typography>
+          <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: 2
+              }}
+            >
+              <IconButton
+                onClick={() => exportClaimData(claim, 'json')}
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  width: '50px',
+                  height: '50px',
+                  '&:hover': { backgroundColor: '#f0f0f0' }
+                }}
+              >
+                <DataObjectIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
+              </IconButton>
+              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                export as json
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: 2
+              }}
+            >
+              <IconButton
+                onClick={() => exportClaimData(claim, 'pdf')}
+                sx={{
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  width: '50px',
+                  height: '50px',
+                  '&:hover': { backgroundColor: '#f0f0f0' }
+                }}
+              >
+                <PictureAsPdfIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
+              </IconButton>
+              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
+                export as pdf
+              </Typography>
+            </Box>
+          </Box>
+        </Popover>
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={2000}
+          onClose={() => setSnackbarOpen(false)}
+          message='Link copied to clipboard!'
+          sx={{
+            '& .MuiSnackbarContent-root': {
+              backgroundColor: theme.palette.cardBackground,
+              color: theme.palette.buttontext,
+              fontSize: '16px',
+              fontWeight: 'bold',
+              borderRadius: '8px'
+            }
+          }}
+        />
       </CardContent>
     </Card>
   )
