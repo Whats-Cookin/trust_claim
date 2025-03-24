@@ -108,7 +108,7 @@ const App = () => {
             display: 'flex',
             flexDirection: 'column',
             minHeight: '100vh',
-            backgroundColor:  "#F8F9FA",
+            backgroundColor: '#F8F9FA',
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
             marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '15.1vw' : '1.0vw',

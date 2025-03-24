@@ -318,7 +318,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     fontWeight: 'bold'
                   }}
                 >
-                  Recent Attestations
+                  Recent Claims
                 </Typography>
               </Box>
               <Box
