@@ -326,8 +326,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <Loader open={loading} />
       <MainContainer
         sx={{
-          overflow: 'hidden',
-          alignItems: 'center'
+          width: '1115px',
+          marginLeft: '20%',
+          marginRight: 'auto'
         }}
       >
         <form

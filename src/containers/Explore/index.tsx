@@ -7,7 +7,7 @@ import axios from '../../axiosInstance'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
-import GraphinfButton from './GraphInfButton'
+// import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
@@ -224,7 +224,7 @@ const Explore = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <MainContainer>
+      <MainContainer sx={{ width: '80%' }}>
         <Box
           ref={ref}
           sx={{ ...styles.cy, display: showDetails && selectedClaim?.claim !== 'credential' ? 'none' : 'block' }}
@@ -249,7 +249,7 @@ const Explore = (homeProps: IHomeProps) => {
             />
           ))}
       </MainContainer>
-      <GraphinfButton />
+      {/* <GraphinfButton /> */}
     </>
   )
 }

@@ -89,18 +89,19 @@ const DonationReport: React.FC = () => {
   }
 
   return (
-    <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
+    <Box sx={{ width: '80%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
       <Box
         id='report-container'
         sx={{
           display: 'flex',
           justifyContent: 'center',
           position: 'relative',
-          mt: '5vh',
+          mt: '5%',
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
-          padding: '25px'
+          padding: '25px',
+          right: '3%'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
-import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
+import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
@@ -21,7 +21,8 @@ import {
   Typography,
   Fade,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Tooltip
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import axios from 'axios'
@@ -296,57 +297,90 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       ) : (
         <>
           {claims.length > 0 ? (
-            <MainContainer>
+            <MainContainer
+              sx={{
+                width: '800px',
+                marginLeft: 'auto',
+                marginRight: '20%',
+                backgroundColor: '#FFFFFF',
+
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
+              }}
+            >
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
                 <Typography
-                  variant='body1'
-                  component='div'
                   sx={{
                     color: theme.palette.texts,
                     textAlign: 'center',
-                    marginLeft: isMediumScreen ? '0' : '1rem'
+                    marginLeft: isMediumScreen ? '0' : '1rem',
+                    marginTop: isMediumScreen ? '0' : '1rem',
+                    fontSize: '20px',
+                    fontWeight: 'bold'
                   }}
                 >
                   Recent Claims
-                  <Box
-                    sx={{
-                      height: '4px',
-                      backgroundColor: theme.palette.maintext,
-                      marginTop: '4px',
-                      borderRadius: '2px',
-                      width: '80%'
-                    }}
-                  />
                 </Typography>
               </Box>
+              <Box
+                sx={{
+                  height: '1px',
+                  backgroundColor: '#E0E0E0',
+                  marginTop: '4px',
+                  borderRadius: '2px',
+                  width: '750px',
+                  mb: '40px'
+                }}
+              />
+
               {claims.map((claim: any, index: number) => (
                 <Grow in={true} timeout={1000} key={claim.claim_id}>
                   <Box sx={{ marginBottom: '15px' }}>
                     <Card
                       sx={{
-                        maxWidth: 'fit',
-                        height: 'fit',
+                        maxWidth: 'fit-content',
+                        height: 'fit-content',
                         borderRadius: '20px',
                         display: isMediumScreen ? 'column' : 'row',
                         backgroundColor:
                           selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
                         backgroundImage: 'none',
                         filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
-                        color: theme.palette.texts
+                        color: theme.palette.texts,
+                        boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
+                        mb: '10px'
                       }}
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Link
-                              to={claim.link}
-                              onClick={e => handleLinkClick(e, claim.link)}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              style={{ textDecoration: 'none' }}
+                            <Tooltip
+                              title='View the original credential'
+                              arrow
+                              placement='left'
+                              componentsProps={{
+                                tooltip: {
+                                  sx: {
+                                    bgcolor: '#222222',
+                                    color: '#FFFFFF',
+
+                                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                                    padding: '8px 16px',
+                                    fontSize: '14px',
+                                    borderRadius: '4px'
+                                  }
+                                }
+                              }}
                             >
-                              <ClaimName claim={claim} searchTerm={searchTerm} />
-                            </Link>
+                              <Link
+                                to={claim.link}
+                                onClick={e => handleLinkClick(e, claim.link)}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                style={{ textDecoration: 'none' }}
+                              >
+                                <ClaimName claim={claim} searchTerm={searchTerm} />
+                              </Link>
+                            </Tooltip>
                             {claim && claim.claim && claim.claim === 'credential' && (
                               <Box
                                 sx={{
@@ -405,6 +439,43 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             </Typography>
                           )}
                         </CardContent>
+                        {/* moka work here  */}
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
+                          {claim.stars && (
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                p: '4px',
+                                flexWrap: 'wrap',
+                                justifyContent: 'flex-end'
+                              }}
+                            >
+                              {Array.from({ length: claim.stars }).map((_, index) => (
+                                <StarIcon
+                                  key={index}
+                                  sx={{
+                                    color: '#FFC107',
+                                    width: '3vw',
+                                    height: '3vw',
+                                    fontSize: '3vw',
+                                    maxWidth: '24px',
+                                    maxHeight: '24px'
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )}
+                        </Box>
+                        <Box
+                          sx={{
+                            height: '1px',
+                            backgroundColor: '#E0E0E0',
+                            marginTop: '4px',
+                            borderRadius: '2px',
+                            width: '750px',
+                            mb: '10px'
+                          }}
+                        />
                         <Box
                           sx={{
                             display: 'flex',
@@ -419,78 +490,70 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         >
                           <Button
                             onClick={() => handleValidation(claim.claim_id)}
-                            startIcon={<VerifiedOutlinedIcon />}
-                            variant='text'
+                            startIcon={<VerifiedOutlinedIcon sx={{ color: '#2D6A4F' }} />}
+                            variant='outlined'
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '12px',
+                              fontSize: isMediumScreen ? '8px' : '16px',
+                              textTransform: 'none',
                               marginRight: '10px',
-                              p: '4px',
-                              color: theme.palette.sidecolor,
+                              p: '9px 80px',
+                              color: '#2D6A4F',
+                              borderColor: 'transparent',
+                              borderRadius: '8px',
+
                               '&:hover': {
-                                backgroundColor: theme.palette.cardsbuttons
+                                backgroundColor: '#F1F4F6',
+                                borderColor: '#F1F4F6'
                               }
                             }}
                           >
                             Validate
                           </Button>
+
                           <Link to={'/report/' + claim.claim_id}>
                             <Button
-                              startIcon={<FeedOutlinedIcon />}
-                              variant='text'
+                              startIcon={<InsertDriveFileOutlinedIcon sx={{ color: '#2D6A4F' }} />}
+                              variant='outlined'
                               sx={{
-                                fontSize: isMediumScreen ? '8px' : '12px',
+                                textTransform: 'none',
+                                fontSize: isMediumScreen ? '8px' : '16px',
                                 marginRight: '10px',
-                                p: '4px',
-                                color: theme.palette.sidecolor,
+                                p: '9px 80px',
+                                color: '#2D6A4F',
+                                borderColor: 'transparent',
+                                borderRadius: '8px',
                                 '&:hover': {
-                                  backgroundColor: theme.palette.cardsbuttons
+                                  backgroundColor: '#F1F4F6',
+                                  borderColor: '#F1F4F6'
                                 }
                               }}
                             >
                               Evidence
                             </Button>
                           </Link>
+
                           <Button
-                            startIcon={<HubOutlinedIcon />}
+                            startIcon={<HubOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                             onClick={() => handleSchema(claim)}
-                            variant='text'
+                            variant='outlined'
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '12px',
+                              textTransform: 'none',
+                              fontSize: isMediumScreen ? '8px' : '16px',
                               marginRight: '10px',
-                              p: '4px',
-                              color: theme.palette.sidecolor,
+                              p: '9px 80px',
+                              color: '#2D6A4F',
+                              borderColor: 'transparent',
+                              borderRadius: '8px',
                               '&:hover': {
-                                backgroundColor: theme.palette.cardsbuttons
+                                backgroundColor: '#F1F4F6',
+                                borderColor: '#F1F4F6'
                               }
                             }}
                           >
-                            Graph View
+                            Graph
                           </Button>
+
                           <Box sx={{ flexGrow: 1 }} />
-                          {claim.stars && (
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                p: '4px',
-                                flexWrap: 'wrap',
-                                justifyContent: 'flex-end'
-                              }}
-                            >
-                              {Array.from({ length: claim.stars }).map((_, index) => (
-                                <StarIcon
-                                  key={index}
-                                  sx={{
-                                    color: theme.palette.stars,
-                                    width: '3vw',
-                                    height: '3vw',
-                                    fontSize: '3vw',
-                                    maxWidth: '24px',
-                                    maxHeight: '24px'
-                                  }}
-                                />
-                              ))}
-                            </Box>
-                          )}
                         </Box>
 
                         <IconButton
@@ -508,7 +571,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              transform: 'rotate(90deg)',
+
                               color: theme.palette.smallButton
                             }}
                           >

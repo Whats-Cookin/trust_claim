@@ -1,31 +1,20 @@
 import React from 'react'
 import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery } from '@mui/material'
-import { Home, DarkMode, Logout, Login, Search } from '@mui/icons-material'
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
+import { DarkMode, Logout, Login, Search } from '@mui/icons-material'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
 import { clearAuth } from '../../utils/authUtils'
-
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 interface SidebarProps {
   isAuth: boolean
-  isOpen: boolean
-  toggleSidebar: () => void
   toggleTheme: () => void
   isDarkMode: boolean
   isNavbarVisible: boolean
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
-  isAuth,
-  isOpen,
-  toggleSidebar,
-  toggleTheme,
-  isDarkMode,
-  isNavbarVisible
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNavbarVisible }) => {
   const navigate = useNavigate()
   const theme = useTheme()
   const location = useLocation()
@@ -36,12 +25,19 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.sidecolor, width: '1.5rem', height: '1.5rem' }
+  const getIconStyle = (path: string) => ({
+    color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
+    width: '1.5rem',
+    height: '1.5rem'
+  })
 
   const getActiveStyle = (path: string) => ({
-    backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
+    backgroundColor: location.pathname === path ? theme.palette.greenColor : '#FFFFFF',
     transition: 'background-color 0.3s, box-shadow 0.3s',
-    minHeight: '65px'
+    minHeight: '65px',
+    color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
+    borderRadius: '8px',
+    padding: '0 20px'
   })
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -55,108 +51,128 @@ const Sidebar: React.FC<SidebarProps> = ({
       variant='permanent'
       sx={{
         '& .MuiDrawer-paper': {
-          minWidth: isOpen ? 200 : 40,
+          minWidth: { xs: 160, md: 200, lg: 240 },
           boxSizing: 'border-box',
-          backgroundColor: theme.palette.menuBackground,
-          color: theme.palette.sidecolor,
+          backgroundColor: '#FFFFFF',
+          color: '#212529',
           transition: 'width 0.3s, opacity 0.3s, margin-top 0.3s',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           overflow: 'hidden',
           borderRight: 'none',
-          borderRadius: '0 20px 40px 0',
-          marginTop: isNavbarVisible && !isAuthPage ? '64px' : '0',
-          height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 64px)' : '100vh'
+          borderRadius: '0 8px 8px 0',
+          marginTop: isNavbarVisible && !isAuthPage ? { xs: '100px', md: '150px' } : '0',
+          height: isNavbarVisible && !isAuthPage ? { xs: 'calc(100vh - 100px)', md: 'calc(100vh - 150px)' } : '100vh',
+          boxShadow: '1px 1px 10px rgba(0, 0, 0, 0.25)'
         }
       }}
     >
-      <List sx={{ paddingTop: '0px' }}>
-        <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleSidebar}>
-          {isOpen ? <KeyboardDoubleArrowLeftIcon sx={iconStyle} /> : <KeyboardDoubleArrowRightIcon sx={iconStyle} />}
-          <ListItemText
-            primary='Close'
-            sx={{
-              display: isOpen ? 'block' : 'none'
-            }}
-            primaryTypographyProps={{
-              variant: 'body2'
-            }}
-          />
-        </ListItemButton>
-        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
-          <Home sx={iconStyle} />
+      <List sx={{ padding: { xs: theme.spacing(2), md: theme.spacing(5) } }}>
+        <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
+          <HomeOutlinedIcon sx={getIconStyle('/feed')} />
           <ListItemText
             primary='Home'
-            sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
             primaryTypographyProps={{
-              variant: 'body2'
+              variant: 'body2',
+              fontSize: { xs: '12px', md: '14px' },
+              fontFamily: 'Montserrat'
             }}
           />
         </ListItemButton>
+
+        <ListItemButton
+          sx={{ gap: theme.spacing(2), ...getActiveStyle('/SearchBar') }}
+          onClick={() => navigate('/SearchBar')}
+        >
+          <Search sx={getIconStyle('/SearchBar')} />
+          <ListItemText
+            primary='Search'
+            primaryTypographyProps={{
+              variant: 'body2',
+              fontSize: { xs: '12px', md: '14px' },
+              fontFamily: 'Montserrat'
+            }}
+          />
+        </ListItemButton>
+
         {isAuth && (
-          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
-            <AddCircleOutlineOutlinedIcon sx={iconStyle} />
+          <ListItemButton
+            sx={{ gap: theme.spacing(2), ...getActiveStyle('/claim') }}
+            onClick={() => navigate('/claim')}
+          >
+            <AddCircleOutlineOutlinedIcon sx={getIconStyle('/claim')} />
             <ListItemText
               primary='Claim'
-              sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
               primaryTypographyProps={{
-                variant: 'body2'
+                variant: 'body2',
+                fontSize: { xs: '12px', md: '14px' },
+                fontFamily: 'Montserrat'
               }}
             />
           </ListItemButton>
         )}
-        <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleTheme}>
-          {isDarkMode ? <LightModeOutlinedIcon sx={iconStyle} /> : <DarkMode sx={iconStyle} />}
-          <ListItemText
-            primary={isDarkMode ? 'Light' : 'Dark'}
-            sx={{ display: isOpen ? 'block' : 'none' }}
-            primaryTypographyProps={{
-              variant: 'body2'
-            }}
-          />
-        </ListItemButton>
+
+        {/* <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={toggleTheme}>
+        {isDarkMode ? <LightModeOutlinedIcon sx={getIconStyle('/theme')} /> : <DarkMode sx={getIconStyle('/theme')} />}
+        <ListItemText
+          primary={isDarkMode ? 'Light' : 'Dark'}
+          primaryTypographyProps={{
+            variant: 'body2',
+            color: '#212529',
+            fontSize: { xs: '12px', md: '14px' },
+            fontFamily: 'Montserrat'
+          }}
+        />
+      </ListItemButton> */}
+
         {isAuth ? (
-          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={handleLogout}>
-            <Logout sx={iconStyle} />
+          <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={handleLogout}>
+            <Logout sx={getIconStyle('/logout')} />
             <ListItemText
               primary='Log out'
-              sx={{ display: isOpen ? 'block' : 'none' }}
               primaryTypographyProps={{
-                variant: 'body2'
+                variant: 'body2',
+                color: '#212529',
+                fontSize: { xs: '12px', md: '14px' },
+                fontFamily: 'Montserrat'
               }}
             />
           </ListItemButton>
         ) : (
-          <>
-            <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
-              <Login sx={iconStyle} />
-              <ListItemText
-                primary='Login'
-                sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
-                primaryTypographyProps={{
-                  variant: 'body2'
-                }}
-              />
-            </ListItemButton>
-          </>
+          <ListItemButton
+            sx={{ gap: theme.spacing(2), ...getActiveStyle('/login') }}
+            onClick={() => navigate('/login')}
+          >
+            <Login sx={getIconStyle('/login')} />
+            <ListItemText
+              primary='Login'
+              primaryTypographyProps={{
+                variant: 'body2',
+                color: '#212529',
+                fontSize: { xs: '12px', md: '14px' },
+                fontFamily: 'Montserrat'
+              }}
+            />
+          </ListItemButton>
         )}
       </List>
-      <Footer isOpen={isOpen} />
+
+      <Footer />
     </Drawer>
   )
 }
 
-const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
-  const theme = useTheme()
-
+const Footer = () => {
   return (
     <Box
       sx={{
-        display: isOpen ? 'flex' : 'none',
+        display: 'flex',
         flexDirection: 'column',
-        padding: '0.5rem',
-        width: '100%'
+        padding: '0.9em',
+        width: '100%',
+        position: 'relative',
+        bottom: '9%'
       }}
     >
       <Box
@@ -169,21 +185,15 @@ const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
           alignItems: 'center'
         }}
       >
-        <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+        <Link to='/terms' style={{ color: '#212529', textDecoration: 'none' }}>
           <Typography variant='body2'>Terms of Service</Typography>
         </Link>
-        <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+        <Link to='/privacy' style={{ color: '#212529', textDecoration: 'none' }}>
           <Typography variant='body2'>Privacy Policy</Typography>
         </Link>
       </Box>
-      <Box
-        sx={{
-          marginTop: '8px',
-          display: 'flex',
-          justifyContent: 'flex-start'
-        }}
-      >
-        <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+      <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
+        <Link to='https://linkedtrust.us/' style={{ color: '#212529', textDecoration: 'none' }}>
           <Typography variant='body2'>© {new Date().getFullYear()} LinkedTrust</Typography>
         </Link>
       </Box>
