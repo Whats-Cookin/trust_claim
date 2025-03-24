@@ -26,7 +26,8 @@ const getNodeStyles = () => [
     selector: 'node[entType="CLAIM"]',
     style: {
       shape: 'ellipse',
-      height: 80
+      height: 80,
+      backgroundOpacity: 0
     }
   }
 ]
