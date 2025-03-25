@@ -107,9 +107,9 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
+      <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
         <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
-        <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
+        <OpenInNewIcon sx={{ marginLeft: '10px', color: theme.palette.texts, fontSize: '1rem' }} />
       </Typography>
     </Box>
   )
@@ -386,43 +386,40 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 sx={{
                                   display: 'flex',
                                   alignItems: 'center',
-                                  backgroundColor: 'rgba(0, 150, 0, 0.1)',
+                                  backgroundColor: '#D1FAE5',
                                   borderRadius: '12px',
                                   padding: '2px 8px',
                                   marginBottom: '10px',
-                                  marginLeft: '10px',
-                                  height: 'fit-content'
+                                  marginLeft: '15px',
+                                  height: 'fit-content',
+                                  color: '#2D6A4F'
                                 }}
                               >
-                                <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-                                <Typography
-                                  variant='caption'
-                                  sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}
-                                >
+                                <VerifiedOutlinedIcon sx={{ color: '#2D6A4F', fontSize: '16px', mr: 0.5 }} />
+                                <Typography sx={{ color: '#2D6A4F', fontSize: '1rem!important', fontWeight: '500' }}>
                                   {claim.claim}
                                 </Typography>
                               </Box>
                             )}
                           </Box>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
-                          </Typography>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {new Date(claim.effective_date).toLocaleDateString('en-US', {
+                          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+                            {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
+                              claim.effective_date
+                            ).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric'
-                            })}
+                            })}`}
                           </Typography>
 
                           {claim.statement && (
                             <Typography
-                              variant='body2'
+                              variant='body1'
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
                                 marginBottom: '1px',
-                                color: theme.palette.texts
+                                color: theme.palette.claimtext
                               }}
                             >
                               <span
@@ -675,7 +672,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
-                    backgroundColor: theme.palette.buttons,
+                    backgroundColor: '#2D6A4F',
                     '&:hover': {
                       backgroundColor: theme.palette.buttonHover
                     }
@@ -724,7 +721,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 height: '4.5vw',
                 maxWidth: '79px',
                 maxHeight: '79px',
-                backgroundColor: theme.palette.buttons,
+                backgroundColor: '#2D6A4F',
                 '&:hover': {
                   backgroundColor: theme.palette.buttonHover
                 }
