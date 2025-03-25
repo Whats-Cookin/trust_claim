@@ -34,7 +34,7 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
-
+import { Medal, ShieldCheck, CircleCheck } from 'lucide-react'
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
@@ -88,7 +88,42 @@ const extractSourceName = (url: string) => {
   const match = regex.exec(url)
   return match ? match[1].replace(/\./g, ' ') : url
 }
+const Badge = (claim: any) => {
+  const bgColor = claim.claim === 'credential' ? '#cce6ff' : claim.claim === 'validated' ? '#f8e8cc' : '#c0efd7'
+  const icon =
+    claim.claim === 'credential' ? (
+      <Medal size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+    ) : claim.claim === 'validated' ? (
+      <ShieldCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+    ) : (
+      <CircleCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+    )
+  const color = claim.claim === 'credential' ? '#0052e0' : claim.claim === 'validated' ? '#e08a00' : '#2d6a4f'
 
+  return (
+    <Box
+      sx={{
+        display: 'inline-block',
+        alignItems: 'center',
+        backgroundColor: bgColor,
+        borderRadius: '12px',
+        padding: '2px 8px',
+        marginBottom: '10px',
+        marginLeft: '10px',
+        height: 'fit-content',
+        color: color,
+        overflow: 'hidden'
+      }}
+    >
+      {icon}
+      <Typography variant='caption' sx={{ color: color, fontWeight: '600', fontSize: '12px' }}>
+        {claim.claim === 'validated'
+          ? 'Validation'
+          : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1) || 'Claim'}
+      </Typography>
+    </Box>
+  )
+}
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.name
   if (claim.curator) {
@@ -107,9 +142,9 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
+      <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
         <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
-        <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
+        <OpenInNewIcon sx={{ marginLeft: '10px', color: theme.palette.texts, fontSize: '1rem' }} />
       </Typography>
     </Box>
   )
@@ -362,7 +397,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   sx: {
                                     bgcolor: '#222222',
                                     color: '#FFFFFF',
-
                                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
                                     padding: '8px 16px',
                                     fontSize: '14px',
@@ -371,58 +405,38 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 }
                               }}
                             >
-                              <Link
-                                to={claim.link}
-                                onClick={e => handleLinkClick(e, claim.link)}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                style={{ textDecoration: 'none' }}
-                              >
-                                <ClaimName claim={claim} searchTerm={searchTerm} />
-                              </Link>
-                            </Tooltip>
-                            {claim && claim.claim && claim.claim === 'credential' && (
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  backgroundColor: 'rgba(0, 150, 0, 0.1)',
-                                  borderRadius: '12px',
-                                  padding: '2px 8px',
-                                  marginBottom: '10px',
-                                  marginLeft: '10px',
-                                  height: 'fit-content'
-                                }}
-                              >
-                                <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-                                <Typography
-                                  variant='caption'
-                                  sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}
+                              <Box>
+                                <Link
+                                  to={claim.link}
+                                  onClick={e => handleLinkClick(e, claim.link)}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  style={{ textDecoration: 'none' }}
                                 >
-                                  {claim.claim}
-                                </Typography>
+                                  <ClaimName claim={claim} searchTerm={searchTerm} />
+                                </Link>
+                                <Badge claim={claim.claim} />
                               </Box>
-                            )}
+                            </Tooltip>
                           </Box>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
-                          </Typography>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {new Date(claim.effective_date).toLocaleDateString('en-US', {
+                          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+                            {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
+                              claim.effective_date
+                            ).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric'
-                            })}
+                            })}`}
                           </Typography>
 
                           {claim.statement && (
                             <Typography
-                              variant='body2'
+                              variant='body1'
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
                                 marginBottom: '1px',
-                                color: theme.palette.texts
+                                color: theme.palette.claimtext
                               }}
                             >
                               <span
@@ -675,7 +689,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
-                    backgroundColor: theme.palette.buttons,
+                    backgroundColor: '#2D6A4F',
                     '&:hover': {
                       backgroundColor: theme.palette.buttonHover
                     }
@@ -724,7 +738,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 height: '4.5vw',
                 maxWidth: '79px',
                 maxHeight: '79px',
-                backgroundColor: theme.palette.buttons,
+                backgroundColor: '#2D6A4F',
                 '&:hover': {
                   backgroundColor: theme.palette.buttonHover
                 }

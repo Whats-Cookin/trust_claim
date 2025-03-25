@@ -28,7 +28,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
   const getIconStyle = (path: string) => ({
     color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
     width: '1.5rem',
-    height: '1.5rem'
+    height: '1.5rem',
+    '&:hover': {
+      color: '#2D6A4F'
+    }
   })
 
   const getActiveStyle = (path: string) => ({
@@ -37,7 +40,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
     minHeight: '65px',
     color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
     borderRadius: '8px',
-    padding: '0 20px'
+    padding: '0 20px',
+    '&:hover': {
+      color: '#2D6A4F'
+    }
   })
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -69,12 +75,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
       }}
     >
       <List sx={{ padding: { xs: theme.spacing(2), md: theme.spacing(5) } }}>
-        <ListItemButton sx={{ gap: theme.spacing(2), ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
+        <ListItemButton
+          sx={{
+            gap: theme.spacing(2),
+            ...getActiveStyle('/feed'),
+            '&:hover': {
+              color: '#2D6A4F',
+              '& svg': { color: '#2D6A4F' }
+            }
+          }}
+          onClick={() => navigate('/feed')}
+        >
           <HomeOutlinedIcon sx={getIconStyle('/feed')} />
           <ListItemText
             primary='Home'
             primaryTypographyProps={{
-              variant: 'body2',
+              variant: 'body1',
               fontSize: { xs: '12px', md: '14px' },
               fontFamily: 'Montserrat'
             }}
@@ -82,14 +98,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
         </ListItemButton>
 
         <ListItemButton
-          sx={{ gap: theme.spacing(2), ...getActiveStyle('/SearchBar') }}
+          sx={{
+            gap: theme.spacing(2),
+            ...getActiveStyle('/SearchBar'),
+            '&:hover': {
+              color: '#2D6A4F',
+              '& svg': { color: '#2D6A4F' }
+            }
+          }}
           onClick={() => navigate('/SearchBar')}
         >
           <Search sx={getIconStyle('/SearchBar')} />
           <ListItemText
             primary='Search'
             primaryTypographyProps={{
-              variant: 'body2',
+              variant: 'body1',
               fontSize: { xs: '12px', md: '14px' },
               fontFamily: 'Montserrat'
             }}
@@ -98,14 +121,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
 
         {isAuth && (
           <ListItemButton
-            sx={{ gap: theme.spacing(2), ...getActiveStyle('/claim') }}
+            sx={{
+              gap: theme.spacing(2),
+              ...getActiveStyle('/claim'),
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+            }}
             onClick={() => navigate('/claim')}
           >
             <AddCircleOutlineOutlinedIcon sx={getIconStyle('/claim')} />
             <ListItemText
               primary='Claim'
               primaryTypographyProps={{
-                variant: 'body2',
+                variant: 'body1',
                 fontSize: { xs: '12px', md: '14px' },
                 fontFamily: 'Montserrat'
               }}
@@ -118,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
         <ListItemText
           primary={isDarkMode ? 'Light' : 'Dark'}
           primaryTypographyProps={{
-            variant: 'body2',
+            variant: 'body1',
             color: '#212529',
             fontSize: { xs: '12px', md: '14px' },
             fontFamily: 'Montserrat'
@@ -127,12 +154,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
       </ListItemButton> */}
 
         {isAuth ? (
-          <ListItemButton sx={{ gap: theme.spacing(2), minHeight: { xs: '50px', md: '65px' } }} onClick={handleLogout}>
+          <ListItemButton
+            sx={{
+              gap: theme.spacing(2),
+              minHeight: { xs: '50px', md: '65px' },
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+            }}
+            onClick={handleLogout}
+          >
             <Logout sx={getIconStyle('/logout')} />
             <ListItemText
               primary='Log out'
               primaryTypographyProps={{
-                variant: 'body2',
+                variant: 'body1',
                 color: '#212529',
                 fontSize: { xs: '12px', md: '14px' },
                 fontFamily: 'Montserrat'
@@ -141,14 +175,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           </ListItemButton>
         ) : (
           <ListItemButton
-            sx={{ gap: theme.spacing(2), ...getActiveStyle('/login') }}
+            sx={{
+              gap: theme.spacing(2),
+              ...getActiveStyle('/login'),
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+            }}
             onClick={() => navigate('/login')}
           >
             <Login sx={getIconStyle('/login')} />
             <ListItemText
               primary='Login'
               primaryTypographyProps={{
-                variant: 'body2',
+                variant: 'body1',
                 color: '#212529',
                 fontSize: { xs: '12px', md: '14px' },
                 fontFamily: 'Montserrat'
@@ -186,15 +224,15 @@ const Footer = () => {
         }}
       >
         <Link to='/terms' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body2'>Terms of Service</Typography>
+          <Typography variant='body1'>Terms of Service</Typography>
         </Link>
         <Link to='/privacy' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body2'>Privacy Policy</Typography>
+          <Typography variant='body1'>Privacy Policy</Typography>
         </Link>
       </Box>
       <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
         <Link to='https://linkedtrust.us/' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body2'>© {new Date().getFullYear()} LinkedTrust</Typography>
+          <Typography variant='body1'>© {new Date().getFullYear()} LinkedTrust</Typography>
         </Link>
       </Box>
     </Box>
