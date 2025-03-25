@@ -418,26 +418,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 <Badge claim={claim.claim} />
                               </Box>
                             </Tooltip>
-                            {claim && claim.claim && claim.claim === 'credential' && (
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  backgroundColor: '#D1FAE5',
-                                  borderRadius: '12px',
-                                  padding: '2px 8px',
-                                  marginBottom: '10px',
-                                  marginLeft: '15px',
-                                  height: 'fit-content',
-                                  color: '#2D6A4F'
-                                }}
-                              >
-                                <VerifiedOutlinedIcon sx={{ color: '#2D6A4F', fontSize: '16px', mr: 0.5 }} />
-                                <Typography sx={{ color: '#2D6A4F', fontSize: '1rem!important', fontWeight: '500' }}>
-                                  {claim.claim}
-                                </Typography>
-                              </Box>
-                            )}
+                        
                           </Box>
                           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
                             {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
