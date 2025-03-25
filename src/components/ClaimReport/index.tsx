@@ -249,98 +249,153 @@ function MyCard({
   return (
     <Card
       sx={{
-        minHeight: '200px',
-        width: '100%',
+        maxWidth: 'fit-content',
+        height: 'fit-content',
         borderRadius: '20px',
+        display: isLargeScreen ? 'column' : 'row',
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
+        mb: '10px'
       }}
     >
-      {img ? (
-        <Grid container spacing={isLargeScreen ? 4 : 2}>
-          <Grid item xs={12} md={6}>
+      <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box>
+              {data.name && (
+                <Typography variant='body2' sx={{ color: theme.palette.texts, mt: 1 }}>
+                  {data.name}
+                </Typography>
+              )}
+              <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
+                {data.curator}
+              </Typography>
+            </Box>
+          </Box>
+          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+            {`Created by: ${data.author ? data.author : 'Unknown'}, ${new Date(data.effectiveDate).toLocaleDateString(
+              'en-US',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }
+            )}`}
+          </Typography>
+
+          {data.statement && (
+            <Typography
+              variant='body1'
+              sx={{
+                padding: '5px 1 1 5px',
+                wordBreak: 'break-word',
+                marginBottom: '1px',
+                color: theme.palette.claimtext
+              }}
+            >
+              {data.statement}
+            </Typography>
+          )}
+        </CardContent>
+
+        {img && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', m: '20px' }}>
             {img.includes('.mp4') ? (
-              <video controls style={{ width: '100%', height: 'auto' }}>
+              <video controls style={{ width: '100%', maxWidth: '500px', height: 'auto' }}>
                 <source src={img} type='video/mp4' />
                 Your browser does not support the video tag.
               </video>
             ) : (
-              <img src={img} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+              <img src={img} alt={data.subject} style={{ width: '100%', maxWidth: '500px', height: 'auto' }} />
             )}
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <CardContent>
-              <RenderClaimInfo
-                claim={data}
-                index={-1}
-                setSelectedIndex={setSelectedIndex}
-                handleMenuClose={handleMenuClose}
-              />
-            </CardContent>
+          </Box>
+        )}
 
-            {data.stars && <Stars stars={data.stars} theme={theme} />}
-          </Grid>
-        </Grid>
-      ) : (
-        <>
-          <CardContent>
-            <RenderClaimInfo
-              claim={data}
-              index={-1}
-              setSelectedIndex={setSelectedIndex}
-              handleMenuClose={handleMenuClose}
-            />
-          </CardContent>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
+          {data.stars && (
+            <Box
+              sx={{
+                display: 'flex',
+                p: '4px',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-end'
+              }}
+            >
+              {Array.from({ length: data.stars }).map((_, index) => (
+                <StarIcon
+                  key={index}
+                  sx={{
+                    color: '#FFC107',
+                    width: '3vw',
+                    height: '3vw',
+                    fontSize: '3vw',
+                    maxWidth: '24px',
+                    maxHeight: '24px'
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+        </Box>
 
-          {data.stars && <Stars stars={data.stars} theme={theme} />}
-        </>
-      )}
-    </Card>
-  )
-}
+        <Box
+          sx={{
+            height: '1px',
+            backgroundColor: '#E0E0E0',
+            marginTop: '4px',
+            borderRadius: '2px',
+            width: '750px',
+            mb: '10px'
+          }}
+        />
 
-function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        position: 'relative',
-        mt: '10px',
-        mb: '10px',
-        pl: '20px',
-        pr: '20px'
-      }}
-    >
-      <Box sx={{ flexGrow: 1 }} />
-      <Box
-        sx={{
-          display: 'flex',
-          p: '4px',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end'
-        }}
-      >
-        {Array.from({ length: stars }).map((_, index) => (
-          <StarIcon
-            key={`${stars}-${index}`}
-            sx={{
-              color: theme.palette.stars,
-              width: '3vw',
-              height: '3vw',
-              fontSize: '3vw',
-              minWidth: '16px',
-              minHeight: '16px',
-              maxWidth: '20px',
-              maxHeight: '20px'
-            }}
-          />
-        ))}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            position: 'relative',
+            mt: '10px',
+            mb: '10px',
+            pl: '20px',
+            pr: '20px'
+          }}
+        >
+          <Box sx={{ flexGrow: 1 }}>
+            {data.howKnown && (
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                How Known: {data.howKnown.replace(/_/g, ' ')}
+              </Typography>
+            )}
+            {data.sourceURI && (
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                Source:{' '}
+                <a
+                  href={data.sourceURI}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  style={{ color: theme.palette.link }}
+                >
+                  {data.sourceURI}
+                </a>
+              </Typography>
+            )}
+            {data.confidence !== undefined && (
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                Confidence: {data.confidence}
+              </Typography>
+            )}
+            {data.amt && (
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                Amount: ${data.amt}
+              </Typography>
+            )}
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </Card>
   )
 }
 
