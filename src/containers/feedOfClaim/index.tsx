@@ -44,6 +44,7 @@ interface LocalClaim {
   link: string
   author: string // this is who created the claim
   curator: string // this is claim about
+  ClaimData?: { name: string }
 }
 
 const extractProfileName = (url: string): string | null => {
@@ -125,11 +126,11 @@ const Badge = (claim: any) => {
   )
 }
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
-  let displayName = claim.name
+  let displayName = claim.ClaimData?.name || claim.name
   if (claim.curator) {
-    displayName = `${claim.curator} - ${claim.name}`
+    displayName = `${claim.curator}`
   } else if (extractProfileName(claim.link)) {
-    displayName = `${extractProfileName(claim.link)} - ${claim.name}`
+    displayName = `${extractProfileName(claim.link)}`
   }
 
   const theme = useTheme()
