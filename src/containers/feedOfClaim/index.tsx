@@ -299,11 +299,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {claims.length > 0 ? (
             <MainContainer
               sx={{
-                width: '800px',
+                width: '53.958vw',
                 marginLeft: 'auto',
-                marginRight: '20%',
+                marginRight: 'auto',
                 backgroundColor: '#FFFFFF',
-
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
             >
@@ -327,7 +326,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   backgroundColor: '#E0E0E0',
                   marginTop: '4px',
                   borderRadius: '2px',
-                  width: '750px',
+                  width: '50.958vw',
                   mb: '40px'
                 }}
               />
@@ -337,7 +336,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   <Box sx={{ marginBottom: '15px' }}>
                     <Card
                       sx={{
-                        maxWidth: 'fit-content',
+                        maxWidth: '50.833vw',
                         height: 'fit-content',
                         borderRadius: '20px',
                         display: isMediumScreen ? 'column' : 'row',
@@ -347,7 +346,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
                         color: theme.palette.texts,
                         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
-                        mb: '10px'
+                        mb: '10px',
+                        p: '10px'
                       }}
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
@@ -362,7 +362,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   sx: {
                                     bgcolor: '#222222',
                                     color: '#FFFFFF',
-
+                                    p: '10px',
                                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
                                     padding: '8px 16px',
                                     fontSize: '14px',
@@ -404,16 +404,18 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               </Box>
                             )}
                           </Box>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
-                          </Typography>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {new Date(claim.effective_date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant='body2' sx={{ marginBottom: '10px', color: '#495057' }}>
+                              {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)} .`}
+                            </Typography>
+                            <Typography variant='body2' sx={{ marginBottom: '10px', color: '#495057' }}>
+                              {new Date(claim.effective_date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </Typography>
+                          </Box>
 
                           {claim.statement && (
                             <Typography
@@ -472,20 +474,26 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             backgroundColor: '#E0E0E0',
                             marginTop: '4px',
                             borderRadius: '2px',
-                            width: '750px',
+                            width: '50.833vw',
                             mb: '10px'
                           }}
                         />
+
                         <Box
                           sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            position: 'relative',
+                            justifyContent: 'space-between',
+                            height: '2.934vw',
                             mt: '10px',
                             mb: '10px',
                             pl: '20px',
-                            pr: '20px'
+                            pr: '20px',
+                            width: '100%',
+                            maxWidth: '1200px',
+                           
+                            gap: '10px',
+                           
                           }}
                         >
                           <Button
@@ -493,14 +501,13 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             startIcon={<VerifiedOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                             variant='outlined'
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '16px',
+                              fontSize: { xs: '10px', md: '16px' },
                               textTransform: 'none',
-                              marginRight: '10px',
-                              p: '9px 80px',
+                              minWidth: '150px',
+                              p: { xs: '8px 20px', md: '9px 80px' },
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
-
                               '&:hover': {
                                 backgroundColor: '#F1F4F6',
                                 borderColor: '#F1F4F6'
@@ -516,9 +523,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               variant='outlined'
                               sx={{
                                 textTransform: 'none',
-                                fontSize: isMediumScreen ? '8px' : '16px',
-                                marginRight: '10px',
-                                p: '9px 80px',
+                                fontSize: { xs: '10px', md: '16px' },
+                                minWidth: '150px',
+                                p: { xs: '8px 20px', md: '9px 80px' },
                                 color: '#2D6A4F',
                                 borderColor: 'transparent',
                                 borderRadius: '8px',
@@ -538,9 +545,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             variant='outlined'
                             sx={{
                               textTransform: 'none',
-                              fontSize: isMediumScreen ? '8px' : '16px',
-                              marginRight: '10px',
-                              p: '9px 80px',
+                              fontSize: { xs: '10px', md: '16px' },
+                              minWidth: '150px',
+                              p: { xs: '8px 20px', md: '9px 80px' },
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
@@ -552,8 +559,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph
                           </Button>
-
-                          <Box sx={{ flexGrow: 1 }} />
                         </Box>
 
                         <IconButton
@@ -675,10 +680,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
-                    backgroundColor: theme.palette.buttons,
-                    '&:hover': {
-                      backgroundColor: theme.palette.buttonHover
-                    }
+                   backgroundColor: '#2D6A4F'
                   }}
                 >
                   <ArrowUpwardIcon />
@@ -724,10 +726,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 height: '4.5vw',
                 maxWidth: '79px',
                 maxHeight: '79px',
-                backgroundColor: theme.palette.buttons,
-                '&:hover': {
-                  backgroundColor: theme.palette.buttonHover
-                }
+                backgroundColor: '#2D6A4F'
+               
               }}
             >
               <AddCircleOutlineOutlined />
