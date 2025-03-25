@@ -22,7 +22,8 @@ import {
   Fade,
   useMediaQuery,
   useTheme,
-  Tooltip
+  Tooltip,
+  Stack
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import axios from 'axios'
@@ -34,6 +35,9 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
+import { Link as RouterLink } from 'react-router-dom'
+import { Link as MuiLink } from '@mui/material'
+import { VerifiedOutlined as MuiVerifiedOutlined, EmojiEvents, Update } from '@mui/icons-material'
 
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
@@ -291,7 +295,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   return (
-    <>
+    <Box sx={{ display: 'flex', position: 'relative' }}>
       {isLoading ? (
         <Loader open={isLoading} />
       ) : (
@@ -738,7 +742,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       {showNotification && (
         <Redirection externalLink={externalLink} onContinue={handleContinue} onCancel={handleCancel} />
       )}
-    </>
+    </Box>
   )
 }
 
