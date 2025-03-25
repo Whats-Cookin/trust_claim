@@ -37,12 +37,23 @@ const Explore = (homeProps: IHomeProps) => {
 
   const layoutName = 'concentric'
   const layoutOptions = {
-    fit: true,
-    avoidOverlap: true,
-    nodeSpacing: 50,
-    concentric: (node: any) => node.degree(),
-    levelWidth: (nodes: any) => nodes.maxDegree() / 2,
-    minNodeSpacing: 50
+   
+      fit: true,
+      padding: 50,
+      avoidOverlap: true,
+      nodeSpacing: 50,
+      nodeDimensionsIncludeLabels: true,
+      spacingFactor: 1.3,
+
+      concentric: (node: any) => node.degree(),
+      levelWidth: (nodes: any) => nodes.maxDegree() / 2,
+      minNodeSpacing: 70,
+      animate: true,
+      animationDuration: 800,
+      animationEasing: 'ease-in-out',
+      
+      transform: (node: any, position: any) => position
+    
   }
 
   const runCy = (cyInstance: Cytoscape.Core | undefined) => {
