@@ -4,6 +4,8 @@ declare module '@mui/material/styles' {
   interface Palette {
     formBackground: string
     texts: string
+    text1: string
+    claimtext: string
     icons: string
     buttons: string
     date: string
@@ -32,11 +34,14 @@ declare module '@mui/material/styles' {
     sidecolor: string
     darkinputtext: string
     input: string
+    greenColor: string
   }
 
   interface PaletteOptions {
     formBackground?: string
     texts?: string
+    text1?: string
+    claimtext?: string
     icons?: string
     buttons?: string
     date?: string
@@ -65,6 +70,7 @@ declare module '@mui/material/styles' {
     sidecolor?: string
     darkinputtext?: string
     input: string
+    greenColor: string
   }
 
   interface TypographyVariants {
@@ -107,7 +113,7 @@ const darkModeTheme = createTheme({
   typography: {
     fontFamily: 'Montserrat',
     body1: {
-      fontSize: '1rem',
+      fontSize: '1rem!important',
       fontWeight: 400,
       lineHeight: 1.5,
       '@media (min-width:600px)': {
@@ -115,7 +121,7 @@ const darkModeTheme = createTheme({
       }
     },
     body2: {
-      fontSize: '0.875rem',
+      fontSize: '0.875rem!important',
       fontWeight: 300,
       lineHeight: 1.43,
       '@media (min-width:600px)': {
@@ -145,6 +151,8 @@ const darkModeTheme = createTheme({
     cardBackground: '#223B3A',
     cardBackgroundBlur: '#43434380',
     texts: '#ffffff',
+    text1: '#495057',
+    claimtext: '#212529',
     date: '#96B1AC',
     cardDate: '#B7B7B7',
     link: '#009688',
@@ -157,7 +165,8 @@ const darkModeTheme = createTheme({
     shadows: '#00000040',
     sidecolor: '#ffffff',
     darkinputtext: '#ffffff',
-    input: '#425655'
+    input: '#2D6A4F ',
+    greenColor: '#2D6A4F'
   },
   breakpoints: {
     values: {
@@ -189,15 +198,15 @@ const lightModeTheme = createTheme({
   typography: {
     fontFamily: 'Montserrat',
     body1: {
-      fontSize: '1rem',
-      fontWeight: 400,
+      fontSize: '1rem!important',
+      fontWeight: 700,
       lineHeight: 1.5,
       '@media (min-width:600px)': {
         fontSize: '1.25rem'
       }
     },
     body2: {
-      fontSize: '0.875rem',
+      fontSize: '0.875rem!important',
       fontWeight: 300,
       lineHeight: 1.43,
       '@media (min-width:600px)': {
@@ -227,6 +236,8 @@ const lightModeTheme = createTheme({
     cardBackground: '#ffffff',
     cardBackgroundBlur: '#79797933',
     texts: '#000000',
+    text1: '#495057',
+    claimtext: '#212529',
     date: '#797979',
     link: '#1565C0',
     profileButton: '#D32F2F',
@@ -238,7 +249,8 @@ const lightModeTheme = createTheme({
     shadows: '#00000020',
     sidecolor: '#0A1C1D',
     darkinputtext: '#0A1C1D',
-    input: '#E6F0EE'
+    input: '#E6F0EE',
+    greenColor: '#2D6A4F'
   },
   breakpoints: {
     values: {
