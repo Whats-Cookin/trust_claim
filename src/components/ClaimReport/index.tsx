@@ -265,24 +265,24 @@ function MyCard({
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box>
               {data.name && (
-                <Typography variant="body2" sx={{ color: theme.palette.texts, mt: 1 }}>
+                <Typography variant='body2' sx={{ color: theme.palette.texts, mt: 1 }}>
                   {data.name}
                 </Typography>
               )}
-              <Typography variant="body1" sx={{ color: theme.palette.texts, fontWeight: 500 }}>
+              <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
                 {data.curator}
               </Typography>
             </Box>
-            
           </Box>
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${data.author ? data.author : 'Unknown'}, ${new Date(
-              data.effectiveDate
-            ).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}`}
+            {`Created by: ${data.author ? data.author : 'Unknown'}, ${new Date(data.effectiveDate).toLocaleDateString(
+              'en-US',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }
+            )}`}
           </Typography>
 
           {data.statement && (
@@ -365,22 +365,30 @@ function MyCard({
         >
           <Box sx={{ flexGrow: 1 }}>
             {data.howKnown && (
-              <Typography variant="body2" sx={{ color: theme.palette.texts }}>
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                 How Known: {data.howKnown.replace(/_/g, ' ')}
               </Typography>
             )}
             {data.sourceURI && (
-              <Typography variant="body2" sx={{ color: theme.palette.texts }}>
-                Source: <a href={data.sourceURI} target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.link }}>{data.sourceURI}</a>
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                Source:{' '}
+                <a
+                  href={data.sourceURI}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  style={{ color: theme.palette.link }}
+                >
+                  {data.sourceURI}
+                </a>
               </Typography>
             )}
             {data.confidence !== undefined && (
-              <Typography variant="body2" sx={{ color: theme.palette.texts }}>
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                 Confidence: {data.confidence}
               </Typography>
             )}
             {data.amt && (
-              <Typography variant="body2" sx={{ color: theme.palette.texts }}>
+              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                 Amount: ${data.amt}
               </Typography>
             )}
