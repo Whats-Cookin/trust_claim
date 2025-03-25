@@ -38,7 +38,7 @@ const Explore = (homeProps: IHomeProps) => {
   const layoutName = 'concentric'
   const layoutOptions = {
    
-      fit: true,
+        fit: true,
       padding: 50,
       avoidOverlap: true,
       nodeSpacing: 50,
