@@ -418,7 +418,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 <Badge claim={claim.claim} />
                               </Box>
                             </Tooltip>
-                        
                           </Box>
                           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
                             {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
