@@ -389,7 +389,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             <CertificateSubtitle>OF SKILL VALIDATION</CertificateSubtitle>
 
             <RecipientName>{claim.curator}</RecipientName>
-            <SkillTitle>{data.edge.startNode.name}</SkillTitle>
+            <SkillTitle>{claim.subject || 'Claim Subject'}</SkillTitle>
 
             <Description>
               {claim.statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
@@ -401,10 +401,10 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 {data.validations?.map((validation: any, index: number) => (
                   <EndorsementCard key={index}>
                     <Typography variant='h6' sx={{ color: '#2D6A4F', fontWeight: 500 }}>
-                      {validation.name}
+                      {validation.author}
                     </Typography>
                     <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
-                      {truncateText(validation.comment, 50)}
+                      {truncateText(validation.statement || '', 50)}
                     </Typography>
                     <MuiLink
                       component='button'
@@ -425,13 +425,51 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
             <IssuerSection>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F' }} />
-                <Typography sx={{ color: '#2D6A4F' }}>
-                  {`Issued by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
+                {/* <Typography sx={{ color: '#2D6A4F' }}>
+                  {`Created by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
+                </Typography> */}
+              </Box>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: '10px',
+                position: 'relative',
+                alignItems: 'flex-end'
+              }}>
+                <Typography 
+                  sx={{ 
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: 400,
+                    fontSize: '18px',
+                    lineHeight: '21px',
+                    color: '#495057',
+                    width: '114px',
+                    textAlign: 'right'
+                  }}
+                >
+                  {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </Typography>
+                <Typography 
+                  sx={{ 
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: 400,
+                    fontSize: '18px',
+                    lineHeight: '21px',
+                    color: '#495057',
+                    width: '171px',
+                    textAlign: 'right',
+                    textDecoration: 'underline'
+                  }}
+                >
+                  ID: {claim.id}
                 </Typography>
               </Box>
-              <Typography color='textSecondary'>{new Date(claim.timestamp).toLocaleDateString()}</Typography>
-              <Typography color='textSecondary'>ID: {claim.id}</Typography>
             </IssuerSection>
           </CertificateContainer>
 
@@ -448,10 +486,24 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </ActionButton>
             </Box>
 
-            <ActionButton onClick={handleValidate}>
-              <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
-              <ButtonText>Validate</ButtonText>
-            </ActionButton>
+              <Button
+                component={Link}
+                startIcon={<CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }}  />}
+                to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
+                sx={{
+                  textTransform: 'none',
+                  color: '#2D6A4F',
+                  fontWeight: 500,
+                  borderRadius: '24px',
+                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
+                  px: { xs: '1rem', sm: '2rem' },
+                  width: { xs: '100%', sm: 'auto' },
+                  minWidth: { xs: 'auto', sm: '120px' },
+                  height: '48px'
+                }}
+              >
+                Validate
+              </Button>
 
             <ActionButton onClick={e => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
