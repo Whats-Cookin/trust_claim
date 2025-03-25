@@ -22,8 +22,7 @@ import {
   Fade,
   useMediaQuery,
   useTheme,
-  Tooltip,
-  Stack
+  Tooltip
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import axios from 'axios'
@@ -35,9 +34,6 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
-import { Link as RouterLink } from 'react-router-dom'
-import { Link as MuiLink } from '@mui/material'
-import { VerifiedOutlined as MuiVerifiedOutlined, EmojiEvents, Update } from '@mui/icons-material'
 
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
@@ -333,8 +329,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   width: '50.958vw',
                   mb: '40px'
                 }}
-              />
-
+              />{' '}
               {claims.map((claim: any, index: number) => (
                 <Grow in={true} timeout={1000} key={claim.claim_id}>
                   <Box sx={{ marginBottom: '15px' }}>
@@ -495,9 +490,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             pr: '20px',
                             width: '100%',
                             maxWidth: '1200px',
-                           
-                            gap: '10px',
-                           
+
+                            gap: '10px'
                           }}
                         >
                           <Button
@@ -684,13 +678,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
-                   backgroundColor: '#2D6A4F'
+                    backgroundColor: '#2D6A4F'
                   }}
                 >
                   <ArrowUpwardIcon />
                 </Fab>
               </Grow>
-
               {!isLastPage ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Fade in={loadingNextPage}>
@@ -700,7 +693,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
               ) : (
                 ''
               )}
-
               <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
           ) : (
@@ -731,7 +723,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 maxWidth: '79px',
                 maxHeight: '79px',
                 backgroundColor: '#2D6A4F'
-               
               }}
             >
               <AddCircleOutlineOutlined />
