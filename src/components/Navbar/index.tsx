@@ -80,16 +80,15 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             src={Logo}
             alt='LinkedTrust Logo'
             sx={{
-              width: { xs: '24px', md: '28px' },
-              height: { xs: '24px', md: '28px' },
-              mr: { xs: 1, md: 2 }
+              width: { xs: '24px', md: '40px' },
+              height: { xs: '24px', md: '40px' },
+              mr: '5px'
             }}
           />
           <Typography
-            variant='body1'
             sx={{
               color: '#2D6A4F',
-              fontSize: { xs: 'clamp(16px, 4vw, 20px)', md: '20px' },
+              fontSize: { xs: 'clamp(16px, 4vw, 20px)!important', md: '20px' },
               transition: 'opacity 0.3s',
               fontFamily: 'Montserrat',
               fontWeight: 'bold'
