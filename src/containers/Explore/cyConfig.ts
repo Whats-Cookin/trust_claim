@@ -38,17 +38,25 @@ const getEdgeStyles = (theme: Theme) => [
     style: {
       width: 3,
       fontSize: 14,
-      targetArrowShape: 'triangle-cross',
+      targetArrowShape: 'triangle',
       lineColor: theme.palette.stars,
       targetArrowColor: theme.palette.stars,
       curveStyle: 'bezier',
       color: theme.palette.stars,
       textRotation: 'autorotate',
-      textMarginX: 30,
       content: 'data(relation)',
       'line-cap': 'round',
       'source-endpoint': 'outside-to-node',
-      'target-endpoint': 'outside-to-node'
+      'target-endpoint': 'outside-to-node',
+      'text-margin-y': 0,
+      'text-margin-x': 0,
+      'text-halign': 'center',
+      'text-valign': 'center',
+      'edge-text-rotation': 'autorotate',
+      'text-events': 'yes',
+      'text-background-color': theme.palette.background.default,
+      'text-background-opacity': 0.9,
+      'text-background-padding': 3
     }
   }
 ]
