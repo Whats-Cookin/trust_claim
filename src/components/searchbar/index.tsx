@@ -171,7 +171,7 @@ const SearchBar = () => {
             </IconButton>
           </Box>
 
-          <Typography sx={{ textAlign: 'center', fontWeight: 500, mb: 2 }}>Filter by:</Typography>
+          <Typography sx={{ textAlign: 'center', fontWeight: 700, mb: 2, fontSize: '16px' }}>Filter by:</Typography>
 
           <RadioGroup value={filterType} onChange={handleFilterChange} sx={{ mb: 2 }}>
             <FormControlLabel
