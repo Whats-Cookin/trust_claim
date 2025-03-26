@@ -53,8 +53,7 @@ interface FormData {
   stars: number | null
   amt: number | null
   confidence: number | null
-  name: string | null
-  subject: string
+  subject: string | null
   statement: string | null
   sourceURI: string | null
   howKnown: HowKnown
@@ -90,8 +89,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
-      name: null,
-      subject: '',
+      subject: null,
+      claimAddress: '',
       claim: '',
       object: null,
       statement: null,
@@ -175,15 +174,15 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               {/* Basic Information */}
               <Box sx={{ mb: 4 }}>
                 <TextField
-                  {...register('name', { required: true })}
+                  {...register('subject', { required: true })}
                   label="Name of what you're making a claim about"
                   fullWidth
                   sx={{ mb: 2 }}
-                  error={Boolean(errors.name)}
-                  helperText={errors.name ? 'This field is required' : ''}
+                  error={Boolean(errors.subject)}
+                  helperText={errors.subject ? 'This field is required' : ''}
                 />
                 <TextField
-                  {...register('subject', {
+                  {...register('claimAddress', {
                     required: 'This field is required',
                     pattern: {
                       value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
@@ -193,8 +192,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   label="Link to what you're making a claim about"
                   fullWidth
                   sx={{ mb: 2 }}
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject ? errors.subject.message : ''}
+                  error={Boolean(errors.claimAddress)}
+                  helperText={errors.claimAddress ? errors.claimAddress.message : ''}
                 />
                 <TextField
                   {...register('statement', { required: true })}
