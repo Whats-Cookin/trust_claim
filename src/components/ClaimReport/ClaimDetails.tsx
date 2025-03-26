@@ -29,9 +29,13 @@ import CircleIcon from '@mui/icons-material/Circle'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
+import CloseIcon from '@mui/icons-material/Close'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
+import ImageIcon from '@mui/icons-material/Image'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState, useRef } from 'react'
 import jsPDF from 'jspdf'
 import badge from '../../assets/images/badge.svg'
 // import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
@@ -118,63 +122,106 @@ const Description = styled(Typography)(({ theme }) => ({
 
 const EndorsementSection = styled(Box)(({ theme }) => ({
   width: '100%',
-  maxWidth: '800px',
+  maxWidth: '1036px',
   marginTop: theme.spacing(4),
   padding: theme.spacing(2),
-  backgroundColor: '#f8f9fa',
-  borderRadius: '12px'
+  backgroundColor: 'transparent',
+  position: 'relative'
 }))
 
 const EndorsementTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '14px',
-  color: '#2D6A4F',
-  marginBottom: theme.spacing(2),
-  fontWeight: 500,
-  fontFamily: 'Roboto, var(--default-font-family)',
-  lineHeight: '16px',
-  textAlign: 'left',
-  textDecoration: 'underline',
-  whiteSpace: 'nowrap',
-  zIndex: 3,
-  margin: '30px 0 0 174px'
-}))
-
-const SeeAllLink = styled('button')(({ theme }) => ({
-  display: 'block',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   position: 'relative',
-  height: '17px',
-  margin: '10px 0 0 201px',
-  color: '#2D6A4F',
-  fontFamily: 'Montserrat, var(--default-font-family)',
-  fontSize: '14px',
-  fontWeight: 500,
-  lineHeight: '17px',
-  textAlign: 'left',
-  whiteSpace: 'nowrap',
-  zIndex: 1,
-  textDecoration: 'none',
-  cursor: 'pointer',
-  background: 'none',
-  border: 'none',
-  padding: 0,
-  '&:hover': {
-    textDecoration: 'underline'
-  }
+  width: '133px',
+  height: '26px',
+  margin: '0 auto',
+  color: '#212529',
+  fontFamily: 'Roboto, var(--default-font-family)',
+  fontSize: '22px',
+  fontWeight: 600,
+  lineHeight: '25.781px',
+  textAlign: 'center',
+  whiteSpace: 'nowrap'
 }))
 
 const EndorsementGrid = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-  gap: theme.spacing(2),
-  marginBottom: theme.spacing(4)
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative',
+  width: '100%',
+  gap: '20px',
+  margin: '30px auto'
 }))
 
 const EndorsementCard = styled(Card)(({ theme }) => ({
-  padding: theme.spacing(2),
-  backgroundColor: 'white',
+  position: 'relative',
+  width: '284px',
+  height: '168px',
+  backgroundColor: '#FFFFFF',
+  boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
   borderRadius: '8px',
-  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.05)',
-  border: '1px solid rgba(0, 0, 0, 0.05)'
+  padding: '20px',
+  border: '1px solid #dee2e6',
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+  }
+}))
+
+const EndorsementAuthor = styled(Typography)(({ theme }) => ({
+  position: 'relative',
+  width: '160px',
+  height: '23px',
+  color: '#2D6A4F',
+  fontFamily: 'Roboto',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '20px',
+  lineHeight: '23px',
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: '10px'
+}))
+
+const EndorsementStatement = styled(Typography)(({ theme }) => ({
+  position: 'relative',
+  width: '196px',
+  height: '60px',
+  color: '#212529',
+  fontFamily: 'Montserrat',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '16px',
+  lineHeight: '20px',
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: '10px'
+}))
+
+const SeeAllLink = styled('button')(({ theme }) => ({
+  position: 'relative',
+  width: '45px',
+  height: '17px',
+  color: '#2D6A4F',
+  fontFamily: 'Montserrat',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '14px',
+  lineHeight: '17px',
+  display: 'flex',
+  alignItems: 'center',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  textDecoration: 'underline',
+  '&:hover': {
+    color: '#1b4332'
+  }
 }))
 
 const IssuerSection = styled(Box)(({ theme }) => ({
@@ -273,17 +320,112 @@ const ValidationDialogCard = styled(Card)(({ theme }) => ({
   position: 'relative'
 }))
 
-const EndorsementAuthor = styled(Typography)(({ theme }) => ({
-  fontSize: '16px',
+const VideoAttestationLink = styled(Typography)(({ theme }) => ({
+  position: 'absolute',
+  width: '117px',
+  height: '16px',
+  left: '94px',
+  top: '1052px',
+  fontFamily: 'Roboto',
+  fontStyle: 'normal',
   fontWeight: 500,
-  marginBottom: theme.spacing(1),
-  color: '#2D6A4F'
+  fontSize: '14px',
+  lineHeight: '16px',
+  display: 'flex',
+  alignItems: 'center',
+  textDecorationLine: 'underline',
+  color: '#2D6A4F',
+  cursor: 'pointer'
 }))
 
-const EndorsementStatement = styled(Typography)(({ theme }) => ({
-  fontSize: '14px',
-  color: '#666',
-  marginBottom: theme.spacing(2)
+const VideoDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    maxWidth: '90%',
+    maxHeight: '90%',
+    borderRadius: '8px',
+    backgroundColor: theme.palette.background.paper,
+    overflow: 'hidden'
+  }
+}))
+
+const VideoContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  '& video, & img': {
+    width: '100%',
+    height: 'auto',
+    maxHeight: '80vh',
+    objectFit: 'contain'
+  }
+}))
+
+const ValidationDetailsDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    width: '90%',
+    maxWidth: '800px',
+    maxHeight: '90vh',
+    borderRadius: '12px',
+    backgroundColor: theme.palette.background.paper,
+    overflowY: 'auto'
+  }
+}))
+
+const ValidationDetailsContent = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(3),
+  '& .validation-header': {
+    marginBottom: theme.spacing(3)
+  },
+  '& .validation-subject': {
+    fontSize: '20px',
+    fontWeight: 500,
+    color: '#2D6A4F',
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    '& a': {
+      textDecoration: 'none',
+      color: 'inherit',
+      '&:hover': {
+        textDecoration: 'underline'
+      }
+    }
+  },
+  '& .validation-author': {
+    fontSize: '24px',
+    fontWeight: 500,
+    color: '#2D6A4F',
+    marginBottom: theme.spacing(2)
+  },
+  '& .validation-statement': {
+    fontSize: '16px',
+    color: '#212529',
+    marginBottom: theme.spacing(2),
+    lineHeight: 1.6
+  },
+  '& .validation-date': {
+    fontSize: '14px',
+    color: '#495057',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  '& .validation-details': {
+    marginTop: theme.spacing(3),
+    '& .detail-item': {
+      marginBottom: theme.spacing(2),
+      '& .detail-label': {
+        fontWeight: 500,
+        color: '#495057',
+        minWidth: '150px',
+        display: 'inline-block'
+      },
+      '& .detail-value': {
+        color: '#212529'
+      }
+    }
+  }
 }))
 
 const isVideoUrl = (url: string): boolean => {
@@ -377,6 +519,12 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [currentUrl, setCurrentUrl] = useState('')
   const [validationDialogOpen, setValidationDialogOpen] = useState(false)
+  const [videoDialogOpen, setVideoDialogOpen] = useState(false)
+  const [selectedMedia, setSelectedMedia] = useState('')
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
+  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
+  const [selectedValidation, setSelectedValidation] = useState<any>(null)
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
@@ -431,6 +579,26 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     setValidationDialogOpen(false)
   }
 
+  const handleVideoClick = (mediaUrl: string) => {
+    setSelectedMedia(mediaUrl)
+    setVideoDialogOpen(true)
+  }
+
+  const handleVideoDialogClose = () => {
+    setVideoDialogOpen(false)
+    setSelectedMedia('')
+  }
+
+  const handleClaimClick = (validation: any) => {
+    setSelectedValidation(validation)
+    setClaimDialogOpen(true)
+  }
+
+  const handleClaimDialogClose = () => {
+    setClaimDialogOpen(false)
+    setSelectedValidation(null)
+  }
+
   const open = Boolean(anchorEl)
   const openEx = Boolean(anchorExportEl)
   const id = open ? 'share-popover' : undefined
@@ -451,7 +619,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        marginBottom: '2rem',
+        position: 'relative'
       }}
     >
       <CardContent>
@@ -485,12 +654,54 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               {claim.statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
             </Description>
 
+            {claim.image && (
+              <Box sx={{ width: '100%', marginTop: '20px' }}>
+                <Box
+                  onClick={() => handleVideoClick(claim.image)}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      color: '#2D6A4F'
+                    }
+                  }}
+                >
+                  {isVideoUrl(claim.image) ? (
+                    <VideoLibraryIcon sx={{ fontSize: 24, color: '#2D6A4F' }} />
+                  ) : (
+                    <ImageIcon sx={{ fontSize: 24, color: '#2D6A4F' }} />
+                  )}
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      color: theme.palette.texts,
+                      fontWeight: 500,
+                      fontSize: '22px',
+                      marginBottom: '16px',
+                      paddingLeft: '10px',
+                      textDecoration: 'underline',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Supported Evidence
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+
             {data.validations && data.validations.length > 0 && (
               <EndorsementSection id="validation-section">
                 <EndorsementTitle>Endorsed by:</EndorsementTitle>
                 <EndorsementGrid>
                   {data.validations.slice(0, 2).map((validation: any, index: number) => (
-                    <EndorsementCard key={index} id={`validation-${index}`}>
+                    <EndorsementCard 
+                      key={index} 
+                      id={`validation-${index}`}
+                      onClick={() => handleClaimClick(validation)}
+                      sx={{ cursor: 'pointer' }}
+                    >
                       <EndorsementAuthor>
                         {validation.author}
                       </EndorsementAuthor>
@@ -498,11 +709,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                         {truncateText(validation.statement || '', 50)}
                       </EndorsementStatement>
                       <SeeAllLink
-                        onClick={() => {
-                          const element = document.getElementById(`validation-${index}`);
-                          if (element) {
-                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                          }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClaimClick(validation);
                         }}
                       >
                         see all
@@ -546,13 +755,25 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </ValidationDialogTitle>
               <ValidationDialogContent>
                 {data.validations?.map((validation: any, index: number) => (
-                  <ValidationDialogCard key={index}>
+                  <ValidationDialogCard 
+                    key={index}
+                    onClick={() => handleClaimClick(validation)}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <EndorsementAuthor>
                       {validation.author}
                     </EndorsementAuthor>
                     <EndorsementStatement>
                       {validation.statement || ''}
                     </EndorsementStatement>
+                    <SeeAllLink
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleClaimClick(validation);
+                      }}
+                    >
+                      see all
+                    </SeeAllLink>
                   </ValidationDialogCard>
                 ))}
               </ValidationDialogContent>
@@ -572,6 +793,189 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 </Button>
               </DialogActions>
             </ValidationDialog>
+
+            {/* Replace the ValidationDetailsDialog content */}
+            <ValidationDetailsDialog
+              open={claimDialogOpen}
+              onClose={handleClaimDialogClose}
+              maxWidth={false}
+            >
+              <DialogContent sx={{ p: 0, position: 'relative' }}>
+                <IconButton
+                  onClick={handleClaimDialogClose}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: theme.palette.texts,
+                    zIndex: 1
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                {selectedValidation && (
+                  <ValidationDetailsContent>
+                    <div className="validation-header">
+                      {selectedValidation.subject && (
+                        <div className="validation-subject">
+                          <MuiLink
+                            href={selectedValidation.subject}
+                            target="_blank"
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px'
+                            }}
+                          >
+                            {selectedValidation.subject}
+                            <OpenInNewIcon sx={{ fontSize: 20 }} />
+                          </MuiLink>
+                        </div>
+                      )}
+                      <Typography className="validation-author">
+                        {selectedValidation.author}
+                      </Typography>
+                      <Typography className="validation-statement">
+                        {selectedValidation.statement}
+                      </Typography>
+                      <Box className="validation-date">
+                        <CalendarMonthOutlinedIcon sx={{ fontSize: 20 }} />
+                        {new Date(selectedValidation.effectiveDate).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </Box>
+                    </div>
+
+                    {(selectedValidation.image || selectedValidation.mediaUrl) && (
+                      <Box sx={{ mt: 3 }}>
+                        <Typography
+                          sx={{
+                            fontSize: '18px',
+                            fontWeight: 500,
+                            color: '#212529',
+                            mb: 2
+                          }}
+                        >
+                          Supporting Evidence
+                        </Typography>
+                        <MediaContainer>
+                          {selectedValidation.image && <MediaContent url={selectedValidation.image} />}
+                          {selectedValidation.mediaUrl && <MediaContent url={selectedValidation.mediaUrl} />}
+                        </MediaContainer>
+                      </Box>
+                    )}
+
+                    <div className="validation-details">
+                      {Object.entries(selectedValidation).map(([key, value]: [string, any]) => {
+                        // Skip certain fields we've already displayed or don't want to show
+                        if (['id', 'subject', 'author', 'statement', 'effectiveDate', 'image', 'thumbnail', 'mediaUrl'].includes(key)) {
+                          return null;
+                        }
+                        if (!value) return null;
+
+                        return (
+                          <div key={key} className="detail-item">
+                            <span className="detail-label">{key}:</span>
+                            <span className="detail-value">
+                              {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
+                                <MuiLink
+                                  href={value}
+                                  target="_blank"
+                                  sx={{
+                                    color: '#2D6A4F',
+                                    textDecoration: 'none',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    '&:hover': {
+                                      textDecoration: 'underline'
+                                    }
+                                  }}
+                                >
+                                  {value}
+                                  <OpenInNewIcon sx={{ fontSize: 16 }} />
+                                </MuiLink>
+                              ) : (
+                                value.toString()
+                              )}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </ValidationDetailsContent>
+                )}
+              </DialogContent>
+            </ValidationDetailsDialog>
+
+            {/* Video/Image Dialog */}
+            <Dialog 
+              open={videoDialogOpen} 
+              onClose={handleVideoDialogClose}
+              maxWidth={false}
+              PaperProps={{
+                sx: {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                  overflow: 'hidden'
+                }
+              }}
+            >
+              <DialogContent sx={{ p: 0, position: 'relative' }}>
+                <IconButton
+                  onClick={handleVideoDialogClose}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: 'white',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)'
+                    },
+                    zIndex: 1
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                {selectedMedia && (
+                  <Box sx={{ 
+                    width: '100%', 
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    {isVideoUrl(selectedMedia) ? (
+                      <video 
+                        controls 
+                        autoPlay
+                        style={{
+                          width: '100%',
+                          maxHeight: '90vh',
+                          objectFit: 'contain'
+                        }}
+                      >
+                        <source src={selectedMedia} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <img
+                        src={selectedMedia}
+                        alt="Media content"
+                        style={{
+                          width: '100%',
+                          maxHeight: '90vh',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    )}
+                  </Box>
+                )}
+              </DialogContent>
+            </Dialog>
 
             <IssuerSection>
               <Box sx={{ 
@@ -671,6 +1075,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <ButtonText>Share</ButtonText>
             </ActionButton>
           </ButtonContainer>
+
+          
         </Stack>
 
         <Popover
@@ -877,19 +1283,70 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 })
 
 const MediaContent = ({ url }: { url: string }) => {
+  const handleMediaClick = () => {
+    const dialog = document.createElement('dialog')
+    dialog.style.padding = '0'
+    dialog.style.border = 'none'
+    dialog.style.borderRadius = '8px'
+    dialog.style.backgroundColor = 'transparent'
+    dialog.style.maxWidth = '90vw'
+    dialog.style.maxHeight = '90vh'
+    dialog.style.margin = 'auto'
+
+    const content = isVideoUrl(url) ? (
+      `<video controls style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">
+        <source src="${url}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>`
+    ) : (
+      `<img src="${url}" alt="Full size media" style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">`
+    )
+
+    dialog.innerHTML = `
+      <div style="position: relative;">
+        <button onclick="this.closest('dialog').close()" 
+          style="position: absolute; top: 10px; right: 10px; z-index: 1000; background: rgba(0,0,0,0.5); 
+          border: none; border-radius: 50%; padding: 8px; cursor: pointer;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+        ${content}
+      </div>
+    `
+
+    document.body.appendChild(dialog)
+    dialog.showModal()
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close()
+    })
+
+    dialog.addEventListener('close', () => {
+      document.body.removeChild(dialog)
+    })
+  }
+
   return (
-    <MediaContainer>
+    <MediaContainer onClick={handleMediaClick}>
       {isVideoUrl(url) ? (
         <video controls>
-          <source
-            src={url}
-            // type={`video/${url.split('.').pop()}`}
-            type='video/mp4'
-          />
+          <source src={url} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       ) : (
-        <img src={url} alt='Claim media content' loading='lazy' />
+        <img 
+          src={url} 
+          alt="Claim media content" 
+          loading="lazy"
+          style={{
+            width: '100%',
+            height: 'auto',
+            maxHeight: '400px',
+            objectFit: 'contain',
+            cursor: 'pointer'
+          }}
+        />
       )}
     </MediaContainer>
   )
