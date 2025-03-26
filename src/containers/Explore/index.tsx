@@ -67,7 +67,7 @@ const Explore = (homeProps: IHomeProps) => {
     })
   }
 
-  const fetchRelatedClaims = async (id: string, type: string ,page: number) => {
+  const fetchRelatedClaims = async (id: string, type: string, page: number) => {
     setLoading(true)
     try {
       const res = await axios.get(`/api/claim_graph/${id}/expand?page=${page}&limit=2&type=${type}`)
@@ -107,7 +107,7 @@ const Explore = (homeProps: IHomeProps) => {
       const currentClaim = event.target.data('raw')
       if (currentClaim && currentClaim.claimId) {
         setSelectedClaim(currentClaim)
-        fetchRelatedClaims(currentClaim.claimId, currentClaim.claim , currentClaim.page + 1)
+        fetchRelatedClaims(currentClaim.claimId, currentClaim.claim, currentClaim.page + 1)
         event.target.data('raw').page += 1
       }
     }
