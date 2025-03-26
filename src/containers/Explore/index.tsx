@@ -38,11 +38,20 @@ const Explore = (homeProps: IHomeProps) => {
   const layoutName = 'concentric'
   const layoutOptions = {
     fit: true,
+    padding: 50,
     avoidOverlap: true,
     nodeSpacing: 50,
+    nodeDimensionsIncludeLabels: true,
+    spacingFactor: 1.3,
+
     concentric: (node: any) => node.degree(),
     levelWidth: (nodes: any) => nodes.maxDegree() / 2,
-    minNodeSpacing: 50
+    minNodeSpacing: 70,
+    animate: true,
+    animationDuration: 800,
+    animationEasing: 'ease-in-out',
+
+    transform: (node: any, position: any) => position
   }
 
   const runCy = (cyInstance: Cytoscape.Core | undefined) => {
@@ -198,11 +207,11 @@ const Explore = (homeProps: IHomeProps) => {
 
   useEffect(() => {
     if (!cyRef.current && ref.current) {
-      const newCy = Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions))
+      const newCy = cyConfig(ref.current, theme, layoutName, layoutOptions)
       setCy(newCy)
       cyRef.current = newCy
     }
-  }, [theme, layoutName, layoutOptions])
+  }, [theme])
 
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())

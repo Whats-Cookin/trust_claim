@@ -11,58 +11,75 @@ const getInitials = (label: string) => {
   return cleanLabel.length >= 2 ? cleanLabel.slice(0, 2).toUpperCase() : cleanLabel.toUpperCase()
 }
 
-const getNodeStyles = () => [
-  {
-    selector: 'node',
-    style: {
-      height: '150',
-      width: '150',
-      shape: 'roundrectangle',
-      backgroundOpacity: 0,
-      borderOpacity: 0
+const getNodeStyles = () =>
+  [
+    {
+      selector: 'node',
+      style: {
+        height: 150,
+        width: 150,
+        shape: 'roundrectangle',
+        'background-opacity': 0,
+        'border-opacity': 0
+      }
+    },
+    {
+      selector: 'node[entType="CLAIM"]',
+      style: {
+        shape: 'ellipse',
+        height: 80,
+        'background-opacity': 0
+      }
     }
-  },
-  {
-    selector: 'node[entType="CLAIM"]',
-    style: {
-      shape: 'ellipse',
-      height: 80
+  ] as any
+
+const getEdgeStyles = (theme: Theme) =>
+  [
+    {
+      selector: 'edge',
+      style: {
+        width: 3,
+        'font-size': 14,
+        'target-arrow-shape': 'triangle',
+        'line-color': theme.palette.stars,
+        'target-arrow-color': theme.palette.stars,
+        'curve-style': 'bezier',
+        color: theme.palette.stars,
+        'text-rotation': 'autorotate',
+        label: 'data(relation)',
+        'line-cap': 'round',
+        'source-endpoint': 'outside-to-node',
+        'target-endpoint': 'outside-to-node',
+        'text-margin-y': 0,
+        'text-margin-x': 0,
+        'text-halign': 'center',
+        'text-valign': 'center',
+        'edge-text-rotation': 'autorotate',
+        'text-events': 'yes',
+        'text-background-color': theme.palette.background.default,
+        'text-background-opacity': 0.9,
+        'text-background-padding': 3
+      }
+    }
+  ] as any
+
+const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: string, layoutOptions: object) => {
+  const config: cytoscape.CytoscapeOptions = {
+    container: containerRef || undefined,
+    boxSelectionEnabled: false,
+    autounselectify: true,
+    style: [...getNodeStyles(), ...getEdgeStyles(theme)],
+    layout: {
+      name: layoutName,
+      ...layoutOptions
     }
   }
-]
 
-const getEdgeStyles = (theme: Theme) => [
-  {
-    selector: 'edge',
-    style: {
-      width: 3,
-      fontSize: 14,
-      targetArrowShape: 'triangle-cross',
-      lineColor: theme.palette.stars,
-      targetArrowColor: theme.palette.stars,
-      curveStyle: 'bezier',
-      color: theme.palette.stars,
-      textRotation: 'autorotate',
-      textMarginX: 30,
-      content: 'data(relation)',
-      'line-cap': 'round',
-      'source-endpoint': 'outside-to-node',
-      'target-endpoint': 'outside-to-node'
-    }
-  }
-]
+  const instance = cytoscape(config)
 
-const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: string, layoutOptions: object) => ({
-  container: containerRef || undefined,
-  boxSelectionEnabled: false,
-  autounselectify: true,
-  style: [...getNodeStyles(), ...getEdgeStyles(theme)],
-  layout: {
-    name: layoutName,
-    ...layoutOptions
-  },
-  ready: function (this: cytoscape.Core) {
-    this.nodeHtmlLabel([
+  // Add HTML labels after initialization
+  instance.ready(() => {
+    instance.nodeHtmlLabel([
       {
         query: 'node',
         halign: 'center',
@@ -82,7 +99,9 @@ const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: st
         `
       }
     ])
-  }
-})
+  })
+
+  return instance
+}
 
 export default cyConfig
