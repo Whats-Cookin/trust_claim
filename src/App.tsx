@@ -25,7 +25,7 @@ const App = () => {
   const [loading, setLoading] = useState(false)
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isNavbarVisible, setIsNavbarVisible] = useState(true)
@@ -98,8 +98,6 @@ const App = () => {
         {!isLoginPage && !isRegisterPage && (
           <Sidebar
             isAuth={checkAuth()}
-            isOpen={isSidebarOpen}
-            toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             toggleTheme={toggleTheme}
             isDarkMode={isDarkMode}
             isNavbarVisible={isNavbarVisible}
@@ -110,10 +108,11 @@ const App = () => {
             display: 'flex',
             flexDirection: 'column',
             minHeight: '100vh',
-            backgroundColor: theme => theme.palette.pageBackground,
+            backgroundColor: '#F8F9FA',
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '14.4vw' : '1.0vw',
+            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '15.1vw' : '1.0vw',
+            marginTop: '100px',
             width:
               isMediumScreen || isLoginPage || isRegisterPage
                 ? '100%'
