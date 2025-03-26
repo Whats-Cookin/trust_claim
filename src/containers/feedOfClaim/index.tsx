@@ -702,7 +702,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     height: '4.5vw',
                     maxWidth: '79px',
                     maxHeight: '79px',
-                     backgroundColor: '#2D6A4F',
+                    backgroundColor: '#2D6A4F',
                     '&:hover': {
                       backgroundColor: theme.palette.buttonHover
                     }
