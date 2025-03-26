@@ -20,7 +20,6 @@ import Terms from './containers/Terms'
 import Privacy from './containers/Privacy'
 import { checkAuth } from './utils/authUtils'
 import './App.css'
-
 const App = () => {
   const [loading, setLoading] = useState(false)
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
