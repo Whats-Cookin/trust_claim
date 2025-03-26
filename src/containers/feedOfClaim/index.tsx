@@ -329,7 +329,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   width: '50.958vw',
                   mb: '40px'
                 }}
-              />{' '}
+              />
               {claims.map((claim: any, index: number) => (
                 <Grow in={true} timeout={1000} key={claim.claim_id}>
                   <Box sx={{ marginBottom: '15px' }}>
@@ -349,7 +349,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                         p: '10px'
                       }}
                     >
-                      <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
+                      <Box sx={{ width: '100%' }}>
                         <CardContent>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Tooltip
@@ -451,7 +451,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 justifyContent: 'flex-end'
                               }}
                             >
-                              {Array.from({ length: claim.stars }).map((_, index) => (
+                              {Array.from({ length: claim.stars }).map((_, starIndex) => (
                                 <StarIcon
                                   key={index}
                                   sx={{
