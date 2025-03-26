@@ -12,7 +12,11 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Snackbar
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
@@ -122,10 +126,40 @@ const EndorsementSection = styled(Box)(({ theme }) => ({
 }))
 
 const EndorsementTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '16px',
+  fontSize: '14px',
   color: '#2D6A4F',
   marginBottom: theme.spacing(2),
-  fontWeight: 500
+  fontWeight: 500,
+  fontFamily: 'Roboto, var(--default-font-family)',
+  lineHeight: '16px',
+  textAlign: 'left',
+  textDecoration: 'underline',
+  whiteSpace: 'nowrap',
+  zIndex: 3,
+  margin: '30px 0 0 174px'
+}))
+
+const SeeAllLink = styled('button')(({ theme }) => ({
+  display: 'block',
+  position: 'relative',
+  height: '17px',
+  margin: '10px 0 0 201px',
+  color: '#2D6A4F',
+  fontFamily: 'Montserrat, var(--default-font-family)',
+  fontSize: '14px',
+  fontWeight: 500,
+  lineHeight: '17px',
+  textAlign: 'left',
+  whiteSpace: 'nowrap',
+  zIndex: 1,
+  textDecoration: 'none',
+  cursor: 'pointer',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  '&:hover': {
+    textDecoration: 'underline'
+  }
 }))
 
 const EndorsementGrid = styled(Box)(({ theme }) => ({
@@ -203,6 +237,53 @@ const ButtonIcon = styled(Box)(({ theme }) => ({
     top: 0,
     left: 0
   }
+}))
+
+const ValidationDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    width: '80%',
+    maxWidth: '800px',
+    borderRadius: '12px',
+    backgroundColor: theme.palette.background.paper
+  }
+}))
+
+const ValidationDialogTitle = styled(DialogTitle)(({ theme }) => ({
+  color: '#2D6A4F',
+  fontSize: '24px',
+  fontWeight: 600,
+  textAlign: 'center',
+  padding: theme.spacing(3)
+}))
+
+const ValidationDialogContent = styled(DialogContent)(({ theme }) => ({
+  padding: theme.spacing(3),
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: theme.spacing(3)
+}))
+
+const ValidationDialogCard = styled(Card)(({ theme }) => ({
+  width: '100%',
+  height: '168px',
+  backgroundColor: '#ffffff',
+  borderRadius: '8px',
+  boxShadow: '0 2px 14px 0 rgba(0, 0, 0, 0.25)',
+  padding: '20px',
+  position: 'relative'
+}))
+
+const EndorsementAuthor = styled(Typography)(({ theme }) => ({
+  fontSize: '16px',
+  fontWeight: 500,
+  marginBottom: theme.spacing(1),
+  color: '#2D6A4F'
+}))
+
+const EndorsementStatement = styled(Typography)(({ theme }) => ({
+  fontSize: '14px',
+  color: '#666',
+  marginBottom: theme.spacing(2)
 }))
 
 const isVideoUrl = (url: string): boolean => {
@@ -295,6 +376,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [anchorExportEl, setAnchorExportEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [currentUrl, setCurrentUrl] = useState('')
+  const [validationDialogOpen, setValidationDialogOpen] = useState(false)
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
@@ -339,6 +421,14 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const handleClose = () => {
     setAnchorEl(null)
     setAnchorExportEl(null)
+  }
+
+  const handleValidationDialogOpen = () => {
+    setValidationDialogOpen(true)
+  }
+
+  const handleValidationDialogClose = () => {
+    setValidationDialogOpen(false)
   }
 
   const open = Boolean(anchorEl)
@@ -395,80 +485,151 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               {claim.statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
             </Description>
 
-            <EndorsementSection>
-              <EndorsementTitle>Endorsed by:</EndorsementTitle>
-              <EndorsementGrid>
-                {data.validations?.map((validation: any, index: number) => (
-                  <EndorsementCard key={index}>
-                    <Typography variant='h6' sx={{ color: '#2D6A4F', fontWeight: 500 }}>
-                      {validation.author}
-                    </Typography>
-                    <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
-                      {truncateText(validation.statement || '', 50)}
-                    </Typography>
-                    <MuiLink
-                      component='button'
-                      onClick={() => {}}
+            {data.validations && data.validations.length > 0 && (
+              <EndorsementSection id="validation-section">
+                <EndorsementTitle>Endorsed by:</EndorsementTitle>
+                <EndorsementGrid>
+                  {data.validations.slice(0, 2).map((validation: any, index: number) => (
+                    <EndorsementCard key={index} id={`validation-${index}`}>
+                      <EndorsementAuthor>
+                        {validation.author}
+                      </EndorsementAuthor>
+                      <EndorsementStatement>
+                        {truncateText(validation.statement || '', 50)}
+                      </EndorsementStatement>
+                      <SeeAllLink
+                        onClick={() => {
+                          const element = document.getElementById(`validation-${index}`);
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }
+                        }}
+                      >
+                        see all
+                      </SeeAllLink>
+                    </EndorsementCard>
+                  ))}
+                </EndorsementGrid>
+                {data.validations.length > 2 && (
+                  <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'center',
+                    mt: 2
+                  }}>
+                    <Button
+                      onClick={handleValidationDialogOpen}
                       sx={{
-                        mt: 1,
                         color: '#2D6A4F',
-                        textDecoration: 'none',
-                        '&:hover': { textDecoration: 'underline' }
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        '&:hover': {
+                          backgroundColor: 'rgba(45, 106, 79, 0.04)'
+                        }
                       }}
                     >
-                      see all
-                    </MuiLink>
-                  </EndorsementCard>
+                      See more validations ({data.validations.length - 2} more)
+                    </Button>
+                  </Box>
+                )}
+              </EndorsementSection>
+            )}
+
+            {/* Add Validation Dialog */}
+            <ValidationDialog
+              open={validationDialogOpen}
+              onClose={handleValidationDialogClose}
+              maxWidth="md"
+              fullWidth
+            >
+              <ValidationDialogTitle>
+                All Validations
+              </ValidationDialogTitle>
+              <ValidationDialogContent>
+                {data.validations?.map((validation: any, index: number) => (
+                  <ValidationDialogCard key={index}>
+                    <EndorsementAuthor>
+                      {validation.author}
+                    </EndorsementAuthor>
+                    <EndorsementStatement>
+                      {validation.statement || ''}
+                    </EndorsementStatement>
+                  </ValidationDialogCard>
                 ))}
-              </EndorsementGrid>
-            </EndorsementSection>
+              </ValidationDialogContent>
+              <DialogActions sx={{ padding: '16px 24px' }}>
+                <Button
+                  onClick={handleValidationDialogClose}
+                  sx={{
+                    color: '#2D6A4F',
+                    textTransform: 'none',
+                    fontWeight: 500,
+                    '&:hover': {
+                      backgroundColor: 'rgba(45, 106, 79, 0.04)'
+                    }
+                  }}
+                >
+                  Close
+                </Button>
+              </DialogActions>
+            </ValidationDialog>
 
             <IssuerSection>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {/* <Typography sx={{ color: '#2D6A4F' }}>
-                  {`Created by ${claim.author ? claim.author : extractProfileName(claim.link)}`}
-                </Typography> */}
-              </Box>
               <Box sx={{ 
                 display: 'flex', 
                 flexDirection: 'column',
-                gap: '10px',
+                gap: '8px',
                 position: 'relative',
-                alignItems: 'flex-end'
+                alignItems: 'flex-start'
               }}>
-                <Typography 
-                  sx={{ 
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    fontSize: '18px',
-                    lineHeight: '21px',
-                    color: '#495057',
-                    width: '114px',
-                    textAlign: 'right'
-                  }}
-                >
-                  {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </Typography>
-                <Typography 
-                  sx={{ 
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: 400,
-                    fontSize: '18px',
-                    lineHeight: '21px',
-                    color: '#495057',
-                    width: '171px',
-                    textAlign: 'right',
-                    textDecoration: 'underline'
-                  }}
-                >
-                  ID: {claim.id}
-                </Typography>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <CalendarMonthOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
+                  <Typography 
+                    sx={{ 
+                      fontFamily: 'Roboto',
+                      fontStyle: 'normal',
+                      fontWeight: 400,
+                      fontSize: '16px',
+                      lineHeight: '21px',
+                      color: '#495057'
+                    }}
+                  >
+                    {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </Typography>
+                </Box>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <VerifiedOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
+                  <MuiLink
+                    component={Link}
+                    to={`/claims/${claim.id}`}
+                    sx={{ 
+                      fontFamily: 'Roboto',
+                      fontStyle: 'normal',
+                      fontWeight: 400,
+                      fontSize: '16px',
+                      lineHeight: '21px',
+                      color: '#495057',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        color: '#2D6A4F'
+                      }
+                    }}
+                  >
+                    ID: {claim.id}
+                  </MuiLink>
+                </Box>
               </Box>
             </IssuerSection>
           </CertificateContainer>
