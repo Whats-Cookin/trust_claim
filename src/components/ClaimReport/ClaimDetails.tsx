@@ -692,26 +692,22 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             )}
 
             {data.validations && data.validations.length > 0 && (
-              <EndorsementSection id="validation-section">
+              <EndorsementSection id='validation-section'>
                 <EndorsementTitle>Endorsed by:</EndorsementTitle>
                 <EndorsementGrid>
                   {data.validations.slice(0, 2).map((validation: any, index: number) => (
-                    <EndorsementCard 
-                      key={index} 
+                    <EndorsementCard
+                      key={index}
                       id={`validation-${index}`}
                       onClick={() => handleClaimClick(validation)}
                       sx={{ cursor: 'pointer' }}
                     >
-                      <EndorsementAuthor>
-                        {validation.author}
-                      </EndorsementAuthor>
-                      <EndorsementStatement>
-                        {truncateText(validation.statement || '', 50)}
-                      </EndorsementStatement>
+                      <EndorsementAuthor>{validation.author}</EndorsementAuthor>
+                      <EndorsementStatement>{truncateText(validation.statement || '', 50)}</EndorsementStatement>
                       <SeeAllLink
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleClaimClick(validation);
+                        onClick={e => {
+                          e.stopPropagation()
+                          handleClaimClick(validation)
                         }}
                       >
                         see all
@@ -720,11 +716,13 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   ))}
                 </EndorsementGrid>
                 {data.validations.length > 2 && (
-                  <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center',
-                    mt: 2
-                  }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      mt: 2
+                    }}
+                  >
                     <Button
                       onClick={handleValidationDialogOpen}
                       sx={{
@@ -744,32 +742,21 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             )}
 
             {/* Add Validation Dialog */}
-            <ValidationDialog
-              open={validationDialogOpen}
-              onClose={handleValidationDialogClose}
-              maxWidth="md"
-              fullWidth
-            >
-              <ValidationDialogTitle>
-                All Validations
-              </ValidationDialogTitle>
+            <ValidationDialog open={validationDialogOpen} onClose={handleValidationDialogClose} maxWidth='md' fullWidth>
+              <ValidationDialogTitle>All Validations</ValidationDialogTitle>
               <ValidationDialogContent>
                 {data.validations?.map((validation: any, index: number) => (
-                  <ValidationDialogCard 
+                  <ValidationDialogCard
                     key={index}
                     onClick={() => handleClaimClick(validation)}
                     sx={{ cursor: 'pointer' }}
                   >
-                    <EndorsementAuthor>
-                      {validation.author}
-                    </EndorsementAuthor>
-                    <EndorsementStatement>
-                      {validation.statement || ''}
-                    </EndorsementStatement>
+                    <EndorsementAuthor>{validation.author}</EndorsementAuthor>
+                    <EndorsementStatement>{validation.statement || ''}</EndorsementStatement>
                     <SeeAllLink
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleClaimClick(validation);
+                      onClick={e => {
+                        e.stopPropagation()
+                        handleClaimClick(validation)
                       }}
                     >
                       see all
@@ -795,11 +782,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             </ValidationDialog>
 
             {/* Replace the ValidationDetailsDialog content */}
-            <ValidationDetailsDialog
-              open={claimDialogOpen}
-              onClose={handleClaimDialogClose}
-              maxWidth={false}
-            >
+            <ValidationDetailsDialog open={claimDialogOpen} onClose={handleClaimDialogClose} maxWidth={false}>
               <DialogContent sx={{ p: 0, position: 'relative' }}>
                 <IconButton
                   onClick={handleClaimDialogClose}
@@ -815,12 +798,12 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 </IconButton>
                 {selectedValidation && (
                   <ValidationDetailsContent>
-                    <div className="validation-header">
+                    <div className='validation-header'>
                       {selectedValidation.subject && (
-                        <div className="validation-subject">
+                        <div className='validation-subject'>
                           <MuiLink
                             href={selectedValidation.subject}
-                            target="_blank"
+                            target='_blank'
                             sx={{
                               display: 'flex',
                               alignItems: 'center',
@@ -832,13 +815,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                           </MuiLink>
                         </div>
                       )}
-                      <Typography className="validation-author">
-                        {selectedValidation.author}
-                      </Typography>
-                      <Typography className="validation-statement">
-                        {selectedValidation.statement}
-                      </Typography>
-                      <Box className="validation-date">
+                      <Typography className='validation-author'>{selectedValidation.author}</Typography>
+                      <Typography className='validation-statement'>{selectedValidation.statement}</Typography>
+                      <Box className='validation-date'>
                         <CalendarMonthOutlinedIcon sx={{ fontSize: 20 }} />
                         {new Date(selectedValidation.effectiveDate).toLocaleDateString('en-US', {
                           year: 'numeric',
@@ -867,22 +846,34 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                       </Box>
                     )}
 
-                    <div className="validation-details">
+                    <div className='validation-details'>
                       {Object.entries(selectedValidation).map(([key, value]: [string, any]) => {
                         // Skip certain fields we've already displayed or don't want to show
-                        if (['id', 'subject', 'author', 'statement', 'effectiveDate', 'image', 'thumbnail', 'mediaUrl'].includes(key)) {
-                          return null;
+                        if (
+                          [
+                            'id',
+                            'subject',
+                            'author',
+                            'statement',
+                            'effectiveDate',
+                            'image',
+                            'thumbnail',
+                            'mediaUrl'
+                          ].includes(key)
+                        ) {
+                          return null
                         }
-                        if (!value) return null;
+                        if (!value) return null
 
                         return (
-                          <div key={key} className="detail-item">
-                            <span className="detail-label">{key}:</span>
-                            <span className="detail-value">
-                              {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
+                          <div key={key} className='detail-item'>
+                            <span className='detail-label'>{key}:</span>
+                            <span className='detail-value'>
+                              {typeof value === 'string' &&
+                              (value.startsWith('http://') || value.startsWith('https://')) ? (
                                 <MuiLink
                                   href={value}
-                                  target="_blank"
+                                  target='_blank'
                                   sx={{
                                     color: '#2D6A4F',
                                     textDecoration: 'none',
@@ -902,7 +893,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                               )}
                             </span>
                           </div>
-                        );
+                        )
                       })}
                     </div>
                   </ValidationDetailsContent>
@@ -911,8 +902,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             </ValidationDetailsDialog>
 
             {/* Video/Image Dialog */}
-            <Dialog 
-              open={videoDialogOpen} 
+            <Dialog
+              open={videoDialogOpen}
               onClose={handleVideoDialogClose}
               maxWidth={false}
               PaperProps={{
@@ -941,16 +932,18 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   <CloseIcon />
                 </IconButton>
                 {selectedMedia && (
-                  <Box sx={{ 
-                    width: '100%', 
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
                     {isVideoUrl(selectedMedia) ? (
-                      <video 
-                        controls 
+                      <video
+                        controls
                         autoPlay
                         style={{
                           width: '100%',
@@ -958,13 +951,13 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                           objectFit: 'contain'
                         }}
                       >
-                        <source src={selectedMedia} type="video/mp4" />
+                        <source src={selectedMedia} type='video/mp4' />
                         Your browser does not support the video tag.
                       </video>
                     ) : (
                       <img
                         src={selectedMedia}
-                        alt="Media content"
+                        alt='Media content'
                         style={{
                           width: '100%',
                           maxHeight: '90vh',
@@ -978,21 +971,25 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             </Dialog>
 
             <IssuerSection>
-              <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'column',
-                gap: '8px',
-                position: 'relative',
-                alignItems: 'flex-start'
-              }}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  position: 'relative',
+                  alignItems: 'flex-start'
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
                   <CalendarMonthOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
-                  <Typography 
-                    sx={{ 
+                  <Typography
+                    sx={{
                       fontFamily: 'Roboto',
                       fontStyle: 'normal',
                       fontWeight: 400,
@@ -1008,16 +1005,18 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                     })}
                   </Typography>
                 </Box>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
                   <VerifiedOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
                   <MuiLink
                     component={Link}
                     to={`/claims/${claim.id}`}
-                    sx={{ 
+                    sx={{
                       fontFamily: 'Roboto',
                       fontStyle: 'normal',
                       fontWeight: 400,
@@ -1051,32 +1050,30 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </ActionButton>
             </Box>
 
-              <Button
-                component={Link}
-                startIcon={<CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }}  />}
-                to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
-                sx={{
-                  textTransform: 'none',
-                  color: '#2D6A4F',
-                  fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
-                  width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
-                }}
-              >
-                Validate
-              </Button>
+            <Button
+              component={Link}
+              startIcon={<CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />}
+              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
+              sx={{
+                textTransform: 'none',
+                color: '#2D6A4F',
+                fontWeight: 500,
+                borderRadius: '24px',
+                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
+                px: { xs: '1rem', sm: '2rem' },
+                width: { xs: '100%', sm: 'auto' },
+                minWidth: { xs: 'auto', sm: '120px' },
+                height: '48px'
+              }}
+            >
+              Validate
+            </Button>
 
             <ActionButton onClick={e => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
           </ButtonContainer>
-
-          
         </Stack>
 
         <Popover
@@ -1293,14 +1290,12 @@ const MediaContent = ({ url }: { url: string }) => {
     dialog.style.maxHeight = '90vh'
     dialog.style.margin = 'auto'
 
-    const content = isVideoUrl(url) ? (
-      `<video controls style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">
+    const content = isVideoUrl(url)
+      ? `<video controls style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">
         <source src="${url}" type="video/mp4">
         Your browser does not support the video tag.
       </video>`
-    ) : (
-      `<img src="${url}" alt="Full size media" style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">`
-    )
+      : `<img src="${url}" alt="Full size media" style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">`
 
     dialog.innerHTML = `
       <div style="position: relative;">
@@ -1318,7 +1313,7 @@ const MediaContent = ({ url }: { url: string }) => {
     document.body.appendChild(dialog)
     dialog.showModal()
 
-    dialog.addEventListener('click', (e) => {
+    dialog.addEventListener('click', e => {
       if (e.target === dialog) dialog.close()
     })
 
@@ -1331,14 +1326,14 @@ const MediaContent = ({ url }: { url: string }) => {
     <MediaContainer onClick={handleMediaClick}>
       {isVideoUrl(url) ? (
         <video controls>
-          <source src={url} type="video/mp4" />
+          <source src={url} type='video/mp4' />
           Your browser does not support the video tag.
         </video>
       ) : (
-        <img 
-          src={url} 
-          alt="Claim media content" 
-          loading="lazy"
+        <img
+          src={url}
+          alt='Claim media content'
+          loading='lazy'
           style={{
             width: '100%',
             height: 'auto',
