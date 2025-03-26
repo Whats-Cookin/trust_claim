@@ -127,10 +127,13 @@ const Badge = (claim: any) => {
 }
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.ClaimData?.name || claim.name
-  if (claim.curator) {
-    displayName = `${claim.curator}`
-  } else if (extractProfileName(claim.link)) {
-    displayName = `${extractProfileName(claim.link)}`
+
+  if (!displayName) {
+    if (claim.curator) {
+      displayName = `${claim.curator}`
+    } else if (extractProfileName(claim.link)) {
+      displayName = `${extractProfileName(claim.link)}`
+    }
   }
 
   const theme = useTheme()
