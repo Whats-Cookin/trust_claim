@@ -18,8 +18,6 @@ import {
 } from '@mui/material'
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
 
-
-
 export interface MediaI {
   file: File
   url: string
@@ -158,8 +156,8 @@ const MediaUploader = <TFieldValues extends FieldValues>({
             onDrop={handleDrop}
             role='presentation'
           >
-            <ImageIcon  style={{ width: 40, height: 40, marginBottom: 10 ,color: '#2D6A4F'}} />
-            <Typography variant='body2'  sx={{ textAlign: 'center' ,color: '#2D6A4F'}}>
+            <ImageIcon style={{ width: 40, height: 40, marginBottom: 10, color: '#2D6A4F' }} />
+            <Typography variant='body2' sx={{ textAlign: 'center', color: '#2D6A4F' }}>
               <strong>+ Add media</strong>
               <br />
               <strong>(images, video)</strong>

@@ -400,7 +400,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   if (isLoading || !claim) {
     return <Loader open={true} />
   }
- 
 
   return (
     <>
@@ -462,7 +461,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     <ClaimName claim={claim} />
                     <Badge claim={claim.claim} />
                   </Link>
-                 
                 </Box>
               </Box>
               <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
@@ -478,7 +476,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               </Typography>
               <Link
                 to={claim.link || '#'}
-             
                 style={{
                   fontWeight: 500,
                   fontSize: '16px',
