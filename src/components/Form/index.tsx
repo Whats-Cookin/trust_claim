@@ -157,7 +157,9 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
 
           marginTop: '10px',
           mb: '30px',
-          fontSize: '20px',
+          borderRadius: '8px',
+          mr: '4.2vw'
+          // fontSize: '20px',
           fontWeight: '700'
         }}
       >

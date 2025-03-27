@@ -406,90 +406,20 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <Loader open={loading} />
       <MainContainer
         sx={{
-          width: '53.958vw',
-          marginLeft: '20%',
-          marginRight: 'auto'
+          width: {
+            xs: '97%',
+            md: 'calc(100% - 4.2vw)',
+            lg: 'calc(100% - 4.2vw)'
+          },
+          // marginLeft: '4.2vw',
+          // width: '100%',
+          maxWidth: '1115px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          display: 'flex',
+          justifyContent: 'center'
         }}
       >
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-          <Typography
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem',
-              marginTop: isMediumScreen ? '0' : '1rem',
-              fontSize: '20px',
-              fontWeight: '700'
-            }}
-          >
-            Validate the Credential
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            height: '1px',
-            backgroundColor: '#E0E0E0',
-            marginTop: '4px',
-            borderRadius: '2px',
-            width: '51.958vw',
-            mb: '40px'
-          }}
-        />
-        <Box
-          sx={{
-            width: '50.833vw',
-            height: '100%',
-            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
-            borderRadius: '8px',
-            p: '20px',
-            mr: '10px',
-            mt: '10px',
-            mb: '30px'
-          }}
-        >
-          {claim && (
-            <>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box>
-                  <Link
-                    to={claim.link || '#'}
-                    onClick={e => handleLinkClick(e, claim.link || '')}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <ClaimName claim={claim} />
-                    <Badge claim={claim.claim} />
-                  </Link>
-                </Box>
-              </Box>
-              <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-                {`Created by: ${claim.author || extractProfileName(claim.link) || 'Unknown'}, ${
-                  claim.effective_date instanceof Date && !isNaN(claim.effective_date.getTime())
-                    ? claim.effective_date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })
-                    : 'Date Unknown'
-                }`}
-              </Typography>
-              <Link
-                to={claim.link || '#'}
-                style={{
-                  fontWeight: 500,
-                  fontSize: '16px',
-                  textDecoration: 'underline solid',
-                  color: '#2D6A4F',
-                  fontFamily: 'Roboto'
-                }}
-              >
-                See the full details
-              </Link>
-            </>
-          )}
-        </Box>
-        {/* Rest of the form remains the same as in the previous implementation */}
         <form
           onSubmit={onSubmit}
           style={{
@@ -498,417 +428,501 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             width: '100%'
           }}
         >
-          <Box
-            sx={{
-              width: '50.833vw',
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
-              borderRadius: '8px',
-              p: '20px',
-              mr: '10px'
-            }}
-          >
+          <Box sx={{ width: '100%', p: '0' }}>
             {/* Form Content */}
-            <Typography
+            <Box
               sx={{
-                color: theme.palette.texts,
-
-                marginTop: '10px',
-                mb: '30px',
-                fontSize: '20px',
-                fontWeight: '700'
+                m: {
+                  xs: '15px 15px 15px 0px',
+                  md: '15px'
+                },
+                width: '100%',
+                textWrap: 'wrap',
+                wordBreak: 'break-word',
+                display: 'flex'
               }}
             >
-              Validator Information
-            </Typography>
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Website (Required):
-            </Typography>
-            <Controller
-              name='webTitle'
-              control={control}
-              defaultValue=''
-              rules={{
-                required: 'This field is required'
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  placeholder='Add your website '
-                  {...field}
-                  multiline
-                  rows={4}
+              <Typography variant='body1'>
+                {`Validate that claim:`}
+                <Box
                   sx={{
-                    width: '47.708vw',
-                    height: '55px',
-
-                    mb: '20px',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #A3A3A3',
-                    borderRadius: '8px',
-
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts,
-                        fontWeight: 400,
-                        fontSize: 16
-                      }
-                    }
+                    height: '5px',
+                    backgroundColor: theme.palette.maintext,
+                    marginTop: '4px',
+                    borderRadius: '2px',
+                    width: '185px'
                   }}
-                  margin='normal'
-                  error={Boolean(error)}
-                  helperText={error ? error.message : ''}
                 />
-              )}
-            />
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Title (Required):
-            </Typography>
-            <Controller
-              name='title'
-              control={control}
-              defaultValue=''
-              rules={{
-                required: 'This field is required'
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  placeholder='Add your title/role'
-                  {...field}
-                  multiline
-                  rows={4}
-                  sx={{
-                    width: '47.708vw',
-                    height: '55px',
-
-                    mb: '20px',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #A3A3A3',
-                    borderRadius: '8px',
-
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts,
-                        fontWeight: 400,
-                        fontSize: 16
-                      }
-                    }
-                  }}
-                  margin='normal'
-                  error={Boolean(error)}
-                  helperText={error ? error.message : ''}
-                />
-              )}
-            />
-            <Typography
-              sx={{
-                color: theme.palette.texts,
-
-                marginTop: '10px',
-                mb: '30px',
-                fontSize: '20px',
-                fontWeight: '700'
-              }}
-            >
-              Credential Validation Details
-            </Typography>
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              How Known (Required):
-            </Typography>
-            <FormControl
-              margin='normal'
-              sx={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #A3A3A3',
-                borderRadius: '8px',
-                width: '47.708vw',
-
-                mb: '30px',
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'transparent'
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'transparent'
-                  },
-                  '& .MuiInputBase-input': {
-                    color: theme.palette.texts,
-                    fontWeight: 400,
-                    fontSize: 16
+              </Typography>
+              <Box
+                sx={{
+                  display: isMediumScreen ? 'none' : 'flex',
+                  ml: {
+                    md: 'clamp(111px, 25%, 226px)',
+                    lg: 'clamp(140px, 31%, 670px)'
                   }
-                }
+                }}
+              >
+                <Typography
+                  variant='body1'
+                  sx={{
+                    textWrap: 'wrap',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  {`Do you know anything about that?`}
+                  <Box
+                    sx={{
+                      height: '5px',
+                      backgroundColor: theme.palette.maintext,
+                      marginTop: '4px',
+                      borderRadius: '2px',
+                      width: '70%'
+                    }}
+                  />
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: isMediumScreen ? 'column' : 'row',
+                justifyContent: 'space-around',
+                alignItems: 'flex-start',
+                width: '100%',
+                margin: '0'
               }}
             >
-              <Controller
-                name='howKnown'
-                control={control}
-                defaultValue=''
-                rules={{
-                  required: 'This field is required' // This makes the field required
+              <Box
+                sx={{
+                  width: isMediumScreen ? '95%' : '45%',
+                  height: 'auto',
+                  borderRadius: '20px',
+                  backgroundColor: theme.palette.cardBackground,
+                  mt: 0,
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' // Add shadow for depth
                 }}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <Select
-                      displayEmpty
-                      {...field}
-                      sx={{
-                        '& .MuiSelect-icon': {
-                          color: '#0A1C1D'
-                        },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          border: 'none'
-                        },
-                        '& .MuiInputBase-input': {
-                          fontWeight: 400,
-                          fontSize: 16,
-                          color: '#A3A3A3'
-                        }
-                      }}
-                      error={Boolean(error)} // Pass the error state to the Select component
-                    >
-                      <MenuItem value='' disabled>
-                        Explain why you are validating or rejecting this credential{' '}
-                      </MenuItem>
-                      {inputOptions.howKnown.map((option, index: number) => (
-                        <MenuItem
-                          key={option.value}
-                          value={option.value}
-                          onClick={() => handleItemSelect()}
+              >
+                <Card
+                  sx={{
+                    backgroundColor: theme.palette.cardBackground,
+                    padding: '30px',
+                    width: '100%',
+                    minHeight: {
+                      xs: 'auto',
+                      sm: 'auto',
+                      md: '938px',
+                      lg: '938px'
+                    },
+                    backgroundImage: 'none',
+                    height: 'auto',
+                    borderRadius: '20px'
+                  }}
+                >
+                  {/* Issuer, Subject, Aspect, Confidence, Amount, Date, How Known, Statement */}
+                  <Box sx={{ height: '545', width: '535' }}>
+                    <Box sx={{ height: '545', width: '535' }}>
+                      {subjectValue && (
+                        <Box sx={{ display: 'flex', mt: 5, mb: 4, alignItems: 'center' }}>
+                          <Box sx={{ width: '130px' }}>
+                            <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                              Subject:
+                            </Typography>
+                          </Box>
+                          <Box
+                            sx={{
+                              display: 'block',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'anywhere',
+                              whiteSpace: 'normal',
+                              fontSize: '18px !important',
+                              justifyContent: 'center'
+                            }}
+                          >
+                            <Link
+                              to={subjectValue}
+                              rel='noopener noreferrer'
+                              target='_blank'
+                              style={{ textDecoration: 'none', color: 'inherit' }} // Inherit text color and remove underline
+                            >
+                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                {subjectValue}
+                              </Typography>
+                              <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts }} />
+                            </Link>
+                          </Box>
+                        </Box>
+                      )}
+                    </Box>
+                    {issuerValue && (
+                      <Box sx={{ display: 'flex', mb: 4 }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Issuer:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {issuerValue}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {aspectValue && (
+                      <Box sx={{ display: 'flex', mb: 4 }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Aspect:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {aspectValue}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {confidenceValue !== null && (
+                      <Box sx={{ display: 'flex', mb: 4 }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Confidence:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {confidenceValue}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {amtValue && (
+                      <Box sx={{ display: 'flex', mb: 4 }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Amount:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {amtValue}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {effectiveDateValue && (
+                      <Box sx={{ display: 'flex', mb: 4 }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            Date:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {effectiveDateValue}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {howKnownValue && (
+                      <Box sx={{ display: 'flex', mb: 4 }}>
+                        <Box sx={{ width: '130px' }}>
+                          <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
+                            How Known:
+                          </Typography>
+                        </Box>
+                        <Box>
+                          <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                            {howKnownValue}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    )}
+                    {statementValue && (
+                      <Box sx={{ display: 'flex', mb: 5, mt: 4 }}>
+                        <Typography variant='body2' sx={{ fontWeight: 'bold', mr: 4 }}>
+                          Statement:
+                        </Typography>
+                        <Typography
+                          variant='body2'
                           sx={{
-                            backgroundColor: '#ffffff',
-                            color: theme.palette.texts,
-                            fontSize: 16,
-                            '&:hover': {
-                              backgroundColor: '#2D6A4F'
-                            },
-                            '&.Mui-selected': {
-                              backgroundColor: theme.palette.input,
-                              '&:hover': {
-                                backgroundColor: theme.palette.input
-                              }
-                            },
-                            '& .MuiInputBase-input': {
-                              color: theme.palette.texts,
-                              fontWeight: 400,
-                              fontSize: 16
-                            },
-                            '&:active': {
-                              backgroundColor: theme.palette.input
-                            },
-                            '::selection': {
-                              backgroundColor: theme.palette.input
-                            },
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
+                            padding: '5px 1 1 5px',
+                            wordBreak: 'break-word',
+                            color: theme.palette.texts
                           }}
                         >
-                          <Tooltip
-                            title={tooltips.howKnown[index]}
-                            placement={isTouchDevice ? 'top' : 'right'}
-                            arrow
-                            TransitionComponent={Fade}
-                            open={isTouchDevice ? openTooltipIndex === index : undefined}
-                            onClose={() => setOpenTooltipIndex(null)}
-                            disableFocusListener={isTouchDevice}
-                            disableHoverListener={isTouchDevice}
-                            disableTouchListener={isTouchDevice}
-                          >
-                            <Box
+                          {isExpanded || !isStatementLong ? statementValue : truncateText(statementValue, 300)}
+                          {isStatementLong && (
+                            <MuiLink
+                              onClick={handleToggleExpand}
                               sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                width: '100%',
-                                justifyContent: 'space-between'
+                                cursor: 'pointer',
+                                marginLeft: '5px',
+                                color: theme.palette.link,
+                                textDecoration: 'none'
                               }}
                             >
-                              <span>{option.text}</span>
-                              {isTouchDevice && (
-                                <IconButton
-                                  size='small'
-                                  onClick={e => {
-                                    e.stopPropagation()
-                                    handleTooltipToggle(index)
+                              {isExpanded ? 'Show Less' : 'See More'}
+                            </MuiLink>
+                          )}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Card>
+              </Box>
+              <Box
+                sx={{
+                  display: isMediumScreen ? 'flex' : 'none',
+                  flexDirection: 'column',
+                  width: '100%',
+                  padding: '20px 0 0 0px',
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  marginBottom: isMediumScreen ? '12px' : '36px',
+                  position: 'relative',
+                  textWrap: 'wrap',
+                  wordBreak: 'break-word'
+                }}
+              >
+                <Typography variant='body1'>
+                  {`Do you know anything about that?`}
+                  <Box
+                    sx={{
+                      height: '5px',
+                      backgroundColor: theme.palette.maintext,
+                      marginTop: '4px',
+                      borderRadius: '2px',
+                      width: '70%'
+                    }}
+                  />
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  width: isMediumScreen ? '95%' : '45%',
+                  height: 'fill',
+                  borderRadius: '20px',
+                  backgroundColor: theme.palette.cardBackground,
+                  mt: 0,
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' // Add shadow for depth
+                }}
+              >
+                <Card
+                  sx={{
+                    backgroundColor: theme.palette.cardBackground,
+                    backgroundImage: 'none',
+                    overflow: 'visible',
+                    boxShadow: 'none',
+                    padding: '30px',
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '20px'
+                  }}
+                >
+                  <Box sx={{ height: '544', width: '100%' }}>
+                    <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
+                      {`Validator Information`}
+                    </Typography>
+                    {/* How Known Select Field */}
+                    <Typography variant='body2'>How Known(Required)</Typography>
+                    <FormControl
+                      fullWidth
+                      margin='normal'
+                      sx={{
+                        backgroundColor: theme.palette.input,
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: 'transparent'
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'transparent'
+                          },
+                          '& .MuiInputBase-input': {
+                            color: theme.palette.texts,
+                            fontWeight: 400,
+                            fontSize: 16
+                          }
+                        }
+                      }}
+                    >
+                      <Controller
+                        name='howKnown'
+                        control={control}
+                        defaultValue=''
+                        rules={{
+                          required: 'This field is required' // This makes the field required
+                        }}
+                        render={({ field, fieldState: { error } }) => (
+                          <>
+                            <Select
+                              {...field}
+                              sx={{
+                                '& .MuiSelect-icon': {
+                                  color: '#0A1C1D'
+                                },
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  border: 'none'
+                                },
+                                '& .MuiInputBase-input': {
+                                  color: theme.palette.texts,
+                                  fontWeight: 400,
+                                  fontSize: 16
+                                }
+                              }}
+                              error={Boolean(error)} // Pass the error state to the Select component
+                            >
+                              {inputOptions.howKnown.map((option, index: number) => (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  onClick={() => handleItemSelect()}
+                                  sx={{
+                                    backgroundColor: theme.palette.input,
+                                    color: theme.palette.texts,
+                                    fontSize: 16,
+                                    '&:hover': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    '&.Mui-selected': {
+                                      backgroundColor: theme.palette.input,
+                                      '&:hover': {
+                                        backgroundColor: theme.palette.input
+                                      }
+                                    },
+                                    '& .MuiInputBase-input': {
+                                      color: theme.palette.texts,
+                                      fontWeight: 400,
+                                      fontSize: 16
+                                    },
+                                    '&:active': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    '::selection': {
+                                      backgroundColor: theme.palette.input
+                                    },
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
                                   }}
                                 >
-                                  <HelpIcon sx={{ color: '#0ABAB5' }} />
-                                </IconButton>
-                              )}
-                            </Box>
-                          </Tooltip>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {error && (
-                      <FormHelperText error>{error.message}</FormHelperText> // Display error message
+                                  <Tooltip
+                                    title={tooltips.howKnown[index]}
+                                    placement={isTouchDevice ? 'top' : 'right'}
+                                    arrow
+                                    TransitionComponent={Fade}
+                                    open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                    onClose={() => setOpenTooltipIndex(null)}
+                                    disableFocusListener={isTouchDevice}
+                                    disableHoverListener={isTouchDevice}
+                                    disableTouchListener={isTouchDevice}
+                                  >
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        justifyContent: 'space-between'
+                                      }}
+                                    >
+                                      <span>{option.text}</span>
+                                      {isTouchDevice && (
+                                        <IconButton
+                                          size='small'
+                                          onClick={e => {
+                                            e.stopPropagation()
+                                            handleTooltipToggle(index)
+                                          }}
+                                        >
+                                          <HelpIcon sx={{ color: '#0ABAB5' }} />
+                                        </IconButton>
+                                      )}
+                                    </Box>
+                                  </Tooltip>
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {error && (
+                              <FormHelperText error>{error.message}</FormHelperText> // Display error message
+                            )}
+                          </>
+                        )}
+                      />
+                    </FormControl>
+
+                    {/* URL Input Field */}
+                    {(watchHowKnown === FIRST_HAND ||
+                      watchHowKnown === SECOND_HAND ||
+                      watchHowKnown === FIRST_HAND_BENEFIT ||
+                      watchHowKnown === FIRST_HAND_REJECTED) && (
+                      <URLInputField control={control} label='Your Website (Required)' />
                     )}
-                  </>
-                )}
-              />
-            </FormControl>
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Validation Statement (Required):
-            </Typography>
-            <Controller
-              name='statement'
-              control={control}
-              defaultValue=''
-              rules={{
-                required: 'This field is required'
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  placeholder='Explain why you are validating or rejecting this credential'
-                  {...field}
-                  multiline
-                  rows={4}
-                  sx={{
-                    width: '47.708vw',
-                    height: '179px',
-                    mb: '30px',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #A3A3A3',
-                    borderRadius: '8px',
-
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts,
-                        fontWeight: 400,
-                        fontSize: 16
-                      }
-                    }
-                  }}
-                  margin='normal'
-                  error={Boolean(error)}
-                  helperText={error ? error.message : ''}
-                />
-              )}
-            />
-
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Effective Date (Required):
-            </Typography>
-
-            <FormControl sx={{ mb: '30px', width: '47.708vw', mr: 'auto' }}>
-              <Controller
-                name='effectiveDate'
-                control={control}
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      {...field}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          sx={{
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #A3A3A3',
-                            borderRadius: '8px',
-                            '& .MuiOutlinedInput-root': {
-                              '& fieldset': {
-                                borderColor: 'transparent'
-                              },
-                              '&:hover fieldset': {
-                                borderColor: 'transparent'
-                              },
-                              '&.Mui-focused fieldset': {
-                                borderColor: 'transparent'
-                              }
-                            },
-                            '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-                              color: '#0A1C1D'
-                            },
-                            '& .MuiInputBase-input': {
-                              color: theme.palette.texts,
-                              fontSize: 16,
-                              fontWeight: 400
-                            }
-                          }}
-                          margin='normal'
-                          InputProps={{
-                            ...params.InputProps,
-                            sx: {
-                              '&:before': {
-                                borderBottom: 'none'
-                              },
-                              '&:hover:not(.Mui-disabled):before': {
-                                borderBottom: 'none'
-                              },
-                              '&.Mui-focused:after': {
-                                borderBottom: 'none'
-                              }
-                            }
-                          }}
-                        />
-                      )}
-                      value={field.value}
-                      onChange={date => field.onChange(date)}
-                    />
-                  </LocalizationProvider>
-                )}
-              />
-            </FormControl>
+                    {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
+                      <URLInputField control={control} label='Source URL (Required)' />
+                    )}
+                    <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
+                      {`Claim Validation Details `}
+                    </Typography>
+                    {/* Effective Date Field */}
+                    <Typography variant='body2'>Effective Date</Typography>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
+                      <Controller
+                        name='effectiveDate'
+                        control={control}
+                        render={({ field }) => (
+                          <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                              {...field}
+                              renderInput={params => (
+                                <TextField
+                                  {...params}
+                                  sx={{
+                                    backgroundColor: theme.palette.input,
+                                    '& .MuiOutlinedInput-root': {
+                                      '& fieldset': {
+                                        borderColor: 'transparent'
+                                      },
+                                      '&:hover fieldset': {
+                                        borderColor: 'transparent'
+                                      },
+                                      '&.Mui-focused fieldset': {
+                                        borderColor: 'transparent'
+                                      }
+                                    },
+                                    '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                                      color: '#0A1C1D'
+                                    },
+                                    '& .MuiInputBase-input': {
+                                      color: theme.palette.texts,
+                                      fontSize: 16,
+                                      fontWeight: 400
+                                    }
+                                  }}
+                                  margin='normal'
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    sx: {
+                                      '&:before': {
+                                        borderBottom: 'none'
+                                      },
+                                      '&:hover:not(.Mui-disabled):before': {
+                                        borderBottom: 'none'
+                                      },
+                                      '&.Mui-focused:after': {
+                                        borderBottom: 'none'
+                                      }
+                                    }
+                                  }}
+                                />
+                              )}
+                              value={field.value}
+                              onChange={date => field.onChange(date)}
+                            />
+                          </LocalizationProvider>
+                        )}
+                      />
+                    </FormControl>
 
             <Typography
               sx={{
