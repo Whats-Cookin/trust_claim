@@ -54,26 +54,29 @@ const SearchBar = () => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        width: '400px',
-        height: '40px',
-        position: 'relative',
+        width: 'clamp(155px, 25vw, 400px)',
+        height: 'clamp(25px, 2.08vw, 40px)',
         backgroundColor: 'transparent',
         border: '1px solid #DEE2E6',
         borderRadius: '6px',
+        p: 0,
         ':hover': {
           border: '1px solid #5DAE7B'
         },
-        ':focus': {
+        ':focus-within': {
           border: '1px solid #5DAE7B'
         }
       }}
     >
       <IconButton
         type='button'
-        sx={{ color: '#495057', zIndex: 1 }}
+        sx={{
+          p: 0,
+          color: '#495057',
+          borderRadius: 0
+        }}
         aria-label='search'
         onClick={handleSearch}
-        className='search-btn'
       >
         <SearchIcon />
       </IconButton>
@@ -86,20 +89,18 @@ const SearchBar = () => {
         placeholder='search for Claims, Credentials...'
         sx={{
           flex: 1,
+          ml: 1,
           input: {
-            fontSize: isSmallScreen ? '12px' : '14px',
+            fontSize: isSmallScreen ? '11px' : '14px',
             fontWeight: 500,
-            textAlign: 'left',
-            color: '#F8F9FA',
+            color: '#495057',
             letterSpacing: '1px',
             fontFamily: 'Roboto'
           },
-          minWidth: isSmallScreen ? '155px' : '180px',
-          maxWidth: isSmallScreen ? '260px' : '360px',
-          width: isSmallScreen ? '35vw' : '25vw',
-          overflow: 'hidden',
-          position: 'absolute',
-          right: 0,
+          '& .MuiInputBase-input::placeholder': {
+            color: '#868e96',
+            opacity: 1
+          },
           '& .MuiInput-underline:before': {
             borderBottom: 'none !important'
           },
@@ -113,19 +114,19 @@ const SearchBar = () => {
             borderBottom: 'none !important'
           }
         }}
-        className='search-txt'
       />
-      <Box sx={{ position: 'absolute', right: 0, top: 0, bottom: 0, display: 'flex', alignItems: 'center' }}>
-        <IconButton
-          type='button'
-          sx={{ color: '#495057', zIndex: 1 }}
-          aria-label='search'
-          onClick={handleSearch}
-          className='search-btn'
-        >
-          <FilterAltOutlinedIcon />
-        </IconButton>
-      </Box>
+      <IconButton
+        type='button'
+        sx={{
+          p: 0,
+          color: '#495057',
+          borderRadius: 0
+        }}
+        aria-label='filter'
+        onClick={handleSearch}
+      >
+        <FilterAltOutlinedIcon />
+      </IconButton>
     </Box>
   )
 }
