@@ -326,9 +326,18 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <Loader open={loading} />
       <MainContainer
         sx={{
-          width: '1115px',
-          marginLeft: '20%',
-          marginRight: 'auto'
+          width: {
+            xs: '97%',
+            md: 'calc(100% - 4.2vw)',
+            lg: 'calc(100% - 4.2vw - clamp(174px, 20vw, 454px))'
+          },
+          // marginLeft: '4.2vw',
+          // width: '100%',
+          maxWidth: '1115px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          display: 'flex',
+          justifyContent: 'center'
         }}
       >
         <form
@@ -343,7 +352,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             {/* Form Content */}
             <Box
               sx={{
-                m: '15px',
+                m: {
+                  xs: '15px 15px 15px 0px',
+                  md: '15px'
+                },
                 width: '100%',
                 textWrap: 'wrap',
                 wordBreak: 'break-word',
@@ -362,7 +374,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   }}
                 />
               </Typography>
-              <Box sx={{ display: isMediumScreen ? 'none' : 'flex', ml: 'clamp(140px, 31%, 670px)' }}>
+              <Box
+                sx={{
+                  display: isMediumScreen ? 'none' : 'flex',
+                  ml: {
+                    md: 'clamp(111px, 25%, 226px)',
+                    lg: 'clamp(140px, 31%, 670px)'
+                  }
+                }}
+              >
                 <Typography
                   variant='body1'
                   sx={{
@@ -409,7 +429,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     backgroundColor: theme.palette.cardBackground,
                     padding: '30px',
                     width: '100%',
-                    minHeight: isMediumScreen ? 'auto' : '870px',
+                    minHeight: {
+                      xs: 'auto',
+                      sm: 'auto',
+                      md: '938px',
+                      lg: '938px'
+                    },
                     backgroundImage: 'none',
                     height: 'auto',
                     borderRadius: '20px'
@@ -419,13 +444,22 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   <Box sx={{ height: '545', width: '535' }}>
                     <Box sx={{ height: '545', width: '535' }}>
                       {subjectValue && (
-                        <Box sx={{ display: 'flex', mt: 5, mb: 4 }}>
+                        <Box sx={{ display: 'flex', mt: 5, mb: 4, alignItems: 'center' }}>
                           <Box sx={{ width: '130px' }}>
                             <Typography variant='body2' sx={{ fontWeight: 'bold' }}>
                               Subject:
                             </Typography>
                           </Box>
-                          <Box>
+                          <Box
+                            sx={{
+                              display: 'block',
+                              wordBreak: 'break-word',
+                              overflowWrap: 'anywhere',
+                              whiteSpace: 'normal',
+                              fontSize: '18px !important',
+                              justifyContent: 'center'
+                            }}
+                          >
                             <Link
                               to={subjectValue}
                               rel='noopener noreferrer'
@@ -563,7 +597,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   display: isMediumScreen ? 'flex' : 'none',
                   flexDirection: 'column',
                   width: '100%',
-                  padding: '20px 0 0 20px',
+                  padding: '20px 0 0 0px',
                   justifyContent: 'center',
                   alignItems: 'flex-start',
                   marginBottom: isMediumScreen ? '12px' : '36px',
@@ -587,12 +621,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               </Box>
               <Box
                 sx={{
-                  width: isMediumScreen ? '95%' : '47.5%',
-                  height: 'auto',
-                  minHeight: isMediumScreen ? 'auto' : '870px',
+                  width: isMediumScreen ? '95%' : '45%',
+                  height: 'fill',
                   borderRadius: '20px',
-                  boxShadow: 'none',
-                  backgroundColor: theme.palette.cardBackground
+                  backgroundColor: theme.palette.cardBackground,
+                  mt: 0,
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)' // Add shadow for depth
                 }}
               >
                 <Card
