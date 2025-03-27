@@ -208,11 +208,14 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const isAuth = checkAuth()
 
-  useMemo(() => {
+  useEffect(() => {
     if (isLoading && !initialPageLoad.current) return
+
     initialPageLoad.current = false
+
     setIsLastPage(false)
     setIsLoading(true)
+
     fetchClaims(null, searchTerm, type)
       .then(({ data }) => {
         claimsRef.current = data.claims
@@ -227,14 +230,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }, [searchTerm, type])
 
   useEffect(() => {
-    const prev = searchTerm
-    const prevType = type
     const search = getSearchFromParams()
-    if (search.query === prev) return
-    if (search.type === prevType) return
+    const newQuery = search.query ?? ''
+    const newType = search.type ?? ''
 
-    setSearchTerm(search.query ?? '')
-    setType(search.type ?? '')
+    if (searchTerm !== newQuery || type !== newType) {
+      console.log('URL changed, updating search state:', { newQuery, newType })
+      setSearchTerm(newQuery)
+      setType(newType)
+    }
   }, [location.search])
 
   useEffect(() => {

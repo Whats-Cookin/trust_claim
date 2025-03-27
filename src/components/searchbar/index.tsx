@@ -10,8 +10,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Button,
-  Paper
+  Button
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
