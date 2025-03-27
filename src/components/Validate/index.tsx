@@ -58,7 +58,7 @@ type HowKnown = (typeof HOW_KNOWN)[keyof typeof HOW_KNOWN]
 interface LocalClaim {
   claim: any
   effective_date: string | number | Date
-  name: string
+  subject: string
   source_link: string
   link: string
   author: string
@@ -173,11 +173,11 @@ const Badge = (claim: any) => {
 
 const ClaimName = ({ claim, searchTerm = '' }: { claim: LocalClaim; searchTerm?: string }) => {
   const theme = useTheme()
-  let displayName = claim.name
+  let displayName = claim.subject
   if (claim.curator) {
-    displayName = `${claim.curator} - ${claim.name}`
+    displayName = `${claim.curator} - ${claim.subject}`
   } else if (extractProfileName(claim.link)) {
-    displayName = `${extractProfileName(claim.link)} - ${claim.name}`
+    displayName = `${extractProfileName(claim.link)} - ${claim.subject}`
   }
 
   const highlightedName = searchTerm.trim()
