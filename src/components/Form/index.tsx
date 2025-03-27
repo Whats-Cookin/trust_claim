@@ -185,267 +185,246 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Claim Type Selection - only show if no type selected */}
-          {!selectedClaimType ? (
+          {/* Basic Information */}
+          <Typography variant='h5' component='h2' sx={{ mb: 3, fontWeight: 'bold' }}>
+            Create a Claim
+          </Typography>
+          {renderClaimTypeSelection()}
+
+          <Box
+            sx={{
+              mb: 4,
+              p: 3,
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+              backgroundColor: theme.palette.background.paper
+            }}
+          >
+            <FieldTitle title='Claim Information' fontWeight='bold' />
+
             <Box sx={{ mb: 4 }}>
-              <Typography sx={{ mb: 2 }}>What kind of claim would you like to make?</Typography>
-              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
-                {Object.entries(CLAIM_TYPES).map(([type, info]) => (
-                  <Button
-                    key={type}
-                    onClick={() => setSelectedClaimType(type)}
-                    variant='outlined'
-                    sx={{ justifyContent: 'flex-start', p: 2 }}
-                  >
-                    {info.label}
-                  </Button>
-                ))}
-              </Box>
+              <FieldTitle title='Claim Subject:' fontWeight='normal' />
+
+              <TextField
+                {...register('name', { required: true })}
+                label='Enter the name of the person, company, or entity involved.'
+                fullWidth
+                sx={{ mb: 2 }}
+                error={Boolean(errors.name)}
+                helperText={errors.name ? 'This field is required' : ''}
+              />
+
+              <FieldTitle title='Reference Link:' fontWeight='normal' />
+              <TextField
+                {...register('subject', {
+                  required: 'This field is required',
+                  pattern: {
+                    value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+                    message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
+                  }
+                })}
+                label='Provide a supporting link'
+                fullWidth
+                sx={{ mb: 2 }}
+                error={Boolean(errors.subject)}
+                helperText={errors.subject ? errors.subject.message : ''}
+              />
+              <FieldTitle title='Claim Description:' fontWeight='normal' />
+              <TextField
+                {...register('statement', { required: true })}
+                label='Explain your claim in detail'
+                multiline
+                rows={4}
+                fullWidth
+                error={Boolean(errors.statement)}
+                helperText={errors.statement ? 'This field is required' : ''}
+              />
             </Box>
-          ) : (
-            <>
-              {/* Basic Information */}
-              <Typography variant='h5' component='h2' sx={{ mb: 3, fontWeight: 'bold' }}>
-                Create a Claim
-              </Typography>
-              {renderClaimTypeSelection()}
+          </Box>
 
-              <Box
-                sx={{
-                  mb: 4,
-                  p: 3,
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                  backgroundColor: theme.palette.background.paper
-                }}
-              >
-                <FieldTitle title='Claim Information' fontWeight='bold' />
-
-                <Box sx={{ mb: 4 }}>
-                  <FieldTitle title='Claim Subject:' fontWeight='normal' />
-
-                  <TextField
-                    {...register('name', { required: true })}
-                    label='Enter the name of the person, company, or entity involved.'
-                    fullWidth
-                    sx={{ mb: 2 }}
-                    error={Boolean(errors.name)}
-                    helperText={errors.name ? 'This field is required' : ''}
-                  />
-
-                  <FieldTitle title='Reference Link:' fontWeight='normal' />
-                  <TextField
-                    {...register('subject', {
-                      required: 'This field is required',
-                      pattern: {
-                        value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
-                        message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
-                      }
-                    })}
-                    label='Provide a supporting link'
-                    fullWidth
-                    sx={{ mb: 2 }}
-                    error={Boolean(errors.subject)}
-                    helperText={errors.subject ? errors.subject.message : ''}
-                  />
-                  <FieldTitle title='Claim Description:' fontWeight='normal' />
-                  <TextField
-                    {...register('statement', { required: true })}
-                    label='Explain your claim in detail'
-                    multiline
-                    rows={4}
-                    fullWidth
-                    error={Boolean(errors.statement)}
-                    helperText={errors.statement ? 'This field is required' : ''}
-                  />
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  mb: 4,
-                  p: 3,
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                  backgroundColor: theme.palette.background.paper
-                }}
-              >
-                <FieldTitle title='Claim Details' fontWeight='bold' />
-                {/* Claim Type Specific Fields */}
-                <Box sx={{ mb: 4 }}>
-                  {selectedClaimType === 'rated' && (
-                    <>
-                      <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel>Aspect</InputLabel>
-                        <Select {...register('aspect')}>
-                          {CLAIM_TYPES.rated.aspects.map(aspect => (
-                            <MenuItem key={aspect} value={aspect}>
-                              {aspect.split(':')[1]}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <Controller
-                        name='stars'
-                        control={control}
-                        render={({ field }) => (
-                          <Box sx={{ mb: 2 }}>
-                            <Typography>Claim Rating</Typography>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                p: 2,
-                                border: '1px solid #e0e0e0',
-                                borderRadius: '8px',
-                                backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                              }}
-                            >
-                              <Rating {...field} />
-                            </Box>
-                          </Box>
-                        )}
-                      />
-                    </>
-                  )}
-
-                  {selectedClaimType === 'impact' && (
-                    <>
-                      <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel>Impact Type</InputLabel>
-                        <Select {...register('aspect')}>
-                          {CLAIM_TYPES.impact.aspects.map(aspect => (
-                            <MenuItem key={aspect} value={aspect}>
-                              {aspect.split(':')[1]}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <TextField
-                        {...register('amt')}
-                        label='Value'
-                        type='number'
-                        fullWidth
-                        InputProps={{
-                          startAdornment: <InputAdornment position='start'>$</InputAdornment>
-                        }}
-                      />
-                    </>
-                  )}
-
-                  {selectedClaimType === 'report' && (
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel>Report Type</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.report.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-
-                  {selectedClaimType === 'related_to' && (
-                    <>
-                      <TextField {...register('object')} label='Related To (URL)' fullWidth sx={{ mb: 2 }} />
-                      <FormControl fullWidth>
-                        <InputLabel>Relationship Type</InputLabel>
-                        <Select {...register('aspect')}>
-                          {CLAIM_TYPES.related_to.aspects.map(aspect => (
-                            <MenuItem key={aspect} value={aspect}>
-                              {aspect.split(':')[1]}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </>
-                  )}
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  mb: 4,
-                  p: 3,
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                  backgroundColor: theme.palette.background.paper
-                }}
-              >
-                {/* Common Bottom Fields */}
-                <Box sx={{ mb: 4 }}>
-                  <FieldTitle title='Verification & Supporting Details' fontWeight='bold' />
+          <Box
+            sx={{
+              mb: 4,
+              p: 3,
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+              backgroundColor: theme.palette.background.paper
+            }}
+          >
+            <FieldTitle title='Claim Details' fontWeight='bold' />
+            {/* Claim Type Specific Fields */}
+            <Box sx={{ mb: 4 }}>
+              {selectedClaimType === 'rated' && (
+                <>
                   <FormControl fullWidth sx={{ mb: 2 }}>
-                    <FieldTitle title='Source of Information:' fontWeight='normal' />
-                    {/* <InputLabel>How do you know this?</InputLabel> */}
-                    <Select {...register('howKnown')} defaultValue={HowKnown.FIRST_HAND}>
-                      <MenuItem value={HowKnown.FIRST_HAND}>First Hand</MenuItem>
-                      <MenuItem value={HowKnown.SECOND_HAND}>Second Hand</MenuItem>
-                      <MenuItem value={HowKnown.WEB_DOCUMENT}>Website</MenuItem>
-                      <MenuItem value={HowKnown.PHYSICAL_DOCUMENT}>Physical Document</MenuItem>
+                    <InputLabel>Aspect</InputLabel>
+                    <Select {...register('aspect')}>
+                      {CLAIM_TYPES.rated.aspects.map(aspect => (
+                        <MenuItem key={aspect} value={aspect}>
+                          {aspect.split(':')[1]}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
-
-                  <FieldTitle title='Your Website:' fontWeight='normal' />
-
-                  <TextField
-                    {...register('sourceURI', {
-                      pattern: {
-                        value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \.-]*)*\/?$/,
-                        message:
-                          watchHowKnown === HowKnown.FIRST_HAND
-                            ? 'Please enter a valid home page or social media link (e.g., http://example.com or www.example.com)'
-                            : 'Please enter a valid source link (e.g., http://example.com or www.example.com)'
-                      }
-                    })}
-                    label={
-                      watchHowKnown === HowKnown.FIRST_HAND
-                        ? 'Provide your website or social media for verification'
-                        : 'Where did you find the information'
-                    }
-                    fullWidth
-                    sx={{ mb: 4 }}
-                    error={Boolean(errors.sourceURI)} // Check for errors in `sourceURI`
-                    helperText={errors.sourceURI ? errors.sourceURI.message : ''} // Display `sourceURI` errors
+                  <Controller
+                    name='stars'
+                    control={control}
+                    render={({ field }) => (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography>Claim Rating</Typography>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            p: 2,
+                            border: '1px solid #e0e0e0',
+                            borderRadius: '8px',
+                            backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                          }}
+                        >
+                          <Rating {...field} />
+                        </Box>
+                      </Box>
+                    )}
                   />
+                </>
+              )}
 
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Controller
-                      name='effectiveDate'
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker
-                          label='Select the date when this happened'
-                          value={field.value}
-                          onChange={field.onChange}
-                          renderInput={params => <TextField {...params} fullWidth />}
-                        />
-                      )}
+              {selectedClaimType === 'impact' && (
+                <>
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel>Impact Type</InputLabel>
+                    <Select {...register('aspect')}>
+                      {CLAIM_TYPES.impact.aspects.map(aspect => (
+                        <MenuItem key={aspect} value={aspect}>
+                          {aspect.split(':')[1]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    {...register('amt')}
+                    label='Value'
+                    type='number'
+                    fullWidth
+                    InputProps={{
+                      startAdornment: <InputAdornment position='start'>$</InputAdornment>
+                    }}
+                  />
+                </>
+              )}
+
+              {selectedClaimType === 'report' && (
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel>Report Type</InputLabel>
+                  <Select {...register('aspect')}>
+                    {CLAIM_TYPES.report.aspects.map(aspect => (
+                      <MenuItem key={aspect} value={aspect}>
+                        {aspect.split(':')[1]}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+
+              {selectedClaimType === 'related_to' && (
+                <>
+                  <TextField {...register('object')} label='Related To (URL)' fullWidth sx={{ mb: 2 }} />
+                  <FormControl fullWidth>
+                    <InputLabel>Relationship Type</InputLabel>
+                    <Select {...register('aspect')}>
+                      {CLAIM_TYPES.related_to.aspects.map(aspect => (
+                        <MenuItem key={aspect} value={aspect}>
+                          {aspect.split(':')[1]}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </>
+              )}
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              mb: 4,
+              p: 3,
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+              backgroundColor: theme.palette.background.paper
+            }}
+          >
+            {/* Common Bottom Fields */}
+            <Box sx={{ mb: 4 }}>
+              <FieldTitle title='Verification & Supporting Details' fontWeight='bold' />
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <FieldTitle title='Source of Information:' fontWeight='normal' />
+                {/* <InputLabel>How do you know this?</InputLabel> */}
+                <Select {...register('howKnown')} defaultValue={HowKnown.FIRST_HAND}>
+                  <MenuItem value={HowKnown.FIRST_HAND}>First Hand</MenuItem>
+                  <MenuItem value={HowKnown.SECOND_HAND}>Second Hand</MenuItem>
+                  <MenuItem value={HowKnown.WEB_DOCUMENT}>Website</MenuItem>
+                  <MenuItem value={HowKnown.PHYSICAL_DOCUMENT}>Physical Document</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FieldTitle title='Your Website:' fontWeight='normal' />
+
+              <TextField
+                {...register('sourceURI', {
+                  pattern: {
+                    value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \.-]*)*\/?$/,
+                    message:
+                      watchHowKnown === HowKnown.FIRST_HAND
+                        ? 'Please enter a valid home page or social media link (e.g., http://example.com or www.example.com)'
+                        : 'Please enter a valid source link (e.g., http://example.com or www.example.com)'
+                  }
+                })}
+                label={
+                  watchHowKnown === HowKnown.FIRST_HAND
+                    ? 'Provide your website or social media for verification'
+                    : 'Where did you find the information'
+                }
+                fullWidth
+                sx={{ mb: 4 }}
+                error={Boolean(errors.sourceURI)} // Check for errors in `sourceURI`
+                helperText={errors.sourceURI ? errors.sourceURI.message : ''} // Display `sourceURI` errors
+              />
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Controller
+                  name='effectiveDate'
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      label='Select the date when this happened'
+                      value={field.value}
+                      onChange={field.onChange}
+                      renderInput={params => <TextField {...params} fullWidth />}
                     />
-                  </LocalizationProvider>
-                </Box>
+                  )}
+                />
+              </LocalizationProvider>
+            </Box>
 
-                {/* Optional Image Upload */}
-                <Box sx={{ mb: 4 }}>
-                  <Typography sx={{ mb: 1 }}>Upload Supporting Evidence (optional)</Typography>
-                  <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
-                </Box>
+            {/* Optional Image Upload */}
+            <Box sx={{ mb: 4 }}>
+              <Typography sx={{ mb: 1 }}>Upload Supporting Evidence (optional)</Typography>
+              <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
+            </Box>
 
-                {/* Submit Buttons */}
-                <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
-                  {onCancel && <Button onClick={onCancel}>Cancel</Button>}
-                  <Button
-                    type='submit'
-                    variant='contained'
-                    style={{ backgroundColor: '#2D6A4F', borderRadius: 'full', width: '180px' }}
-                  >
-                    Submit
-                  </Button>
-                </DialogActions>
-              </Box>
-            </>
-          )}
+            {/* Submit Buttons */}
+            <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
+              {onCancel && <Button onClick={onCancel}>Cancel</Button>}
+              <Button
+                type='submit'
+                variant='contained'
+                style={{ backgroundColor: '#2D6A4F', borderRadius: 'full', width: '180px' }}
+              >
+                Submit
+              </Button>
+            </DialogActions>
+          </Box>
         </form>
       </MainContainer>
     </Box>
