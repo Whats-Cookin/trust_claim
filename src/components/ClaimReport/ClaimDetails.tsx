@@ -38,6 +38,7 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState, useRef } from 'react'
 import jsPDF from 'jspdf'
 import badge from '../../assets/images/badge.svg'
+import html2pdf from 'html2pdf.js'
 // import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
 // import Duration from '../../assets/duration.svg'
 
@@ -501,12 +502,26 @@ const exportClaimData = (claimData: any, format: 'json' | 'pdf') => {
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
     } else if (format === 'pdf') {
-      const pdf = new jsPDF()
-      pdf.setFont('helvetica', 'bold')
-      pdf.text(`Claim Data - ID: ${claimData.id}`, 10, 10)
-      pdf.setFont('helvetica', 'normal')
-      pdf.text(JSON.stringify(claimData, null, 2), 10, 20)
-      pdf.save(`claim_${claimData.id}.pdf`)
+      const element = document.getElementById('certificate-container')
+      if (!element) return
+
+      const options = {
+        margin: [0, 0, 0, 0],
+        filename: `claim_${claimData.id}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }
+
+      const metadata = {
+        title: `claim_${claimData.id}.pdf`,
+        creator: 'LinkedTrust',
+        subject: 'Claim',
+        keywords: ['Claim', 'CV', claimData.id],
+        custom: { claimData: JSON.stringify(claimData) }
+      }
+
+      html2pdf().set(metadata).from(element).set(options).save()
     }
   } catch (error) {
     console.error('Error exporting claim data:', error)
@@ -625,7 +640,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     >
       <CardContent>
         <Stack spacing={3}>
-          <CertificateContainer>
+          <CertificateContainer id='certificate-container'>
             <Box
               component='img'
               src={badge}
