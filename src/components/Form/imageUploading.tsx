@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, DragEvent } from 'react'
-import { ImageIcon, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import {
   TextField,
   IconButton,
@@ -17,6 +17,7 @@ import {
   useMediaQuery
 } from '@mui/material'
 import { Control, UseFieldArrayReturn, UseFormRegister, FieldValues, Path } from 'react-hook-form'
+import PermMediaIcon from '@mui/icons-material/PermMedia'
 
 export interface MediaI {
   file: File
@@ -121,21 +122,21 @@ const MediaUploader = <TFieldValues extends FieldValues>({
           <Box
             sx={{
               display: 'flex',
-              width: '47.708vw',
+              width: '100%',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: isMobile ? '10px' : 'auto',
+              margin: isMobile ? '0 ' : 'auto',
               height: 180,
-              border: '1px solid #A3A3A3',
-              borderRadius: '8px',
+              // border: `5px dashed ${theme.palette.input}`,
+              borderRadius: 2,
               cursor: 'pointer',
               transition: 'border-color 0.3s',
               '&:hover': {
                 borderColor: theme.palette.borderColor
               },
-              backgroundColor: '#fffff',
-
+              backgroundColor: theme.palette.input,
+              border: 'none',
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   borderColor: 'transparent'
@@ -156,11 +157,12 @@ const MediaUploader = <TFieldValues extends FieldValues>({
             onDrop={handleDrop}
             role='presentation'
           >
-            <ImageIcon style={{ width: 40, height: 40, marginBottom: 10, color: '#2D6A4F' }} />
-            <Typography variant='body2' sx={{ textAlign: 'center', color: '#2D6A4F' }}>
-              <strong>+ Add media</strong>
-              <br />
-              <strong>(images, video)</strong>
+            <PermMediaIcon style={{ width: 40, height: 40, marginBottom: 10 }} />
+            <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
+              <strong> + Add Media</strong>
+            </Typography>
+            <Typography variant='caption' color='textSecondary' sx={{ textAlign: 'center' }}>
+              SVG, PNG, JPG, GIF, or MP4 (MAX. 800x400px)
             </Typography>
           </Box>
           <input
