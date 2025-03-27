@@ -71,6 +71,7 @@ const SearchBar = () => {
       <IconButton
         type='button'
         sx={{
+          ml: '12px',
           p: 0,
           color: '#495057',
           borderRadius: 0

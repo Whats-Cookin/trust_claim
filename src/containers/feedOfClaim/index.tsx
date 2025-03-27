@@ -34,7 +34,7 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
-import { Medal, ShieldCheck, CircleCheck } from 'lucide-react'
+import Badge from './Badge'
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
@@ -87,42 +87,6 @@ const extractSourceName = (url: string) => {
   const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
   const match = regex.exec(url)
   return match ? match[1].replace(/\./g, ' ') : url
-}
-const Badge = (claim: any) => {
-  const bgColor = claim.claim === 'credential' ? '#cce6ff' : claim.claim === 'validated' ? '#f8e8cc' : '#c0efd7'
-  const icon =
-    claim.claim === 'credential' ? (
-      <Medal size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    ) : claim.claim === 'validated' ? (
-      <ShieldCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    ) : (
-      <CircleCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    )
-  const color = claim.claim === 'credential' ? '#0052e0' : claim.claim === 'validated' ? '#e08a00' : '#2d6a4f'
-
-  return (
-    <Box
-      sx={{
-        display: 'inline-block',
-        alignItems: 'center',
-        backgroundColor: bgColor,
-        borderRadius: '12px',
-        padding: '2px 8px',
-        marginBottom: '10px',
-        marginLeft: '10px',
-        height: 'fit-content',
-        color: color,
-        overflow: 'hidden'
-      }}
-    >
-      {icon}
-      <Typography variant='caption' sx={{ color: color, fontWeight: '600', fontSize: '12px' }}>
-        {claim.claim === 'validated'
-          ? 'Validation'
-          : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1) || 'Claim'}
-      </Typography>
-    </Box>
-  )
 }
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.name
@@ -334,11 +298,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {claims.length > 0 ? (
             <MainContainer
               sx={{
-                width: '800px',
                 marginLeft: 'auto',
-                marginRight: '20%',
                 backgroundColor: '#FFFFFF',
-
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
             >
@@ -362,7 +323,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   backgroundColor: '#E0E0E0',
                   marginTop: '4px',
                   borderRadius: '2px',
-                  width: '750px',
+                  width: '100%',
                   mb: '40px'
                 }}
               />
@@ -372,9 +333,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   <Box sx={{ marginBottom: '15px' }}>
                     <Card
                       sx={{
-                        maxWidth: 'fit-content',
                         height: 'fit-content',
-                        borderRadius: '20px',
+                        textWrap: 'break-word',
+                        borderRadius: '8px',
                         display: isMediumScreen ? 'column' : 'row',
                         backgroundColor:
                           selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
@@ -387,7 +348,16 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              width: '95%',
+                              gap: '10px',
+                              justifyContent: 'space-between'
+                            }}
+                          >
                             <Tooltip
                               title='View the original credential'
                               arrow
@@ -405,21 +375,37 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 }
                               }}
                             >
-                              <Box>
+                              <Box
+                                sx={{
+                                  display: 'block',
+                                  wordBreak: 'break-word',
+                                  overflowWrap: 'anywhere',
+                                  whiteSpace: 'normal',
+                                  fontSize: '18px !important'
+                                }}
+                              >
                                 <Link
                                   to={claim.link}
                                   onClick={e => handleLinkClick(e, claim.link)}
                                   target='_blank'
                                   rel='noopener noreferrer'
-                                  style={{ textDecoration: 'none' }}
+                                  style={{
+                                    textDecoration: 'none',
+                                    color: 'inherit',
+                                    fontSize: '18px !important'
+                                  }}
                                 >
                                   <ClaimName claim={claim} searchTerm={searchTerm} />
                                 </Link>
-                                <Badge claim={claim.claim} />
                               </Box>
                             </Tooltip>
+
+                            <Badge claim={claim.claim} />
                           </Box>
-                          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+                          <Typography
+                            variant='body1'
+                            sx={{ marginBottom: '10px', color: theme.palette.text1, fontSize: '14px !important' }}
+                          >
                             {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
                               claim.effective_date
                             ).toLocaleDateString('en-US', {
@@ -486,15 +472,19 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             backgroundColor: '#E0E0E0',
                             marginTop: '4px',
                             borderRadius: '2px',
-                            width: '750px',
-                            mb: '10px'
+                            display: 'flex',
+                            width: '100%',
+                            mb: '10px',
+                            mr: 'auto',
+                            ml: 'auto'
                           }}
                         />
                         <Box
                           sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
+                            justifyContent: 'space-evenly',
+                            gap: 2,
                             position: 'relative',
                             mt: '10px',
                             mb: '10px',
@@ -507,14 +497,24 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             startIcon={<VerifiedOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                             variant='outlined'
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '16px',
+                              minWidth: {
+                                xs: '80px',
+                                sm: '100px',
+                                md: '120px'
+                              },
+                              fontSize: {
+                                xs: '10px',
+                                sm: '12px',
+                                md: '16px'
+                              },
+                              p: {
+                                xs: '4px 8px',
+                                md: '9px 24px'
+                              },
                               textTransform: 'none',
-                              marginRight: '10px',
-                              p: '9px 80px',
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
-
                               '&:hover': {
                                 backgroundColor: '#F1F4F6',
                                 borderColor: '#F1F4F6'
@@ -524,15 +524,26 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             Validate
                           </Button>
 
-                          <Link to={'/report/' + claim.claim_id}>
+                          <Link to={'/report/' + claim.claim_id} style={{ textDecoration: 'none' }}>
                             <Button
                               startIcon={<InsertDriveFileOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                               variant='outlined'
                               sx={{
+                                minWidth: {
+                                  xs: '80px',
+                                  sm: '100px',
+                                  md: '120px'
+                                },
+                                fontSize: {
+                                  xs: '10px',
+                                  sm: '12px',
+                                  md: '16px'
+                                },
+                                p: {
+                                  xs: '4px 8px',
+                                  md: '9px 24px'
+                                },
                                 textTransform: 'none',
-                                fontSize: isMediumScreen ? '8px' : '16px',
-                                marginRight: '10px',
-                                p: '9px 80px',
                                 color: '#2D6A4F',
                                 borderColor: 'transparent',
                                 borderRadius: '8px',
@@ -551,10 +562,21 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             onClick={() => handleSchema(claim)}
                             variant='outlined'
                             sx={{
+                              minWidth: {
+                                xs: '80px',
+                                sm: '100px',
+                                md: '120px'
+                              },
+                              fontSize: {
+                                xs: '10px',
+                                sm: '12px',
+                                md: '16px'
+                              },
+                              p: {
+                                xs: '4px 8px',
+                                md: '9px 24px'
+                              },
                               textTransform: 'none',
-                              fontSize: isMediumScreen ? '8px' : '16px',
-                              marginRight: '10px',
-                              p: '9px 80px',
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
@@ -566,8 +588,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph
                           </Button>
-
-                          <Box sx={{ flexGrow: 1 }} />
                         </Box>
 
                         <IconButton
