@@ -27,7 +27,7 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
           md: 'auto',
           lg: 'auto'
         },
-        paddingTop: isMobile ? '0px' : '41px',
+        paddingTop: isMobile ? '0px' : '30px',
         paddingBottom: 0,
         paddingLeft: isMobile ? '16px' : '30px',
         paddingRight: isMobile ? '16px' : '30px',
@@ -38,7 +38,7 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
         },
         backgroundColor: '#F8F9FA',
         borderRadius: '8px',
-        padding: '20px',
+        // padding: '20px',
         ...(sx ?? {})
       }}
     >

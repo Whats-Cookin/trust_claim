@@ -108,7 +108,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
         <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
-        <OpenInNewIcon sx={{ marginLeft: '10px', color: theme.palette.texts, fontSize: '1rem' }} />
+        <OpenInNewIcon sx={{ marginLeft: '10px', color: theme.palette.texts, fontSize: '18px' }} />
       </Typography>
     </Box>
   )
@@ -380,8 +380,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   display: 'block',
                                   wordBreak: 'break-word',
                                   overflowWrap: 'anywhere',
-                                  whiteSpace: 'normal',
-                                  fontSize: '18px !important'
+                                  whiteSpace: 'normal'
                                 }}
                               >
                                 <Link
@@ -392,7 +391,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   style={{
                                     textDecoration: 'none',
                                     color: 'inherit',
-                                    fontSize: '18px !important'
+                                    fontSize: '18px !important',
+                                    alignItems: 'center'
                                   }}
                                 >
                                   <ClaimName claim={claim} searchTerm={searchTerm} />
@@ -404,7 +404,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           </Box>
                           <Typography
                             variant='body1'
-                            sx={{ marginBottom: '10px', color: theme.palette.text1, fontSize: '14px !important' }}
+                            sx={{
+                              marginBottom: '10px',
+                              color: theme.palette.text1,
+                              fontSize: '14px !important',
+                              fontFamily: 'Roboto'
+                            }}
                           >
                             {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
                               claim.effective_date
@@ -421,6 +426,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
+                                fontSize: '16px !important',
+                                fontWeight: 500,
                                 marginBottom: '1px',
                                 color: theme.palette.claimtext
                               }}

@@ -37,10 +37,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.greenColor : '#FFFFFF',
     transition: 'background-color 0.3s, box-shadow 0.3s',
-    minHeight: '65px',
+    minHeight: '44px',
     color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
     borderRadius: '8px',
-    padding: '0 20px',
+    width: '270px',
+    maxWidth: '270px',
+    pl: '56px',
     '&:hover': {
       color: '#2D6A4F'
     }
@@ -159,8 +161,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           <ListItemButton
             sx={{
               gap: theme.spacing(2),
-              minHeight: { xs: '50px', md: '65px' },
-              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+              minHeight: '44px',
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } },
+              borderRadius: '8px',
+              height: '44px',
+              pl: '56px'
             }}
             onClick={handleLogout}
           >
@@ -180,7 +185,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             sx={{
               gap: theme.spacing(2),
               ...getActiveStyle('/login'),
-              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } },
+              borderRadius: '8px',
+              height: '44px'
             }}
             onClick={() => navigate('/login')}
           >
