@@ -138,27 +138,29 @@ const Badge = (claim: any) => {
   const bgColor = claim.claim === 'credential' ? '#cce6ff' : claim.claim === 'validated' ? '#f8e8cc' : '#c0efd7'
   const icon =
     claim.claim === 'credential' ? (
-      <Medal size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+      <Medal size={22} style={{ paddingRight: 5 }} />
     ) : claim.claim === 'validated' ? (
-      <ShieldCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+      <ShieldCheck size={22} style={{ paddingRight: 5 }} />
     ) : (
-      <CircleCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
+      <CircleCheck size={22} style={{ paddingRight: 5 }} />
     )
   const color = claim.claim === 'credential' ? '#0052e0' : claim.claim === 'validated' ? '#e08a00' : '#2d6a4f'
 
   return (
     <Box
       sx={{
-        display: 'inline-block',
+        display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center',
+        height: 40,
+        minWidth: 110,
+        borderRadius: 20,
+        px: 2,
         backgroundColor: bgColor,
-        borderRadius: '12px',
-        padding: '2px 8px',
-        marginBottom: '10px',
-        marginLeft: '10px',
-        height: 'fit-content',
-        color: color,
-        overflow: 'hidden'
+        color,
+        fontWeight: 500,
+        overflow: 'hidden',
+        width: 'fit-content'
       }}
     >
       {icon}
@@ -237,7 +239,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
         setClaim({
           ...fetchedClaim,
-          link: fetchedClaim.link || '', // Provide a default empty string
+          link: fetchedClaim.link || '',
           effective_date: effectiveDate
         })
 
@@ -406,9 +408,18 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <Loader open={loading} />
       <MainContainer
         sx={{
-          width: '53.958vw',
-          marginLeft: '20%',
-          marginRight: 'auto'
+          width: {
+            xs: '97%',
+            md: 'calc(100% - 4.2vw)',
+            lg: 'calc(100% - 4.2vw)'
+          },
+          // marginLeft: '4.2vw',
+          // width: '100%',
+          maxWidth: '1115px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          display: 'flex',
+          justifyContent: 'center'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
@@ -437,7 +448,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         />
         <Box
           sx={{
-            width: '50.833vw',
+            width: '100%',
             height: '100%',
             boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
             borderRadius: '8px',
@@ -450,13 +461,24 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           {claim && (
             <>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box>
+                <Box
+                  sx={{
+                    display: 'block',
+                    wordBreak: 'break-word',
+                    overflowWrap: 'anywhere',
+                    whiteSpace: 'normal',
+                    fontSize: '18px !important',
+                    justifyContent: 'center'
+                  }}
+                >
                   <Link
                     to={claim.link || '#'}
                     onClick={e => handleLinkClick(e, claim.link || '')}
                     target='_blank'
                     rel='noopener noreferrer'
-                    style={{ textDecoration: 'none' }}
+                    style={{
+                      textDecoration: 'none'
+                    }}
                   >
                     <ClaimName claim={claim} />
                     <Badge claim={claim.claim} />
@@ -489,18 +511,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </>
           )}
         </Box>
-        {/* Rest of the form remains the same as in the previous implementation */}
         <form
           onSubmit={onSubmit}
           style={{
-            display: 'flex',
+            display: 'block',
             flexDirection: isMediumScreen ? 'column' : 'row',
             width: '100%'
           }}
         >
           <Box
             sx={{
-              width: '50.833vw',
+              width: '100%',
               boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
               borderRadius: '8px',
               p: '20px',
@@ -546,7 +567,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   multiline
                   rows={4}
                   sx={{
-                    width: '47.708vw',
+                    width: '100%',
                     height: '55px',
 
                     mb: '20px',
@@ -600,7 +621,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   multiline
                   rows={4}
                   sx={{
-                    width: '47.708vw',
+                    width: '100%',
                     height: '55px',
 
                     mb: '20px',
@@ -658,7 +679,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 backgroundColor: '#ffffff',
                 border: '1px solid #A3A3A3',
                 borderRadius: '8px',
-                width: '47.708vw',
+                width: '100%',
 
                 mb: '30px',
                 '& .MuiOutlinedInput-root': {
@@ -681,7 +702,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 control={control}
                 defaultValue=''
                 rules={{
-                  required: 'This field is required' // This makes the field required
+                  required: 'This field is required'
                 }}
                 render={({ field, fieldState: { error } }) => (
                   <>
@@ -701,7 +722,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           color: '#A3A3A3'
                         }
                       }}
-                      error={Boolean(error)} // Pass the error state to the Select component
+                      error={Boolean(error)}
                     >
                       <MenuItem value='' disabled>
                         Explain why you are validating or rejecting this credential{' '}
@@ -776,9 +797,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         </MenuItem>
                       ))}
                     </Select>
-                    {error && (
-                      <FormHelperText error>{error.message}</FormHelperText> // Display error message
-                    )}
+                    {error && <FormHelperText error>{error.message}</FormHelperText>}
                   </>
                 )}
               />
@@ -809,7 +828,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   multiline
                   rows={4}
                   sx={{
-                    width: '47.708vw',
+                    width: '100%',
                     height: '179px',
                     mb: '30px',
                     backgroundColor: '#ffffff',
@@ -850,7 +869,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               Effective Date (Required):
             </Typography>
 
-            <FormControl sx={{ mb: '30px', width: '47.708vw', mr: 'auto' }}>
+            <FormControl sx={{ mb: '30px', width: '100%', mr: 'auto' }}>
               <Controller
                 name='effectiveDate'
                 control={control}

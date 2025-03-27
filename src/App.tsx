@@ -14,6 +14,7 @@ import Rate from './components/Rate'
 import Validate from './components/Validate/index'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
+import RightSidebar from './components/RightSidebar'
 import ClaimDetails from './containers/ClaimDetails'
 import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
@@ -34,6 +35,7 @@ const App = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const isExplorePage = location.pathname.startsWith('/explore')
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -107,16 +109,26 @@ const App = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
+            minHeight: 'calc(100vh - 6.146vw)',
             backgroundColor: '#F8F9FA',
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '15.1vw' : '1.0vw',
-            marginTop: '100px',
+            marginLeft:
+              isLoginPage || isRegisterPage
+                ? '0'
+                : {
+                    xs: 0,
+                    md: 'clamp(294px, 20vw, 350px)'
+                  },
+            marginTop: isExplorePage ? 0 : 'clamp(50px, 6.146vw, 118px)',
             width:
-              isMediumScreen || isLoginPage || isRegisterPage
+              isLoginPage || isRegisterPage
                 ? '100%'
-                : `calc(100% - ${isSidebarOpen ? '14.4vw' : '1.0vw'})`,
+                : {
+                    xs: '100%',
+                    md: `calc(100% - ${isSidebarOpen ? 'clamp(294px, 20vw, 350px)' : '1.0vw'})`
+                  },
+
             transition: 'margin-left 0.3s, width 0.3s'
           }}
         >
@@ -167,6 +179,7 @@ const App = () => {
             </Routes>
           </Box>
         </Box>
+        {!isLoginPage && !isRegisterPage && !isExplorePage && <RightSidebar />}
       </Box>
     </ThemeProvider>
   )
