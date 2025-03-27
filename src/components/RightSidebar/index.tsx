@@ -93,7 +93,7 @@ const RightSidebar: React.FC = () => {
               sx={{
                 fontFamily: 'Montserrat',
                 fontSize: '16px !important',
-                fontWeight: 400,
+                fontWeight: 500,
                 lineHeight: '20px',
                 textDecoration: 'underline',
                 color: '#2d6a4f',

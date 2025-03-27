@@ -59,7 +59,8 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         height: '6.146vw',
         minHeight: '50px',
         maxHeight: '118px',
-        px: { xs: '2.24vw', md: '4.479vw' }
+        pr: { xs: '2.24vw', md: '86px' },
+        pl: { xs: '2.24vw', md: '86px' }
       }}
     >
       <Box sx={{ display: 'flex', width: '100%' }}>

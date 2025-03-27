@@ -164,7 +164,7 @@ const Badge = (claim: any) => {
       }}
     >
       {icon}
-      <Typography variant='caption' sx={{ color: color, fontWeight: '600', fontSize: '12px' }}>
+      <Typography variant='caption' sx={{ color: color, fontWeight: '500', fontSize: '16px', fontFamily: 'Roboto' }}>
         {claim.claim === 'validated'
           ? 'Validation'
           : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1) || 'Claim'}
@@ -419,7 +419,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           marginLeft: 'auto',
           marginRight: 'auto',
           display: 'flex',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          marginLeft: 'auto',
+          backgroundColor: '#FFFFFF',
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
@@ -442,7 +445,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             backgroundColor: '#E0E0E0',
             marginTop: '4px',
             borderRadius: '2px',
-            width: '51.958vw',
+            width: '100%',
             mb: '40px'
           }}
         />

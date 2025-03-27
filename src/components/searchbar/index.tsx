@@ -56,15 +56,15 @@ const SearchBar = () => {
         alignItems: 'center',
         width: 'clamp(155px, 25vw, 400px)',
         height: 'clamp(25px, 2.08vw, 40px)',
-        backgroundColor: 'transparent',
+        backgroundColor: '#F8F9FA',
         border: '1px solid #DEE2E6',
         borderRadius: '6px',
         p: 0,
         ':hover': {
-          border: '1px solid #5DAE7B'
+          border: '1px solid #2D6A4F'
         },
         ':focus-within': {
-          border: '1px solid #5DAE7B'
+          border: '1px solid #2D6A4F'
         }
       }}
     >
@@ -99,7 +99,7 @@ const SearchBar = () => {
             fontFamily: 'Roboto'
           },
           '& .MuiInputBase-input::placeholder': {
-            color: '#868e96',
+            color: '#495057',
             opacity: 1
           },
           '& .MuiInput-underline:before': {
@@ -116,10 +116,12 @@ const SearchBar = () => {
           }
         }}
       />
+
       <IconButton
         type='button'
         sx={{
           p: 0,
+          mr: '12px',
           color: '#495057',
           borderRadius: 0
         }}

@@ -37,8 +37,9 @@ const Badge = ({ claim }: { claim: string }) => {
       <Typography
         variant='body2'
         sx={{
-          fontWeight: 500,
-          fontSize: '12px',
+          fontWeight: 600,
+          fontSize: '16px',
+          fontFamily: 'Roboto',
           color
         }}
       >
