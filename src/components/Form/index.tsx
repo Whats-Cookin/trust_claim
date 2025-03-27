@@ -149,7 +149,9 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
           backgroundColor: theme.palette.cardBackground,
           padding: '20px',
           width: '100%',
-          maxWidth: '800px'
+          borderRadius: '8px',
+          mr: '4.2vw'
+          // maxWidth: '800px'
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -329,7 +329,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           width: {
             xs: '97%',
             md: 'calc(100% - 4.2vw)',
-            lg: 'calc(100% - 4.2vw - clamp(174px, 20vw, 454px))'
+            lg: 'calc(100% - 4.2vw)'
           },
           // marginLeft: '4.2vw',
           // width: '100%',

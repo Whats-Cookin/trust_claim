@@ -14,6 +14,7 @@ import Rate from './components/Rate'
 import Validate from './components/Validate'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
+import RightSidebar from './components/RightSidebar'
 import ClaimDetails from './containers/ClaimDetails'
 import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
@@ -108,7 +109,7 @@ const App = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
+            minHeight: 'calc(100vh - 6.146vw)',
             backgroundColor: '#F8F9FA',
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
@@ -178,6 +179,7 @@ const App = () => {
             </Routes>
           </Box>
         </Box>
+        {!isLoginPage && !isRegisterPage && !isExplorePage && <RightSidebar />}
       </Box>
     </ThemeProvider>
   )

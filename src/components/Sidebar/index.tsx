@@ -198,47 +198,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
         )}
       </List>
 
-      <Footer />
+      {/* <Footer /> */}
     </Drawer>
   )
 }
 
-const Footer = () => {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '0.9em',
-        width: '100%',
-        position: 'relative',
-        bottom: '9%'
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '10px',
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}
-      >
-        <Link to='/terms' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body1'>Terms of Service</Typography>
-        </Link>
-        <Link to='/privacy' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body1'>Privacy Policy</Typography>
-        </Link>
-      </Box>
-      <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
-        <Link to='https://linkedtrust.us/' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body1'>© {new Date().getFullYear()} LinkedTrust</Typography>
-        </Link>
-      </Box>
-    </Box>
-  )
-}
+// const Footer = () => {
+//   return (
+//     <Box
+//       sx={{
+//         display: 'flex',
+//         flexDirection: 'column',
+//         padding: '0.9em',
+//         width: '100%',
+//         position: 'relative',
+//         bottom: '9%'
+//       }}
+//     >
+//       <Box
+//         sx={{
+//           display: 'flex',
+//           gap: '10px',
+//           textAlign: 'left',
+//           justifyContent: 'flex-start',
+//           flexDirection: 'row',
+//           alignItems: 'center'
+//         }}
+//       >
+//         <Link to='/terms' style={{ color: '#212529', textDecoration: 'none' }}>
+//           <Typography variant='body1'>Terms of Service</Typography>
+//         </Link>
+//         <Link to='/privacy' style={{ color: '#212529', textDecoration: 'none' }}>
+//           <Typography variant='body1'>Privacy Policy</Typography>
+//         </Link>
+//       </Box>
+//       <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
+//         <Link to='https://linkedtrust.us/' style={{ color: '#212529', textDecoration: 'none' }}>
+//           <Typography variant='body1'>© {new Date().getFullYear()} LinkedTrust</Typography>
+//         </Link>
+//       </Box>
+//     </Box>
+//   )
+// }
 
 export default Sidebar
