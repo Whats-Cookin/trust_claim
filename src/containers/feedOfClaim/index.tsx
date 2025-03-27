@@ -227,12 +227,20 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
       const { data } = await fetchClaims(nextPage.current, searchTerm, type)
 
+      // Check if we got any new claims
+      if (data.claims.length === 0) {
+        setIsLastPage(true)
+        setLoadingNextPage(false)
+        return
+      }
+
       claimsRef.current = claimsRef.current.concat(data.claims)
       nextPage.current = data.nextPage
 
-      if (data.claims.length < PAGE_LIMIT) {
+      if (data.claims.length < PAGE_LIMIT || !data.nextPage) {
         setIsLastPage(true)
       }
+
       setClaims(claimsRef.current)
     } catch (err) {
       console.error(err)
@@ -730,16 +738,18 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 </Fab>
               </Grow>
 
-              {!isLastPage ? (
+              {!isLastPage && (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Fade in={loadingNextPage}>
                     <CircularProgress color='inherit' />
                   </Fade>
                 </Box>
-              ) : (
-                ''
               )}
 
+              {/* Only show intersection observer if we have less than 10 results */}
+              {claims.length < 10 && !isLastPage && <IntersectionObservee onIntersection={loadNextPage} />}
+
+              {/* Always add an intersection observer at the end */}
               <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
           ) : (

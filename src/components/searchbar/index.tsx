@@ -42,7 +42,8 @@ const SearchBar = () => {
     const params = new URLSearchParams()
     if (searchVal) params.set('query', searchVal)
     if (filterType) params.set('type', filterType)
-    navigate({ pathname: '/feed', search: params.toString() })
+
+    navigate({ pathname: '/feed', search: params.toString() }, { replace: true })
   }
 
   const handleSearchKeypress = (event: React.KeyboardEvent) => {
@@ -74,12 +75,34 @@ const SearchBar = () => {
   const applyFilter = () => {
     handleSearch()
     closeFilterMenu()
+
+    if (searchRef.current) {
+      searchRef.current.style.border = '2px solid #5DAE7B'
+      setTimeout(() => {
+        if (searchRef.current) {
+          searchRef.current.style.border = '1px solid #DEE2E6'
+        }
+      }, 300)
+    }
   }
 
   const resetFilter = () => {
     setFilterType('')
-    navigate({ pathname: location.pathname, search: searchVal ? `?query=${searchVal}` : '' })
+
+    const params = new URLSearchParams()
+    if (searchVal) params.set('query', searchVal)
+
+    navigate({ pathname: '/feed', search: params.toString() }, { replace: true })
     closeFilterMenu()
+
+    if (searchRef.current) {
+      searchRef.current.style.border = '2px solid #5DAE7B'
+      setTimeout(() => {
+        if (searchRef.current) {
+          searchRef.current.style.border = '1px solid #DEE2E6'
+        }
+      }, 300)
+    }
   }
 
   const open = Boolean(anchorEl)
@@ -96,6 +119,7 @@ const SearchBar = () => {
         border: '1px solid #DEE2E6',
         borderRadius: '6px',
         p: 0,
+        transition: 'border 0.3s ease',
         ':hover': {
           border: '1px solid #5DAE7B'
         },
