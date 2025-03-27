@@ -90,26 +90,30 @@ const SearchBar = () => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        width: '400px',
-        height: '40px',
-        position: 'relative',
-        backgroundColor: '#f8f9fa',
+        width: 'clamp(155px, 25vw, 400px)',
+        height: 'clamp(25px, 2.08vw, 40px)',
+        backgroundColor: 'transparent',
         border: '1px solid #DEE2E6',
-        borderRadius: '20px',
+        borderRadius: '6px',
+        p: 0,
         ':hover': {
           border: '1px solid #5DAE7B'
         },
-        ':focus': {
+        ':focus-within': {
           border: '1px solid #5DAE7B'
         }
       }}
     >
       <IconButton
         type='button'
-        sx={{ color: '#495057', zIndex: 1 }}
+        sx={{
+          ml: '12px',
+          p: 0,
+          color: '#495057',
+          borderRadius: 0
+        }}
         aria-label='search'
         onClick={handleSearch}
-        className='search-btn'
       >
         <SearchIcon />
       </IconButton>
@@ -123,21 +127,42 @@ const SearchBar = () => {
         sx={{
           flex: 1,
           fontFamily: 'Roboto',
+          ml: 1,
           input: {
-            fontSize: isSmallScreen ? '12px' : '14px',
+            fontSize: isSmallScreen ? '11px' : '14px',
             fontWeight: 500,
-            textAlign: 'left',
-            color: '#000',
+            color: '#495057',
             letterSpacing: '1px',
             fontFamily: 'Roboto'
           },
-          minWidth: isSmallScreen ? '155px' : '180px',
-          width: isSmallScreen ? '35vw' : '25vw',
-          '& .MuiInput-underline:before, & .MuiInput-underline:after': { borderBottom: 'none !important' }
+          '& .MuiInputBase-input::placeholder': {
+            color: '#868e96',
+            opacity: 1
+          },
+          '& .MuiInput-underline:before': {
+            borderBottom: 'none !important'
+          },
+          '& .MuiInput-underline:after': {
+            borderBottom: 'none !important'
+          },
+          '& .MuiInput-underline:hover:before': {
+            borderBottom: 'none !important'
+          },
+          '& .MuiInput-underline.Mui-focused:after': {
+            borderBottom: 'none !important'
+          }
         }}
       />
-
-      <IconButton type='button' sx={{ color: '#495057' }} onClick={openFilterMenu} ref={filterButtonRef}>
+      <IconButton
+        type='button'
+        sx={{
+          p: 0,
+          color: '#495057',
+          borderRadius: 0
+        }}
+        onClick={openFilterMenu}
+        ref={filterButtonRef}
+      >
         <FilterAltOutlinedIcon />
       </IconButton>
 
