@@ -1,44 +1,158 @@
+/* Base styles for all nodes */
 .custom-node-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #ffffff;
-  font-size: 16px;
-  cursor: pointer;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
 }
 
 .node-icon {
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   background-size: cover;
   background-position: center;
   border-radius: 50%;
-  border: 2px solid #2D6A4F;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.node-label {
-  width: 150px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  background: #2D6A4F;
-  padding: 8px;
-  border-radius: 25px;
-  margin: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
 }
 
 .node-placeholder {
-  width: 80px;
-  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #2D6A4F;
-  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   font-weight: bold;
   font-size: 18px;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 8px;
+}
+
+.node-label {
+  font-size: 14px;
+  max-width: 140px;
+  word-wrap: break-word;
+}
+
+/* CLAIM node styles */
+.claim-node {
+  color: #2D6A4F;
+}
+
+.claim-placeholder {
+  background-color: #ECFDF5;
+  color: #2D6A4F;
+  border: 2px solid #2D6A4F;
+  position: relative;
+  width: 55px;
+  height: 55px;
+  box-shadow: 0 2px 4px rgba(45, 106, 79, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style the label to look like the one in the image */
+.custom-node-claim .node-label {
+  background-color: #ECFDF5;
+  border: 1px solid #2D6A4F;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  color: #2D6A4F;
+  box-shadow: 0 2px 4px rgba(45, 106, 79, 0.1);
+  margin-top: 8px;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Add styles for the SVG icon */
+.claim-placeholder svg {
+  color: #2D6A4F;
+}
+
+/* CRED node styles */
+.cred-node {
+  color: #388e3c;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.cred-placeholder {
+  background-color: #e8f5e9;
+  color: #003FE0;
+  border: 2px solid #003FE0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add a subtle border to credential nodes */
+.custom-node-cred .node-label {
+  background-color: #F3F7FF;
+  border: 1px solid #003FE0;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-weight: 500;
+  color: #212529;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
+  margin-top: 5px;
+}
+
+/* VALIDATION node styles */
+.validation-node {
+  color: #b78103;
+}
+
+.validation-placeholder {
+  background-color: #fffbeb;
+  color: #b78103;
+  border: 2px solid #f59e0b;
+  position: relative;
+  width: 55px;
+  height: 55px;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+}
+
+
+/* Style the label to look like a validation tag */
+.custom-node-validation .node-label {
+  background-color: #fffbeb;
+  border: 1px solid #f59e0b;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-weight: 500;
+  color: #92400e;
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
+  margin-top: 5px;
+}
+
+/* AUTHOR node styles */
+.author-node {
+  color: #333333;
+}
+
+.author-placeholder {
+  background-color: #f5f5f5;
+  color: #666666;
+  border: 1px solid #dddddd;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the label to look like a name tag */
+.custom-node-author .node-label {
+  background-color: white;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
 }
