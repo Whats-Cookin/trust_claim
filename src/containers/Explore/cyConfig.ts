@@ -37,7 +37,7 @@ const getNodeStyles = () =>
         shape: 'roundrectangle',
         height: 120,
         width: 120,
-        'background-opacity': 0,
+        'background-opacity': 0
       }
     },
     {
