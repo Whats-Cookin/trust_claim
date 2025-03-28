@@ -687,6 +687,28 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             </Stack>
           </Stack>
 
+          <Box>
+            {data.name && (
+              <Typography variant='body2' sx={{ color: theme.palette.texts, mt: 1 }}>
+                {data.name}
+              </Typography>
+            )}
+            <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
+              {data.curator}
+            </Typography>
+          </Box>
+
+          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+            {`Created by: ${claim.author ? claim.author : 'Unknown'}, ${new Date(claim.effectiveDate).toLocaleDateString(
+              'en-US',
+              {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }
+            )}`}
+          </Typography>
+
           {data.claim.image && <MediaContent url={data.claim.image} />}
 
           {/* Info Sections */}
@@ -749,8 +771,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             <Box>
               <Stack direction='row' spacing={1} alignItems='center' mb={1}>
                 <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='white'>
-                  Recommendations
+                <Typography variant='h6' color='black'>
+                  {data.validations?.length || 0} Recommendations
                 </Typography>
               </Stack>
               <Stack spacing={2}>
@@ -758,29 +780,26 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   <Card
                     key={index}
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                        transition: 'background-color 0.2s ease-in-out'
-                      }
+                      backgroundColor: '#FFFFFF',
+                      borderRadius: '8px',
+                      boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
+                      mb: '10px'
                     }}
                   >
                     <CardContent>
                       <Stack spacing={2}>
                         <Stack direction='row' spacing={1} alignItems='center'>
                           <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
-                          <Typography color='white' variant='subtitle1' sx={{ fontWeight: 500 }}>
+                          <Typography variant='subtitle1' sx={{ fontWeight: 500, color: 'black' }}>
                             {validation?.validator?.name || 'Unknown Validator'}
                           </Typography>
                         </Stack>
-                        <Typography color='white' variant='body2' sx={{ lineHeight: 1.6 }}>
+                        <Typography variant='body2' sx={{ lineHeight: 1.6, color: 'black' }}>
                           {validation?.statement || 'No statement provided'}
                         </Typography>
                         <Stack direction='row' spacing={1} alignItems='center'>
                           <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, fontSize: '16px' }} />
-                          <Typography color='white' variant='caption'>
+                          <Typography variant='caption' sx={{ color: 'black' }}>
                             {new Date(validation?.timestamp || Date.now()).toLocaleDateString()}
                           </Typography>
                         </Stack>
