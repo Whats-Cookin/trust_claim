@@ -540,6 +540,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [selectedValidation, setSelectedValidation] = useState<any>(null)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const claim = data.claim.claim
+  const isStatementLong = claim?.statement && claim.statement.length > 200
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
@@ -547,10 +550,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
-  }
-
-  const handleValidate = () => {
-    window.location.href = `/validate/${data.claim.claim.id}`
   }
 
   const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -614,15 +613,18 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     setSelectedValidation(null)
   }
 
+  const handleToggleExpand = () => {
+    setIsExpanded(!isExpanded)
+  }
+
   const open = Boolean(anchorEl)
   const openEx = Boolean(anchorExportEl)
   const id = open ? 'share-popover' : undefined
   const idEx = openEx ? 'export-popover' : undefined
-  const claim = data.claim.claim
 
   if (!claim) {
     console.error('Export failed: claimData or claimData.id is missing.')
-    return
+    return null
   }
 
   return (
@@ -634,423 +636,161 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem',
-        position: 'relative'
+        marginBottom: '2rem'
       }}
     >
       <CardContent>
         <Stack spacing={3}>
-          <CertificateContainer id='certificate-container'>
-            <Box
-              component='img'
-              src={badge}
-              alt='Certificate Badge'
-              sx={{
-                width: '150px',
-                height: '150px',
-                display: 'block',
-                margin: '0 auto',
-                marginBottom: '30px',
-                filter: 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.1))',
-                transition: 'transform 0.3s ease-in-out',
-                '&:hover': {
-                  transform: 'scale(1.05)'
-                }
-              }}
-            />
-
-            <CertificateTitle>Certificate</CertificateTitle>
-            <CertificateSubtitle>OF SKILL VALIDATION</CertificateSubtitle>
-
-            <RecipientName>{claim.curator}</RecipientName>
-            <SkillTitle>{claim.subject || 'Claim Subject'}</SkillTitle>
-
-            <Description>
-              {claim.statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
-            </Description>
-
-            {claim.image && (
-              <Box sx={{ width: '100%', marginTop: '20px' }}>
+          {/* Title and Actions Row */}
+          <Stack
+            direction={{ xs: 'column', md: 'column', lg: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            justifyContent='space-between'
+          >
+            <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
+              <Typography
+                variant='h6'
+                color='white'
+                sx={{ 
+                  minWidth: 0, 
+                  textOverflow: 'ellipsis', 
+                  overflow: 'hidden',
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  fontFamily: 'Roboto'
+                }}
+              >
+                {data.edge.startNode.name}
+              </Typography>
+            </Stack>
+            <Stack spacing={1}>
+              {claim.claim === 'credential' && (
                 <Box
-                  onClick={() => handleVideoClick(claim.image)}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      color: '#2D6A4F'
-                    }
+                    backgroundColor: 'rgba(0, 150, 0, 0.1)',
+                    borderRadius: '12px',
+                    padding: '2px 8px',
+                    marginBottom: '10px',
+                    marginLeft: '10px',
+                    height: 'fit-content'
                   }}
                 >
-                  {isVideoUrl(claim.image) ? (
-                    <VideoLibraryIcon sx={{ fontSize: 24, color: '#2D6A4F' }} />
-                  ) : (
-                    <ImageIcon sx={{ fontSize: 24, color: '#2D6A4F' }} />
-                  )}
-                  <Typography
-                    variant='body2'
-                    sx={{
-                      color: theme.palette.texts,
-                      fontWeight: 500,
-                      fontSize: '22px',
-                      marginBottom: '16px',
-                      paddingLeft: '10px',
-                      textDecoration: 'underline',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Supported Evidence
+                  <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
+                  <Typography variant='caption' sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
+                    {claim.claim}
                   </Typography>
                 </Box>
+              )}
+            </Stack>
+          </Stack>
+
+          {data.claim.image && <MediaContent url={data.claim.image} />}
+
+          {/* Info Sections */}
+          <Stack spacing={3}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
+                <TextLabel variant='body2' gutterBottom>
+                  Issued On
+                </TextLabel>
+              </Box>
+              <Box>
+                <Typography variant='body1'>
+                  {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </Typography>
+              </Box>
+            </Box>
+          </Stack>
+
+          <Stack spacing={3}>
+            {claim.statement && (
+              <Box>
+                <Typography color='white'>
+                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
+                  {isStatementLong && (
+                    <MuiLink
+                      onClick={handleToggleExpand}
+                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
+                    >
+                      {isExpanded ? 'Show Less' : 'See More'}
+                    </MuiLink>
+                  )}
+                </Typography>
               </Box>
             )}
 
-            {data.validations && data.validations.length > 0 && (
-              <EndorsementSection id='validation-section'>
-                <EndorsementTitle>Endorsed by:</EndorsementTitle>
-                <EndorsementGrid>
-                  {data.validations.slice(0, 2).map((validation: any, index: number) => (
-                    <EndorsementCard
-                      key={index}
-                      id={`validation-${index}`}
-                      onClick={() => handleClaimClick(validation)}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <EndorsementAuthor>{validation.author}</EndorsementAuthor>
-                      <EndorsementStatement>{truncateText(validation.statement || '', 50)}</EndorsementStatement>
-                      <SeeAllLink
-                        onClick={e => {
-                          e.stopPropagation()
-                          handleClaimClick(validation)
-                        }}
-                      >
-                        see all
-                      </SeeAllLink>
-                    </EndorsementCard>
-                  ))}
-                </EndorsementGrid>
-                {data.validations.length > 2 && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      mt: 2
-                    }}
-                  >
-                    <Button
-                      onClick={handleValidationDialogOpen}
-                      sx={{
-                        color: '#2D6A4F',
-                        textTransform: 'none',
-                        fontWeight: 500,
-                        '&:hover': {
-                          backgroundColor: 'rgba(45, 106, 79, 0.04)'
-                        }
-                      }}
-                    >
-                      See more validations ({data.validations.length - 2} more)
-                    </Button>
-                  </Box>
-                )}
-              </EndorsementSection>
-            )}
+            <Box>
+              <Stack spacing={1}>
+                <MuiLink
+                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
+                  target='_blank'
+                  href={claim.subject}
+                >
+                  {claim.subject}
+                </MuiLink>
+                <MuiLink
+                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
+                  target='_blank'
+                  href={claim.sourceURI}
+                >
+                  {claim.sourceURI}
+                </MuiLink>
+              </Stack>
+            </Box>
 
-            {/* Add Validation Dialog */}
-            <ValidationDialog open={validationDialogOpen} onClose={handleValidationDialogClose} maxWidth='md' fullWidth>
-              <ValidationDialogTitle>All Validations</ValidationDialogTitle>
-              <ValidationDialogContent>
+            <Box>
+              <Stack direction='row' spacing={1} alignItems='center' mb={1}>
+                <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
+                <Typography variant='h6' color='white'>
+                  Recommendations
+                </Typography>
+              </Stack>
+              <Stack spacing={2}>
                 {data.validations?.map((validation: any, index: number) => (
-                  <ValidationDialogCard
+                  <Card
                     key={index}
-                    onClick={() => handleClaimClick(validation)}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <EndorsementAuthor>{validation.author}</EndorsementAuthor>
-                    <EndorsementStatement>{validation.statement || ''}</EndorsementStatement>
-                    <SeeAllLink
-                      onClick={e => {
-                        e.stopPropagation()
-                        handleClaimClick(validation)
-                      }}
-                    >
-                      see all
-                    </SeeAllLink>
-                  </ValidationDialogCard>
-                ))}
-              </ValidationDialogContent>
-              <DialogActions sx={{ padding: '16px 24px' }}>
-                <Button
-                  onClick={handleValidationDialogClose}
-                  sx={{
-                    color: '#2D6A4F',
-                    textTransform: 'none',
-                    fontWeight: 500,
-                    '&:hover': {
-                      backgroundColor: 'rgba(45, 106, 79, 0.04)'
-                    }
-                  }}
-                >
-                  Close
-                </Button>
-              </DialogActions>
-            </ValidationDialog>
-
-            {/* Replace the ValidationDetailsDialog content */}
-            <ValidationDetailsDialog open={claimDialogOpen} onClose={handleClaimDialogClose} maxWidth={false}>
-              <DialogContent sx={{ p: 0, position: 'relative' }}>
-                <IconButton
-                  onClick={handleClaimDialogClose}
-                  sx={{
-                    position: 'absolute',
-                    right: 8,
-                    top: 8,
-                    color: theme.palette.texts,
-                    zIndex: 1
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-                {selectedValidation && (
-                  <ValidationDetailsContent>
-                    <div className='validation-header'>
-                      {selectedValidation.subject && (
-                        <div className='validation-subject'>
-                          <MuiLink
-                            href={selectedValidation.subject}
-                            target='_blank'
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px'
-                            }}
-                          >
-                            {selectedValidation.subject}
-                            <OpenInNewIcon sx={{ fontSize: 20 }} />
-                          </MuiLink>
-                        </div>
-                      )}
-                      <Typography className='validation-author'>{selectedValidation.author}</Typography>
-                      <Typography className='validation-statement'>{selectedValidation.statement}</Typography>
-                      <Box className='validation-date'>
-                        <CalendarMonthOutlinedIcon sx={{ fontSize: 20 }} />
-                        {new Date(selectedValidation.effectiveDate).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </Box>
-                    </div>
-
-                    {(selectedValidation.image || selectedValidation.mediaUrl) && (
-                      <Box sx={{ mt: 3 }}>
-                        <Typography
-                          sx={{
-                            fontSize: '18px',
-                            fontWeight: 500,
-                            color: '#212529',
-                            mb: 2
-                          }}
-                        >
-                          Supporting Evidence
-                        </Typography>
-                        <MediaContainer>
-                          {selectedValidation.image && <MediaContent url={selectedValidation.image} />}
-                          {selectedValidation.mediaUrl && <MediaContent url={selectedValidation.mediaUrl} />}
-                        </MediaContainer>
-                      </Box>
-                    )}
-
-                    <div className='validation-details'>
-                      {Object.entries(selectedValidation).map(([key, value]: [string, any]) => {
-                        // Skip certain fields we've already displayed or don't want to show
-                        if (
-                          [
-                            'id',
-                            'subject',
-                            'author',
-                            'statement',
-                            'effectiveDate',
-                            'image',
-                            'thumbnail',
-                            'mediaUrl'
-                          ].includes(key)
-                        ) {
-                          return null
-                        }
-                        if (!value) return null
-
-                        return (
-                          <div key={key} className='detail-item'>
-                            <span className='detail-label'>{key}:</span>
-                            <span className='detail-value'>
-                              {typeof value === 'string' &&
-                              (value.startsWith('http://') || value.startsWith('https://')) ? (
-                                <MuiLink
-                                  href={value}
-                                  target='_blank'
-                                  sx={{
-                                    color: '#2D6A4F',
-                                    textDecoration: 'none',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    '&:hover': {
-                                      textDecoration: 'underline'
-                                    }
-                                  }}
-                                >
-                                  {value}
-                                  <OpenInNewIcon sx={{ fontSize: 16 }} />
-                                </MuiLink>
-                              ) : (
-                                value.toString()
-                              )}
-                            </span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ValidationDetailsContent>
-                )}
-              </DialogContent>
-            </ValidationDetailsDialog>
-
-            {/* Video/Image Dialog */}
-            <Dialog
-              open={videoDialogOpen}
-              onClose={handleVideoDialogClose}
-              maxWidth={false}
-              PaperProps={{
-                sx: {
-                  backgroundColor: 'transparent',
-                  boxShadow: 'none',
-                  overflow: 'hidden'
-                }
-              }}
-            >
-              <DialogContent sx={{ p: 0, position: 'relative' }}>
-                <IconButton
-                  onClick={handleVideoDialogClose}
-                  sx={{
-                    position: 'absolute',
-                    right: 8,
-                    top: 8,
-                    color: 'white',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                    },
-                    zIndex: 1
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-                {selectedMedia && (
-                  <Box
                     sx={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    {isVideoUrl(selectedMedia) ? (
-                      <video
-                        controls
-                        autoPlay
-                        style={{
-                          width: '100%',
-                          maxHeight: '90vh',
-                          objectFit: 'contain'
-                        }}
-                      >
-                        <source src={selectedMedia} type='video/mp4' />
-                        Your browser does not support the video tag.
-                      </video>
-                    ) : (
-                      <img
-                        src={selectedMedia}
-                        alt='Media content'
-                        style={{
-                          width: '100%',
-                          maxHeight: '90vh',
-                          objectFit: 'contain'
-                        }}
-                      />
-                    )}
-                  </Box>
-                )}
-              </DialogContent>
-            </Dialog>
-
-            <IssuerSection>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                  position: 'relative',
-                  alignItems: 'flex-start'
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <CalendarMonthOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
-                  <Typography
-                    sx={{
-                      fontFamily: 'Roboto',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      fontSize: '16px',
-                      lineHeight: '21px',
-                      color: '#495057'
-                    }}
-                  >
-                    {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <VerifiedOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
-                  <MuiLink
-                    component={Link}
-                    to={`/claims/${claim.id}`}
-                    sx={{
-                      fontFamily: 'Roboto',
-                      fontStyle: 'normal',
-                      fontWeight: 400,
-                      fontSize: '16px',
-                      lineHeight: '21px',
-                      color: '#495057',
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
                       '&:hover': {
-                        color: '#2D6A4F'
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        transition: 'background-color 0.2s ease-in-out'
                       }
                     }}
                   >
-                    ID: {claim.id}
-                  </MuiLink>
-                </Box>
-              </Box>
-            </IssuerSection>
-          </CertificateContainer>
+                    <CardContent>
+                      <Stack spacing={2}>
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
+                          <Typography color='white' variant='subtitle1' sx={{ fontWeight: 500 }}>
+                            {validation?.validator?.name || 'Unknown Validator'}
+                          </Typography>
+                        </Stack>
+                        <Typography color='white' variant='body2' sx={{ lineHeight: 1.6 }}>
+                          {validation?.statement || 'No statement provided'}
+                        </Typography>
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, fontSize: '16px' }} />
+                          <Typography color='white' variant='caption'>
+                            {new Date(validation?.timestamp || Date.now()).toLocaleDateString()}
+                          </Typography>
+                        </Stack>
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Stack>
+            </Box>
+          </Stack>
 
           <ButtonContainer>
             <ActionButton onClick={handleExportClick}>
@@ -1067,7 +807,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
             <Button
               component={Link}
-              startIcon={<CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />}
+              startIcon={<CheckCircleOutlineOutlinedIcon />}
               to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
               sx={{
                 textTransform: 'none',
@@ -1084,279 +824,49 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               Validate
             </Button>
 
+            <Button
+              component={Link}
+              startIcon={<PictureAsPdfIcon />}
+              to={`/certificate/${claim.id}`}
+              sx={{
+                textTransform: 'none',
+                color: '#2D6A4F',
+                fontWeight: 500,
+                borderRadius: '24px',
+                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
+                px: { xs: '1rem', sm: '2rem' },
+                width: { xs: '100%', sm: 'auto' },
+                minWidth: { xs: 'auto', sm: '120px' },
+                height: '48px'
+              }}
+            >
+              Certificate
+            </Button>
+
             <ActionButton onClick={e => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
           </ButtonContainer>
         </Stack>
-
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left'
-          }}
-          PaperProps={{
-            sx: {
-              padding: '20px',
-              backgroundColor: theme.palette.formBackground,
-              borderRadius: '12px'
-            }
-          }}
-        >
-          <Typography
-            variant='body1'
-            sx={{
-              color: 'white',
-              fontWeight: 'bold',
-              textAlign: 'left'
-            }}
-          >
-            Copy Link
-          </Typography>
-          <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-            <Box display='flex' justifyContent='center' alignItems='center'>
-              <TextField
-                value={currentUrl}
-                variant='outlined'
-                InputProps={{
-                  readOnly: true,
-                  sx: {
-                    color: 'white',
-                    backgroundColor: '#2f4f4f',
-                    borderRadius: '5px'
-                  },
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={handleCopyLink}>
-                        <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mt: 2
-              }}
-            >
-              <IconButton
-                onClick={handleLinkedInPost}
-                sx={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  width: '50px',
-                  height: '50px',
-                  '&:hover': { backgroundColor: '#f0f0f0' }
-                }}
-              >
-                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
-              </IconButton>
-              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                Post
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mt: 2
-              }}
-            >
-              <IconButton
-                onClick={handleLinkedInCertification}
-                sx={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  width: '50px',
-                  height: '50px',
-                  '&:hover': { backgroundColor: '#f0f0f0' }
-                }}
-              >
-                <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
-              </IconButton>
-              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                Add to profile
-              </Typography>
-            </Box>
-          </Box>
-        </Popover>
-
-        <Popover
-          id={idEx}
-          open={openEx}
-          anchorEl={anchorExportEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left'
-          }}
-          PaperProps={{
-            sx: {
-              padding: '20px',
-              backgroundColor: theme.palette.formBackground,
-              borderRadius: '12px'
-            }
-          }}
-        >
-          <Typography
-            variant='body1'
-            sx={{
-              color: 'white',
-              fontWeight: 'bold',
-              textAlign: 'left'
-            }}
-          >
-            Export
-          </Typography>
-          <Box mt={2} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mt: 2
-              }}
-            >
-              <IconButton
-                onClick={() => exportClaimData(claim, 'json')}
-                sx={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  width: '50px',
-                  height: '50px',
-                  '&:hover': { backgroundColor: '#f0f0f0' }
-                }}
-              >
-                <DataObjectIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
-              </IconButton>
-              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                export as json
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mt: 2
-              }}
-            >
-              <IconButton
-                onClick={() => exportClaimData(claim, 'pdf')}
-                sx={{
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                  width: '50px',
-                  height: '50px',
-                  '&:hover': { backgroundColor: '#f0f0f0' }
-                }}
-              >
-                <PictureAsPdfIcon sx={{ fontSize: 40, color: theme.palette.buttons }} />
-              </IconButton>
-              <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
-                export as pdf
-              </Typography>
-            </Box>
-          </Box>
-        </Popover>
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={2000}
-          onClose={() => setSnackbarOpen(false)}
-          message='Link copied to clipboard!'
-          sx={{
-            '& .MuiSnackbarContent-root': {
-              backgroundColor: theme.palette.cardBackground,
-              color: theme.palette.buttontext,
-              fontSize: '16px',
-              fontWeight: 'bold',
-              borderRadius: '8px'
-            }
-          }}
-        />
       </CardContent>
     </Card>
   )
 })
 
 const MediaContent = ({ url }: { url: string }) => {
-  const handleMediaClick = () => {
-    const dialog = document.createElement('dialog')
-    dialog.style.padding = '0'
-    dialog.style.border = 'none'
-    dialog.style.borderRadius = '8px'
-    dialog.style.backgroundColor = 'transparent'
-    dialog.style.maxWidth = '90vw'
-    dialog.style.maxHeight = '90vh'
-    dialog.style.margin = 'auto'
-
-    const content = isVideoUrl(url)
-      ? `<video controls style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">
-        <source src="${url}" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>`
-      : `<img src="${url}" alt="Full size media" style="width: 100%; height: 100%; max-height: 90vh; object-fit: contain;">`
-
-    dialog.innerHTML = `
-      <div style="position: relative;">
-        <button onclick="this.closest('dialog').close()" 
-          style="position: absolute; top: 10px; right: 10px; z-index: 1000; background: rgba(0,0,0,0.5); 
-          border: none; border-radius: 50%; padding: 8px; cursor: pointer;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-          </svg>
-        </button>
-        ${content}
-      </div>
-    `
-
-    document.body.appendChild(dialog)
-    dialog.showModal()
-
-    dialog.addEventListener('click', e => {
-      if (e.target === dialog) dialog.close()
-    })
-
-    dialog.addEventListener('close', () => {
-      document.body.removeChild(dialog)
-    })
-  }
-
   return (
-    <MediaContainer onClick={handleMediaClick}>
+    <MediaContainer>
       {isVideoUrl(url) ? (
         <video controls>
-          <source src={url} type='video/mp4' />
+          <source
+            src={url}
+            type='video/mp4'
+          />
           Your browser does not support the video tag.
         </video>
       ) : (
-        <img
-          src={url}
-          alt='Claim media content'
-          loading='lazy'
-          style={{
-            width: '100%',
-            height: 'auto',
-            maxHeight: '400px',
-            objectFit: 'contain',
-            cursor: 'pointer'
-          }}
-        />
+        <img src={url} alt='Claim media content' loading='lazy' />
       )}
     </MediaContainer>
   )
