@@ -180,11 +180,7 @@ const App = () => {
               <Route
                 path='/certificate/:id'
                 element={
-                  checkAuth() ? (
-                    <CertificateView />
-                  ) : (
-                    <Navigate to='/login' replace state={{ from: location }} />
-                  )
+                  checkAuth() ? <CertificateView /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
             </Routes>

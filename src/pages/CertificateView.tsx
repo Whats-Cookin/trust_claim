@@ -38,7 +38,7 @@ const CertificateView: React.FC = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         })
 
@@ -55,7 +55,7 @@ const CertificateView: React.FC = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         })
 
@@ -85,7 +85,7 @@ const CertificateView: React.FC = () => {
             mediaUrl: validation.mediaUrl
           }))
         }
-        
+
         console.log('Transformed data:', transformedData)
         setClaimData(transformedData)
       } catch (err) {
@@ -103,7 +103,7 @@ const CertificateView: React.FC = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
         <CircularProgress />
       </Box>
     )
@@ -111,15 +111,15 @@ const CertificateView: React.FC = () => {
 
   if (error) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <Typography color="error">{error}</Typography>
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
+        <Typography color='error'>{error}</Typography>
       </Box>
     )
   }
 
   if (!claimData) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
         <Typography>No claim data found</Typography>
       </Box>
     )
@@ -139,4 +139,4 @@ const CertificateView: React.FC = () => {
   )
 }
 
-export default CertificateView 
+export default CertificateView

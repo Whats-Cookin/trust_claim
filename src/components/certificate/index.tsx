@@ -377,7 +377,7 @@ const Certificate: React.FC<CertificateProps> = ({
 }) => {
   const theme = useTheme()
   const [validationDialogOpen, setValidationDialogOpen] = useState(false)
-  const [selectedValidation, setSelectedValidation] = useState<typeof validations[0] | null>(null)
+  const [selectedValidation, setSelectedValidation] = useState<(typeof validations)[0] | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [currentUrl, setCurrentUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
@@ -447,15 +447,15 @@ const Certificate: React.FC<CertificateProps> = ({
   }
 
   return (
-    <CertificateContainer id="certificate-content">
+    <CertificateContainer id='certificate-content'>
       <CloseButton onClick={() => window.history.back()}>
         <CloseIcon />
       </CloseButton>
 
       <Box
-        component="img"
+        component='img'
         src={badge}
-        alt="Certificate Badge"
+        alt='Certificate Badge'
         sx={{
           width: '150px',
           height: '150px',
@@ -480,11 +480,11 @@ const Certificate: React.FC<CertificateProps> = ({
         <MediaContainer>
           {isVideoUrl(image) ? (
             <video controls>
-              <source src={image} type="video/mp4" />
+              <source src={image} type='video/mp4' />
               Your browser does not support the video tag.
             </video>
           ) : (
-            <img src={image} alt="Claim media content" loading="lazy" />
+            <img src={image} alt='Claim media content' loading='lazy' />
           )}
         </MediaContainer>
       )}
@@ -494,11 +494,11 @@ const Certificate: React.FC<CertificateProps> = ({
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
-              <TextLabel variant="body2" gutterBottom>
+              <TextLabel variant='body2' gutterBottom>
                 Issued On
               </TextLabel>
             </Box>
-            <Typography variant="body1">
+            <Typography variant='body1'>
               {new Date(effectiveDate).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -508,8 +508,8 @@ const Certificate: React.FC<CertificateProps> = ({
           </Box>
         )}
         {sourceURI && (
-          <SourceLink href={sourceURI} target="_blank" rel="noopener noreferrer">
-            <OpenInNewIcon fontSize="small" />
+          <SourceLink href={sourceURI} target='_blank' rel='noopener noreferrer'>
+            <OpenInNewIcon fontSize='small' />
             View Source
           </SourceLink>
         )}
@@ -517,7 +517,7 @@ const Certificate: React.FC<CertificateProps> = ({
 
       {statement && (
         <Box sx={{ mt: 4, textAlign: 'center' }}>
-          <Typography color="text.primary">
+          <Typography color='text.primary'>
             {isExpanded || !isStatementLong ? statement : truncateText(statement, 200)}
             {isStatementLong && (
               <MuiLink
@@ -536,15 +536,10 @@ const Certificate: React.FC<CertificateProps> = ({
           <EndorsementTitle>Endorsed by:</EndorsementTitle>
           <EndorsementGrid>
             {validations.slice(0, 2).map((validation, index) => (
-              <EndorsementCard
-                key={index}
-                onClick={() => setSelectedValidation(validation)}
-              >
+              <EndorsementCard key={index} onClick={() => setSelectedValidation(validation)}>
                 <EndorsementAuthor>{validation.author}</EndorsementAuthor>
                 <EndorsementStatement>{truncateText(validation.statement || '', 50)}</EndorsementStatement>
-                <SeeAllLink onClick={() => setSelectedValidation(validation)}>
-                  see all
-                </SeeAllLink>
+                <SeeAllLink onClick={() => setSelectedValidation(validation)}>see all</SeeAllLink>
               </EndorsementCard>
             ))}
           </EndorsementGrid>
@@ -575,7 +570,7 @@ const Certificate: React.FC<CertificateProps> = ({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <VerifiedOutlinedIcon sx={{ color: '#495057', fontSize: '20px' }} />
             <MuiLink
-              component="a"
+              component='a'
               href={`/claims/${claimId}`}
               sx={{
                 fontFamily: 'Roboto',
@@ -600,7 +595,7 @@ const Certificate: React.FC<CertificateProps> = ({
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
         <ExportButton onClick={handleExport}>Export Certificate</ExportButton>
         <Button
-          onClick={(e) => setAnchorEl(e.currentTarget)}
+          onClick={e => setAnchorEl(e.currentTarget)}
           sx={{
             backgroundColor: '#0077B5',
             color: '#ffffff',
@@ -640,7 +635,7 @@ const Certificate: React.FC<CertificateProps> = ({
             >
               <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
             </IconButton>
-            <Typography variant="caption" sx={{ color: 'white', mt: 1 }}>
+            <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
               Post
             </Typography>
           </Box>
@@ -657,29 +652,26 @@ const Certificate: React.FC<CertificateProps> = ({
             >
               <LinkedInIcon sx={{ fontSize: 40, color: '#0077B5' }} />
             </IconButton>
-            <Typography variant="caption" sx={{ color: 'white', mt: 1 }}>
+            <Typography variant='caption' sx={{ color: 'white', mt: 1 }}>
               Add to profile
             </Typography>
           </Box>
         </Box>
       </Popover>
 
-      <ValidationDialog
-        open={validationDialogOpen}
-        onClose={() => setValidationDialogOpen(false)}
-      >
+      <ValidationDialog open={validationDialogOpen} onClose={() => setValidationDialogOpen(false)}>
         <ValidationDialogTitle>All Validations</ValidationDialogTitle>
         <ValidationDialogContent>
           {validations.map((validation, index) => (
             <ValidationDialogCard key={index}>
-              <Typography variant="h6" color="primary">
+              <Typography variant='h6' color='primary'>
                 {validation.author}
               </Typography>
-              <Typography variant="body1" sx={{ mt: 1 }}>
+              <Typography variant='body1' sx={{ mt: 1 }}>
                 {validation.statement}
               </Typography>
               {validation.date && (
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                <Typography variant='caption' color='text.secondary' sx={{ mt: 1, display: 'block' }}>
                   {new Date(validation.date).toLocaleDateString()}
                 </Typography>
               )}
@@ -691,25 +683,18 @@ const Certificate: React.FC<CertificateProps> = ({
         </DialogActions>
       </ValidationDialog>
 
-      <ValidationDetailsDialog
-        open={!!selectedValidation}
-        onClose={() => setSelectedValidation(null)}
-      >
+      <ValidationDetailsDialog open={!!selectedValidation} onClose={() => setSelectedValidation(null)}>
         {selectedValidation && (
           <ValidationDetailsContent>
-            <Box className="validation-header">
-              <Box className="validation-subject">
-                <Typography variant="h6">Subject:</Typography>
-                <Typography variant="body1">{subject}</Typography>
+            <Box className='validation-header'>
+              <Box className='validation-subject'>
+                <Typography variant='h6'>Subject:</Typography>
+                <Typography variant='body1'>{subject}</Typography>
               </Box>
-              <Typography className="validation-author">
-                {selectedValidation.author}
-              </Typography>
-              <Typography className="validation-statement">
-                {selectedValidation.statement}
-              </Typography>
+              <Typography className='validation-author'>{selectedValidation.author}</Typography>
+              <Typography className='validation-statement'>{selectedValidation.statement}</Typography>
               {selectedValidation.date && (
-                <Typography className="validation-date">
+                <Typography className='validation-date'>
                   <CalendarMonthOutlinedIcon />
                   Validated on {new Date(selectedValidation.date).toLocaleDateString()}
                 </Typography>
@@ -731,9 +716,9 @@ const Certificate: React.FC<CertificateProps> = ({
                 <Box sx={{ width: '100%', borderRadius: '12px', overflow: 'hidden' }}>
                   {selectedValidation.image && (
                     <Box
-                      component="img"
+                      component='img'
                       src={selectedValidation.image}
-                      alt="Supporting Evidence"
+                      alt='Supporting Evidence'
                       sx={{
                         width: '100%',
                         height: 'auto',
@@ -744,7 +729,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   )}
                   {selectedValidation.mediaUrl && (
                     <Box
-                      component="video"
+                      component='video'
                       controls
                       src={selectedValidation.mediaUrl}
                       sx={{
@@ -757,36 +742,38 @@ const Certificate: React.FC<CertificateProps> = ({
               </Box>
             )}
 
-            <Box className="validation-details">
-              <Typography variant="h6" sx={{ mb: 2 }}>
+            <Box className='validation-details'>
+              <Typography variant='h6' sx={{ mb: 2 }}>
                 Validation Details
               </Typography>
-              <Box className="detail-item">
-                <Typography component="span" className="detail-label">
+              <Box className='detail-item'>
+                <Typography component='span' className='detail-label'>
                   Confidence:
                 </Typography>
-                <Typography component="span" className="detail-value">
-                  {selectedValidation.confidence ? `${(selectedValidation.confidence * 100).toFixed(0)}%` : 'Not specified'}
+                <Typography component='span' className='detail-value'>
+                  {selectedValidation.confidence
+                    ? `${(selectedValidation.confidence * 100).toFixed(0)}%`
+                    : 'Not specified'}
                 </Typography>
               </Box>
-              <Box className="detail-item">
-                <Typography component="span" className="detail-label">
+              <Box className='detail-item'>
+                <Typography component='span' className='detail-label'>
                   How Known:
                 </Typography>
-                <Typography component="span" className="detail-value">
+                <Typography component='span' className='detail-value'>
                   {selectedValidation.howKnown || 'Not specified'}
                 </Typography>
               </Box>
               {selectedValidation.sourceURI && (
-                <Box className="detail-item">
-                  <Typography component="span" className="detail-label">
+                <Box className='detail-item'>
+                  <Typography component='span' className='detail-label'>
                     Source:
                   </Typography>
                   <MuiLink
                     href={selectedValidation.sourceURI}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="detail-value"
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='detail-value'
                   >
                     View Source
                   </MuiLink>
@@ -803,4 +790,4 @@ const Certificate: React.FC<CertificateProps> = ({
   )
 }
 
-export default Certificate 
+export default Certificate

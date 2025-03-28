@@ -652,9 +652,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <Typography
                 variant='h6'
                 color='white'
-                sx={{ 
-                  minWidth: 0, 
-                  textOverflow: 'ellipsis', 
+                sx={{
+                  minWidth: 0,
+                  textOverflow: 'ellipsis',
                   overflow: 'hidden',
                   fontSize: '24px',
                   fontWeight: 600,
@@ -699,14 +699,13 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           </Box>
 
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${claim.author ? claim.author : 'Unknown'}, ${new Date(claim.effectiveDate).toLocaleDateString(
-              'en-US',
-              {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              }
-            )}`}
+            {`Created by: ${claim.author ? claim.author : 'Unknown'}, ${new Date(
+              claim.effectiveDate
+            ).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}`}
           </Typography>
 
           {data.claim.image && <MediaContent url={data.claim.image} />}
@@ -878,10 +877,7 @@ const MediaContent = ({ url }: { url: string }) => {
     <MediaContainer>
       {isVideoUrl(url) ? (
         <video controls>
-          <source
-            src={url}
-            type='video/mp4'
-          />
+          <source src={url} type='video/mp4' />
           Your browser does not support the video tag.
         </video>
       ) : (

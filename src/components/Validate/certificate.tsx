@@ -544,4 +544,4 @@ const Certificate = ({ curator, subject, statement, validations, onExport }: Cer
   )
 }
 
-export default Certificate 
+export default Certificate
