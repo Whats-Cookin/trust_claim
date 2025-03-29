@@ -744,36 +744,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
             <Box>
               <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='white'>
-                  {data.validations?.length || 0} Recommendations
-                </Typography>
-              </Stack>
-              <Stack spacing={2}>
-                {data.validations?.map((validation: any, index: number) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      p: 2,
-                      bgcolor: 'rgba(255, 255, 255, 0.05)',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(255, 255, 255, 0.1)'
-                    }}
-                  >
-                    <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                      <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
-                      <Typography color='white' variant='subtitle1'>
-                        {validation?.validator?.name || 'Unknown Validator'}
-                      </Typography>
-                    </Stack>
-                    <Typography color='white' variant='body2' sx={{ mb: 1 }}>
-                      {validation?.statement || 'No statement provided'}
-                    </Typography>
-                    <Typography color='white' variant='caption'>
-                      {new Date(validation?.timestamp || Date.now()).toLocaleDateString()}
-                    </Typography>
-                  </Box>
-                ))}
+                <Typography color='black'>{data.validations.length} Recommendations</Typography>
               </Stack>
             </Box>
           </Stack>
