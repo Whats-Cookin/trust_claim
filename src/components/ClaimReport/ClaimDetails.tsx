@@ -652,7 +652,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
               <Typography
                 variant='h6'
-                color='white'
+                color='black'
                 sx={{
                   minWidth: 0,
                   textOverflow: 'ellipsis',
