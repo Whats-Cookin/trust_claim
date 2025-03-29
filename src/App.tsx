@@ -19,6 +19,7 @@ import ClaimDetails from './containers/ClaimDetails'
 import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
+import CertificateView from './pages/CertificateView'
 import { checkAuth } from './utils/authUtils'
 import './App.css'
 
@@ -174,6 +175,12 @@ const App = () => {
                   ) : (
                     <Navigate to='/login' replace state={{ from: location }} />
                   )
+                }
+              />
+              <Route
+                path='/certificate/:id'
+                element={
+                  checkAuth() ? <CertificateView /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
             </Routes>
