@@ -653,9 +653,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <Typography
                 variant='h6'
                 color='white'
-                sx={{ 
-                  minWidth: 0, 
-                  textOverflow: 'ellipsis', 
+                sx={{
+                  minWidth: 0,
+                  textOverflow: 'ellipsis',
                   overflow: 'hidden',
                   fontSize: '24px',
                   fontWeight: 600,
@@ -751,11 +751,11 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </Stack>
               <Stack spacing={2}>
                 {data.validations?.map((validation: any, index: number) => (
-                  <Box 
-                    key={index} 
-                    sx={{ 
-                      p: 2, 
-                      bgcolor: 'rgba(255, 255, 255, 0.05)', 
+                  <Box
+                    key={index}
+                    sx={{
+                      p: 2,
+                      bgcolor: 'rgba(255, 255, 255, 0.05)',
                       borderRadius: '8px',
                       border: '1px solid rgba(255, 255, 255, 0.1)'
                     }}

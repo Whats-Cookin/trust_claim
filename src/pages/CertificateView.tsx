@@ -16,7 +16,6 @@ interface Validation {
 }
 
 interface Claim {
-  
   curator: string
   subject: string
   statement?: string
