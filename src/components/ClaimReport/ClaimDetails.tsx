@@ -709,7 +709,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           <Stack spacing={3}>
             {claim.statement && (
               <Box>
-                <Typography color='white'>
+                <Typography color='black'>
                   {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
                   {isStatementLong && (
                     <MuiLink
