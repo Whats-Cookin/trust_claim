@@ -15,7 +15,8 @@ interface Validation {
   mediaUrl?: string
 }
 
-interface ClaimData {
+interface Claim {
+  
   curator: string
   subject: string
   statement?: string
@@ -28,13 +29,13 @@ const CertificateView: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [claimData, setClaimData] = useState<ClaimData | null>(null)
+  const [claimData, setClaimData] = useState<Claim | null>(null)
 
   useEffect(() => {
     const fetchClaimData = async () => {
       try {
         // First, fetch the claim details
-        const claimResponse = await fetch(`${BACKEND_BASE_URL}/claims/${id}`, {
+        const claimResponse = await fetch(`${BACKEND_BASE_URL}/certificate/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -43,6 +44,10 @@ const CertificateView: React.FC = () => {
         })
 
         if (!claimResponse.ok) {
+          if (claimResponse.status === 404) {
+            setError('Certificate not found. The requested certificate does not exist.')
+            return
+          }
           const errorData = await claimResponse.json().catch(() => ({}))
           throw new Error(errorData.message || 'Failed to fetch claim data')
         }
@@ -68,7 +73,7 @@ const CertificateView: React.FC = () => {
         console.log('Fetched validations:', validationsData)
 
         // Transform the data to match the Certificate component's expected format
-        const transformedData: ClaimData = {
+        const transformedData: Claim = {
           curator: claimData.curator || claimData.author || 'Unknown Curator',
           subject: claimData.subject || 'Unknown Subject',
           statement: claimData.statement || '',

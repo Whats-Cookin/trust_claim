@@ -16,7 +16,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  ButtonBase
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
@@ -250,7 +251,7 @@ const ButtonContainer = styled(Box)(({ theme }) => ({
   position: 'relative'
 }))
 
-const ActionButton = styled(Box)(({ theme }) => ({
+const ActionButton = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: 2,
@@ -261,7 +262,7 @@ const ActionButton = styled(Box)(({ theme }) => ({
   '&:hover': {
     opacity: 0.8
   }
-})) as typeof Box
+}))
 
 const ButtonText = styled(Typography)(({ theme }) => ({
   fontFamily: 'Roboto',
@@ -652,9 +653,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               <Typography
                 variant='h6'
                 color='white'
-                sx={{
-                  minWidth: 0,
-                  textOverflow: 'ellipsis',
+                sx={{ 
+                  minWidth: 0, 
+                  textOverflow: 'ellipsis', 
                   overflow: 'hidden',
                   fontSize: '24px',
                   fontWeight: 600,
@@ -664,39 +665,14 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 {data.edge.startNode.name}
               </Typography>
             </Stack>
-            <Stack spacing={1}>
-              {claim.claim === 'credential' && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(0, 150, 0, 0.1)',
-                    borderRadius: '12px',
-                    padding: '2px 8px',
-                    marginBottom: '10px',
-                    marginLeft: '10px',
-                    height: 'fit-content'
-                  }}
-                >
-                  <VerifiedOutlinedIcon sx={{ color: 'white', fontSize: '16px', mr: 0.5 }} />
-                  <Typography variant='caption' sx={{ color: 'white', fontWeight: 'bold', fontSize: '12px' }}>
-                    {claim.claim}
-                  </Typography>
-                </Box>
-              )}
-            </Stack>
           </Stack>
 
-          <Box>
-            {data.name && (
-              <Typography variant='body2' sx={{ color: theme.palette.texts, mt: 1 }}>
-                {data.name}
-              </Typography>
-            )}
+          <Stack direction='row' spacing={1} alignItems='center'>
+            <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
             <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
-              {data.curator}
+              {claim.curator}
             </Typography>
-          </Box>
+          </Stack>
 
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
             {`Created by: ${claim.author ? claim.author : 'Unknown'}, ${new Date(
@@ -707,7 +683,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               day: 'numeric'
             })}`}
           </Typography>
-
           {data.claim.image && <MediaContent url={data.claim.image} />}
 
           {/* Info Sections */}
@@ -770,41 +745,34 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             <Box>
               <Stack direction='row' spacing={1} alignItems='center' mb={1}>
                 <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='black'>
+                <Typography variant='h6' color='white'>
                   {data.validations?.length || 0} Recommendations
                 </Typography>
               </Stack>
               <Stack spacing={2}>
                 {data.validations?.map((validation: any, index: number) => (
-                  <Card
-                    key={index}
-                    sx={{
-                      backgroundColor: '#FFFFFF',
+                  <Box 
+                    key={index} 
+                    sx={{ 
+                      p: 2, 
+                      bgcolor: 'rgba(255, 255, 255, 0.05)', 
                       borderRadius: '8px',
-                      boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
-                      mb: '10px'
+                      border: '1px solid rgba(255, 255, 255, 0.1)'
                     }}
                   >
-                    <CardContent>
-                      <Stack spacing={2}>
-                        <Stack direction='row' spacing={1} alignItems='center'>
-                          <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
-                          <Typography variant='subtitle1' sx={{ fontWeight: 500, color: 'black' }}>
-                            {validation?.validator?.name || 'Unknown Validator'}
-                          </Typography>
-                        </Stack>
-                        <Typography variant='body2' sx={{ lineHeight: 1.6, color: 'black' }}>
-                          {validation?.statement || 'No statement provided'}
-                        </Typography>
-                        <Stack direction='row' spacing={1} alignItems='center'>
-                          <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, fontSize: '16px' }} />
-                          <Typography variant='caption' sx={{ color: 'black' }}>
-                            {new Date(validation?.timestamp || Date.now()).toLocaleDateString()}
-                          </Typography>
-                        </Stack>
-                      </Stack>
-                    </CardContent>
-                  </Card>
+                    <Stack direction='row' spacing={1} alignItems='center' mb={1}>
+                      <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
+                      <Typography color='white' variant='subtitle1'>
+                        {validation?.validator?.name || 'Unknown Validator'}
+                      </Typography>
+                    </Stack>
+                    <Typography color='white' variant='body2' sx={{ mb: 1 }}>
+                      {validation?.statement || 'No statement provided'}
+                    </Typography>
+                    <Typography color='white' variant='caption'>
+                      {new Date(validation?.timestamp || Date.now()).toLocaleDateString()}
+                    </Typography>
+                  </Box>
                 ))}
               </Stack>
             </Box>
@@ -842,7 +810,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               Validate
             </Button>
 
-            <Button
+            {/* <Button
               component={Link}
               startIcon={<PictureAsPdfIcon />}
               to={`/certificate/${claim.id}`}
@@ -859,13 +827,90 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               }}
             >
               Certificate
-            </Button>
+            </Button> */}
 
-            <ActionButton onClick={e => handleShareClick(e as unknown as React.MouseEvent<HTMLButtonElement>)}>
+            <ActionButton onClick={(e: React.MouseEvent<HTMLDivElement>) => handleShareClick(e as any)}>
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
           </ButtonContainer>
+
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+          >
+            <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Button
+                startIcon={<LinkedInIcon />}
+                onClick={handleLinkedInPost}
+                sx={{ color: '#2D6A4F', justifyContent: 'flex-start' }}
+              >
+                Share on LinkedIn
+              </Button>
+              <Button
+                startIcon={<ContentCopyIcon />}
+                onClick={handleCopyLink}
+                sx={{ color: '#2D6A4F', justifyContent: 'flex-start' }}
+              >
+                Copy Link
+              </Button>
+            </Box>
+          </Popover>
+
+          <Popover
+            id={idEx}
+            open={openEx}
+            anchorEl={anchorExportEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right'
+            }}
+          >
+            <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Button
+                startIcon={<DataObjectIcon />}
+                onClick={() => {
+                  exportClaimData(claim, 'json')
+                  handleClose()
+                }}
+                sx={{ color: '#2D6A4F', justifyContent: 'flex-start' }}
+              >
+                Export as JSON
+              </Button>
+              <Button
+                startIcon={<PictureAsPdfIcon />}
+                onClick={() => {
+                  exportClaimData(claim, 'pdf')
+                  handleClose()
+                }}
+                sx={{ color: '#2D6A4F', justifyContent: 'flex-start' }}
+              >
+                Export as PDF
+              </Button>
+            </Box>
+          </Popover>
+
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000}
+            onClose={() => setSnackbarOpen(false)}
+            message='Link copied to clipboard!'
+          />
         </Stack>
       </CardContent>
     </Card>
