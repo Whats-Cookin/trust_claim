@@ -9,15 +9,10 @@ import {
   Theme,
   Link as MuiLink,
   Popover,
-  TextField,
-  InputAdornment,
-  IconButton,
   Snackbar,
   Dialog,
   DialogTitle,
-  DialogContent,
-  DialogActions,
-  ButtonBase
+  DialogContent
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
@@ -26,22 +21,13 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
 import DataObjectIcon from '@mui/icons-material/DataObject'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
-import CircleIcon from '@mui/icons-material/Circle'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
-import CloseIcon from '@mui/icons-material/Close'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
-import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
-import ImageIcon from '@mui/icons-material/Image'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { memo, useCallback, useEffect, useState, useRef } from 'react'
-import jsPDF from 'jspdf'
-import badge from '../../assets/images/badge.svg'
+import { memo, useEffect, useState, useRef } from 'react'
 import html2pdf from 'html2pdf.js'
-// import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
-// import Duration from '../../assets/duration.svg'
 
 const TextLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.date
@@ -538,7 +524,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [videoDialogOpen, setVideoDialogOpen] = useState(false)
   const [selectedMedia, setSelectedMedia] = useState('')
   const cardRef = useRef<HTMLDivElement>(null)
-  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [selectedValidation, setSelectedValidation] = useState<any>(null)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -642,7 +627,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     >
       <CardContent>
         <Stack spacing={3}>
-          {/* Title and Actions Row */}
           <Stack
             direction={{ xs: 'column', md: 'column', lg: 'row' }}
             spacing={2}
