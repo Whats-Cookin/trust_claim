@@ -45,30 +45,64 @@ const Certificate: React.FC<CertificateProps> = ({
   image
 }) => {
   const navigate = useNavigate();
-  // You would typically fetch the certificate data from your frontend state
-  // or use the data passed via props/context if navigating from a report page
-  
-  // This is a simplified version - you'd replace this with your actual data
-  const certificateData = {
-    curator: curator,
-    subject: subject,
-    statement: statement || "This certificate validates skills in React and TypeScript",
-    effectiveDate: effectiveDate || new Date().toISOString(),
-    validations: validations
-  };
   
   const handleExport = () => {
     const element = document.getElementById('certificate-content');
     if (element) {
       const opt = {
         margin: 1,
-        filename: 'certificate.pdf',
+        filename: `certificate${claimId ? `_${claimId}` : ''}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
       };
       html2pdf().set(opt).from(element).save();
     }
+  };
+
+  // Function to render media content
+  const renderMedia = () => {
+    if (!image) return null;
+    
+    const isVideoUrl = (url: string): boolean => {
+      try {
+        const parsedUrl = new URL(url);
+        const extension = parsedUrl.pathname.split('.').pop()?.toLowerCase();
+        return ['mp4', 'webm', 'ogg'].includes(extension || '');
+      } catch {
+        return false;
+      }
+    };
+    
+    return (
+      <Box sx={{
+        width: '100%',
+        maxWidth: '600px',
+        marginTop: 2,
+        marginBottom: 2,
+        borderRadius: '12px',
+        overflow: 'hidden'
+      }}>
+        {isVideoUrl(image) ? (
+          <video controls style={{ width: '100%', maxHeight: '400px' }}>
+            <source src={image} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <img 
+            src={image} 
+            alt="Certificate media content" 
+            style={{ 
+              width: '100%',
+              height: 'auto',
+              maxHeight: '400px',
+              objectFit: 'contain'
+            }} 
+            loading="lazy" 
+          />
+        )}
+      </Box>
+    );
   };
 
   return (
@@ -123,8 +157,10 @@ const Certificate: React.FC<CertificateProps> = ({
             {subject}
           </Typography>
           
+          {renderMedia()}
+          
           <Typography variant="body1" color="#666" textAlign="center" maxWidth={600} marginBottom={4}>
-            {statement}
+            {statement || "This certificate validates the skills and expertise demonstrated by the recipient."}
           </Typography>
           
           {effectiveDate && (
@@ -144,7 +180,7 @@ const Certificate: React.FC<CertificateProps> = ({
               </Typography>
               
               <Stack direction="row" spacing={2} justifyContent="center">
-                {validations.map((validation, index) => (
+                {validations.slice(0, 2).map((validation, index) => (
                   <Card key={index} sx={{ 
                     width: 284, 
                     height: 168, 
@@ -161,6 +197,14 @@ const Certificate: React.FC<CertificateProps> = ({
                   </Card>
                 ))}
               </Stack>
+            </Box>
+          )}
+          
+          {claimId && (
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="body2" color="#495057">
+                Certificate ID: {claimId}
+              </Typography>
             </Box>
           )}
         </Box>
