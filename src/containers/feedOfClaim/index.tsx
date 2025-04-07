@@ -90,9 +90,7 @@ const extractSourceName = (url: string) => {
 }
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.name
-  if (claim.curator) {
-    displayName = `${claim.curator} - ${claim.name}`
-  } else if (extractProfileName(claim.link)) {
+  if (extractProfileName(claim.link)) {
     displayName = `${extractProfileName(claim.link)} - ${claim.name}`
   }
 
