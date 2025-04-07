@@ -473,24 +473,26 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               Validate
             </Button>
 
-            <Button
-              component={Link}
-              startIcon={<PictureAsPdfIcon />}
-              to={`/certificate/${claim.id}`}
-              sx={{
-                textTransform: 'none',
-                color: '#2D6A4F',
-                fontWeight: 500,
-                borderRadius: '24px',
-                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: { xs: '1rem', sm: '2rem' },
-                width: { xs: '100%', sm: 'auto' },
-                minWidth: { xs: 'auto', sm: '120px' },
-                height: '48px'
-              }}
-            >
-              Certificate
-            </Button>
+           
+<Button
+  component={Link}
+  startIcon={<PictureAsPdfIcon />}
+  to={`/certificate/${claim.id}`}
+  state={{ claimData: data }} // Pass the current data object
+  sx={{
+    textTransform: 'none',
+    color: '#2D6A4F',
+    fontWeight: 500,
+    borderRadius: '24px',
+    fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
+    px: { xs: '1rem', sm: '2rem' },
+    width: { xs: '100%', sm: 'auto' },
+    minWidth: { xs: 'auto', sm: '120px' },
+    height: '48px'
+  }}
+>
+  Certificate
+</Button>
 
             <ActionButton onClick={(e: React.MouseEvent<HTMLDivElement>) => handleShareClick(e as any)}>
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />

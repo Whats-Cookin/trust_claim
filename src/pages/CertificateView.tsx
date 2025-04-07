@@ -12,82 +12,55 @@ const CertificateView: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    // Check if we have state data (passed from ClaimDetails)
+    // If we have data from navigation state, use it
     if (location.state && location.state.claimData) {
-      // Use the data passed through navigation state
       setData(location.state.claimData)
       setLoading(false)
-      return;
+      return
     }
 
-    const fetchClaimData = async () => {
+    // Otherwise fetch the data from the same endpoint as the report page
+    const fetchData = async () => {
       try {
-        // Fetch claim data using the same endpoint as ClaimDetails
-        const claimResponse = await fetch(`${BACKEND_BASE_URL}/claims/${id}`, {
+        // Use the exact same URL as the report page
+        const reportUrl = `${BACKEND_BASE_URL}/api/report/${id}`
+        console.log(`Fetching from: ${reportUrl}`)
+        
+        const response = await fetch(reportUrl, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
-        });
+        })
 
-        if (!claimResponse.ok) {
-          if (claimResponse.status === 404) {
-            setError('Certificate not found. Please make sure the ID is correct.');
-          } else {
-            const errorData = await claimResponse.json().catch(() => ({}));
-            setError(errorData.message || 'Failed to fetch claim data');
-          }
-          setLoading(false);
-          return;
+        if (!response.ok) {
+          console.error('Response not OK:', response.status, response.statusText)
+          throw new Error(`Failed to fetch claim: ${response.statusText}`)
         }
 
-        const claimData = await claimResponse.json();
-        console.log('Fetched claim data:', claimData);
+        const responseData = await response.json()
+        console.log('Received report data:', responseData)
 
-        // Fetch validations exactly as in ClaimDetails
-        const validationsResponse = await fetch(`${BACKEND_BASE_URL}/validations?claimId=${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        if (!validationsResponse.ok) {
-          // If validations endpoint fails but we have claim data, still proceed
-          setData({
-            claim: claimData,
-            edge: claimData.edge || { startNode: { name: claimData.claim?.subject || 'Certificate' } },
-            validations: []
-          });
-        } else {
-          const validationsData = await validationsResponse.json();
-          console.log('Fetched validations:', validationsData);
-          
-          setData({
-            claim: claimData,
-            edge: claimData.edge || { startNode: { name: claimData.claim?.subject || 'Certificate' } },
-            validations: validationsData || []
-          });
-        }
+        // Set data directly from the report endpoint
+        setData(responseData)
       } catch (err) {
-        console.error('Fetch error:', err);
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+        console.error('Error fetching data:', err)
+        setError(err instanceof Error ? err.message : 'An unknown error occurred')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchClaimData();
-  }, [id, location.state]);
+    fetchData()
+  }, [id, location.state])
 
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
         <CircularProgress />
       </Box>
-    );
+    )
   }
 
   if (error) {
@@ -95,18 +68,19 @@ const CertificateView: React.FC = () => {
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
         <Typography color='error'>{error}</Typography>
       </Box>
-    );
+    )
   }
 
   if (!data || !data.claim || !data.claim.claim) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
-        <Typography>No claim data found. Please check if the certificate exists.</Typography>
+        <Typography>No certificate data found. Please try again.</Typography>
       </Box>
-    );
+    )
   }
 
-  const claim = data.claim.claim;
+  // Destructure the data 
+  const claim = data.claim.claim
 
   return (
     <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
@@ -121,7 +95,7 @@ const CertificateView: React.FC = () => {
         image={data.claim.image}
       />
     </Box>
-  );
-};
+  )
+}
 
-export default CertificateView;
+export default CertificateView
