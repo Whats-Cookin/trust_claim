@@ -131,12 +131,13 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-async function fetchClaims(nextPage: string | null, query?: string) {
+async function fetchClaims(nextPage: string | null, query?: string, type?: string) {
   const res = await axios.get(`${BACKEND_BASE_URL}/api/claims/v3`, {
     timeout: 60000,
     params: {
       limit: PAGE_LIMIT,
       search: query || undefined,
+      type: type || undefined,
       nextPage: nextPage || undefined
     }
   })
@@ -146,13 +147,15 @@ async function fetchClaims(nextPage: string | null, query?: string) {
 const FeedClaim: React.FC<IHomeProps> = () => {
   const [claims, setClaims] = useState<ImportedClaim[]>([])
   const claimsRef = useRef<ImportedClaim[]>([])
-
   const location = useLocation()
+
+  const filter = getSearchFromParams()
   const [isLoading, setIsLoading] = useState(true)
   const [loadingNextPage, setLoadingNextPage] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
-  const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
+  const [searchTerm, setSearchTerm] = useState(filter?.query || '')
+  const [type, setType] = useState(filter?.type || '')
 
   const [showNotification, setShowNotification] = useState<boolean>(false)
   const [externalLink, setExternalLink] = useState<string>('')
@@ -169,12 +172,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const isAuth = checkAuth()
 
-  useMemo(() => {
+  useEffect(() => {
     if (isLoading && !initialPageLoad.current) return
+
     initialPageLoad.current = false
+
     setIsLastPage(false)
     setIsLoading(true)
-    fetchClaims(null, searchTerm)
+
+    fetchClaims(null, searchTerm, type)
       .then(({ data }) => {
         claimsRef.current = data.claims
         nextPage.current = data.nextPage
@@ -185,14 +191,18 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
-  }, [searchTerm])
+  }, [searchTerm, type])
 
   useEffect(() => {
-    const prev = searchTerm
     const search = getSearchFromParams()
-    if (search === prev) return
+    const newQuery = search.query ?? ''
+    const newType = search.type ?? ''
 
-    setSearchTerm(search ?? '')
+    if (searchTerm !== newQuery || type !== newType) {
+      console.log('URL changed, updating search state:', { newQuery, newType })
+      setSearchTerm(newQuery)
+      setType(newType)
+    }
   }, [location.search])
 
   useEffect(() => {
@@ -215,14 +225,22 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       // To give room for the spinner to render
       await sleep()
 
-      const { data } = await fetchClaims(nextPage.current, searchTerm)
+      const { data } = await fetchClaims(nextPage.current, searchTerm, type)
+
+      // Check if we got any new claims
+      if (data.claims.length === 0) {
+        setIsLastPage(true)
+        setLoadingNextPage(false)
+        return
+      }
 
       claimsRef.current = claimsRef.current.concat(data.claims)
       nextPage.current = data.nextPage
 
-      if (data.claims.length < PAGE_LIMIT) {
+      if (data.claims.length < PAGE_LIMIT || !data.nextPage) {
         setIsLastPage(true)
       }
+
       setClaims(claimsRef.current)
     } catch (err) {
       console.error(err)
@@ -286,7 +304,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   function getSearchFromParams() {
-    return new URLSearchParams(location.search).get('query')
+    const search = new URLSearchParams(location.search)
+    return { query: search.get('query'), type: search.get('type') }
   }
 
   return (
@@ -726,16 +745,18 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 </Fab>
               </Grow>
 
-              {!isLastPage ? (
+              {!isLastPage && (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Fade in={loadingNextPage}>
                     <CircularProgress color='inherit' />
                   </Fade>
                 </Box>
-              ) : (
-                ''
               )}
 
+              {/* Only show intersection observer if we have less than 10 results */}
+              {claims.length < 10 && !isLastPage && <IntersectionObservee onIntersection={loadNextPage} />}
+
+              {/* Always add an intersection observer at the end */}
               <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
           ) : (
