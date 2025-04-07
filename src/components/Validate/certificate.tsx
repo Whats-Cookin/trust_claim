@@ -5,8 +5,8 @@ import {
   styled,
   Card,
   CardContent,
-   Theme,
-    Button,
+  Theme,
+  Button,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -300,7 +300,6 @@ interface CertificateProps {
     confidence?: number
   }>
   onExport?: (format: 'json' | 'pdf') => void
-
 }
 
 const Certificate = ({
@@ -371,13 +370,10 @@ const Certificate = ({
       <CardContent>
         <Stack spacing={3}>
           <CertificateContainer id='certificate-container'>
-            <IconButton 
-              onClick={() => navigate(-1)} 
-              sx={{ position: 'absolute', top: 16, right: 16 }}
-            >
+            <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', top: 16, right: 16 }}>
               <CloseIcon />
             </IconButton>
-            
+
             <Box
               component='img'
               src={badge}
@@ -408,8 +404,9 @@ const Certificate = ({
 
             {effectiveDate && (
               <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Typography variant="body2" color="#495057">
-                  Issued on: {new Date(effectiveDate).toLocaleDateString('en-US', {
+                <Typography variant='body2' color='#495057'>
+                  Issued on:{' '}
+                  {new Date(effectiveDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -418,10 +415,10 @@ const Certificate = ({
               </Box>
             )}
             {sourceURI && (
-              <MuiLink 
-                href={sourceURI} 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <MuiLink
+                href={sourceURI}
+                target='_blank'
+                rel='noopener noreferrer'
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -431,12 +428,10 @@ const Certificate = ({
                   '&:hover': { textDecoration: 'underline' }
                 }}
               >
-                <OpenInNewIcon fontSize="small" />
+                <OpenInNewIcon fontSize='small' />
                 View Source
               </MuiLink>
             )}
-
-            
 
             {validations && validations.length > 0 && (
               <EndorsementSection id='validation-section'>
@@ -487,10 +482,10 @@ const Certificate = ({
                 )}
               </EndorsementSection>
             )}
-            
+
             {claimId && (
               <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography variant="body2" color="#495057">
+                <Typography variant='body2' color='#495057'>
                   Certificate ID: {claimId}
                 </Typography>
               </Box>
@@ -499,7 +494,7 @@ const Certificate = ({
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
             <Button
-              variant="contained"
+              variant='contained'
               onClick={handleExport}
               sx={{
                 backgroundColor: '#2D6A4F',

@@ -25,7 +25,7 @@ const CertificateView: React.FC = () => {
         // Use the exact same URL as the report page
         const reportUrl = `${BACKEND_BASE_URL}/api/report/${id}`
         console.log(`Fetching from: ${reportUrl}`)
-        
+
         const response = await fetch(reportUrl, {
           method: 'GET',
           headers: {
@@ -79,7 +79,7 @@ const CertificateView: React.FC = () => {
     )
   }
 
-  // Destructure the data 
+  // Destructure the data
   const claim = data.claim.claim
 
   return (

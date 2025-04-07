@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
@@ -12,35 +12,35 @@ import {
   DialogContent,
   DialogActions,
   Link as MuiLink
-} from '@mui/material';
-import badge from '../../assets/images/badge.svg';
-import CloseIcon from '@mui/icons-material/Close';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useNavigate } from 'react-router-dom';
-import html2pdf from 'html2pdf.js';
+} from '@mui/material'
+import badge from '../../assets/images/badge.svg'
+import CloseIcon from '@mui/icons-material/Close'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import { useNavigate } from 'react-router-dom'
+import html2pdf from 'html2pdf.js'
 
 interface Validation {
-  author: string;
-  statement: string;
-  date?: string;
-  confidence?: number;
-  howKnown?: string;
-  sourceURI?: string;
-  image?: string;
-  mediaUrl?: string;
-  subject?: string;
-  effectiveDate?: string;
+  author: string
+  statement: string
+  date?: string
+  confidence?: number
+  howKnown?: string
+  sourceURI?: string
+  image?: string
+  mediaUrl?: string
+  subject?: string
+  effectiveDate?: string
 }
 
 interface CertificateProps {
-  curator: string;
-  subject: string;
-  statement?: string;
-  effectiveDate?: string;
-  sourceURI?: string;
-  validations: Validation[];
-  claimId?: string;
-  image?: string;
+  curator: string
+  subject: string
+  statement?: string
+  effectiveDate?: string
+  sourceURI?: string
+  validations: Validation[]
+  claimId?: string
+  image?: string
 }
 
 const Certificate: React.FC<CertificateProps> = ({
@@ -53,13 +53,13 @@ const Certificate: React.FC<CertificateProps> = ({
   claimId,
   image
 }) => {
-  const navigate = useNavigate();
-  const [validationDialogOpen, setValidationDialogOpen] = useState(false);
-  const [selectedValidation, setSelectedValidation] = useState<Validation | null>(null);
-  const [claimDialogOpen, setClaimDialogOpen] = useState(false);
-  
+  const navigate = useNavigate()
+  const [validationDialogOpen, setValidationDialogOpen] = useState(false)
+  const [selectedValidation, setSelectedValidation] = useState<Validation | null>(null)
+  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
+
   const handleExport = () => {
-    const element = document.getElementById('certificate-content');
+    const element = document.getElementById('certificate-content')
     if (element) {
       const opt = {
         margin: 1,
@@ -67,100 +67,101 @@ const Certificate: React.FC<CertificateProps> = ({
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
+      }
+      html2pdf().set(opt).from(element).save()
     }
-  };
+  }
 
   const handleValidationDialogOpen = () => {
-    setValidationDialogOpen(true);
-  };
+    setValidationDialogOpen(true)
+  }
 
   const handleValidationDialogClose = () => {
-    setValidationDialogOpen(false);
-  };
+    setValidationDialogOpen(false)
+  }
 
   const handleClaimClick = (validation: Validation) => {
-    setSelectedValidation(validation);
-    setClaimDialogOpen(true);
-  };
+    setSelectedValidation(validation)
+    setClaimDialogOpen(true)
+  }
 
   const handleClaimDialogClose = () => {
-    setClaimDialogOpen(false);
-    setSelectedValidation(null);
-  };
+    setClaimDialogOpen(false)
+    setSelectedValidation(null)
+  }
 
   const truncateText = (text: string, length: number) => {
-    if (text.length <= length) return text;
-    return `${text.substring(0, length)}...`;
-  };
+    if (text.length <= length) return text
+    return `${text.substring(0, length)}...`
+  }
 
   // Function to render media content
   const renderMedia = () => {
-    if (!image) return null;
-    
+    if (!image) return null
+
     const isVideoUrl = (url: string): boolean => {
       try {
-        const parsedUrl = new URL(url);
-        const extension = parsedUrl.pathname.split('.').pop()?.toLowerCase();
-        return ['mp4', 'webm', 'ogg'].includes(extension || '');
+        const parsedUrl = new URL(url)
+        const extension = parsedUrl.pathname.split('.').pop()?.toLowerCase()
+        return ['mp4', 'webm', 'ogg'].includes(extension || '')
       } catch {
-        return false;
+        return false
       }
-    };
-    
+    }
+
     return (
-      <Box sx={{
-        width: '100%',
-        maxWidth: '600px',
-        marginTop: 2,
-        marginBottom: 2,
-        borderRadius: '12px',
-        overflow: 'hidden'
-      }}>
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: '600px',
+          marginTop: 2,
+          marginBottom: 2,
+          borderRadius: '12px',
+          overflow: 'hidden'
+        }}
+      >
         {isVideoUrl(image) ? (
           <video controls style={{ width: '100%', maxHeight: '400px' }}>
-            <source src={image} type="video/mp4" />
+            <source src={image} type='video/mp4' />
             Your browser does not support the video tag.
           </video>
         ) : (
-          <img 
-            src={image} 
-            alt="Certificate media content" 
-            style={{ 
+          <img
+            src={image}
+            alt='Certificate media content'
+            style={{
               width: '100%',
               height: 'auto',
               maxHeight: '400px',
               objectFit: 'contain'
-            }} 
-            loading="lazy" 
+            }}
+            loading='lazy'
           />
         )}
       </Box>
-    );
-  };
+    )
+  }
 
   return (
-    <Card sx={{ 
-      minHeight: '200px',
-      width: '100%',
-      borderRadius: '20px',
-      backgroundColor: '#FFFFFF',
-      backgroundImage: 'none',
-      color: '#212529',
-      marginBottom: '2rem',
-      position: 'relative'
-    }}>
+    <Card
+      sx={{
+        minHeight: '200px',
+        width: '100%',
+        borderRadius: '20px',
+        backgroundColor: '#FFFFFF',
+        backgroundImage: 'none',
+        color: '#212529',
+        marginBottom: '2rem',
+        position: 'relative'
+      }}
+    >
       <CardContent>
         <Stack spacing={3}>
-          <Box id="certificate-content">
-            <IconButton 
-              onClick={() => navigate(-1)} 
-              sx={{ position: 'absolute', top: 16, right: 16 }}
-            >
+          <Box id='certificate-content'>
+            <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', top: 16, right: 16 }}>
               <CloseIcon />
             </IconButton>
-            
+
             <Box
               component='img'
               src={badge}
@@ -179,95 +180,105 @@ const Certificate: React.FC<CertificateProps> = ({
               }}
             />
 
-            <Typography variant="h4" sx={{ 
-              fontSize: '36px',
-              fontWeight: 600,
-              marginBottom: 1,
-              textAlign: 'center',
-              color: '#2D6A4F'
-            }}>
+            <Typography
+              variant='h4'
+              sx={{
+                fontSize: '36px',
+                fontWeight: 600,
+                marginBottom: 1,
+                textAlign: 'center',
+                color: '#2D6A4F'
+              }}
+            >
               Certificate
             </Typography>
-            <Typography variant="h6" sx={{ 
-              fontSize: '16px',
-              color: '#666',
-              marginBottom: 4,
-              textAlign: 'center',
-              textTransform: 'uppercase',
-              letterSpacing: '2px'
-            }}>
+            <Typography
+              variant='h6'
+              sx={{
+                fontSize: '16px',
+                color: '#666',
+                marginBottom: 4,
+                textAlign: 'center',
+                textTransform: 'uppercase',
+                letterSpacing: '2px'
+              }}
+            >
               OF SKILL VALIDATION
             </Typography>
 
-            <Typography variant="h3" sx={{ 
-              fontSize: '32px',
-              fontFamily: "'Roboto', sans-serif",
-              fontWeight: 500,
-              marginBottom: 3,
-              textAlign: 'center',
-              color: '#2D6A4F'
-            }}>
+            <Typography
+              variant='h3'
+              sx={{
+                fontSize: '32px',
+                fontFamily: "'Roboto', sans-serif",
+                fontWeight: 500,
+                marginBottom: 3,
+                textAlign: 'center',
+                color: '#2D6A4F'
+              }}
+            >
               {curator}
             </Typography>
-            <Typography variant="h5" sx={{ 
-              fontSize: '20px',
-              fontWeight: 500,
-              marginBottom: 3,
-              textAlign: 'center',
-              color: '#333'
-            }}>
+            <Typography
+              variant='h5'
+              sx={{
+                fontSize: '20px',
+                fontWeight: 500,
+                marginBottom: 3,
+                textAlign: 'center',
+                color: '#333'
+              }}
+            >
               {subject || 'Claim Subject'}
             </Typography>
 
-            <Typography sx={{ 
-              fontSize: '16px',
-              color: '#666',
-              marginBottom: 4,
-              textAlign: 'center',
-              maxWidth: '600px',
-              margin: '0 auto',
-              lineHeight: '1.6'
-            }}>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                color: '#666',
+                marginBottom: 4,
+                textAlign: 'center',
+                maxWidth: '600px',
+                margin: '0 auto',
+                lineHeight: '1.6'
+              }}
+            >
               {statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
             </Typography>
 
             {renderMedia()}
-          
-            
-            
-            
-            
+
             {validations && validations.length > 0 && (
               <Box sx={{ width: '100%', mt: 4 }}>
-                <Typography variant="h6" color="#2D6A4F" textAlign="center" marginBottom={3}>
+                <Typography variant='h6' color='#2D6A4F' textAlign='center' marginBottom={3}>
                   Endorsed by:
                 </Typography>
-                
-                <Stack direction="row" spacing={2} justifyContent="center">
+
+                <Stack direction='row' spacing={2} justifyContent='center'>
                   {validations.slice(0, 2).map((validation, index) => (
-                    <Card 
-                      key={index} 
-                      sx={{ 
-                        width: 284, 
-                        height: 168, 
-                        p: 2.5, 
-                        boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)', 
+                    <Card
+                      key={index}
+                      sx={{
+                        width: 284,
+                        height: 168,
+                        p: 2.5,
+                        boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
                         borderRadius: 2,
                         cursor: 'pointer',
                         position: 'relative'
                       }}
                       onClick={() => handleClaimClick(validation)}
                     >
-                      <Typography color="#2D6A4F" fontWeight={500} fontSize={20} marginBottom={1}>
+                      <Typography color='#2D6A4F' fontWeight={500} fontSize={20} marginBottom={1}>
                         {validation.author}
                       </Typography>
-                      <Typography color="#212529" fontSize={16}>
+                      <Typography color='#212529' fontSize={16}>
                         {truncateText(validation.statement || '', 50)}
                       </Typography>
                       <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleClaimClick(validation);
+                        onClick={e => {
+                          e.stopPropagation()
+                          handleClaimClick(validation)
                         }}
                         sx={{
                           position: 'absolute',
@@ -311,8 +322,9 @@ const Certificate: React.FC<CertificateProps> = ({
               </Box>
             )}
             {effectiveDate && (
-              <Typography variant="body2" color="#495057" textAlign="center">
-                Issued on: {new Date(effectiveDate).toLocaleDateString('en-US', {
+              <Typography variant='body2' color='#495057' textAlign='center'>
+                Issued on:{' '}
+                {new Date(effectiveDate).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
@@ -321,20 +333,22 @@ const Certificate: React.FC<CertificateProps> = ({
             )}
             {claimId && (
               <Box sx={{ mt: 3, textAlign: 'center' }}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  gap: 1
-                }}>
-                  <Typography variant="body2" color="#495057">
-                    Certificate ID: 
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 1
+                  }}
+                >
+                  <Typography variant='body2' color='#495057'>
+                    Certificate ID:
                   </Typography>
                   <MuiLink
                     href={`/certificate/${claimId}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.location.href = `/certificate/${claimId}`;
+                    onClick={e => {
+                      e.preventDefault()
+                      window.location.href = `/certificate/${claimId}`
                     }}
                     sx={{
                       color: '#2D6A4F',
@@ -353,7 +367,7 @@ const Certificate: React.FC<CertificateProps> = ({
 
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
             <Button
-              variant="contained"
+              variant='contained'
               onClick={handleExport}
               sx={{
                 backgroundColor: '#2D6A4F',
@@ -375,10 +389,10 @@ const Certificate: React.FC<CertificateProps> = ({
       </CardContent>
 
       {/* Validation Dialog */}
-      <Dialog 
-        open={validationDialogOpen} 
-        onClose={handleValidationDialogClose} 
-        maxWidth="md" 
+      <Dialog
+        open={validationDialogOpen}
+        onClose={handleValidationDialogClose}
+        maxWidth='md'
         fullWidth
         sx={{
           '& .MuiDialog-paper': {
@@ -391,26 +405,30 @@ const Certificate: React.FC<CertificateProps> = ({
           }
         }}
       >
-        <DialogTitle sx={{ 
-          color: '#2D6A4F',
-          fontSize: '24px',
-          fontWeight: 600,
-          textAlign: 'center',
-          padding: 3
-        }}>
+        <DialogTitle
+          sx={{
+            color: '#2D6A4F',
+            fontSize: '24px',
+            fontWeight: 600,
+            textAlign: 'center',
+            padding: 3
+          }}
+        >
           All Validations
         </DialogTitle>
-        <DialogContent sx={{ 
-          padding: 3,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: 3
-        }}>
+        <DialogContent
+          sx={{
+            padding: 3,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: 3
+          }}
+        >
           {validations?.map((validation, index) => (
             <Card
               key={index}
               onClick={() => handleClaimClick(validation)}
-              sx={{ 
+              sx={{
                 width: '100%',
                 height: '168px',
                 backgroundColor: '#ffffff',
@@ -421,16 +439,16 @@ const Certificate: React.FC<CertificateProps> = ({
                 cursor: 'pointer'
               }}
             >
-              <Typography color="#2D6A4F" fontWeight={500} fontSize={20} marginBottom={1}>
+              <Typography color='#2D6A4F' fontWeight={500} fontSize={20} marginBottom={1}>
                 {validation.author}
               </Typography>
-              <Typography color="#212529" fontSize={16}>
+              <Typography color='#212529' fontSize={16}>
                 {truncateText(validation.statement || '', 50)}
               </Typography>
               <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleClaimClick(validation);
+                onClick={e => {
+                  e.stopPropagation()
+                  handleClaimClick(validation)
                 }}
                 sx={{
                   position: 'absolute',
@@ -471,9 +489,9 @@ const Certificate: React.FC<CertificateProps> = ({
       </Dialog>
 
       {/* Validation Details Dialog */}
-      <Dialog 
-        open={claimDialogOpen} 
-        onClose={handleClaimDialogClose} 
+      <Dialog
+        open={claimDialogOpen}
+        onClose={handleClaimDialogClose}
         maxWidth={false}
         sx={{
           '& .MuiDialog-paper': {
@@ -503,15 +521,17 @@ const Certificate: React.FC<CertificateProps> = ({
             <Box sx={{ padding: 3 }}>
               <Box sx={{ marginBottom: 3 }}>
                 {selectedValidation.subject && (
-                  <Box sx={{ 
-                    fontSize: '20px',
-                    fontWeight: 500,
-                    color: '#2D6A4F',
-                    marginBottom: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
+                  <Box
+                    sx={{
+                      fontSize: '20px',
+                      fontWeight: 500,
+                      color: '#2D6A4F',
+                      marginBottom: 2,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
                     <MuiLink
                       href={selectedValidation.subject}
                       target='_blank'
@@ -531,29 +551,35 @@ const Certificate: React.FC<CertificateProps> = ({
                     </MuiLink>
                   </Box>
                 )}
-                <Typography sx={{ 
-                  fontSize: '24px',
-                  fontWeight: 500,
-                  color: '#2D6A4F',
-                  marginBottom: 2
-                }}>
+                <Typography
+                  sx={{
+                    fontSize: '24px',
+                    fontWeight: 500,
+                    color: '#2D6A4F',
+                    marginBottom: 2
+                  }}
+                >
                   {selectedValidation.author}
                 </Typography>
-                <Typography sx={{ 
-                  fontSize: '16px',
-                  color: '#212529',
-                  marginBottom: 2,
-                  lineHeight: 1.6
-                }}>
+                <Typography
+                  sx={{
+                    fontSize: '16px',
+                    color: '#212529',
+                    marginBottom: 2,
+                    lineHeight: 1.6
+                  }}
+                >
                   {selectedValidation.statement}
                 </Typography>
-                <Typography sx={{ 
-                  fontSize: '14px',
-                  color: '#495057',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}>
+                <Typography
+                  sx={{
+                    fontSize: '14px',
+                    color: '#495057',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
                   {selectedValidation.effectiveDate &&
                     new Date(selectedValidation.effectiveDate).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -565,35 +591,37 @@ const Certificate: React.FC<CertificateProps> = ({
               <Box sx={{ marginTop: 3 }}>
                 {selectedValidation.howKnown && (
                   <Box sx={{ marginBottom: 2 }}>
-                    <Typography sx={{ 
-                      fontWeight: 500,
-                      color: '#495057',
-                      minWidth: '150px',
-                      display: 'inline-block'
-                    }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: '#495057',
+                        minWidth: '150px',
+                        display: 'inline-block'
+                      }}
+                    >
                       How Known:
                     </Typography>
-                    <Typography sx={{ color: '#212529' }}>
-                      {selectedValidation.howKnown.replace(/_/g, ' ')}
-                    </Typography>
+                    <Typography sx={{ color: '#212529' }}>{selectedValidation.howKnown.replace(/_/g, ' ')}</Typography>
                   </Box>
                 )}
                 {selectedValidation.sourceURI && (
                   <Box sx={{ marginBottom: 2 }}>
-                    <Typography sx={{ 
-                      fontWeight: 500,
-                      color: '#495057',
-                      minWidth: '150px',
-                      display: 'inline-block'
-                    }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: '#495057',
+                        minWidth: '150px',
+                        display: 'inline-block'
+                      }}
+                    >
                       Source:
                     </Typography>
                     <Typography>
                       <MuiLink
                         href={selectedValidation.sourceURI}
                         target='_blank'
-                        sx={{ 
-                          color: '#2D6A4F', 
+                        sx={{
+                          color: '#2D6A4F',
                           textDecoration: 'none',
                           '&:hover': {
                             textDecoration: 'underline'
@@ -607,17 +635,17 @@ const Certificate: React.FC<CertificateProps> = ({
                 )}
                 {selectedValidation.confidence !== undefined && (
                   <Box sx={{ marginBottom: 2 }}>
-                    <Typography sx={{ 
-                      fontWeight: 500,
-                      color: '#495057',
-                      minWidth: '150px',
-                      display: 'inline-block'
-                    }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: '#495057',
+                        minWidth: '150px',
+                        display: 'inline-block'
+                      }}
+                    >
                       Confidence:
                     </Typography>
-                    <Typography sx={{ color: '#212529' }}>
-                      {selectedValidation.confidence}
-                    </Typography>
+                    <Typography sx={{ color: '#212529' }}>{selectedValidation.confidence}</Typography>
                   </Box>
                 )}
               </Box>
@@ -626,7 +654,7 @@ const Certificate: React.FC<CertificateProps> = ({
         </DialogContent>
       </Dialog>
     </Card>
-  );
-};
+  )
+}
 
-export default Certificate;
+export default Certificate
