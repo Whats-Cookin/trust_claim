@@ -4,37 +4,17 @@ import { Box, Typography, CircularProgress } from '@mui/material'
 import Certificate from '../components/certificate'
 import { BACKEND_BASE_URL } from '../utils/settings'
 
-interface Validation {
-  author: string
-  statement: string
-  date?: string
-  confidence?: number
-  howKnown?: string
-  sourceURI?: string
-  image?: string
-  mediaUrl?: string
-}
-
-interface Claim {
-  curator: string
-  subject: string
-  statement?: string
-  effectiveDate?: string
-  sourceURI?: string
-  validations: Validation[]
-}
-
 const CertificateView: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [claimData, setClaimData] = useState<Claim | null>(null)
+  const [data, setData] = useState<any>(null)
 
   useEffect(() => {
     const fetchClaimData = async () => {
       try {
-        // First, fetch the claim details
-        const claimResponse = await fetch(`${BACKEND_BASE_URL}/certificate/${id}`, {
+        // Fetch the claim details
+        const claimResponse = await fetch(`${BACKEND_BASE_URL}/claims/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -54,7 +34,7 @@ const CertificateView: React.FC = () => {
         const claimData = await claimResponse.json()
         console.log('Fetched claim data:', claimData)
 
-        // Then, fetch the validations for this claim
+        // Fetch the validations for this claim
         const validationsResponse = await fetch(`${BACKEND_BASE_URL}/validations?claimId=${id}`, {
           method: 'GET',
           headers: {
@@ -71,27 +51,11 @@ const CertificateView: React.FC = () => {
         const validationsData = await validationsResponse.json()
         console.log('Fetched validations:', validationsData)
 
-        // Transform the data to match the Certificate component's expected format
-        const transformedData: Claim = {
-          curator: claimData.curator || claimData.author || 'Unknown Curator',
-          subject: claimData.subject || 'Unknown Subject',
-          statement: claimData.statement || '',
-          effectiveDate: claimData.effectiveDate || new Date().toISOString(),
-          sourceURI: claimData.sourceURI || '',
-          validations: (validationsData || []).map((validation: any) => ({
-            author: validation.author || 'Unknown Author',
-            statement: validation.statement || '',
-            date: validation.effectiveDate || validation.date,
-            confidence: validation.confidence,
-            howKnown: validation.howKnown,
-            sourceURI: validation.sourceURI,
-            image: validation.image,
-            mediaUrl: validation.mediaUrl
-          }))
-        }
-
-        console.log('Transformed data:', transformedData)
-        setClaimData(transformedData)
+        // Structure the data similar to how it's structured in ClaimDetails
+        setData({
+          claim: claimData,
+          validations: validationsData || []
+        })
       } catch (err) {
         console.error('Fetch error:', err)
         setError(err instanceof Error ? err.message : 'An error occurred while fetching the claim data')
@@ -121,7 +85,7 @@ const CertificateView: React.FC = () => {
     )
   }
 
-  if (!claimData) {
+  if (!data || !data.claim || !data.claim.claim) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
         <Typography>No claim data found</Typography>
@@ -129,15 +93,19 @@ const CertificateView: React.FC = () => {
     )
   }
 
+  const claim = data.claim.claim;
+
   return (
     <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
       <Certificate
-        curator={claimData.curator}
-        subject={claimData.subject}
-        statement={claimData.statement}
-        effectiveDate={claimData.effectiveDate}
-        sourceURI={claimData.sourceURI}
-        validations={claimData.validations}
+        curator={claim.curator}
+        subject={claim.subject}
+        statement={claim.statement}
+        effectiveDate={claim.effectiveDate}
+        sourceURI={claim.sourceURI}
+        validations={data.validations || []}
+        claimId={id}
+        image={claim.image}
       />
     </Box>
   )
