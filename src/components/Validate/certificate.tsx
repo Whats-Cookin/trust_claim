@@ -417,7 +417,6 @@ const Certificate = ({
                 </Typography>
               </Box>
             )}
-
             {sourceURI && (
               <MuiLink 
                 href={sourceURI} 
@@ -436,6 +435,8 @@ const Certificate = ({
                 View Source
               </MuiLink>
             )}
+
+            
 
             {validations && validations.length > 0 && (
               <EndorsementSection id='validation-section'>
