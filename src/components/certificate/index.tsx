@@ -419,7 +419,7 @@ const Certificate: React.FC<CertificateProps> = ({
             >
               Export Certificate
             </Button>
-            
+
             <Button
               variant='contained'
               onClick={handleShareClick}
