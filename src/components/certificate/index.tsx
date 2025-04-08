@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -11,11 +11,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Link as MuiLink
+  Link as MuiLink,
+  Popover,
+  Snackbar
 } from '@mui/material'
 import badge from '../../assets/images/badge.svg'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ShareIcon from '@mui/icons-material/Share'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { useNavigate } from 'react-router-dom'
 import html2pdf from 'html2pdf.js'
 
@@ -57,6 +62,13 @@ const Certificate: React.FC<CertificateProps> = ({
   const [validationDialogOpen, setValidationDialogOpen] = useState(false)
   const [selectedValidation, setSelectedValidation] = useState<Validation | null>(null)
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [currentUrl, setCurrentUrl] = useState('')
+
+  useEffect(() => {
+    setCurrentUrl(window.location.href)
+  }, [])
 
   const handleExport = () => {
     const element = document.getElementById('certificate-content')
@@ -88,6 +100,42 @@ const Certificate: React.FC<CertificateProps> = ({
   const handleClaimDialogClose = () => {
     setClaimDialogOpen(false)
     setSelectedValidation(null)
+  }
+
+  const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(currentUrl)
+      setSnackbarOpen(true)
+      handleClose()
+    } catch (err) {
+      console.error('Failed to copy link:', err)
+    }
+  }
+
+  const generateLinkedInShareUrl = (credentialName: string, url: string) => {
+    const encodedUrl = encodeURIComponent(url)
+    const message = encodeURIComponent(
+      `Excited to share my verified ${credentialName} credential from LinkedTrust! Check it out here: ${url} Thanks to my validators for confirming my skills!`
+    )
+    return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
+  }
+
+  const handleLinkedInPost = () => {
+    let credentialName = 'a new'
+    if (subject && !subject.includes('https')) {
+      credentialName = subject
+    }
+    const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
+    window.open(linkedInShareUrl, '_blank')
+    handleClose()
   }
 
   const truncateText = (text: string, length: number) => {
@@ -218,18 +266,6 @@ const Certificate: React.FC<CertificateProps> = ({
               }}
             >
               {curator}
-            </Typography>
-            <Typography
-              variant='h5'
-              sx={{
-                fontSize: '20px',
-                fontWeight: 500,
-                marginBottom: 3,
-                textAlign: 'center',
-                color: '#333'
-              }}
-            >
-              {subject || 'Claim Subject'}
             </Typography>
 
             <Typography
@@ -365,7 +401,7 @@ const Certificate: React.FC<CertificateProps> = ({
             )}
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
             <Button
               variant='contained'
               onClick={handleExport}
@@ -375,7 +411,6 @@ const Certificate: React.FC<CertificateProps> = ({
                 padding: '8px 16px',
                 borderRadius: '8px',
                 textTransform: 'none',
-                fontSize: '16px',
                 fontWeight: 500,
                 '&:hover': {
                   backgroundColor: '#1B4332'
@@ -384,9 +419,65 @@ const Certificate: React.FC<CertificateProps> = ({
             >
               Export Certificate
             </Button>
+
+            <Button
+              variant='contained'
+              onClick={handleShareClick}
+              sx={{
+                backgroundColor: '#2D6A4F',
+                color: '#ffffff',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                textTransform: 'none',
+                fontWeight: 500,
+                '&:hover': {
+                  backgroundColor: '#1B4332'
+                }
+              }}
+            >
+              Share
+            </Button>
           </Box>
         </Stack>
       </CardContent>
+
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+      >
+        <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Button
+            startIcon={<LinkedInIcon />}
+            onClick={handleLinkedInPost}
+            sx={{ color: '#2D6A4F', justifyContent: 'flex-start' }}
+          >
+            Share on LinkedIn
+          </Button>
+          <Button
+            startIcon={<ContentCopyIcon />}
+            onClick={handleCopyLink}
+            sx={{ color: '#2D6A4F', justifyContent: 'flex-start' }}
+          >
+            Copy Link
+          </Button>
+        </Box>
+      </Popover>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message='Link copied to clipboard!'
+      />
 
       {/* Validation Dialog */}
       <Dialog
