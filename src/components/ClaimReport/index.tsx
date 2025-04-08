@@ -6,13 +6,13 @@ import {
   Typography,
   Card,
   CardContent,
-  Grid,
   CircularProgress,
   Box,
   useTheme,
   useMediaQuery,
   Button
 } from '@mui/material'
+import Grid from '@mui/material/Grid';
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
