@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle} from '@mui/material'
-import Grid from '@mui/material/Grid';
+import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle } from '@mui/material'
+import Grid from '@mui/material/Grid'
 import { Close } from '@mui/icons-material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { useTheme } from '@mui/system'
