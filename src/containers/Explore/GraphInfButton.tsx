@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import DensityMediumIcon from '@mui/icons-material/DensityMedium'
-import { Grid, IconButton, useMediaQuery, useTheme } from '@mui/material'
+import { IconButton, useMediaQuery, useTheme } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import Left from '../../assets/leftClick.svg'
 import Right from '../../assets/rightClick.svg'
@@ -109,25 +109,25 @@ export default function BasicModal() {
               padding: '20px'
             }}
           >
-            <Grid container spacing={2} alignItems='center' gap={10}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 2 }}>
+                <Box sx={{ flex: 4, display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
                   <img src={Left} alt='Left Click' width='97.59' height='115.82' />
-                </Grid>
-                <Grid item xs={8} sx={{ padding: '1.1vh' }}>
+                </Box>
+                <Box sx={{ flex: 8, padding: '1.1vh' }}>
                   <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
                     Left Click
                   </Typography>
                   <Typography sx={{ fontSize: '15px' }}>
                     When clicked on the nodes, it expands the graph to show more relation, if any.
                   </Typography>
-                </Grid>
+                </Box>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 2 }}>
+                <Box sx={{ flex: 4, display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
                   <img src={Right} alt='Right Click' width='97.59' height='115.82' />
-                </Grid>
-                <Grid item xs={8} sx={{ padding: '1.1vh' }}>
+                </Box>
+                <Box sx={{ flex: 8, padding: '1.1vh' }}>
                   <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
                     Right Click
                   </Typography>
@@ -135,20 +135,20 @@ export default function BasicModal() {
                     When clicked on the nodes, it shows option to either validate a claim or if you want to create a
                     claim.
                   </Typography>
-                </Grid>
+                </Box>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', gap: 2 }}>
+                <Box sx={{ flex: 4, display: 'flex', justifyContent: 'center', padding: '2.2vh' }}>
                   <img src={Middle} alt='Middle Wheel' width='76.99' height='95.62' />
-                </Grid>
-                <Grid item xs={8} sx={{ padding: '1.1vh' }}>
+                </Box>
+                <Box sx={{ flex: 8, padding: '1.1vh' }}>
                   <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
                     Middle Wheel
                   </Typography>
                   <Typography sx={{ fontSize: '15px' }}>Zooms in or zoom out the graph.</Typography>
-                </Grid>
+                </Box>
               </Box>
-            </Grid>
+            </Box>
           </Box>
         </Box>
       </Modal>
