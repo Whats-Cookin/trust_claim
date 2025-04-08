@@ -378,20 +378,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 }}
               />
 
-              <Button
-                variant='outlined'
-                startIcon={<SystemUpdateAltIcon />}
-                onClick={() => exportClaimData(claim)}
-                sx={{
-                  textTransform: 'none',
-                  color: theme.palette.buttontext,
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  borderRadius: '8px'
-                }
-              }}
-            />
-
             <Button
               variant='outlined'
               startIcon={<SystemUpdateAltIcon />}
@@ -533,7 +519,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               {/* Recommendations */}
               <Box>
-                <Typography color='white'>{data.validations.length} Recommendations</Typography>
+                <Typography color='white'>{data.validations.length} Validations</Typography>
               </Box>
             </Box>
           </Box>
