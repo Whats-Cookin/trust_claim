@@ -19,7 +19,9 @@ import badge from '../assets/images/badge.svg'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import html2pdf from 'html2pdf.js'
+import { useNavigate } from 'react-router-dom'
 
+// Keep your existing styled components
 const CertificateContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -281,11 +283,13 @@ const ValidationDetailsContent = styled(Box)(({ theme }) => ({
     }
   }
 }))
-
 interface CertificateProps {
   curator: string
   subject: string
   statement?: string
+  effectiveDate?: string
+  sourceURI?: string
+  claimId?: string
   validations?: Array<{
     author: string
     statement: string
@@ -298,10 +302,34 @@ interface CertificateProps {
   onExport?: (format: 'json' | 'pdf') => void
 }
 
-const Certificate = ({ curator, subject, statement, validations, onExport }: CertificateProps) => {
+const Certificate = ({
+  curator,
+  subject,
+  statement,
+  effectiveDate,
+  sourceURI,
+  claimId,
+  validations,
+  onExport
+}: CertificateProps) => {
+  const navigate = useNavigate()
   const [validationDialogOpen, setValidationDialogOpen] = useState(false)
-  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [selectedValidation, setSelectedValidation] = useState<any>(null)
+  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
+
+  const handleExport = () => {
+    const element = document.getElementById('certificate-container')
+    if (element) {
+      const opt = {
+        margin: 1,
+        filename: `certificate_${claimId || 'export'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      }
+      html2pdf().set(opt).from(element).save()
+    }
+  }
 
   const handleValidationDialogOpen = () => {
     setValidationDialogOpen(true)
@@ -342,6 +370,10 @@ const Certificate = ({ curator, subject, statement, validations, onExport }: Cer
       <CardContent>
         <Stack spacing={3}>
           <CertificateContainer id='certificate-container'>
+            <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', top: 16, right: 16 }}>
+              <CloseIcon />
+            </IconButton>
+
             <Box
               component='img'
               src={badge}
@@ -369,6 +401,37 @@ const Certificate = ({ curator, subject, statement, validations, onExport }: Cer
             <Description>
               {statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
             </Description>
+
+            {effectiveDate && (
+              <Box sx={{ textAlign: 'center', mb: 2 }}>
+                <Typography variant='body2' color='#495057'>
+                  Issued on:{' '}
+                  {new Date(effectiveDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </Typography>
+              </Box>
+            )}
+            {sourceURI && (
+              <MuiLink
+                href={sourceURI}
+                target='_blank'
+                rel='noopener noreferrer'
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  color: '#2D6A4F',
+                  textDecoration: 'none',
+                  '&:hover': { textDecoration: 'underline' }
+                }}
+              >
+                <OpenInNewIcon fontSize='small' />
+                View Source
+              </MuiLink>
+            )}
 
             {validations && validations.length > 0 && (
               <EndorsementSection id='validation-section'>
@@ -419,7 +482,36 @@ const Certificate = ({ curator, subject, statement, validations, onExport }: Cer
                 )}
               </EndorsementSection>
             )}
+
+            {claimId && (
+              <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Typography variant='body2' color='#495057'>
+                  Certificate ID: {claimId}
+                </Typography>
+              </Box>
+            )}
           </CertificateContainer>
+
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+            <Button
+              variant='contained'
+              onClick={handleExport}
+              sx={{
+                backgroundColor: '#2D6A4F',
+                color: '#ffffff',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                textTransform: 'none',
+                fontSize: '16px',
+                fontWeight: 500,
+                '&:hover': {
+                  backgroundColor: '#1B4332'
+                }
+              }}
+            >
+              Export Certificate
+            </Button>
+          </Box>
 
           {/* Validation Dialog */}
           <ValidationDialog open={validationDialogOpen} onClose={handleValidationDialogClose} maxWidth='md' fullWidth>
