@@ -251,8 +251,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleLinkedInPost = () => {
     let credentialName = 'a new'
-    if (data?.edge?.startNode?.name && !data.edge.startNode.name.includes('https')) {
-      credentialName = data.edge.startNode.name
+    if (data?.claim?.claimData?.name && !data.claim.claimData.name.includes('https')) {
+      credentialName = data.claim.claimData.name
     }
 
     const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
@@ -338,9 +338,12 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           >
             <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
               <Typography
+                component={Link}
+                to={data.edge.startNode.nodeUri}
                 variant='h6'
                 color='black'
                 sx={{
+                  textDecoration: 'none',
                   minWidth: 0,
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -349,7 +352,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   fontFamily: 'Roboto'
                 }}
               >
-                {data.edge.startNode.name}
+                {data.claim.claimData.name}
               </Typography>
             </Stack>
           </Stack>
