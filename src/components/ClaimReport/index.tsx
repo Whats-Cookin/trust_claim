@@ -1,3 +1,4 @@
+// RenderClaimInfo.tsx - Last updated: April 8, 2025 - 18:45:32
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
@@ -103,27 +104,6 @@ const DonationReport: React.FC = () => {
           padding: '25px'
         }}
       >
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-          <Typography
-            variant='body1'
-            sx={{
-              color: theme.palette.texts,
-              textAlign: 'center',
-              marginLeft: isMediumScreen ? '0' : '1rem'
-            }}
-          >
-            Claim Report
-            <Box
-              sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                borderRadius: '2px',
-                width: '80%'
-              }}
-            />
-          </Typography>
-        </Box>
-
         <ClaimDetails theme={theme} data={reportData.data} />
 
         {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
