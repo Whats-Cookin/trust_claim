@@ -17,11 +17,11 @@
     "@composedb/client": "0.4.0",
     "@composedb/types": "0.4.0",
     "@didtools/pkh-ethereum": "^0.1.0",
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "5.8.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.1",
     "@mui/lab": "5.0.0-alpha.173",
-    "@mui/material": "^5.15.0",
+    "@mui/material": "^7.0.1",
     "@mui/system": "5.8.2",
     "@mui/x-date-pickers": "^5.0.0-alpha.5",
     "@react-oauth/google": "^0.12.1",
@@ -45,6 +45,7 @@
     "update": "^0.7.4"
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.13.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@types/cytoscape": "^3.19.6",
