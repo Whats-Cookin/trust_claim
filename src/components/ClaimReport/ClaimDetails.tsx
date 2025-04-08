@@ -18,7 +18,6 @@ import ShareIcon from '@mui/icons-material/Share'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
-import CircleIcon from '@mui/icons-material/Circle'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
@@ -46,6 +45,30 @@ const MediaContainer = styled(Box)(({ theme }) => ({
   '& video': {
     width: '100%',
     maxHeight: '400px'
+  }
+}))
+
+// Update the SmallerMediaContainer to center on smaller devices
+const SmallerMediaContainer = styled(Box)(({ theme }) => ({
+  width: '350px',
+  minWidth: '350px',
+  borderRadius: '12px',
+  overflow: 'hidden',
+  alignSelf: 'flex-start',
+  [theme.breakpoints.down('md')]: {
+    margin: '0 auto',
+    maxWidth: '100%',
+    width: '100%'
+  },
+  '& img': {
+    width: '100%',
+    height: 'auto',
+    maxHeight: '350px',
+    objectFit: 'cover'
+  },
+  '& video': {
+    width: '100%',
+    maxHeight: '350px'
   }
 }))
 
@@ -289,7 +312,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   }
                 }}
               />
-              {/* </Box> */}
 
               <Button
                 variant='outlined'
@@ -312,111 +334,90 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             </Stack>
           </Stack>
 
-          {data.claim.image && <MediaContent url={data.claim.image} />}
+          {/* Modified Layout - Image on left, all content on right */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 3,
+              alignItems: { xs: 'center', md: 'flex-start' } // Center items on xs, align to start on md+
+            }}
+          >
+            {/* Left side - Image */}
+            {data.claim.image && <SmallerMediaContent url={data.claim.image} />}
 
-          {/* Info Sections */}
-          <Stack spacing={3}>
-            {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <PermIdentityOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
-              <Box>
-                <TextLabel variant='body2' gutterBottom>
-                  Issuer
-                </TextLabel>
-                <Typography variant='body1'>Ahlam Sayed</Typography>
-              </Box>
-            </Box> */}
+            {/* Right side - All content */}
+            <Box
+              sx={{
+                flex: 1,
+                width: { xs: '100%', md: 'auto' } // Full width on small screens
+              }}
+            >
+              {/* Statement */}
+              {claim.statement && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography color='white'>
+                    {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
+                    {isStatementLong && (
+                      <MuiLink
+                        onClick={handleToggleExpand}
+                        sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
+                      >
+                        {isExpanded ? 'Show Less' : 'See More'}
+                      </MuiLink>
+                    )}
+                  </Typography>
+                </Box>
+              )}
 
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
-                <TextLabel variant='body2' gutterBottom>
-                  Issued On
-                </TextLabel>
+              {/* Issue Date */}
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
+                  <TextLabel variant='body2' gutterBottom>
+                    Issued On
+                  </TextLabel>
+                </Box>
+                <Box>
+                  <Typography variant='body1'>
+                    {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </Typography>
+                </Box>
               </Box>
+
+              {/* Links */}
+              <Box sx={{ mb: 3 }}>
+                <Stack spacing={1}>
+                  <MuiLink
+                    sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
+                    target='_blank'
+                    href={claim.subject}
+                  >
+                    {claim.subject}
+                  </MuiLink>
+                  <MuiLink
+                    sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
+                    target='_blank'
+                    href={claim.sourceURI}
+                  >
+                    {claim.sourceURI}
+                  </MuiLink>
+                </Stack>
+              </Box>
+
+              {/* Recommendations */}
               <Box>
-                <Typography variant='body1'>
-                  {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </Typography>
+                <Typography color='white'>{data.validations.length} Recommendations</Typography>
               </Box>
             </Box>
+          </Box>
 
-            {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ mr: '10px' }}>
-                <img src={Duration} alt='duration icon' />
-              </Box>
-              <Box>
-                <TextLabel variant='body2' gutterBottom>
-                  Duration
-                </TextLabel>
-                <Typography variant='body1'>1 Year</Typography>
-              </Box>
-            </Box> */}
-          </Stack>
-
-          <Stack spacing={3}>
-            {claim.statement && (
-              <Box>
-                <Typography color='white'>
-                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
-                  {isStatementLong && (
-                    <MuiLink
-                      onClick={handleToggleExpand}
-                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
-                    >
-                      {isExpanded ? 'Show Less' : 'See More'}
-                    </MuiLink>
-                  )}
-                </Typography>
-              </Box>
-            )}
-
-            {/* <Box>
-              <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='white'>
-                  Earned through
-                </Typography>
-              </Stack>
-              <Typography color='white'>
-                I developed this skill through hands-on experience, designing solutions for real-world challenges. By
-                collaborating with teams, learning from feedback, and staying curious about user needs, I've honed my
-                ability to create meaningful, intuitive, and impactful designs.
-              </Typography>
-            </Box> */}
-
-            <Box>
-              <Stack spacing={1}>
-                <MuiLink
-                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
-                  target='_blank'
-                  href={claim.subject}
-                >
-                  {claim.subject}
-                </MuiLink>
-                <MuiLink
-                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
-                  target='_blank'
-                  href={claim.sourceURI}
-                >
-                  {claim.sourceURI}
-                </MuiLink>
-              </Stack>
-            </Box>
-
-            <Box>
-              {/* <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                <CircleIcon sx={{ fontSize: '1rem', color: theme.palette.date }} />
-                <Typography variant='h6' color='white'>
-                  Validation Summary
-                </Typography>
-              </Stack> */}
-              <Typography color='white'>{data.validations.length} Recommendations</Typography>
-            </Box>
-          </Stack>
+          {/* Show full-width image if there's no statement - fallback for edge cases */}
+          {data.claim.image && !claim.statement && !data.validations.length && <MediaContent url={data.claim.image} />}
         </Stack>
       </CardContent>
     </Card>
@@ -439,6 +440,22 @@ const MediaContent = ({ url }: { url: string }) => {
         <img src={url} alt='Claim media content' loading='lazy' />
       )}
     </MediaContainer>
+  )
+}
+
+// Add a new component for the smaller media content
+const SmallerMediaContent = ({ url }: { url: string }) => {
+  return (
+    <SmallerMediaContainer>
+      {isVideoUrl(url) ? (
+        <video controls>
+          <source src={url} type='video/mp4' />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <img src={url} alt='Claim media content' loading='lazy' />
+      )}
+    </SmallerMediaContainer>
   )
 }
 
