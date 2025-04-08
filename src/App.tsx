@@ -67,6 +67,7 @@ const App = () => {
 
   const isLoginPage = location.pathname === '/login'
   const isRegisterPage = location.pathname === '/register'
+  const isFeedPage = location.pathname === '/feed'
 
   const globalStyles = (
     <GlobalStyles
@@ -186,7 +187,7 @@ const App = () => {
             </Routes>
           </Box>
         </Box>
-        {!isLoginPage && !isRegisterPage && !isExplorePage && <RightSidebar />}
+        {isFeedPage && <RightSidebar />}
       </Box>
     </ThemeProvider>
   )
