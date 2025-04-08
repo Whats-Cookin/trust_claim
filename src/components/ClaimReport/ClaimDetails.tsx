@@ -55,8 +55,8 @@ const MediaContainer = styled(Box)(({ theme }) => ({
 
 // Update the SmallerMediaContainer with a slightly larger size
 const SmallerMediaContainer = styled(Box)(({ theme }) => ({
-  width: '300px',
-  minWidth: '300px',
+  width: '350px',
+  minWidth: '350px',
   borderRadius: '12px',
   overflow: 'hidden',
   alignSelf: 'flex-start',
@@ -74,12 +74,12 @@ const SmallerMediaContainer = styled(Box)(({ theme }) => ({
   '& img': {
     width: '100%',
     height: 'auto',
-    maxHeight: '300px',
+    maxHeight: '350px',
     objectFit: 'cover'
   },
   '& video': {
     width: '100%',
-    maxHeight: '300px'
+    maxHeight: '350px'
   }
 }))
 
@@ -370,6 +370,20 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               sx={{
                 '& .MuiSnackbarContent-root': {
                   backgroundColor: theme.palette.cardBackground,
+                    color: theme.palette.buttontext,
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    borderRadius: '8px'
+                  }
+                }}
+              />
+
+              <Button
+                variant='outlined'
+                startIcon={<SystemUpdateAltIcon />}
+                onClick={() => exportClaimData(claim)}
+                sx={{
+                  textTransform: 'none',
                   color: theme.palette.buttontext,
                   fontSize: '16px',
                   fontWeight: 'bold',
@@ -397,6 +411,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               Export
             </Button>
           </Stack>
+
 
           {/* Content Row */}
           <Box
@@ -522,6 +537,10 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </Box>
             </Box>
           </Box>
+
+          {/* Show full-width image if there's no statement - fallback for edge cases */}
+          {data.claim.image && !claim.statement && !data.validations.length && <MediaContent url={data.claim.image} />}
+
         </Stack>
       </CardContent>
 
@@ -571,5 +590,41 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     </Card>
   )
 })
+
+
+const MediaContent = ({ url }: { url: string }) => {
+  return (
+    <MediaContainer>
+      {isVideoUrl(url) ? (
+        <video controls>
+          <source
+            src={url}
+            // type={`video/${url.split('.').pop()}`}
+            type='video/mp4'
+          />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <img src={url} alt='Claim media content' loading='lazy' />
+      )}
+    </MediaContainer>
+  )
+}
+
+// Add a new component for the smaller media content
+const SmallerMediaContent = ({ url }: { url: string }) => {
+  return (
+    <SmallerMediaContainer>
+      {isVideoUrl(url) ? (
+        <video controls>
+          <source src={url} type='video/mp4' />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <img src={url} alt='Claim media content' loading='lazy' />
+      )}
+    </SmallerMediaContainer>
+  )
+}
 
 export default ClaimDetails

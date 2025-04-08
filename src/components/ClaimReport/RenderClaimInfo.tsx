@@ -124,20 +124,6 @@ const RenderClaimInfo = ({
               </MuiLink>
             )}
 
-            <Typography
-              variant='body2'
-              sx={{
-                color: theme.palette.cardDate,
-                fontWeight: 400,
-                fontSize: '16px'
-              }}
-            >
-              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </Typography>
             {claim.statement && (
               <Typography
                 variant='body2'
@@ -166,8 +152,25 @@ const RenderClaimInfo = ({
           </Box>
         </Box>
 
-        {isExpanded && hasExtraDetails && (
+        {hasExtraDetails && (
           <Box sx={{ paddingLeft: '10px' }}>
+            <Typography
+              variant='body2'
+              marginBottom={2}
+              marginTop={2}
+              sx={{
+                color: theme.palette.texts,
+                fontWeight: 400,
+                fontSize: '16px'
+              }}
+            >
+              Issued on:{' '}
+              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </Typography>
             {otherEntries.map(([key, value]) => (
               <Typography
                 key={key}
@@ -187,7 +190,22 @@ const RenderClaimInfo = ({
                 >
                   {key}:
                 </span>
-                {value}
+                {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
+                  <MuiLink
+                    href={value}
+                    target='_blank'
+                    sx={{
+                      color: theme.palette.link,
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {value}
+                  </MuiLink>
+                ) : (
+                  value
+                )}
               </Typography>
             ))}
           </Box>

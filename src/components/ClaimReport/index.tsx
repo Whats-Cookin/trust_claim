@@ -110,7 +110,7 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='body2'
+                variant='body1'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
@@ -122,7 +122,6 @@ const DonationReport: React.FC = () => {
                   sx={{
                     height: '4px',
                     backgroundColor: theme.palette.maintext,
-                    marginTop: '4px',
                     borderRadius: '2px',
                     width: '80%'
                   }}
