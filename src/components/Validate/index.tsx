@@ -869,7 +869,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 />
               )}
             />
-      
+
             <Typography
               sx={{
                 color: theme.palette.texts,
@@ -1077,7 +1077,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               )}
             />
 
-<Typography
+            <Typography
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
