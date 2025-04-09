@@ -1077,7 +1077,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       ))}
                     </Select>
                     {error && (
-                      <FormHelperText error>{error.message}</FormHelperText> // Display error message
+                      <FormHelperText error>{error.message}</FormHelperText>
                     )}
                   </>
                 )}
