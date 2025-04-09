@@ -869,60 +869,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 />
               )}
             />
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Title (Required):
-            </Typography>
-            <Controller
-              name='title'
-              control={control}
-              defaultValue=''
-              rules={{
-                required: 'This field is required'
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  placeholder='Add your title/role'
-                  {...field}
-                  multiline
-                  rows={4}
-                  sx={{
-                    width: '100%',
-                    height: '55px',
-
-                    mb: '20px',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #A3A3A3',
-                    borderRadius: '8px',
-
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts,
-                        fontWeight: 400,
-                        fontSize: 16
-                      }
-                    }
-                  }}
-                  margin='normal'
-                  error={Boolean(error)}
-                  helperText={error ? error.message : ''}
-                />
-              )}
-            />
+      
             <Typography
               sx={{
                 color: theme.palette.texts,
@@ -1130,7 +1077,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               )}
             />
 
-            <Typography
+<Typography
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
@@ -1140,7 +1087,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 letterSpacing: '0%'
               }}
             >
-              Effective Date (Required):
+              Effective Date (required):
             </Typography>
 
             <FormControl sx={{ mb: '30px', width: '100%', mr: 'auto' }}>
