@@ -121,7 +121,7 @@ const MediaUploader = <TFieldValues extends FieldValues>({
           <Box
             sx={{
               display: 'flex',
-              width: '47.708vw',
+              width: '100%',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
