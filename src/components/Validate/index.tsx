@@ -182,7 +182,7 @@ const Badge = (claim: any) => {
       }}
     >
       {icon}
-      <Typography variant='caption' sx={{ color: color, fontWeight: '600', fontSize: '12px' }}>
+      <Typography variant='caption' sx={{ color: color, fontSize: '12px' }}>
         {claim.claim === 'validated'
           ? 'Validation'
           : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1) || 'Claim'}
@@ -638,7 +638,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 padding: '0 5px',
                                 margin: '5px 0',
                                 fontSize: '14px',
-                                fontWeight: 500,
                                 '&:hover': {
                                   backgroundColor: 'transparent',
                                   textDecoration: 'underline'
@@ -826,7 +825,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Typography>
             <FormControl
               margin='normal'
-              
               sx={{
                 backgroundColor: '#ffffff',
                 border: '1px solid #A3A3A3',
@@ -859,11 +857,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   <>
                     <Select
                       displayEmpty
-                      renderValue={(selected) => {
+                      renderValue={selected => {
                         if (selected === '') {
-                          return <Typography sx={{ color: '#6C757D' }}>Select one</Typography>;
+                          return <Typography sx={{ color: '#6C757D' }}>Select one</Typography>
                         }
-                        return selected;
+                        return selected
                       }}
                       {...field}
                       sx={{
@@ -957,7 +955,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </>
                 )}
               />
-            </FormControl>            
+            </FormControl>
             <Typography
               sx={{
                 mb: '5px',
@@ -981,7 +979,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <TextField
                   placeholder='Add your website '
                   {...field}
-                  
                   rows={4}
                   sx={{
                     width: '100%',
@@ -1036,7 +1033,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <TextField
                   placeholder='Explain why you are validating or rejecting this credential'
                   {...field}
-                  
                   rows={4}
                   sx={{
                     width: '100%',
@@ -1081,68 +1077,68 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Typography>
             {/* Effective Dates */}
             <FormControl sx={{ mb: '30px', width: '100%', mr: 'auto' }}>
-  <Controller
-    name='effectiveDate'
-    control={control}
-    render={({ field }) => (
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          {...field}
-          renderInput={params => (
-            <TextField
-              {...params}
-              placeholder="mm/dd/yyyy"
-              sx={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #A3A3A3',
-                borderRadius: '8px',
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'transparent'
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'transparent'
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'transparent'
-                  }
-                },
-                '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-                  color: '#0A1C1D'
-                },
-                '& .MuiInputBase-input': {
-                  color: '#6C757D',
-                  fontSize: 16
-                },
-                '& input::placeholder': {
-                  color: '#6C757D',
-                  opacity: 1
-                }
-              }}
-              margin='normal'
-              InputProps={{
-                ...params.InputProps,
-                sx: {
-                  '&:before': {
-                    borderBottom: 'none'
-                  },
-                  '&:hover:not(.Mui-disabled):before': {
-                    borderBottom: 'none'
-                  },
-                  '&.Mui-focused:after': {
-                    borderBottom: 'none'
-                  }
-                }
-              }}
-            />
-          )}
-          value={field.value}
-          onChange={date => field.onChange(date)}
-        />
-      </LocalizationProvider>
-    )}
-  />
-</FormControl>
+              <Controller
+                name='effectiveDate'
+                control={control}
+                render={({ field }) => (
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                      {...field}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          placeholder='mm/dd/yyyy'
+                          sx={{
+                            backgroundColor: '#ffffff',
+                            border: '1px solid #A3A3A3',
+                            borderRadius: '8px',
+                            '& .MuiOutlinedInput-root': {
+                              '& fieldset': {
+                                borderColor: 'transparent'
+                              },
+                              '&:hover fieldset': {
+                                borderColor: 'transparent'
+                              },
+                              '&.Mui-focused fieldset': {
+                                borderColor: 'transparent'
+                              }
+                            },
+                            '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                              color: '#0A1C1D'
+                            },
+                            '& .MuiInputBase-input': {
+                              color: '#6C757D',
+                              fontSize: 16
+                            },
+                            '& input::placeholder': {
+                              color: '#6C757D',
+                              opacity: 1
+                            }
+                          }}
+                          margin='normal'
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: {
+                              '&:before': {
+                                borderBottom: 'none'
+                              },
+                              '&:hover:not(.Mui-disabled):before': {
+                                borderBottom: 'none'
+                              },
+                              '&.Mui-focused:after': {
+                                borderBottom: 'none'
+                              }
+                            }
+                          }}
+                        />
+                      )}
+                      value={field.value}
+                      onChange={date => field.onChange(date)}
+                    />
+                  </LocalizationProvider>
+                )}
+              />
+            </FormControl>
             <Typography
               sx={{
                 mb: '5px',
