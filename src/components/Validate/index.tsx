@@ -497,8 +497,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               textAlign: 'center',
               marginLeft: isMediumScreen ? '0' : '1rem',
               marginTop: isMediumScreen ? '0' : '1rem',
-              fontSize: '20px',
-              fontWeight: '700'
+              fontSize: '20px'
             }}
           >
             Validate the Credential
@@ -613,7 +612,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                   padding: '5px 1 1 5px',
                                   wordBreak: 'break-word',
                                   fontSize: '16px !important',
-                                  fontWeight: 500,
+
                                   marginBottom: '1px',
                                   color: theme.palette.claimtext
                                 }}
@@ -809,75 +808,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 color: theme.palette.texts,
                 marginTop: '10px',
                 mb: '30px',
-                fontSize: '20px',
-                fontWeight: '700'
-              }}
-            >
-              Validator Information
-            </Typography>
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Website (Required):
-            </Typography>
-            <Controller
-              name='webTitle'
-              control={control}
-              defaultValue=''
-              rules={{
-                required: 'This field is required'
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  placeholder='Add your website '
-                  {...field}
-                  multiline
-                  rows={4}
-                  sx={{
-                    width: '100%',
-                    height: '55px',
-
-                    mb: '20px',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #A3A3A3',
-                    borderRadius: '8px',
-
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts,
-                        fontWeight: 400,
-                        fontSize: 16
-                      }
-                    }
-                  }}
-                  margin='normal'
-                  error={Boolean(error)}
-                  helperText={error ? error.message : ''}
-                />
-              )}
-            />
-
-            <Typography
-              sx={{
-                color: theme.palette.texts,
-
-                marginTop: '10px',
-                mb: '30px',
-                fontSize: '20px',
-                fontWeight: '700'
+                fontSize: '20px'
               }}
             >
               Credential Validation Details
@@ -886,7 +817,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
-                fontWeight: 600,
                 fontSize: '16px',
                 lineHeight: '100%',
                 letterSpacing: '0%'
@@ -896,6 +826,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             </Typography>
             <FormControl
               margin='normal'
+              
               sx={{
                 backgroundColor: '#ffffff',
                 border: '1px solid #A3A3A3',
@@ -907,12 +838,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   '& fieldset': {
                     borderColor: 'transparent'
                   },
-                  '&:hover fieldset': {
-                    borderColor: 'transparent'
-                  },
+                  // '&:hover fieldset': {
+                  //   borderColor: 'transparent'
+                  // },
                   '& .MuiInputBase-input': {
                     color: theme.palette.texts,
-                    fontWeight: 400,
                     fontSize: 16
                   }
                 }
@@ -929,6 +859,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   <>
                     <Select
                       displayEmpty
+                      renderValue={(selected) => {
+                        if (selected === '') {
+                          return <Typography sx={{ color: '#6C757D' }}>Select one</Typography>;
+                        }
+                        return selected;
+                      }}
                       {...field}
                       sx={{
                         '& .MuiSelect-icon': {
@@ -938,15 +874,14 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           border: 'none'
                         },
                         '& .MuiInputBase-input': {
-                          fontWeight: 400,
                           fontSize: 16,
-                          color: '#A3A3A3'
+                          color: field.value === '' ? '#6C757D' : theme.palette.texts
                         }
                       }}
                       error={Boolean(error)} // Pass the error state to the Select component
                     >
-                      <MenuItem value='' disabled>
-                        Explain why you are validating or rejecting this credential{' '}
+                      <MenuItem value='' disabled sx={{ color: '#6C757D' }}>
+                        Select one
                       </MenuItem>
                       {inputOptions.howKnown.map((option, index: number) => (
                         <MenuItem
@@ -968,7 +903,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             },
                             '& .MuiInputBase-input': {
                               color: theme.palette.texts,
-                              fontWeight: 400,
+
                               fontSize: 16
                             },
                             '&:active': {
@@ -1022,12 +957,67 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </>
                 )}
               />
-            </FormControl>
+            </FormControl>            
             <Typography
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
-                fontWeight: 600,
+
+                fontSize: '16px',
+                lineHeight: '100%',
+                letterSpacing: '0%'
+              }}
+            >
+              Website (Required):
+            </Typography>
+            <Controller
+              name='webTitle'
+              control={control}
+              defaultValue=''
+              rules={{
+                required: 'This field is required'
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  placeholder='Add your website '
+                  {...field}
+                  
+                  rows={4}
+                  sx={{
+                    width: '100%',
+                    height: '55px',
+
+                    mb: '20px',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #A3A3A3',
+                    borderRadius: '8px',
+
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: 'transparent'
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'transparent'
+                      },
+                      '& .MuiInputBase-input': {
+                        color: theme.palette.texts,
+
+                        fontSize: 16
+                      }
+                    }
+                  }}
+                  margin='normal'
+                  error={Boolean(error)}
+                  helperText={error ? error.message : ''}
+                />
+              )}
+            />
+
+            <Typography
+              sx={{
+                mb: '5px',
+                fontFamily: 'Montserrat',
+
                 fontSize: '16px',
                 lineHeight: '100%',
                 letterSpacing: '0%'
@@ -1046,7 +1036,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <TextField
                   placeholder='Explain why you are validating or rejecting this credential'
                   {...field}
-                  multiline
+                  
                   rows={4}
                   sx={{
                     width: '100%',
@@ -1065,7 +1055,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       },
                       '& .MuiInputBase-input': {
                         color: theme.palette.texts,
-                        fontWeight: 400,
+
                         fontSize: 16
                       }
                     }
@@ -1081,7 +1071,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
-                fontWeight: 600,
+
                 fontSize: '16px',
                 lineHeight: '100%',
                 letterSpacing: '0%'
@@ -1089,72 +1079,75 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             >
               Effective Date (required):
             </Typography>
-
+            {/* Effective Dates */}
             <FormControl sx={{ mb: '30px', width: '100%', mr: 'auto' }}>
-              <Controller
-                name='effectiveDate'
-                control={control}
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      {...field}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          sx={{
-                            backgroundColor: '#ffffff',
-                            border: '1px solid #A3A3A3',
-                            borderRadius: '8px',
-                            '& .MuiOutlinedInput-root': {
-                              '& fieldset': {
-                                borderColor: 'transparent'
-                              },
-                              '&:hover fieldset': {
-                                borderColor: 'transparent'
-                              },
-                              '&.Mui-focused fieldset': {
-                                borderColor: 'transparent'
-                              }
-                            },
-                            '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-                              color: '#0A1C1D'
-                            },
-                            '& .MuiInputBase-input': {
-                              color: theme.palette.texts,
-                              fontSize: 16,
-                              fontWeight: 400
-                            }
-                          }}
-                          margin='normal'
-                          InputProps={{
-                            ...params.InputProps,
-                            sx: {
-                              '&:before': {
-                                borderBottom: 'none'
-                              },
-                              '&:hover:not(.Mui-disabled):before': {
-                                borderBottom: 'none'
-                              },
-                              '&.Mui-focused:after': {
-                                borderBottom: 'none'
-                              }
-                            }
-                          }}
-                        />
-                      )}
-                      value={field.value}
-                      onChange={date => field.onChange(date)}
-                    />
-                  </LocalizationProvider>
-                )}
-              />
-            </FormControl>
-
+  <Controller
+    name='effectiveDate'
+    control={control}
+    render={({ field }) => (
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          {...field}
+          renderInput={params => (
+            <TextField
+              {...params}
+              placeholder="mm/dd/yyyy"
+              sx={{
+                backgroundColor: '#ffffff',
+                border: '1px solid #A3A3A3',
+                borderRadius: '8px',
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'transparent'
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'transparent'
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'transparent'
+                  }
+                },
+                '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+                  color: '#0A1C1D'
+                },
+                '& .MuiInputBase-input': {
+                  color: '#6C757D',
+                  fontSize: 16
+                },
+                '& input::placeholder': {
+                  color: '#6C757D',
+                  opacity: 1
+                }
+              }}
+              margin='normal'
+              InputProps={{
+                ...params.InputProps,
+                sx: {
+                  '&:before': {
+                    borderBottom: 'none'
+                  },
+                  '&:hover:not(.Mui-disabled):before': {
+                    borderBottom: 'none'
+                  },
+                  '&.Mui-focused:after': {
+                    borderBottom: 'none'
+                  }
+                }
+              }}
+            />
+          )}
+          value={field.value}
+          onChange={date => field.onChange(date)}
+        />
+      </LocalizationProvider>
+    )}
+  />
+</FormControl>
             <Typography
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
-                fontWeight: 600,
+
                 fontSize: '16px',
                 lineHeight: '100%',
                 letterSpacing: '0%'
@@ -1191,7 +1184,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   borderRadius: '24px',
                   bgcolor: '#2D6A4F',
                   fontFamily: 'Roboto',
-                  fontWeight: 500,
                   fontSize: '16px',
                   lineHeight: '100%',
                   letterSpacing: '0%',
