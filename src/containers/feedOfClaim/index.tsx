@@ -34,7 +34,7 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
-import { Medal, ShieldCheck, CircleCheck } from 'lucide-react'
+import Badge from './Badge'
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
@@ -88,47 +88,9 @@ const extractSourceName = (url: string) => {
   const match = regex.exec(url)
   return match ? match[1].replace(/\./g, ' ') : url
 }
-const Badge = (claim: any) => {
-  const bgColor = claim.claim === 'credential' ? '#cce6ff' : claim.claim === 'validated' ? '#f8e8cc' : '#c0efd7'
-  const icon =
-    claim.claim === 'credential' ? (
-      <Medal size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    ) : claim.claim === 'validated' ? (
-      <ShieldCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    ) : (
-      <CircleCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    )
-  const color = claim.claim === 'credential' ? '#0052e0' : claim.claim === 'validated' ? '#e08a00' : '#2d6a4f'
-
-  return (
-    <Box
-      sx={{
-        display: 'inline-block',
-        alignItems: 'center',
-        backgroundColor: bgColor,
-        borderRadius: '12px',
-        padding: '2px 8px',
-        marginBottom: '10px',
-        marginLeft: '10px',
-        height: 'fit-content',
-        color: color,
-        overflow: 'hidden'
-      }}
-    >
-      {icon}
-      <Typography variant='caption' sx={{ color: color, fontWeight: '600', fontSize: '12px' }}>
-        {claim.claim === 'validated'
-          ? 'Validation'
-          : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1) || 'Claim'}
-      </Typography>
-    </Box>
-  )
-}
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.name
-  if (claim.curator) {
-    displayName = `${claim.curator} - ${claim.name}`
-  } else if (extractProfileName(claim.link)) {
+  if (extractProfileName(claim.link)) {
     displayName = `${extractProfileName(claim.link)} - ${claim.name}`
   }
 
@@ -144,7 +106,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
         <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
-        <OpenInNewIcon sx={{ marginLeft: '10px', color: theme.palette.texts, fontSize: '1rem' }} />
+        <OpenInNewIcon sx={{ marginLeft: '10px', color: theme.palette.texts, fontSize: '18px' }} />
       </Typography>
     </Box>
   )
@@ -167,12 +129,13 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-async function fetchClaims(nextPage: string | null, query?: string) {
+async function fetchClaims(nextPage: string | null, query?: string, type?: string) {
   const res = await axios.get(`${BACKEND_BASE_URL}/api/claims/v3`, {
     timeout: 60000,
     params: {
       limit: PAGE_LIMIT,
       search: query || undefined,
+      type: type || undefined,
       nextPage: nextPage || undefined
     }
   })
@@ -182,13 +145,15 @@ async function fetchClaims(nextPage: string | null, query?: string) {
 const FeedClaim: React.FC<IHomeProps> = () => {
   const [claims, setClaims] = useState<ImportedClaim[]>([])
   const claimsRef = useRef<ImportedClaim[]>([])
-
   const location = useLocation()
+
+  const filter = getSearchFromParams()
   const [isLoading, setIsLoading] = useState(true)
   const [loadingNextPage, setLoadingNextPage] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
-  const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
+  const [searchTerm, setSearchTerm] = useState(filter?.query || '')
+  const [type, setType] = useState(filter?.type || '')
 
   const [showNotification, setShowNotification] = useState<boolean>(false)
   const [externalLink, setExternalLink] = useState<string>('')
@@ -205,12 +170,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const isAuth = checkAuth()
 
-  useMemo(() => {
+  useEffect(() => {
     if (isLoading && !initialPageLoad.current) return
+
     initialPageLoad.current = false
+
     setIsLastPage(false)
     setIsLoading(true)
-    fetchClaims(null, searchTerm)
+
+    fetchClaims(null, searchTerm, type)
       .then(({ data }) => {
         claimsRef.current = data.claims
         nextPage.current = data.nextPage
@@ -221,14 +189,18 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false))
-  }, [searchTerm])
+  }, [searchTerm, type])
 
   useEffect(() => {
-    const prev = searchTerm
     const search = getSearchFromParams()
-    if (search === prev) return
+    const newQuery = search.query ?? ''
+    const newType = search.type ?? ''
 
-    setSearchTerm(search ?? '')
+    if (searchTerm !== newQuery || type !== newType) {
+      console.log('URL changed, updating search state:', { newQuery, newType })
+      setSearchTerm(newQuery)
+      setType(newType)
+    }
   }, [location.search])
 
   useEffect(() => {
@@ -251,14 +223,22 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       // To give room for the spinner to render
       await sleep()
 
-      const { data } = await fetchClaims(nextPage.current, searchTerm)
+      const { data } = await fetchClaims(nextPage.current, searchTerm, type)
+
+      // Check if we got any new claims
+      if (data.claims.length === 0) {
+        setIsLastPage(true)
+        setLoadingNextPage(false)
+        return
+      }
 
       claimsRef.current = claimsRef.current.concat(data.claims)
       nextPage.current = data.nextPage
 
-      if (data.claims.length < PAGE_LIMIT) {
+      if (data.claims.length < PAGE_LIMIT || !data.nextPage) {
         setIsLastPage(true)
       }
+
       setClaims(claimsRef.current)
     } catch (err) {
       console.error(err)
@@ -322,7 +302,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   }
 
   function getSearchFromParams() {
-    return new URLSearchParams(location.search).get('query')
+    const search = new URLSearchParams(location.search)
+    return { query: search.get('query'), type: search.get('type') }
   }
 
   return (
@@ -334,11 +315,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {claims.length > 0 ? (
             <MainContainer
               sx={{
-                width: '800px',
                 marginLeft: 'auto',
-                marginRight: '20%',
                 backgroundColor: '#FFFFFF',
-
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
             >
@@ -362,7 +340,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   backgroundColor: '#E0E0E0',
                   marginTop: '4px',
                   borderRadius: '2px',
-                  width: '750px',
+                  width: '100%',
                   mb: '40px'
                 }}
               />
@@ -372,9 +350,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                   <Box sx={{ marginBottom: '15px' }}>
                     <Card
                       sx={{
-                        maxWidth: 'fit-content',
                         height: 'fit-content',
-                        borderRadius: '20px',
+                        textWrap: 'break-word',
+                        borderRadius: '8px',
                         display: isMediumScreen ? 'column' : 'row',
                         backgroundColor:
                           selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
@@ -387,7 +365,16 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              width: '95%',
+                              gap: '10px',
+                              justifyContent: 'space-between'
+                            }}
+                          >
                             <Tooltip
                               title='View the original credential'
                               arrow
@@ -405,21 +392,42 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 }
                               }}
                             >
-                              <Box>
+                              <Box
+                                sx={{
+                                  display: 'block',
+                                  wordBreak: 'break-word',
+                                  overflowWrap: 'anywhere',
+                                  whiteSpace: 'normal'
+                                }}
+                              >
                                 <Link
                                   to={claim.link}
                                   onClick={e => handleLinkClick(e, claim.link)}
                                   target='_blank'
                                   rel='noopener noreferrer'
-                                  style={{ textDecoration: 'none' }}
+                                  style={{
+                                    textDecoration: 'none',
+                                    color: 'inherit',
+                                    fontSize: '18px !important',
+                                    alignItems: 'center'
+                                  }}
                                 >
                                   <ClaimName claim={claim} searchTerm={searchTerm} />
                                 </Link>
-                                <Badge claim={claim.claim} />
                               </Box>
                             </Tooltip>
+
+                            <Badge claim={claim.claim} />
                           </Box>
-                          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+                          <Typography
+                            variant='body1'
+                            sx={{
+                              marginBottom: '10px',
+                              color: theme.palette.text1,
+                              fontSize: '14px !important',
+                              fontFamily: 'Roboto'
+                            }}
+                          >
                             {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
                               claim.effective_date
                             ).toLocaleDateString('en-US', {
@@ -435,6 +443,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
+                                fontSize: '16px !important',
+                                fontWeight: 500,
                                 marginBottom: '1px',
                                 color: theme.palette.claimtext
                               }}
@@ -486,15 +496,19 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             backgroundColor: '#E0E0E0',
                             marginTop: '4px',
                             borderRadius: '2px',
-                            width: '750px',
-                            mb: '10px'
+                            display: 'flex',
+                            width: '100%',
+                            mb: '10px',
+                            mr: 'auto',
+                            ml: 'auto'
                           }}
                         />
                         <Box
                           sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
+                            justifyContent: 'space-evenly',
+                            gap: 2,
                             position: 'relative',
                             mt: '10px',
                             mb: '10px',
@@ -507,14 +521,24 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             startIcon={<VerifiedOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                             variant='outlined'
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '16px',
+                              minWidth: {
+                                xs: '80px',
+                                sm: '100px',
+                                md: '120px'
+                              },
+                              fontSize: {
+                                xs: '10px',
+                                sm: '12px',
+                                md: '16px'
+                              },
+                              p: {
+                                xs: '4px 8px',
+                                md: '9px 24px'
+                              },
                               textTransform: 'none',
-                              marginRight: '10px',
-                              p: '9px 80px',
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
-
                               '&:hover': {
                                 backgroundColor: '#F1F4F6',
                                 borderColor: '#F1F4F6'
@@ -524,15 +548,26 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             Validate
                           </Button>
 
-                          <Link to={'/report/' + claim.claim_id}>
+                          <Link to={'/report/' + claim.claim_id} style={{ textDecoration: 'none' }}>
                             <Button
                               startIcon={<InsertDriveFileOutlinedIcon sx={{ color: '#2D6A4F' }} />}
                               variant='outlined'
                               sx={{
+                                minWidth: {
+                                  xs: '80px',
+                                  sm: '100px',
+                                  md: '120px'
+                                },
+                                fontSize: {
+                                  xs: '10px',
+                                  sm: '12px',
+                                  md: '16px'
+                                },
+                                p: {
+                                  xs: '4px 8px',
+                                  md: '9px 24px'
+                                },
                                 textTransform: 'none',
-                                fontSize: isMediumScreen ? '8px' : '16px',
-                                marginRight: '10px',
-                                p: '9px 80px',
                                 color: '#2D6A4F',
                                 borderColor: 'transparent',
                                 borderRadius: '8px',
@@ -551,10 +586,21 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             onClick={() => handleSchema(claim)}
                             variant='outlined'
                             sx={{
+                              minWidth: {
+                                xs: '80px',
+                                sm: '100px',
+                                md: '120px'
+                              },
+                              fontSize: {
+                                xs: '10px',
+                                sm: '12px',
+                                md: '16px'
+                              },
+                              p: {
+                                xs: '4px 8px',
+                                md: '9px 24px'
+                              },
                               textTransform: 'none',
-                              fontSize: isMediumScreen ? '8px' : '16px',
-                              marginRight: '10px',
-                              p: '9px 80px',
                               color: '#2D6A4F',
                               borderColor: 'transparent',
                               borderRadius: '8px',
@@ -566,8 +612,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             Graph
                           </Button>
-
-                          <Box sx={{ flexGrow: 1 }} />
                         </Box>
 
                         <IconButton
@@ -699,16 +743,18 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 </Fab>
               </Grow>
 
-              {!isLastPage ? (
+              {!isLastPage && (
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Fade in={loadingNextPage}>
                     <CircularProgress color='inherit' />
                   </Fade>
                 </Box>
-              ) : (
-                ''
               )}
 
+              {/* Only show intersection observer if we have less than 10 results */}
+              {claims.length < 10 && !isLastPage && <IntersectionObservee onIntersection={loadNextPage} />}
+
+              {/* Always add an intersection observer at the end */}
               <IntersectionObservee onIntersection={loadNextPage} />
             </MainContainer>
           ) : (

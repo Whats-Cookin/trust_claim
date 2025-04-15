@@ -113,11 +113,11 @@ const darkModeTheme = createTheme({
   typography: {
     fontFamily: 'Montserrat',
     body1: {
-      fontSize: '1rem!important',
+      fontSize: '18px!important',
       fontWeight: 400,
       lineHeight: 1.5,
       '@media (min-width:600px)': {
-        fontSize: '1.25rem'
+        fontSize: '18px'
       }
     },
     body2: {
@@ -198,11 +198,11 @@ const lightModeTheme = createTheme({
   typography: {
     fontFamily: 'Montserrat',
     body1: {
-      fontSize: '1rem!important',
+      fontSize: '18px!important',
       fontWeight: 700,
       lineHeight: 1.5,
       '@media (min-width:600px)': {
-        fontSize: '1.25rem'
+        fontSize: '18px'
       }
     },
     body2: {
@@ -217,7 +217,7 @@ const lightModeTheme = createTheme({
   palette: {
     mode: 'light',
     background: {
-      default: '#F2FAF9'
+      default: '#F8F9FA'
     },
     smallButton: '#797979',
     buttons: '#009688',
@@ -230,7 +230,7 @@ const lightModeTheme = createTheme({
     footerBackground: '#43434380',
     footerText: '#0A1C1D',
     menuBackground: '#D5E7E4',
-    pageBackground: '#F2FAF9',
+    pageBackground: '#F8F9FA',
     formBackground: '#ffffff',
     formMainText: '#000000',
     cardBackground: '#ffffff',

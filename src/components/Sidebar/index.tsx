@@ -37,10 +37,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.greenColor : '#FFFFFF',
     transition: 'background-color 0.3s, box-shadow 0.3s',
-    minHeight: '65px',
+    minHeight: '44px',
     color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
     borderRadius: '8px',
-    padding: '0 20px',
+    width: '270px',
+    maxWidth: '270px',
+    pl: '56px',
     '&:hover': {
       color: '#2D6A4F'
     }
@@ -57,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
       variant='permanent'
       sx={{
         '& .MuiDrawer-paper': {
-          minWidth: { xs: 160, md: 200, lg: 240 },
+          width: 'clamp(294px, 20vw, 350px)',
           boxSizing: 'border-box',
           backgroundColor: '#FFFFFF',
           color: '#212529',
@@ -68,8 +70,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           overflow: 'hidden',
           borderRight: 'none',
           borderRadius: '0 8px 8px 0',
-          marginTop: isNavbarVisible && !isAuthPage ? { xs: '100px', md: '150px' } : '0',
-          height: isNavbarVisible && !isAuthPage ? { xs: 'calc(100vh - 100px)', md: 'calc(100vh - 150px)' } : '100vh',
+          position: 'fixed',
+          bottom: '0',
+          marginTop: isNavbarVisible && !isAuthPage ? `calc(clamp(50px, 6.146vw, 118px) + 56px)` : '0',
+          height: isNavbarVisible && !isAuthPage ? `calc(100vh - clamp(50px, 6.146vw, 118px))` : '100vh',
           boxShadow: '1px 1px 10px rgba(0, 0, 0, 0.25)'
         }
       }}
@@ -157,8 +161,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           <ListItemButton
             sx={{
               gap: theme.spacing(2),
-              minHeight: { xs: '50px', md: '65px' },
-              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+              minHeight: '44px',
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } },
+              borderRadius: '8px',
+              height: '44px',
+              pl: '56px'
             }}
             onClick={handleLogout}
           >
@@ -178,7 +185,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             sx={{
               gap: theme.spacing(2),
               ...getActiveStyle('/login'),
-              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } }
+              '&:hover': { color: '#2D6A4F', '& svg': { color: '#2D6A4F' } },
+              borderRadius: '8px',
+              height: '44px'
             }}
             onClick={() => navigate('/login')}
           >
@@ -196,47 +205,47 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
         )}
       </List>
 
-      <Footer />
+      {/* <Footer /> */}
     </Drawer>
   )
 }
 
-const Footer = () => {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '0.9em',
-        width: '100%',
-        position: 'relative',
-        bottom: '9%'
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '10px',
-          textAlign: 'left',
-          justifyContent: 'flex-start',
-          flexDirection: 'row',
-          alignItems: 'center'
-        }}
-      >
-        <Link to='/terms' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body1'>Terms of Service</Typography>
-        </Link>
-        <Link to='/privacy' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body1'>Privacy Policy</Typography>
-        </Link>
-      </Box>
-      <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
-        <Link to='https://linkedtrust.us/' style={{ color: '#212529', textDecoration: 'none' }}>
-          <Typography variant='body1'>© {new Date().getFullYear()} LinkedTrust</Typography>
-        </Link>
-      </Box>
-    </Box>
-  )
-}
+// const Footer = () => {
+//   return (
+//     <Box
+//       sx={{
+//         display: 'flex',
+//         flexDirection: 'column',
+//         padding: '0.9em',
+//         width: '100%',
+//         position: 'relative',
+//         bottom: '9%'
+//       }}
+//     >
+//       <Box
+//         sx={{
+//           display: 'flex',
+//           gap: '10px',
+//           textAlign: 'left',
+//           justifyContent: 'flex-start',
+//           flexDirection: 'row',
+//           alignItems: 'center'
+//         }}
+//       >
+//         <Link to='/terms' style={{ color: '#212529', textDecoration: 'none' }}>
+//           <Typography variant='body1'>Terms of Service</Typography>
+//         </Link>
+//         <Link to='/privacy' style={{ color: '#212529', textDecoration: 'none' }}>
+//           <Typography variant='body1'>Privacy Policy</Typography>
+//         </Link>
+//       </Box>
+//       <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
+//         <Link to='https://linkedtrust.us/' style={{ color: '#212529', textDecoration: 'none' }}>
+//           <Typography variant='body1'>© {new Date().getFullYear()} LinkedTrust</Typography>
+//         </Link>
+//       </Box>
+//     </Box>
+//   )
+// }
 
 export default Sidebar

@@ -6,19 +6,20 @@ import {
   Typography,
   Card,
   CardContent,
-  Grid,
   CircularProgress,
   Box,
   useTheme,
   useMediaQuery,
   Button
 } from '@mui/material'
+import Grid from '@mui/material/Grid'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
 import ClaimDetails from './ClaimDetails'
+import MainContainer from '../MainContainer'
 
 interface Claim {
   statement: string | null
@@ -89,19 +90,18 @@ const DonationReport: React.FC = () => {
   }
 
   return (
-    <Box sx={{ width: '80%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
+    <MainContainer>
       <Box
         id='report-container'
         sx={{
           display: 'flex',
-          justifyContent: 'center',
-          position: 'relative',
-          mt: '5%',
           flexDirection: 'column',
           backgroundColor: theme.palette.menuBackground,
           borderRadius: '20px',
           padding: '25px',
-          right: '3%'
+          width: '100%',
+          maxWidth: '740px',
+          margin: '0 auto'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
@@ -227,7 +227,7 @@ const DonationReport: React.FC = () => {
           </Button>
         </Box>
       </Box>
-    </Box>
+    </MainContainer>
   )
 }
 

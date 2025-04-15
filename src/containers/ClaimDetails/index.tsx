@@ -155,7 +155,7 @@ const ClaimDetailsOld: React.FC<IHomeProps> = ({ isDarkMode }) => {
           sx={{
             justifyContent: 'left',
             backgroundColor: '#4C726F',
-            color: '#F2FAF9',
+            color: '#F8F9FA',
             borderRadius: '91px',
             fontWeight: 600,
             fontSize: isMediumScreen ? '12px' : '18px',
@@ -195,8 +195,8 @@ const ClaimDetailsOld: React.FC<IHomeProps> = ({ isDarkMode }) => {
               backgroundImage: `url(${isDarkMode ? arrow : arrowDark})`
             },
             '&:hover': {
-              backgroundColor: `${isDarkMode ? '#0A1C1D' : '#F2FAF9'}`,
-              color: `${isDarkMode ? '#F2FAF9' : '#0A1C1D'}`
+              backgroundColor: `${isDarkMode ? '#0A1C1D' : '#F8F9FA'}`,
+              color: `${isDarkMode ? '#F8F9FA' : '#0A1C1D'}`
             }
           }}
         >

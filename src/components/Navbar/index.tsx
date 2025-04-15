@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
 import Logo from '../../assets/logolinkedtrust.svg'
-import { bool } from 'prop-types'
 
 interface NavbarProps {
   isAuth: boolean
@@ -43,7 +41,6 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
       window.removeEventListener('scroll', handleScroll)
     }
   }, [lastScrollTop, isSmallScreen])
-  const displayValue = isVisible ? 'block' : 'none'
   return (
     <AppBar
       position='fixed'
@@ -59,19 +56,20 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         transition: 'transform 0.3s ease-in-out',
         display: 'flex',
         flexDirection: 'row',
-        p: { xs: theme.spacing(1), md: theme.spacing(2.5) },
-        maxWidth: '1920px',
-        margin: '0 auto',
-        height: '100px'
+        height: '6.146vw',
+        minHeight: '50px',
+        maxHeight: '118px',
+        pr: { xs: '2.24vw', md: '86px' },
+        pl: { xs: '2.24vw', md: '86px' }
       }}
     >
-      <Toolbar sx={{ display: 'flex', width: '100%' }}>
+      <Box sx={{ display: 'flex', width: '100%' }}>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center',
-            width: '50%',
+            width: 'auto',
             flexWrap: 'wrap'
           }}
         >
@@ -80,15 +78,21 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             src={Logo}
             alt='LinkedTrust Logo'
             sx={{
-              width: { xs: '24px', md: '40px' },
-              height: { xs: '24px', md: '40px' },
-              mr: '5px'
+              width: 'auto',
+              height: '2.604vw',
+              minHeight: '24px',
+              maxHeight: '45px',
+              objectFit: 'contain',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mr: '8px'
             }}
           />
           <Typography
             sx={{
               color: '#2D6A4F',
-              fontSize: { xs: 'clamp(16px, 4vw, 20px)!important', md: '20px' },
+              fontSize: { xs: 'clamp(16px, 4vw, 30px)!important', md: '30px' },
               transition: 'opacity 0.3s',
               fontFamily: 'Montserrat',
               fontWeight: 'bold'
@@ -101,7 +105,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
           <SearchBar />
         </Box>
-      </Toolbar>
+      </Box>
     </AppBar>
   )
 }
