@@ -63,45 +63,76 @@ const getEdgeStyles = (theme: Theme) =>
     }
   ] as any
 
-const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: string, layoutOptions: object) => {
-  const config: cytoscape.CytoscapeOptions = {
+const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOptions: object) => {
+  return {
     container: containerRef || undefined,
     boxSelectionEnabled: false,
     autounselectify: true,
-    style: [...getNodeStyles(), ...getEdgeStyles(theme)],
+    style: [
+      {
+        selector: 'node',
+        style: {
+          height: 60,
+          width: 180,
+          shape: 'roundrectangle',
+          backgroundOpacity: 0,
+          borderOpacity: 0,
+          'background-color': theme.palette.darkinputtext
+        }
+      },
+      {
+        selector: 'node[entType="CLAIM"]',
+        style: {
+          shape: 'square'
+        }
+      },
+      {
+        selector: 'edge',
+        style: {
+          width: 3,
+          fontSize: 14,
+          targetArrowShape: 'triangle-cross',
+          lineColor: theme.palette.stars,
+          targetArrowColor: theme.palette.stars,
+          curveStyle: 'bezier',
+          color: theme.palette.stars,
+          controlPointWeights: '0.5 0.2 0.8',
+          textRotation: 'autorotate',
+          textMarginX: 30,
+          content: 'data(relation)',
+          'line-cap': 'round',
+          'source-endpoint': 'outside-to-node',
+          'target-endpoint': 'outside-to-node',
+          'control-point-weights': '0.5 0.2 0.8'
+        }
+      }
+    ],
     layout: {
       name: layoutName,
-      ...layoutOptions
+      ...layoutOptions,
+      animate: true,
+      animationDuration: 1000
+    },
+    ready: function (this: cytoscape.Core) {
+      const cy = this
+      cy.nodeHtmlLabel([
+        {
+          query: 'node',
+          halign: 'center',
+          valign: 'center',
+          valignBox: 'center',
+          halignBox: 'center',
+          cssClass: 'custom-node',
+          tpl: (data: any) => `
+            <div class="custom-node-container">
+              ${data.image ? `<div class="node-icon" style="background-image: url(${data.image})"></div>` : ''}
+              <div class="node-label">${truncateLabel(data.label, 40)}</div>
+            </div>
+          `
+        }
+      ])
     }
   }
-
-  const instance = cytoscape(config)
-
-  // Add HTML labels after initialization
-  instance.ready(() => {
-    instance.nodeHtmlLabel([
-      {
-        query: 'node',
-        halign: 'center',
-        valign: 'center',
-        valignBox: 'center',
-        halignBox: 'center',
-        cssClass: 'custom-node-container',
-        tpl: (data: any) => `
-          <div class="custom-node-container">
-            ${
-              data.image
-                ? `<div class="node-icon" style="background-image: url(${data.image})"></div>`
-                : `<div class="node-placeholder">${getInitials(data.label)}</div>`
-            }
-            <div class="node-label">${truncateLabel(data.label, 40)}</div>
-          </div>
-        `
-      }
-    ])
-  })
-
-  return instance
 }
 
 export default cyConfig

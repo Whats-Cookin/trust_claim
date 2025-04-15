@@ -1,38 +1,25 @@
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import { Button, Card, useMediaQuery, useTheme } from '@mui/material'
-import { Link, useNavigate } from 'react-router-dom'
+import { Button, useTheme } from '@mui/material'
+import { Link } from 'react-router-dom'
 import backSvg from '../../assets/images/back.svg'
 import StartNode from '../StartNode'
 import EndNode from '../EndNode'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { useEffect, useState } from 'react'
-import axios from '../../axiosInstance'
 
 interface NodeDetailsProps {
   open: boolean
   setOpen: (open: boolean) => void
-  selectedClaimId: string
-  startNodeId: string
-  endNodeId: string
+  selectedClaim: any
+  startNode: any
+  endNode: any
   claimImg: string
   isDarkMode: boolean
 }
 
-export default function NodeDetails({ setOpen, selectedClaimId, claimImg, startNodeId, endNodeId }: NodeDetailsProps) {
+export default function NodeDetails({ setOpen, selectedClaim, claimImg, startNode, endNode }: NodeDetailsProps) {
   const handleClose = () => setOpen(false)
 
   const theme = useTheme()
-  const [startNode, setStartNode] = useState<any>(null)
-  // const [endNode, setEndNode] = useState<any>(null)
-
-  useEffect(() => {
-    async function fetchNodeDetails(nodeId: string, setNode: any) {
-      const claimRes = await axios.get(`/api/claim/${nodeId}`)
-      setNode(claimRes.data.claim)
-    }
-    fetchNodeDetails(startNodeId, setStartNode)
-  }, [startNodeId])
 
   return (
     <>
@@ -57,7 +44,7 @@ export default function NodeDetails({ setOpen, selectedClaimId, claimImg, startN
         <Box>
           <Button
             component={Link}
-            to={`/validate?subject=${BACKEND_BASE_URL}/claims/${selectedClaimId}`}
+            to={`/validate?subject=${BACKEND_BASE_URL}/claims/${selectedClaim.id}`}
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
@@ -75,7 +62,7 @@ export default function NodeDetails({ setOpen, selectedClaimId, claimImg, startN
 
           <Button
             component={Link}
-            to={`/report/${selectedClaimId}`}
+            to={`/report/${selectedClaim.id}`}
             sx={{
               color: theme.palette.buttontext,
               bgcolor: theme.palette.buttons,
