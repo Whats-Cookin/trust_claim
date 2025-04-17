@@ -717,7 +717,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         </>
                       )}
                     </CardContent>
-                   
+
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
                       {claim.stars && (
                         <Box
