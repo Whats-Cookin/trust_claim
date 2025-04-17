@@ -21,7 +21,7 @@ import {
   Menu,
   Collapse
 } from '@mui/material'
-import { Controller, useForm, useFieldArray } from 'react-hook-form'
+import { Controller, useForm, useFieldArray, Control } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { useQueryParams } from '../../hooks'
 import Loader from '../Loader'
@@ -231,7 +231,73 @@ const SourceLink = ({ claim, searchTerm = '' }: { claim: LocalClaim; searchTerm?
 
   return <span dangerouslySetInnerHTML={{ __html: `Source: ${highlightedName}` }} />
 }
+const URLInputField: React.FC<{
+  control: Control<FormData>
+  label: string
+}> = ({ control, label }) => {
+  const theme = useTheme()
 
+  return (
+    <>
+      <Typography
+        sx={{
+          mb: '5px',
+          fontFamily: 'Montserrat',
+
+          fontSize: '16px',
+          lineHeight: '100%',
+          letterSpacing: '0%'
+        }}
+      >
+        {label}
+      </Typography>
+      <Controller
+        name='sourceURI'
+        control={control}
+        defaultValue=''
+        rules={{
+          required: 'This field is required',
+          pattern: {
+            value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+            message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
+          }
+        }}
+        render={({ field, fieldState: { error } }) => (
+          <TextField
+            placeholder='Add your website '
+            {...field}
+            rows={4}
+            sx={{
+              width: '100%',
+              height: '55px',
+              mb: '30px',
+              backgroundColor: '#ffffff',
+              border: '1px solid #A3A3A3',
+              borderRadius: '8px',
+
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'transparent'
+                },
+                '&:hover fieldset': {
+                  borderColor: 'transparent'
+                },
+                '& .MuiInputBase-input': {
+                  color: theme.palette.texts,
+
+                  fontSize: 16
+                }
+              }
+            }}
+            margin='normal'
+            error={Boolean(error)}
+            helperText={error ? error.message : ''}
+          />
+        )}
+      />
+    </>
+  )
+}
 const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [loading, setLoading] = useState(false)
   const queryParams = useQueryParams()
@@ -651,7 +717,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         </>
                       )}
                     </CardContent>
-                    {/* moka work here  */}
+                   
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
                       {claim.stars && (
                         <Box
@@ -679,7 +745,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       )}
                     </Box>
 
-                    <IconButton
+                    {/* <IconButton
                       sx={{
                         position: 'absolute',
                         top: '10px',
@@ -700,7 +766,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       >
                         <MoreVertIcon />
                       </Box>
-                    </IconButton>
+                    </IconButton> */}
                     <Menu
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl && selectedIndex === index)}
@@ -956,59 +1022,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 )}
               />
             </FormControl>
-            <Typography
-              sx={{
-                mb: '5px',
-                fontFamily: 'Montserrat',
-
-                fontSize: '16px',
-                lineHeight: '100%',
-                letterSpacing: '0%'
-              }}
-            >
-              Website (Required):
-            </Typography>
-            <Controller
-              name='webTitle'
-              control={control}
-              defaultValue=''
-              rules={{
-                required: 'This field is required'
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  placeholder='Add your website '
-                  {...field}
-                  rows={4}
-                  sx={{
-                    width: '100%',
-                    height: '55px',
-
-                    mb: '20px',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #A3A3A3',
-                    borderRadius: '8px',
-
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent'
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme.palette.texts,
-
-                        fontSize: 16
-                      }
-                    }
-                  }}
-                  margin='normal'
-                  error={Boolean(error)}
-                  helperText={error ? error.message : ''}
-                />
-              )}
-            />
+            {(watchHowKnown === FIRST_HAND ||
+              watchHowKnown === SECOND_HAND ||
+              watchHowKnown === FIRST_HAND_BENEFIT ||
+              watchHowKnown === FIRST_HAND_REJECTED) && (
+              <URLInputField control={control} label='Your Website (Required)' />
+            )}
+            {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
+              <URLInputField control={control} label='Source URL (Required)' />
+            )}
 
             <Typography
               sx={{
