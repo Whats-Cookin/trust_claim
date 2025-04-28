@@ -18,6 +18,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import { Link } from 'react-router-dom';
 import badge from '../../assets/images/badge.svg';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -41,6 +42,13 @@ interface Validation {
   effectiveDate?: string;
 }
 
+interface Claim {
+  type?: string;
+  claim?: {
+    name?: string;
+  };
+}
+
 interface CertificateProps {
   curator: string;
   subject: string;
@@ -50,6 +58,8 @@ interface CertificateProps {
   validations: Validation[];
   claimId?: string;
   image?: string;
+  name?: string;
+  claim?: Claim;
 }
 
 const Certificate: React.FC<CertificateProps> = ({
@@ -60,7 +70,9 @@ const Certificate: React.FC<CertificateProps> = ({
   sourceURI,
   validations,
   claimId,
-  image
+  image,
+  name,
+  claim
 }) => {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -219,6 +231,16 @@ const Certificate: React.FC<CertificateProps> = ({
 
   const visibleValidationCount = getVisibleValidationCount();
 
+  // Determine what text to display based on claim type and existence
+  const getDisplayText = () => {
+    if (claim?.type === 'credential') {
+      return subject;
+    } else  {
+      return name;
+    }
+    return subject; // Default fallback to subject
+  };
+
   return (
     <Container 
       maxWidth={isXl ? "xl" : isLg ? "lg" : isMd ? "md" : "sm"} 
@@ -311,6 +333,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 OF SKILL VALIDATION
               </Typography>
 
+
               <Typography
                 variant='h3'
                 sx={{
@@ -336,7 +359,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   color: '#2D6A4F'
                 }}
               >
-                {subject}
+                {getDisplayText()}
               </Typography>
               
               <Typography
