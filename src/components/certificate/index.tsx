@@ -38,7 +38,7 @@ interface Validation {
 }
 
 interface CertificateProps {
-  curator: string
+  issuer_name: string
   subject: string
   statement?: string
   effectiveDate?: string
@@ -49,7 +49,7 @@ interface CertificateProps {
 }
 
 const Certificate: React.FC<CertificateProps> = ({
-  curator,
+  issuer_name,
   subject,
   statement,
   effectiveDate,
@@ -265,7 +265,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 color: '#2D6A4F'
               }}
             >
-              {curator}
+              {issuer_name}
             </Typography>
 
             <Typography

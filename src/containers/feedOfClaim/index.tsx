@@ -428,9 +428,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               fontFamily: 'Roboto'
                             }}
                           >
-                            {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
-                              claim.effective_date
-                            ).toLocaleDateString('en-US', {
+                            {`Created by: ${
+                              claim.subject_name ? claim.subject_name : extractProfileName(claim.link)
+                            }, ${new Date(claim.effective_date).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric'
