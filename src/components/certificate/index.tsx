@@ -391,34 +391,27 @@ const Certificate: React.FC<CertificateProps> = ({
                     Endorsed by:
                   </Typography>
 
-                  <Stack 
-                    direction={{ xs: 'column', sm: 'row' }}
-                    spacing={{ xs: 2, sm: 2.5, md: 3 }} 
-                    flexWrap="wrap"
-                    justifyContent="center"
-                    alignItems="center"
+                  {/* IMPROVED ENDORSEMENT CARDS LAYOUT */}
+                  <Box 
                     sx={{
-                      '& > *': {
-                        flexBasis: { 
-                          xs: '100%', 
-                          sm: 'calc(50% - 20px)', 
-                          md: 'calc(33.33% - 24px)',
-                          lg: 'calc(25% - 24px)'
-                        },
-                        maxWidth: { 
-                          xs: '100%', 
-                          sm: 'calc(50% - 20px)', 
-                          md: 'calc(33.33% - 24px)',
-                          lg: 'calc(25% - 24px)' 
-                        }
-                      }
+                      display: 'grid',
+                      gridTemplateColumns: {
+                        xs: '1fr',
+                        sm: 'repeat(2, 1fr)',
+                        md: 'repeat(3, 1fr)',
+                        lg: 'repeat(4, 1fr)'
+                      },
+                      gap: { xs: 2, sm: 2.5, md: 3 },
+                      width: '100%',
+                      maxWidth: '100%',
+                      mx: 'auto'
                     }}
                   >
                     {validations.slice(0, visibleValidationCount).map((validation, index) => (
                       <Card
                         key={index}
                         sx={{
-                          height: { xs: '160px', sm: '168px' },
+                          minHeight: { xs: '180px', sm: '190px' },
                           p: { xs: 2, sm: 2.5 },
                           boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
                           borderRadius: { xs: 1.5, sm: 2 },
@@ -439,17 +432,30 @@ const Certificate: React.FC<CertificateProps> = ({
                           color='#2D6A4F' 
                           fontWeight={500} 
                           fontSize={{ xs: 18, sm: 20 }} 
-                          marginBottom={1}
-                          sx={{ wordBreak: 'break-word' }}
+                          marginBottom={1.5}
+                          sx={{ 
+                            wordBreak: 'break-word',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
                         >
                           {validation.author}
                         </Typography>
                         <Typography 
                           color='#212529' 
                           fontSize={{ xs: 14, sm: 16 }}
-                          sx={{ flexGrow: 1, overflow: 'hidden' }}
+                          sx={{ 
+                            flexGrow: 1, 
+                            overflow: 'hidden',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            marginBottom: 3.5
+                          }}
                         >
-                          {truncateText(validation.statement || '', isXs ? 40 : 50)}
+                          {validation.statement || ''}
                         </Typography>
                         <Button
                           onClick={e => {
@@ -476,7 +482,7 @@ const Certificate: React.FC<CertificateProps> = ({
                         </Button>
                       </Card>
                     ))}
-                  </Stack>
+                  </Box>
 
                   {validations.length > visibleValidationCount && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 1.5, sm: 2 } }}>
@@ -756,19 +762,16 @@ const Certificate: React.FC<CertificateProps> = ({
               padding: { xs: 2, sm: 2.5, md: 3 }
             }}
           >
-            <Stack
-              direction="row"
-              flexWrap="wrap"
-              spacing={2}
+            {/* IMPROVED DIALOG VALIDATION CARDS LAYOUT */}
+            <Box
               sx={{
-                '& > *': {
-                  flexBasis: { 
-                    xs: '100%', 
-                    sm: 'calc(50% - 16px)', 
-                    md: 'calc(33.33% - 16px)'
-                  },
-                  marginBottom: 2
-                }
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)'
+                },
+                gap: 2.5
               }}
             >
               {validations?.map((validation, index) => (
@@ -776,7 +779,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   key={index}
                   onClick={() => handleClaimClick(validation)}
                   sx={{
-                    height: { xs: '160px', sm: '168px' },
+                    minHeight: { xs: '180px', sm: '190px' },
                     backgroundColor: '#ffffff',
                     borderRadius: { xs: '6px', sm: '8px' },
                     boxShadow: '0 2px 14px 0 rgba(0, 0, 0, 0.25)',
@@ -797,17 +800,30 @@ const Certificate: React.FC<CertificateProps> = ({
                     color='#2D6A4F' 
                     fontWeight={500} 
                     fontSize={{ xs: 18, sm: 20 }} 
-                    marginBottom={1}
-                    sx={{ wordBreak: 'break-word' }}
+                    marginBottom={1.5}
+                    sx={{ 
+                      wordBreak: 'break-word',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}
                   >
                     {validation.author}
                   </Typography>
                   <Typography 
                     color='#212529' 
                     fontSize={{ xs: 14, sm: 16 }}
-                    sx={{ flexGrow: 1, overflow: 'hidden' }}
+                    sx={{ 
+                      flexGrow: 1, 
+                      overflow: 'hidden',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      marginBottom: 3.5
+                    }}
                   >
-                    {truncateText(validation.statement || '', isXs ? 40 : 50)}
+                    {truncateText(validation.statement || '', isXs ? 70 : 90)}
                   </Typography>
                   <Button
                     onClick={e => {
@@ -834,7 +850,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   </Button>
                 </Card>
               ))}
-            </Stack>
+            </Box>
           </DialogContent>
           <DialogActions sx={{ padding: { xs: '12px 16px', sm: '14px 20px', md: '16px 24px' } }}>
             <Button
