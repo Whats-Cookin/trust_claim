@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -17,49 +17,49 @@ import {
   Container,
   useMediaQuery,
   useTheme
-} from '@mui/material';
-import { Link } from 'react-router-dom';
-import badge from '../../assets/images/badge.svg';
-import CloseIcon from '@mui/icons-material/Close';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ShareIcon from '@mui/icons-material/Share';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { useNavigate } from 'react-router-dom';
-import html2pdf from 'html2pdf.js';
+} from '@mui/material'
+import { Link } from 'react-router-dom'
+import badge from '../../assets/images/badge.svg'
+import CloseIcon from '@mui/icons-material/Close'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ShareIcon from '@mui/icons-material/Share'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import { useNavigate } from 'react-router-dom'
+import html2pdf from 'html2pdf.js'
 
 interface Validation {
-  author: string;
-  statement: string;
-  date?: string;
-  confidence?: number;
-  howKnown?: string;
-  sourceURI?: string;
-  image?: string;
-  mediaUrl?: string;
-  subject?: string;
-  effectiveDate?: string;
+  author: string
+  statement: string
+  date?: string
+  confidence?: number
+  howKnown?: string
+  sourceURI?: string
+  image?: string
+  mediaUrl?: string
+  subject?: string
+  effectiveDate?: string
 }
 
 interface Claim {
-  type?: string;
+  type?: string
   claim?: {
-    name?: string;
-  };
+    name?: string
+  }
 }
 
 interface CertificateProps {
-  curator: string;
-  subject: string;
-  statement?: string;
-  effectiveDate?: string;
-  sourceURI?: string;
-  validations: Validation[];
-  claimId?: string;
-  image?: string;
-  name?: string;
-  claim?: Claim;
+  curator: string
+  subject: string
+  statement?: string
+  effectiveDate?: string
+  sourceURI?: string
+  validations: Validation[]
+  claimId?: string
+  image?: string
+  name?: string
+  claim?: Claim
 }
 
 const Certificate: React.FC<CertificateProps> = ({
@@ -74,27 +74,27 @@ const Certificate: React.FC<CertificateProps> = ({
   name,
   claim
 }) => {
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
-  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'));
-  const isLg = useMediaQuery(theme.breakpoints.up('lg'));
-  const isXl = useMediaQuery(theme.breakpoints.up('xl'));
-  
-  const [validationDialogOpen, setValidationDialogOpen] = useState(false);
-  const [selectedValidation, setSelectedValidation] = useState<Validation | null>(null);
-  const [claimDialogOpen, setClaimDialogOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [currentUrl, setCurrentUrl] = useState('');
+  const navigate = useNavigate()
+  const theme = useTheme()
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'))
+  const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'))
+  const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'))
+  const isLg = useMediaQuery(theme.breakpoints.up('lg'))
+  const isXl = useMediaQuery(theme.breakpoints.up('xl'))
+
+  const [validationDialogOpen, setValidationDialogOpen] = useState(false)
+  const [selectedValidation, setSelectedValidation] = useState<Validation | null>(null)
+  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [currentUrl, setCurrentUrl] = useState('')
 
   useEffect(() => {
-    setCurrentUrl(window.location.href);
-  }, []);
+    setCurrentUrl(window.location.href)
+  }, [])
 
   const handleExport = () => {
-    const element = document.getElementById('certificate-content');
+    const element = document.getElementById('certificate-content')
     if (element) {
       const opt = {
         margin: 1,
@@ -102,83 +102,83 @@ const Certificate: React.FC<CertificateProps> = ({
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
+      }
+      html2pdf().set(opt).from(element).save()
     }
-  };
+  }
 
   const handleValidationDialogOpen = () => {
-    setValidationDialogOpen(true);
-  };
+    setValidationDialogOpen(true)
+  }
 
   const handleValidationDialogClose = () => {
-    setValidationDialogOpen(false);
-  };
+    setValidationDialogOpen(false)
+  }
 
   const handleClaimClick = (validation: Validation) => {
-    setSelectedValidation(validation);
-    setClaimDialogOpen(true);
-  };
+    setSelectedValidation(validation)
+    setClaimDialogOpen(true)
+  }
 
   const handleClaimDialogClose = () => {
-    setClaimDialogOpen(false);
-    setSelectedValidation(null);
-  };
+    setClaimDialogOpen(false)
+    setSelectedValidation(null)
+  }
 
   const handleShareClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget as unknown as HTMLButtonElement);
-  };
+    setAnchorEl(event.currentTarget as unknown as HTMLButtonElement)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(currentUrl);
-      setSnackbarOpen(true);
-      handleClose();
+      await navigator.clipboard.writeText(currentUrl)
+      setSnackbarOpen(true)
+      handleClose()
     } catch (err) {
-      console.error('Failed to copy link:', err);
+      console.error('Failed to copy link:', err)
     }
-  };
+  }
 
   const generateLinkedInShareUrl = (credentialName: string, url: string) => {
-    const encodedUrl = encodeURIComponent(url);
+    const encodedUrl = encodeURIComponent(url)
     const message = encodeURIComponent(
       `Excited to share my verified ${credentialName} credential from LinkedTrust! Check it out here: ${url} Thanks to my validators for confirming my skills!`
-    );
-    return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`;
-  };
+    )
+    return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
+  }
 
   const handleLinkedInPost = () => {
-    let credentialName = 'a new';
+    let credentialName = 'a new'
     if (subject && !subject.includes('https')) {
-      credentialName = subject;
+      credentialName = subject
     }
-    const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl);
-    window.open(linkedInShareUrl, '_blank');
-    handleClose();
-  };
+    const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
+    window.open(linkedInShareUrl, '_blank')
+    handleClose()
+  }
 
   const truncateText = (text: string, length: number) => {
-    if (text.length <= length) return text;
-    return `${text.substring(0, length)}...`;
-  };
+    if (text.length <= length) return text
+    return `${text.substring(0, length)}...`
+  }
 
   // Function to render media content
   const renderMedia = () => {
-    if (!image) return null;
+    if (!image) return null
 
     const isVideoUrl = (url: string): boolean => {
       try {
-        const parsedUrl = new URL(url);
-        const extension = parsedUrl.pathname.split('.').pop()?.toLowerCase();
-        return ['mp4', 'webm', 'ogg'].includes(extension || '');
+        const parsedUrl = new URL(url)
+        const extension = parsedUrl.pathname.split('.').pop()?.toLowerCase()
+        return ['mp4', 'webm', 'ogg'].includes(extension || '')
       } catch {
-        return false;
+        return false
       }
-    };
+    }
 
     return (
       <Box
@@ -193,10 +193,10 @@ const Certificate: React.FC<CertificateProps> = ({
         }}
       >
         {isVideoUrl(image) ? (
-          <video 
-            controls 
-            style={{ 
-              width: '100%', 
+          <video
+            controls
+            style={{
+              width: '100%',
               maxHeight: isXl ? '600px' : isLg ? '500px' : isMd ? '450px' : isSm ? '400px' : '350px',
               objectFit: 'contain'
             }}
@@ -218,33 +218,33 @@ const Certificate: React.FC<CertificateProps> = ({
           />
         )}
       </Box>
-    );
-  };
+    )
+  }
 
   // Determine the number of validation cards to show based on screen size
   const getVisibleValidationCount = () => {
-    if (isXs) return 1;
-    if (isSm) return 2;
-    if (isMd) return 3;
-    return 4; // For large screens
-  };
+    if (isXs) return 1
+    if (isSm) return 2
+    if (isMd) return 3
+    return 4 // For large screens
+  }
 
-  const visibleValidationCount = getVisibleValidationCount();
+  const visibleValidationCount = getVisibleValidationCount()
 
   // Determine what text to display based on claim type and existence
   const getDisplayText = () => {
     if (claim?.type === 'credential') {
-      return subject;
-    } else  {
-      return name;
+      return subject
+    } else {
+      return name
     }
-    return subject; // Default fallback to subject
-  };
+    return subject // Default fallback to subject
+  }
 
   return (
-    <Container 
-      maxWidth={isXl ? "xl" : isLg ? "lg" : isMd ? "md" : "sm"} 
-      sx={{ 
+    <Container
+      maxWidth={isXl ? 'xl' : isLg ? 'lg' : isMd ? 'md' : 'sm'}
+      sx={{
         py: { xs: 2, sm: 3, md: 4 },
         px: { xs: 1, sm: 2, md: 3 }
       }}
@@ -258,34 +258,34 @@ const Certificate: React.FC<CertificateProps> = ({
           color: '#212529',
           marginBottom: { xs: '1rem', sm: '1.5rem', md: '2rem' },
           position: 'relative',
-          boxShadow: { 
-            xs: '0 4px 12px rgba(0, 0, 0, 0.1)', 
-            sm: '0 6px 16px rgba(0, 0, 0, 0.12)', 
-            md: '0 8px 24px rgba(0, 0, 0, 0.12)' 
+          boxShadow: {
+            xs: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            sm: '0 6px 16px rgba(0, 0, 0, 0.12)',
+            md: '0 8px 24px rgba(0, 0, 0, 0.12)'
           },
           overflow: 'visible'
         }}
       >
         <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3, lg: 4 } }}>
           <Stack spacing={{ xs: 2, sm: 2.5, md: 3 }}>
-            <Box 
-              id='certificate-content' 
-              sx={{ 
+            <Box
+              id='certificate-content'
+              sx={{
                 px: { xs: 1, sm: 2, md: 3, lg: 4 },
                 position: 'relative'
               }}
             >
-              <IconButton 
-                onClick={() => navigate(-1)} 
-                sx={{ 
-                  position: 'absolute', 
-                  top: { xs: 8, sm: 12, md: 16 }, 
+              <IconButton
+                onClick={() => navigate(-1)}
+                sx={{
+                  position: 'absolute',
+                  top: { xs: 8, sm: 12, md: 16 },
                   right: { xs: 8, sm: 12, md: 16 },
                   zIndex: 10
                 }}
-                size={isXs ? "small" : "medium"}
+                size={isXs ? 'small' : 'medium'}
               >
-                <CloseIcon fontSize={isXs ? "small" : "medium"} />
+                <CloseIcon fontSize={isXs ? 'small' : 'medium'} />
               </IconButton>
 
               <Box
@@ -333,7 +333,6 @@ const Certificate: React.FC<CertificateProps> = ({
                 OF SKILL VALIDATION
               </Typography>
 
-
               <Typography
                 variant='h3'
                 sx={{
@@ -361,7 +360,7 @@ const Certificate: React.FC<CertificateProps> = ({
               >
                 {getDisplayText()}
               </Typography>
-              
+
               <Typography
                 sx={{
                   fontSize: { xs: '14px', sm: '15px', md: '16px' },
@@ -381,10 +380,10 @@ const Certificate: React.FC<CertificateProps> = ({
 
               {validations && validations.length > 0 && (
                 <Box sx={{ width: '100%', mt: { xs: 2, sm: 3, md: 4 } }}>
-                  <Typography 
-                    variant='h6' 
-                    color='#2D6A4F' 
-                    textAlign='center' 
+                  <Typography
+                    variant='h6'
+                    color='#2D6A4F'
+                    textAlign='center'
                     marginBottom={{ xs: 2, sm: 2.5, md: 3 }}
                     fontSize={{ xs: '18px', sm: '20px', md: '22px' }}
                   >
@@ -392,7 +391,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   </Typography>
 
                   {/* IMPROVED ENDORSEMENT CARDS LAYOUT */}
-                  <Box 
+                  <Box
                     sx={{
                       display: 'grid',
                       gridTemplateColumns: {
@@ -428,12 +427,12 @@ const Certificate: React.FC<CertificateProps> = ({
                         }}
                         onClick={() => handleClaimClick(validation)}
                       >
-                        <Typography 
-                          color='#2D6A4F' 
-                          fontWeight={500} 
-                          fontSize={{ xs: 18, sm: 20 }} 
+                        <Typography
+                          color='#2D6A4F'
+                          fontWeight={500}
+                          fontSize={{ xs: 18, sm: 20 }}
                           marginBottom={1.5}
-                          sx={{ 
+                          sx={{
                             wordBreak: 'break-word',
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -443,11 +442,11 @@ const Certificate: React.FC<CertificateProps> = ({
                         >
                           {validation.author}
                         </Typography>
-                        <Typography 
-                          color='#212529' 
+                        <Typography
+                          color='#212529'
                           fontSize={{ xs: 14, sm: 16 }}
-                          sx={{ 
-                            flexGrow: 1, 
+                          sx={{
+                            flexGrow: 1,
                             overflow: 'hidden',
                             display: '-webkit-box',
                             WebkitLineClamp: 3,
@@ -459,8 +458,8 @@ const Certificate: React.FC<CertificateProps> = ({
                         </Typography>
                         <Button
                           onClick={e => {
-                            e.stopPropagation();
-                            handleClaimClick(validation);
+                            e.stopPropagation()
+                            handleClaimClick(validation)
                           }}
                           sx={{
                             position: 'absolute',
@@ -505,10 +504,10 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Box>
               )}
               {effectiveDate && (
-                <Typography 
-                  variant='body2' 
-                  color='#495057' 
-                  textAlign='center' 
+                <Typography
+                  variant='body2'
+                  color='#495057'
+                  textAlign='center'
                   mt={{ xs: 2, sm: 2.5, md: 3 }}
                   fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
                 >
@@ -531,18 +530,14 @@ const Certificate: React.FC<CertificateProps> = ({
                       flexWrap: 'wrap'
                     }}
                   >
-                    <Typography 
-                      variant='body2' 
-                      color='#495057'
-                      fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
-                    >
+                    <Typography variant='body2' color='#495057' fontSize={{ xs: '12px', sm: '13px', md: '14px' }}>
                       Certificate ID:
                     </Typography>
                     <MuiLink
                       href={`/certificate/${claimId}`}
                       onClick={e => {
-                        e.preventDefault();
-                        window.location.href = `/certificate/${claimId}`;
+                        e.preventDefault()
+                        window.location.href = `/certificate/${claimId}`
                       }}
                       sx={{
                         color: '#2D6A4F',
@@ -561,8 +556,8 @@ const Certificate: React.FC<CertificateProps> = ({
               )}
             </Box>
 
-            <Box 
-              sx={{ 
+            <Box
+              sx={{
                 width: '100%',
                 maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '740px' },
                 height: { xs: 'auto', sm: 'auto', md: '61px' },
@@ -604,10 +599,12 @@ const Certificate: React.FC<CertificateProps> = ({
                   }
                 }}
               >
-                <SystemUpdateAltIcon sx={{ 
-                  color: '#2D6A4F', 
-                  fontSize: { xs: 20, sm: 22, md: 24 } 
-                }} />
+                <SystemUpdateAltIcon
+                  sx={{
+                    color: '#2D6A4F',
+                    fontSize: { xs: 20, sm: 22, md: 24 }
+                  }}
+                />
                 <Typography
                   sx={{
                     fontFamily: 'Roboto',
@@ -623,7 +620,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   Export Certificate
                 </Typography>
               </Box>
-              
+
               <Box
                 onClick={handleShareClick}
                 sx={{
@@ -644,10 +641,12 @@ const Certificate: React.FC<CertificateProps> = ({
                   }
                 }}
               >
-                <ShareIcon sx={{ 
-                  color: '#2D6A4F', 
-                  fontSize: { xs: 20, sm: 22, md: 24 } 
-                }} />
+                <ShareIcon
+                  sx={{
+                    color: '#2D6A4F',
+                    fontSize: { xs: 20, sm: 22, md: 24 }
+                  }}
+                />
                 <Typography
                   sx={{
                     fontFamily: 'Roboto',
@@ -686,17 +685,19 @@ const Certificate: React.FC<CertificateProps> = ({
             }
           }}
         >
-          <Box sx={{ 
-            p: { xs: 1, sm: 1.5, md: 2 }, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: { xs: 0.5, sm: 1 } 
-          }}>
+          <Box
+            sx={{
+              p: { xs: 1, sm: 1.5, md: 2 },
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: 0.5, sm: 1 }
+            }}
+          >
             <Button
               startIcon={<LinkedInIcon />}
               onClick={handleLinkedInPost}
-              sx={{ 
-                color: '#2D6A4F', 
+              sx={{
+                color: '#2D6A4F',
                 justifyContent: 'flex-start',
                 fontSize: { xs: '13px', sm: '14px', md: '15px' }
               }}
@@ -706,8 +707,8 @@ const Certificate: React.FC<CertificateProps> = ({
             <Button
               startIcon={<ContentCopyIcon />}
               onClick={handleCopyLink}
-              sx={{ 
-                color: '#2D6A4F', 
+              sx={{
+                color: '#2D6A4F',
                 justifyContent: 'flex-start',
                 fontSize: { xs: '13px', sm: '14px', md: '15px' }
               }}
@@ -796,12 +797,12 @@ const Certificate: React.FC<CertificateProps> = ({
                     width: '100%'
                   }}
                 >
-                  <Typography 
-                    color='#2D6A4F' 
-                    fontWeight={500} 
-                    fontSize={{ xs: 18, sm: 20 }} 
+                  <Typography
+                    color='#2D6A4F'
+                    fontWeight={500}
+                    fontSize={{ xs: 18, sm: 20 }}
                     marginBottom={1.5}
-                    sx={{ 
+                    sx={{
                       wordBreak: 'break-word',
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -811,11 +812,11 @@ const Certificate: React.FC<CertificateProps> = ({
                   >
                     {validation.author}
                   </Typography>
-                  <Typography 
-                    color='#212529' 
+                  <Typography
+                    color='#212529'
                     fontSize={{ xs: 14, sm: 16 }}
-                    sx={{ 
-                      flexGrow: 1, 
+                    sx={{
+                      flexGrow: 1,
                       overflow: 'hidden',
                       display: '-webkit-box',
                       WebkitLineClamp: 3,
@@ -827,8 +828,8 @@ const Certificate: React.FC<CertificateProps> = ({
                   </Typography>
                   <Button
                     onClick={e => {
-                      e.stopPropagation();
-                      handleClaimClick(validation);
+                      e.stopPropagation()
+                      handleClaimClick(validation)
                     }}
                     sx={{
                       position: 'absolute',
@@ -897,9 +898,9 @@ const Certificate: React.FC<CertificateProps> = ({
                 zIndex: 1,
                 padding: { xs: '4px', sm: '8px' }
               }}
-              size={isXs ? "small" : "medium"}
+              size={isXs ? 'small' : 'medium'}
             >
-              <CloseIcon fontSize={isXs ? "small" : "medium"} />
+              <CloseIcon fontSize={isXs ? 'small' : 'medium'} />
             </IconButton>
             {selectedValidation && (
               <Box sx={{ padding: { xs: 2, sm: 2.5, md: 3 } }}>
@@ -988,10 +989,10 @@ const Certificate: React.FC<CertificateProps> = ({
                       >
                         How Known:
                       </Typography>
-                      <Typography 
-                        sx={{ 
-                          color: '#212529', 
-                          fontSize: { xs: '13px', sm: '14px' } 
+                      <Typography
+                        sx={{
+                          color: '#212529',
+                          fontSize: { xs: '13px', sm: '14px' }
                         }}
                       >
                         {selectedValidation.howKnown.replace(/_/g, ' ')}
@@ -1043,10 +1044,10 @@ const Certificate: React.FC<CertificateProps> = ({
                       >
                         Confidence:
                       </Typography>
-                      <Typography 
-                        sx={{ 
-                          color: '#212529', 
-                          fontSize: { xs: '13px', sm: '14px' } 
+                      <Typography
+                        sx={{
+                          color: '#212529',
+                          fontSize: { xs: '13px', sm: '14px' }
                         }}
                       >
                         {selectedValidation.confidence}
@@ -1060,7 +1061,7 @@ const Certificate: React.FC<CertificateProps> = ({
         </Dialog>
       </Card>
     </Container>
-  );
-};
+  )
+}
 
-export default Certificate;
+export default Certificate
