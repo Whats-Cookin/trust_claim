@@ -365,9 +365,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           </Stack>
 
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'}, ${new Date(
-              claim.effectiveDate
-            ).toLocaleDateString('en-US', {
+            {`Created by: ${
+              data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'
+            }, ${new Date(claim.effectiveDate).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'

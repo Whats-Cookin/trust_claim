@@ -291,7 +291,6 @@ const Certificate: React.FC<CertificateProps> = ({
                 <CloseIcon fontSize={isXs ? 'small' : 'medium'} />
               </IconButton>
 
-
               <Box
                 component='img'
                 src={badge}
@@ -364,7 +363,6 @@ const Certificate: React.FC<CertificateProps> = ({
               >
                 {getDisplayText()}
               </Typography>
-
 
               <Typography
                 sx={{
@@ -752,9 +750,7 @@ const Certificate: React.FC<CertificateProps> = ({
             }
           }}
         >
-
           <DialogTitle
-
             sx={{
               color: '#2D6A4F',
               fontSize: { xs: '20px', sm: '22px', md: '24px' },
@@ -925,7 +921,6 @@ const Certificate: React.FC<CertificateProps> = ({
                         flexWrap: 'wrap'
                       }}
                     >
-
                       <MuiLink
                         href={selectedValidation.sourceURI}
                         target='_blank'
