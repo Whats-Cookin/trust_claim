@@ -93,6 +93,7 @@ const CertificateView: React.FC = () => {
         validations={data.validations || []}
         claimId={id}
         image={data.claim.image}
+        name={data.claim.claimData.name}
       />
     </Box>
   )
