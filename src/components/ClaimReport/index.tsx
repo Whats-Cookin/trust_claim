@@ -270,7 +270,7 @@ function MyCard({
                 </Typography>
               )}
               <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
-                {data.issuer_name}
+                {data.subject_name}
               </Typography>
             </Box>
           </Box>

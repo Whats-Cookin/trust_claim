@@ -85,6 +85,7 @@ const CertificateView: React.FC = () => {
   return (
     <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
       <Certificate
+        subject_name={data.claim.claimData.subject_name}
         issuer_name={data.claim.claimData.issuer_name}
         subject={claim.subject}
         statement={claim.statement}

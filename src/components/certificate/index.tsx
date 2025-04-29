@@ -74,7 +74,8 @@ const Certificate: React.FC<CertificateProps> = ({
   claimId,
   image,
   name,
-  claim
+  claim,
+  subject_name
 }) => {
   const navigate = useNavigate()
   const theme = useTheme()
@@ -347,7 +348,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   color: '#2D6A4F'
                 }}
               >
-                {curator}
+                {subject_name}
               </Typography>
 
               <Typography
@@ -444,7 +445,7 @@ const Certificate: React.FC<CertificateProps> = ({
                             overflow: 'hidden'
                           }}
                         >
-                          {validation.author}
+                          {validation.issuer_name}
                         </Typography>
                         <Typography
                           color='#212529'
@@ -816,7 +817,7 @@ const Certificate: React.FC<CertificateProps> = ({
                       overflow: 'hidden'
                     }}
                   >
-                    {validation.author}
+                    {validation.issuer_name}
                   </Typography>
                   <Typography
                     color='#212529'
@@ -926,7 +927,7 @@ const Certificate: React.FC<CertificateProps> = ({
                     >
 
                       <MuiLink
-                        href={selectedValidation.subject}
+                        href={selectedValidation.sourceURI}
                         target='_blank'
                         sx={{
                           display: 'flex',
@@ -940,7 +941,7 @@ const Certificate: React.FC<CertificateProps> = ({
                           wordBreak: 'break-word'
                         }}
                       >
-                        {selectedValidation.subject}
+                        {selectedValidation.sourceURI}
                         <OpenInNewIcon sx={{ fontSize: { xs: 16, sm: 18, md: 20 } }} />
                       </MuiLink>
                     </Box>
@@ -953,7 +954,7 @@ const Certificate: React.FC<CertificateProps> = ({
                       marginBottom: { xs: 1.5, sm: 2 }
                     }}
                   >
-                    {selectedValidation.author}
+                    {selectedValidation.issuer_name}
                   </Typography>
                   <Typography
                     sx={{
