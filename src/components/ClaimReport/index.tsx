@@ -275,7 +275,7 @@ function MyCard({
             </Box>
           </Box>
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${data.subject_name ? data.subject_name : 'Unknown'}, ${new Date(
+            {`Created by: ${data.issuer_name ? data.issuer_name : 'Unknown'}, ${new Date(
               data.effectiveDate
             ).toLocaleDateString('en-US', {
               year: 'numeric',

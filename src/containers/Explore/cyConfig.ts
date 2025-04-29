@@ -3,10 +3,13 @@ import { Theme } from '@mui/material'
 import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
 
 cytoscape.use(cytoscapeNodeHtmlLabel)
-const truncateLabel = (label: string, maxLength: number) =>
-  label.length <= maxLength ? label : `${label.slice(0, maxLength)}...`
+const truncateLabel = (label: string, maxLength: number) => {
+  if (!label) return ''
+  return label.length <= maxLength ? label : `${label.slice(0, maxLength)}...`
+}
 
 const getInitials = (label: string) => {
+  if (!label) return '?'
   const cleanLabel = label.trim()
   return cleanLabel.length >= 2 ? cleanLabel.slice(0, 2).toUpperCase() : cleanLabel.toUpperCase()
 }
@@ -92,9 +95,9 @@ const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: st
             ${
               data.image
                 ? `<div class="node-icon" style="background-image: url(${data.image})"></div>`
-                : `<div class="node-placeholder">${getInitials(data.label)}</div>`
+                : `<div class="node-placeholder">${getInitials(data.label || data.id)}</div>`
             }
-            <div class="node-label">${truncateLabel(data.label, 40)}</div>
+            <div class="node-label">${truncateLabel(data.label || data.id, 40)}</div>
           </div>
         `
       }

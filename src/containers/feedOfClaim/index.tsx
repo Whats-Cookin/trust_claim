@@ -42,8 +42,8 @@ interface LocalClaim {
   name: string
   source_link: string
   link: string
-  author: string // this is who created the claim
-  curator: string // this is claim about
+  subject_name: string
+  issuer_name: string
 }
 
 const extractProfileName = (url: string): string | null => {
@@ -429,7 +429,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             }}
                           >
                             {`Created by: ${
-                              claim.subject_name ? claim.subject_name : extractProfileName(claim.link)
+                              claim.issuer_name ? claim.issuer_name : extractProfileName(claim.link)
                             }, ${new Date(claim.effective_date).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',

@@ -360,12 +360,12 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           <Stack direction='row' spacing={1} alignItems='center'>
             <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
             <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
-              {data.claim.claimData.issuer_name}
+              {data.claim.claimData.subject_name}
             </Typography>
           </Stack>
 
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${data.claim.claimData.subject_name ? data.claim.claimData.subject_name : 'Unknown'}, ${new Date(
+            {`Created by: ${data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'}, ${new Date(
               claim.effectiveDate
             ).toLocaleDateString('en-US', {
               year: 'numeric',

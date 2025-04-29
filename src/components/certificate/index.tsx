@@ -25,7 +25,8 @@ import { useNavigate } from 'react-router-dom'
 import html2pdf from 'html2pdf.js'
 
 interface Validation {
-  author: string
+  subject_name: string
+  issuer_name: string
   statement: string
   date?: string
   confidence?: number
@@ -38,6 +39,7 @@ interface Validation {
 }
 
 interface CertificateProps {
+  subject_name: string
   issuer_name: string
   subject: string
   statement?: string
@@ -306,7 +308,7 @@ const Certificate: React.FC<CertificateProps> = ({
                       onClick={() => handleClaimClick(validation)}
                     >
                       <Typography color='#2D6A4F' fontWeight={500} fontSize={20} marginBottom={1}>
-                        {validation.author}
+                        {validation.subject_name}
                       </Typography>
                       <Typography color='#212529' fontSize={16}>
                         {truncateText(validation.statement || '', 50)}
@@ -531,7 +533,7 @@ const Certificate: React.FC<CertificateProps> = ({
               }}
             >
               <Typography color='#2D6A4F' fontWeight={500} fontSize={20} marginBottom={1}>
-                {validation.author}
+                {validation.subject_name}
               </Typography>
               <Typography color='#212529' fontSize={16}>
                 {truncateText(validation.statement || '', 50)}
@@ -650,7 +652,7 @@ const Certificate: React.FC<CertificateProps> = ({
                     marginBottom: 2
                   }}
                 >
-                  {selectedValidation.author}
+                  {selectedValidation.subject_name}
                 </Typography>
                 <Typography
                   sx={{
