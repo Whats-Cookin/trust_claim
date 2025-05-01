@@ -24,7 +24,7 @@ const RightSidebar: React.FC = () => {
         maxWidth: '375px',
         zIndex: 106,
         color: '#212529',
-        marginTop: !isAuthPage ? `calc(clamp(50px, 6.146vw, 118px) + 56px)` : '0',
+        marginTop: !isAuthPage ? `calc(clamp(50px, 5.146vw, 103px) + 56px)` : '0',
         textWrap: 'nowrap',
         display: {
           xs: 'none',

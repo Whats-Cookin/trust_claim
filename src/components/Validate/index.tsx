@@ -39,8 +39,7 @@ import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import ArrowUpward from '@mui/icons-material/ArrowUpward'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import { CircleCheck, Medal, ShieldCheck } from 'lucide-react'
-import FeedClaim from '../../containers/feedOfClaim'
+import Badge from './Badge'
 
 // Constants
 const FIRST_HAND = 'FIRST_HAND'
@@ -154,42 +153,7 @@ const extractProfileName = (url: string): string | null => {
 }
 
 // Components
-const Badge = (claim: any) => {
-  const bgColor = claim.claim === 'credential' ? '#cce6ff' : claim.claim === 'validated' ? '#f8e8cc' : '#c0efd7'
-  const icon =
-    claim.claim === 'credential' ? (
-      <Medal size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    ) : claim.claim === 'validated' ? (
-      <ShieldCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    ) : (
-      <CircleCheck size={22} style={{ marginBottom: -6, paddingRight: 5 }} />
-    )
-  const color = claim.claim === 'credential' ? '#0052e0' : claim.claim === 'validated' ? '#e08a00' : '#2d6a4f'
 
-  return (
-    <Box
-      sx={{
-        display: 'inline-block',
-        alignItems: 'center',
-        backgroundColor: bgColor,
-        borderRadius: '12px',
-        padding: '2px 8px',
-        marginBottom: '10px',
-        marginLeft: '10px',
-        height: 'fit-content',
-        color: color,
-        overflow: 'hidden'
-      }}
-    >
-      {icon}
-      <Typography variant='caption' sx={{ color: color, fontSize: '12px' }}>
-        {claim.claim === 'validated'
-          ? 'Validation'
-          : claim.claim.charAt(0).toUpperCase() + claim.claim.slice(1) || 'Claim'}
-      </Typography>
-    </Box>
-  )
-}
 
 const ClaimName = ({ claim, searchTerm = '' }: { claim: LocalClaim; searchTerm?: string }) => {
   const theme = useTheme()
@@ -597,6 +561,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <Box>
                   <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                     <CardContent>
+
+
+                      
                       <Box
                         sx={{
                           display: 'flex',
@@ -650,13 +617,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
                         <Badge claim={claim.claim} />
                       </Box>
+
+
+
                       <Typography
-                        variant='body1'
+                        
                         sx={{
                           marginBottom: '10px',
                           color: theme.palette.text1,
                           fontSize: '14px !important',
-                          fontFamily: 'Roboto'
+                          fontFamily: 'Roboto',
+                          fontWeight: '500'
                         }}
                       >
                         {`Created by: ${claim.author ? claim.author : extractProfileName(claim.link)}, ${new Date(
@@ -1089,7 +1060,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               sx={{
                 mb: '5px',
                 fontFamily: 'Montserrat',
-
                 fontSize: '16px',
                 lineHeight: '100%',
                 letterSpacing: '0%'
@@ -1205,9 +1175,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   fontSize: '16px',
                   lineHeight: '100%',
                   letterSpacing: '0%',
+                  fontWeight: '500',
                   '&:hover': {
                     backgroundColor: '#2D6A4F'
-                  }
+                  },
+                  textDecoration: 'none',
+                  textTransform: 'none', 
                 }}
               >
                 Submit

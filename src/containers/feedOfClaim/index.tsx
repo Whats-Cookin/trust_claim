@@ -315,7 +315,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {claims.length > 0 ? (
             <MainContainer
               sx={{
-                marginLeft: 'auto',
+               
                 backgroundColor: '#FFFFFF',
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
@@ -409,7 +409,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     textDecoration: 'none',
                                     color: 'inherit',
                                     fontSize: '18px !important',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+                                    fontWeight: '700'
                                   }}
                                 >
                                   <ClaimName claim={claim} searchTerm={searchTerm} />
@@ -420,11 +421,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             <Badge claim={claim.claim} />
                           </Box>
                           <Typography
-                            variant='body1'
+                           
                             sx={{
                               marginBottom: '10px',
-                              color: theme.palette.text1,
-                              fontSize: '14px !important',
+                              color:'#495057',
+                              fontSize: '14px',
+                              fontWeight: '500',
                               fontFamily: 'Roboto'
                             }}
                           >
@@ -439,14 +441,14 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
                           {claim.statement && (
                             <Typography
-                              variant='body1'
+                              
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
                                 fontSize: '16px !important',
                                 fontWeight: 500,
                                 marginBottom: '1px',
-                                color: theme.palette.claimtext
+                                color: "#212529"
                               }}
                             >
                               <span

@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
   })
 
   const getActiveStyle = (path: string) => ({
-    backgroundColor: location.pathname === path ? theme.palette.greenColor : '#FFFFFF',
+    backgroundColor: location.pathname === path ? '#2D6A4F' : '#FFFFFF',
     transition: 'background-color 0.3s, box-shadow 0.3s',
     minHeight: '44px',
     color: location.pathname === path ? '#FFFFFF' : theme.palette.text.primary,
@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
       variant='permanent'
       sx={{
         '& .MuiDrawer-paper': {
-          width: 'clamp(294px, 20vw, 350px)',
+          width: 'clamp(294px, 20vw, 320px)',
           boxSizing: 'border-box',
           backgroundColor: '#FFFFFF',
           color: '#212529',
@@ -72,13 +72,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           borderRadius: '0 8px 8px 0',
           position: 'fixed',
           bottom: '0',
-          marginTop: isNavbarVisible && !isAuthPage ? `calc(clamp(50px, 6.146vw, 118px) + 56px)` : '0',
+        marginTop: !isAuthPage ? `calc(clamp(50px, 5.146vw, 103px) + 56px)` : '0',
           height: isNavbarVisible && !isAuthPage ? `calc(100vh - clamp(50px, 6.146vw, 118px))` : '100vh',
           boxShadow: '1px 1px 10px rgba(0, 0, 0, 0.25)'
         }
       }}
     >
-      <List sx={{ padding: { xs: theme.spacing(2), md: theme.spacing(5) } }}>
+      <List sx={{ pt: { xs: theme.spacing(4), md: theme.spacing(5) }, ml: { xs: theme.spacing(2), md: theme.spacing(3) } }}>
         <ListItemButton
           sx={{
             gap: theme.spacing(2),
@@ -94,9 +94,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           <ListItemText
             primary='Home'
             primaryTypographyProps={{
-              variant: 'body1',
-              fontSize: { xs: '12px', md: '14px' },
-              fontFamily: 'Montserrat'
+      
+              fontSize: { xs: '12px', md: '16px' },
+              fontFamily: 'Montserrat',
+              fontWeight: '600'
             }}
           />
         </ListItemButton>
@@ -116,9 +117,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
           <ListItemText
             primary='Search'
             primaryTypographyProps={{
-              variant: 'body1',
-              fontSize: { xs: '12px', md: '14px' },
-              fontFamily: 'Montserrat'
+              fontSize: { xs: '12px', md: '16px' },
+              fontFamily: 'Montserrat',
+              fontWeight: '600'
             }}
           />
         </ListItemButton>
@@ -136,9 +137,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             <ListItemText
               primary='Claim'
               primaryTypographyProps={{
-                variant: 'body1',
-                fontSize: { xs: '12px', md: '14px' },
-                fontFamily: 'Montserrat'
+                fontSize: { xs: '12px', md: '16px' },
+                fontFamily: 'Montserrat',
+                fontWeight: '600'
               }}
             />
           </ListItemButton>
@@ -173,10 +174,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuth, toggleTheme, isDarkMode, isNa
             <ListItemText
               primary='Log out'
               primaryTypographyProps={{
-                variant: 'body1',
-                color: '#212529',
-                fontSize: { xs: '12px', md: '14px' },
-                fontFamily: 'Montserrat'
+                fontSize: { xs: '12px', md: '16px' },
+              fontFamily: 'Montserrat',
+              fontWeight: '600'
               }}
             />
           </ListItemButton>
