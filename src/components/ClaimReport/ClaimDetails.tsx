@@ -13,18 +13,12 @@ import {
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
 import DataObjectIcon from '@mui/icons-material/DataObject'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
-import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Link } from 'react-router-dom'
 import { memo, useEffect, useState, useRef } from 'react'
 import html2pdf from 'html2pdf.js'
-
-const TextLabel = styled(Typography)(({ theme }) => ({
-  color: theme.palette.date
-}))
 
 const MediaContainer = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -44,58 +38,6 @@ const MediaContainer = styled(Box)(({ theme }) => ({
   }
 }))
 
-const ButtonContainer = styled(Box)(({ theme }) => ({
-  width: '100%',
-  maxWidth: '740px',
-  height: '61px',
-  background: '#FEFEFF',
-  boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
-  borderRadius: '8px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '0 20px',
-  margin: '20px auto',
-  position: 'relative'
-}))
-
-const ActionButton = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  gap: 2,
-  cursor: 'pointer',
-  background: 'none',
-  border: 'none',
-  padding: 0,
-  '&:hover': {
-    opacity: 0.8
-  }
-}))
-
-const ButtonText = styled(Typography)(({ theme }) => ({
-  fontFamily: 'Roboto',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: '16px',
-  lineHeight: '19px',
-  color: '#2D6A4F'
-}))
-
-const ButtonIcon = styled(Box)(({ theme }) => ({
-  width: '24px',
-  height: '24px',
-  position: 'relative',
-  '&::before, &::after': {
-    content: '""',
-    position: 'absolute',
-    border: '2px solid #2D6A4F',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0
-  }
-}))
-
 const isVideoUrl = (url: string): boolean => {
   try {
     const parsedUrl = new URL(url)
@@ -104,21 +46,6 @@ const isVideoUrl = (url: string): boolean => {
   } catch {
     return false
   }
-}
-
-const extractProfileName = (url: string): string => {
-  try {
-    const urlObj = new URL(url)
-    const pathParts = urlObj.pathname.split('/')
-    return pathParts[pathParts.length - 1] || url
-  } catch {
-    return url
-  }
-}
-
-const truncateText = (text: string, length: number) => {
-  if (text.length <= length) return text
-  return `${text.substring(0, length)}...`
 }
 
 const generateLinkedInShareUrl = (credentialName: string, url: string) => {
@@ -200,10 +127,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [anchorExportEl, setAnchorExportEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [currentUrl, setCurrentUrl] = useState('')
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
-  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
-  const [selectedValidation, setSelectedValidation] = useState<any>(null)
   const [isExpanded, setIsExpanded] = useState(false)
   const claim = data.claim
   
@@ -220,15 +143,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
   const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
-  }
-
-  const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorExportEl(event.currentTarget as unknown as HTMLButtonElement)
-  }
-
-  const handleLinkedInCertification = () => {
-    const linkedInUrl = generateLinkedInCertificationUrl(claim)
-    window.open(linkedInUrl, '_blank')
   }
 
   const handleLinkedInPost = () => {
@@ -343,25 +257,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           {data.claim.claimData.image && <MediaContent url={data.claim.claimData.image} />}
 
           <Stack spacing={3}>
-            <Stack
-              direction="row"
-              spacing={2}
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{ width: '100%' }}
-            >
-              <Typography
-                variant="body1"
-                sx={{
-                  fontSize: '18px',
-                  fontWeight: 500
-                }}
-              >
-                {claim.claim.sourceURI}
-              </Typography>
-            </Stack>
-
-            {/* Main Content */}
             <Typography
               variant="body1"
               sx={{
@@ -372,7 +267,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               {claim.claim.statement}
             </Typography>
 
-            {/* Metadata */}
             <Stack spacing={2}>
               <Stack direction="row" spacing={2}>
                 <Typography sx={{ width: 120 }}>From:</Typography>
