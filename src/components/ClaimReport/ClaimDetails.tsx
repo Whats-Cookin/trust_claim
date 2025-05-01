@@ -305,6 +305,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               }}
             >
               {data.claim.claimData.name}
+
             </Typography>
             
             <Button
