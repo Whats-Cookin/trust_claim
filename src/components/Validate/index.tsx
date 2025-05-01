@@ -154,7 +154,6 @@ const extractProfileName = (url: string): string | null => {
 
 // Components
 
-
 const ClaimName = ({ claim, searchTerm = '' }: { claim: LocalClaim; searchTerm?: string }) => {
   const theme = useTheme()
   let displayName = claim.name
@@ -561,9 +560,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 <Box>
                   <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                     <CardContent>
-
-
-                      
                       <Box
                         sx={{
                           display: 'flex',
@@ -618,10 +614,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         <Badge claim={claim.claim} />
                       </Box>
 
-
-
                       <Typography
-                        
                         sx={{
                           marginBottom: '10px',
                           color: theme.palette.text1,
@@ -1180,7 +1173,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     backgroundColor: '#2D6A4F'
                   },
                   textDecoration: 'none',
-                  textTransform: 'none', 
+                  textTransform: 'none'
                 }}
               >
                 Submit

@@ -315,7 +315,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {claims.length > 0 ? (
             <MainContainer
               sx={{
-               
                 backgroundColor: '#FFFFFF',
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
@@ -421,10 +420,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             <Badge claim={claim.claim} />
                           </Box>
                           <Typography
-                           
                             sx={{
                               marginBottom: '10px',
-                              color:'#495057',
+                              color: '#495057',
                               fontSize: '14px',
                               fontWeight: '500',
                               fontFamily: 'Roboto'
@@ -441,14 +439,13 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
                           {claim.statement && (
                             <Typography
-                              
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
                                 fontSize: '16px !important',
                                 fontWeight: 500,
                                 marginBottom: '1px',
-                                color: "#212529"
+                                color: '#212529'
                               }}
                             >
                               <span
