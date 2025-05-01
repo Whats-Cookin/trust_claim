@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
-import {
-  Container,
-  Typography,
-  Card,
-  CircularProgress,
-  Box,
-  useTheme,
-  useMediaQuery,
-  Button
-} from '@mui/material'
+import { Container, Typography, Card, CircularProgress, Box, useTheme, useMediaQuery, Button } from '@mui/material'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import backSvg from '../../assets/images/back.svg'
 import ClaimDetails from './ClaimDetails'
@@ -253,29 +244,35 @@ function MyCard({
         mb: '10px'
       }}
     >
-      <Box sx={{ 
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%'
-      }}>
-        <Box sx={{
+      <Box
+        sx={{
           display: 'flex',
-          flexDirection: 'row',
-          gap: '20px',
-          p: '20px'
-        }}>
+          flexDirection: 'column',
+          width: '100%'
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '20px',
+            p: '20px'
+          }}
+        >
           {img && (
-            <Box sx={{ 
-              width: '300px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              flexShrink: 0
-            }}>
+            <Box
+              sx={{
+                width: '300px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                flexShrink: 0
+              }}
+            >
               {img.includes('.mp4') ? (
-                <video 
-                  controls 
-                  style={{ 
+                <video
+                  controls
+                  style={{
                     width: '100%',
                     height: 'auto',
                     maxHeight: '300px',
@@ -287,16 +284,16 @@ function MyCard({
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                <img 
-                  src={img} 
-                  alt={data.subject} 
-                  style={{ 
+                <img
+                  src={img}
+                  alt={data.subject}
+                  style={{
                     width: '100%',
                     height: 'auto',
                     maxHeight: '300px',
                     objectFit: 'contain',
                     borderRadius: '8px'
-                  }} 
+                  }}
                 />
               )}
             </Box>
@@ -304,14 +301,11 @@ function MyCard({
 
           <Box sx={{ flex: 1 }}>
             <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-              {`${new Date(data.effectiveDate).toLocaleDateString(
-                'en-US',
-                {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                }
-              )}`}
+              {`${new Date(data.effectiveDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}`}
             </Typography>
 
             {data.statement && (

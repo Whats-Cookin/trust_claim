@@ -129,7 +129,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [currentUrl, setCurrentUrl] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
   const claim = data.claim
-  
+
   console.log('Full data structure:', {
     data: data,
     claim: claim,
@@ -197,12 +197,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     >
       <CardContent>
         <Stack spacing={3}>
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            justifyContent="space-between"
-          >
+          <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between'>
             <Typography
               component={Link}
               to={data.edge.startNode.nodeUri}
@@ -219,9 +214,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               }}
             >
               {data.claim.claimData.name}
-
             </Typography>
-            
+
             <Button
               startIcon={<ShareIcon />}
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleShareClick(e)}
@@ -242,23 +236,20 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           </Stack>
 
           <Stack direction='row' spacing={1} alignItems='center'>
-             <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`${new Date(
-              claim.claim.effectiveDate
-            ).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}`}
-          </Typography>
+            <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+              {`${new Date(claim.claim.effectiveDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}`}
+            </Typography>
           </Stack>
 
-         
           {data.claim.claimData.image && <MediaContent url={data.claim.claimData.image} />}
 
           <Stack spacing={3}>
             <Typography
-              variant="body1"
+              variant='body1'
               sx={{
                 fontSize: '16px',
                 lineHeight: 1.6
@@ -268,21 +259,21 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             </Typography>
 
             <Stack spacing={2}>
-              <Stack direction="row" spacing={2}>
+              <Stack direction='row' spacing={2}>
                 <Typography sx={{ width: 120 }}>From:</Typography>
-                <Typography >{claim.claim.author}</Typography>
+                <Typography>{claim.claim.author}</Typography>
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack direction='row' spacing={2}>
                 <Typography sx={{ width: 120 }}>How known:</Typography>
-                <Typography >{claim.claim.howKnown}</Typography>
+                <Typography>{claim.claim.howKnown}</Typography>
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack direction='row' spacing={2}>
                 <Typography sx={{ width: 120 }}>Aspect:</Typography>
-                <Typography >{claim.claim.claim}</Typography>
+                <Typography>{claim.claim.claim}</Typography>
               </Stack>
-              <Stack direction="row" spacing={2}>
+              <Stack direction='row' spacing={2}>
                 <Typography sx={{ width: 120 }}>Confidence:</Typography>
-                <Typography >{claim.claim.confidence}</Typography>
+                <Typography>{claim.claim.confidence}</Typography>
               </Stack>
             </Stack>
           </Stack>
