@@ -113,19 +113,19 @@ const darkModeTheme = createTheme({
   typography: {
     fontFamily: 'Montserrat',
     body1: {
-      fontSize: '18px!important',
-      fontWeight: 400,
+      fontSize: '16px!important',
+      fontWeight: 700,
       lineHeight: 1.5,
       '@media (min-width:600px)': {
         fontSize: '18px'
       }
     },
     body2: {
-      fontSize: '0.875rem!important',
-      fontWeight: 300,
+      fontSize: '16px!important',
+      fontWeight: 500,
       lineHeight: 1.43,
       '@media (min-width:600px)': {
-        fontSize: '1rem'
+        fontSize: '16px'
       }
     }
   },

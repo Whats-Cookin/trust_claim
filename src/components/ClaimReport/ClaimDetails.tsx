@@ -9,21 +9,48 @@ import {
   Theme,
   Link as MuiLink,
   Popover,
-  Snackbar
+  TextField,
+  InputAdornment,
+  IconButton,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  useTheme,
+  ButtonBase
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
 import DataObjectIcon from '@mui/icons-material/DataObject'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import CircleIcon from '@mui/icons-material/Circle'
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
+import CloseIcon from '@mui/icons-material/Close'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
+import ImageIcon from '@mui/icons-material/Image'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { memo, useEffect, useState, useRef } from 'react'
+import { BACKEND_BASE_URL } from '../../utils/settings'
+import { memo, useCallback, useEffect, useState, useRef } from 'react'
+import jsPDF from 'jspdf'
+import badge from '../../assets/images/badge.svg'
 import html2pdf from 'html2pdf.js'
+// import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
+// import Duration from '../../assets/duration.svg'
+
+const TextLabel = styled(Typography)(({ theme }) => ({
+  color: theme.palette.date
+}))
 
 const MediaContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(2),
   borderRadius: '12px',
   overflow: 'hidden',
   '& img': {
@@ -38,6 +65,57 @@ const MediaContainer = styled(Box)(({ theme }) => ({
   }
 }))
 
+const ButtonContainer = styled(Box)(({ theme }) => ({
+  width: '100%',
+  height: '61px',
+  background: '#FEFEFF',
+  boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
+  borderRadius: '8px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '0 20px',
+  margin: '20px auto',
+  position: 'relative'
+}))
+
+const ActionButton = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: 2,
+  cursor: 'pointer',
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  '&:hover': {
+    opacity: 0.8
+  }
+}))
+
+const ButtonText = styled(Typography)(({ theme }) => ({
+  fontFamily: 'Roboto',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '16px',
+  lineHeight: '19px',
+  color: '#2D6A4F'
+}))
+
+const ButtonIcon = styled(Box)(({ theme }) => ({
+  width: '24px',
+  height: '24px',
+  position: 'relative',
+  '&::before, &::after': {
+    content: '""',
+    position: 'absolute',
+    border: '2px solid #2D6A4F',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0
+  }
+}))
+
 const isVideoUrl = (url: string): boolean => {
   try {
     const parsedUrl = new URL(url)
@@ -46,6 +124,21 @@ const isVideoUrl = (url: string): boolean => {
   } catch {
     return false
   }
+}
+
+const extractProfileName = (url: string): string => {
+  try {
+    const urlObj = new URL(url)
+    const pathParts = urlObj.pathname.split('/')
+    return pathParts[pathParts.length - 1] || url
+  } catch {
+    return url
+  }
+}
+
+const truncateText = (text: string, length: number) => {
+  if (text.length <= length) return text
+  return `${text.substring(0, length)}...`
 }
 
 const generateLinkedInShareUrl = (credentialName: string, url: string) => {
@@ -127,22 +220,33 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [anchorExportEl, setAnchorExportEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [currentUrl, setCurrentUrl] = useState('')
+  const [validationDialogOpen, setValidationDialogOpen] = useState(false)
+  const [videoDialogOpen, setVideoDialogOpen] = useState(false)
+  const [selectedMedia, setSelectedMedia] = useState('')
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [selectedClaimId, setSelectedClaimId] = useState<string | null>(null)
+  const [claimDialogOpen, setClaimDialogOpen] = useState(false)
+  const [selectedValidation, setSelectedValidation] = useState<any>(null)
   const [isExpanded, setIsExpanded] = useState(false)
-  const claim = data.claim
-
-  console.log('Full data structure:', {
-    data: data,
-    claim: claim,
-    claimData: data.claim.claimData,
-    edge: data.edge
-  })
+  const navigate = useNavigate()
+  const claim = data.claim.claim
+  const isStatementLong = claim?.statement && claim.statement.length > 200
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
   }, [])
 
-  const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleShareClick = (event: React.MouseEvent<Element>) => {
+    setAnchorEl(event.currentTarget as HTMLButtonElement)
+  }
+
+  const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorExportEl(event.currentTarget as unknown as HTMLButtonElement)
+  }
+
+  const handleLinkedInCertification = () => {
+    const linkedInUrl = generateLinkedInCertificationUrl(claim)
+    window.open(linkedInUrl, '_blank')
   }
 
   const handleLinkedInPost = () => {
@@ -169,6 +273,34 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     setAnchorExportEl(null)
   }
 
+  const handleValidationDialogOpen = () => {
+    setValidationDialogOpen(true)
+  }
+
+  const handleValidationDialogClose = () => {
+    setValidationDialogOpen(false)
+  }
+
+  const handleVideoClick = (mediaUrl: string) => {
+    setSelectedMedia(mediaUrl)
+    setVideoDialogOpen(true)
+  }
+
+  const handleVideoDialogClose = () => {
+    setVideoDialogOpen(false)
+    setSelectedMedia('')
+  }
+
+  const handleClaimClick = (validation: any) => {
+    setSelectedValidation(validation)
+    setClaimDialogOpen(true)
+  }
+
+  const handleClaimDialogClose = () => {
+    setClaimDialogOpen(false)
+    setSelectedValidation(null)
+  }
+
   const handleToggleExpand = () => {
     setIsExpanded(!isExpanded)
   }
@@ -192,105 +324,136 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
+        marginBottom: '2rem',
+        boxSizing: 'border-box'
       }}
     >
-      <CardContent>
+      <CardContent sx={{ width: '100%', boxSizing: 'border-box', p: 3 }}>
         <Stack spacing={3}>
-          <Stack direction='row' spacing={2} alignItems='center' justifyContent='space-between'>
-            <Typography
-              component={Link}
-              to={data.edge.startNode.nodeUri}
-              variant='h6'
-              color='black'
-              sx={{
-                textDecoration: 'none',
-                minWidth: 0,
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                fontSize: '24px',
-                fontWeight: 600,
-                fontFamily: 'Roboto'
-              }}
-            >
-              {data.claim.claimData.name}
-            </Typography>
-
-            <Button
-              startIcon={<ShareIcon />}
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleShareClick(e)}
-              sx={{
-                backgroundColor: '#4FA890',
-                color: 'white',
-                borderRadius: '25px',
-                padding: '8px 24px',
-                textTransform: 'none',
-                fontSize: '16px',
-                '&:hover': {
-                  backgroundColor: '#3d8872'
-                }
-              }}
-            >
-              Share
-            </Button>
-          </Stack>
-
-          <Stack direction='row' spacing={1} alignItems='center'>
-            <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-              {`${new Date(claim.claim.effectiveDate).toLocaleDateString('en-US', {
+          <Box>
+            <Stack direction='row' alignItems='center' spacing={1}>
+              <Typography
+                component='a'
+                href={data.edge.startNode.nodeUri}
+                target='_blank'
+                rel='noopener noreferrer'
+                variant='h6'
+                color='black'
+                sx={{
+                  textDecoration: 'none',
+                  minWidth: 0,
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  fontFamily: 'Roboto',
+                  display: 'inline-block'
+                }}
+              >
+                {data.claim.claimData.name}
+              </Typography>
+              <OpenInNewIcon fontSize='small' />
+            </Stack>
+            <Typography variant='body2' sx={{ mt: 0.5 }}>
+              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-              })}`}
+              })}
             </Typography>
-          </Stack>
+          </Box>
 
-          {data.claim.claimData.image && <MediaContent url={data.claim.claimData.image} />}
-
-          <Stack spacing={3}>
-            <Typography
-              variant='body1'
-              sx={{
-                fontSize: '16px',
-                lineHeight: 1.6
-              }}
-            >
-              {claim.claim.statement}
-            </Typography>
-
-            <Stack spacing={2}>
-              <Stack direction='row' spacing={2}>
-                <Typography sx={{ width: 120 }}>From:</Typography>
-                <Typography>{claim.claim.author}</Typography>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+            {data.claim.image && (
+              <Box sx={{ minWidth: { md: 220 }, maxWidth: { md: 320 }, padding: '0' }}>
+                <MediaContent url={data.claim.image} />
+              </Box>
+            )}
+            <Stack spacing={2} flex={1}>
+              {claim.statement && (
+                <Typography variant='body2' color='black'>
+                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
+                  {isStatementLong && (
+                    <MuiLink
+                      onClick={handleToggleExpand}
+                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
+                    >
+                      {isExpanded ? 'Show Less' : 'See More'}
+                    </MuiLink>
+                  )}
+                </Typography>
+              )}
+              <Stack spacing={1}>
+                <MuiLink
+                  sx={{
+                    color: theme.palette.link,
+                    justifyContent: 'flex-start',
+                    width: 'fit-content',
+                    fontSize: '16px',
+                    fontWeight: 500
+                  }}
+                  target='_blank'
+                  href={claim.subject}
+                >
+                  {claim.subject}
+                </MuiLink>
+                <MuiLink
+                  sx={{
+                    color: theme.palette.link,
+                    justifyContent: 'flex-start',
+                    width: 'fit-content',
+                    fontSize: '16px',
+                    fontWeight: 500
+                  }}
+                  target='_blank'
+                  href={claim.sourceURI}
+                >
+                  {claim.sourceURI}
+                </MuiLink>
               </Stack>
-              <Stack direction='row' spacing={2}>
-                <Typography sx={{ width: 120 }}>How known:</Typography>
-                <Typography>{claim.claim.howKnown}</Typography>
-              </Stack>
-              <Stack direction='row' spacing={2}>
-                <Typography sx={{ width: 120 }}>Aspect:</Typography>
-                <Typography>{claim.claim.claim}</Typography>
-              </Stack>
-              <Stack direction='row' spacing={2}>
-                <Typography sx={{ width: 120 }}>Confidence:</Typography>
-                <Typography>{claim.claim.confidence}</Typography>
-              </Stack>
+              <Typography variant='body2' color='black' sx={{ mt: 1 }}>
+                {data.validations.length} Recommendations
+              </Typography>
             </Stack>
           </Stack>
+
+          <Box sx={{ width: '100%', height: '1px', backgroundColor: theme.palette.divider, my: 2 }} />
+
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '120px' }}>
+            <ActionButton onClick={handleExportClick}>
+              <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <ButtonText>Export</ButtonText>
+            </ActionButton>
+
+            <ActionButton onClick={() => navigate(`/explore/${claim.id}`)}>
+              <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <ButtonText>Graph</ButtonText>
+            </ActionButton>
+
+            <ActionButton onClick={e => handleShareClick(e)}>
+              <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <ButtonText>Share</ButtonText>
+            </ActionButton>
+
+            <ActionButton onClick={() => navigate(`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`)}>
+              <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <ButtonText>Validate</ButtonText>
+            </ActionButton>
+
+            <ActionButton onClick={() => navigate(`/certificate/${claim.id}`)}>
+              <PictureAsPdfIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <ButtonText>Certificate</ButtonText>
+            </ActionButton>
+          </Box>
 
           <Popover
             id={id}
             open={open}
             anchorEl={anchorEl}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right'
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Button
@@ -315,14 +478,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             open={openEx}
             anchorEl={anchorExportEl}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right'
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Button

@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
-import { Container, Typography, Card, CircularProgress, Box, useTheme, useMediaQuery, Button } from '@mui/material'
+import {
+  Container,
+  Typography,
+  Card,
+  CircularProgress,
+  Box,
+  useTheme,
+  useMediaQuery,
+  Button,
+  Stack
+} from '@mui/material'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import backSvg from '../../assets/images/back.svg'
 import ClaimDetails from './ClaimDetails'
@@ -82,11 +92,10 @@ const DonationReport: React.FC = () => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: theme.palette.menuBackground,
+          backgroundColor: '#ffffff',
           borderRadius: '20px',
           padding: '25px',
-          width: '100%',
-          margin: '0 auto'
+          width: '100%'
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
@@ -99,16 +108,9 @@ const DonationReport: React.FC = () => {
             }}
           >
             Claim Report
-            <Box
-              sx={{
-                height: '4px',
-                backgroundColor: theme.palette.maintext,
-                borderRadius: '2px',
-                width: '80%'
-              }}
-            />
           </Typography>
         </Box>
+        <Box sx={{ width: '100%', height: '1px', backgroundColor: theme.palette.divider, mb: '30px' }} />
 
         <ClaimDetails theme={theme} data={reportData.data} />
 
@@ -116,7 +118,7 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='body2'
+                variant='body1'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
@@ -124,17 +126,9 @@ const DonationReport: React.FC = () => {
                 }}
               >
                 Validations
-                <Box
-                  sx={{
-                    height: '4px',
-                    backgroundColor: theme.palette.maintext,
-                    marginTop: '4px',
-                    borderRadius: '2px',
-                    width: '80%'
-                  }}
-                />
               </Typography>
             </Box>
+            <Box sx={{ width: '100%', height: '1px', backgroundColor: theme.palette.divider, mb: '30px' }} />
 
             {reportData.data.validations.map(
               (validation: Claim) =>
@@ -157,27 +151,17 @@ const DonationReport: React.FC = () => {
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='body2'
+                variant='body1'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '20px',
-                  fontWeight: 600
+                  marginLeft: isMediumScreen ? '0' : '1rem'
                 }}
               >
                 Related Attestations
-                <Box
-                  sx={{
-                    height: '4px',
-                    backgroundColor: theme.palette.maintext,
-                    marginTop: '4px',
-                    borderRadius: '2px',
-                    width: '80%'
-                  }}
-                />
               </Typography>
             </Box>
+            <Box sx={{ width: '100%', height: '1px', backgroundColor: theme.palette.divider, mb: '30px' }} />
 
             {reportData.data.attestations.map(
               (attestation: Claim) =>
@@ -231,6 +215,7 @@ function MyCard({
   handleMenuClose: () => void
   isLargeScreen: any
 }>) {
+  console.log(data)
   return (
     <Card
       sx={{
@@ -300,27 +285,37 @@ function MyCard({
           )}
 
           <Box sx={{ flex: 1 }}>
-            <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-              {`${new Date(data.effectiveDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}`}
+            <Typography
+              variant='body2'
+              sx={{
+                padding: '5px 1 1 5px',
+                wordBreak: 'break-word',
+                marginBottom: '1px',
+                color: theme.palette.claimtext
+              }}
+            >
+              {data.statement}
             </Typography>
-
-            {data.statement && (
-              <Typography
-                variant='body1'
-                sx={{
-                  padding: '5px 1 1 5px',
-                  wordBreak: 'break-word',
-                  marginBottom: '1px',
-                  color: theme.palette.claimtext
-                }}
-              >
-                {data.statement}
-              </Typography>
-            )}
+            <Stack spacing={2}>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='body2' sx={{ width: 120 }}>
+                  Issued on:
+                </Typography>
+                <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+                  {`${new Date(data.effectiveDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}`}
+                </Typography>
+              </Stack>
+              <Stack direction='row' spacing={2}>
+                <Typography variant='body2' sx={{ width: 120 }}>
+                  Sourse Link:
+                </Typography>
+                <Typography variant='body2'>{data.link}</Typography>
+              </Stack>
+            </Stack>
           </Box>
         </Box>
       </Box>
