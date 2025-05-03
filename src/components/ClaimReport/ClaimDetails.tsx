@@ -422,27 +422,27 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '120px' }}>
             <ActionButton onClick={handleExportClick}>
-              <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Export</ButtonText>
             </ActionButton>
 
             <ActionButton onClick={() => navigate(`/explore/${claim.id}`)}>
-              <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Graph</ButtonText>
             </ActionButton>
 
             <ActionButton onClick={e => handleShareClick(e)}>
-              <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
 
             <ActionButton onClick={() => navigate(`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`)}>
-              <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Validate</ButtonText>
             </ActionButton>
 
             <ActionButton onClick={() => navigate(`/certificate/${claim.id}`)}>
-              <PictureAsPdfIcon sx={{ color: '#2D6A4F', fontSize: 24 ,mr:'10px'}} />
+              <PictureAsPdfIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Certificate</ButtonText>
             </ActionButton>
           </Box>
