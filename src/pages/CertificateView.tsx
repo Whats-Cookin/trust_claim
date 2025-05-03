@@ -21,7 +21,7 @@ const CertificateView: React.FC = () => {
     const fetchData = async () => {
       try {
         let reportUrl = `${BACKEND_BASE_URL}/api/report/${id}`
-        
+
         console.log(`Fetching certificate data from: ${reportUrl}`)
         const response = await fetch(reportUrl, {
           method: 'GET',
@@ -35,7 +35,7 @@ const CertificateView: React.FC = () => {
         }
         const responseData = await response.json()
         console.log('Received certificate data:', responseData)
-        
+
         setData(responseData.data)
       } catch (err) {
         console.error('Error fetching certificate data:', err)
