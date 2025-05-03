@@ -313,7 +313,7 @@ function MyCard({
                 <Typography variant='body2' sx={{ width: 120 }}>
                   Sourse Link:
                 </Typography>
-                <Typography variant='body2'>{data.link}</Typography>
+                <Typography variant='body2'>{data.source_link}</Typography>
               </Stack>
             </Stack>
           </Box>
