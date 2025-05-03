@@ -12,40 +12,33 @@ const CertificateView: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    // If we have data from navigation state, use it
     if (location.state && location.state.claimData) {
       setData(location.state.claimData)
       setLoading(false)
       return
     }
 
-    // Otherwise fetch the data from the same endpoint as the report page
     const fetchData = async () => {
       try {
-        // Use the exact same URL as the report page
-        const reportUrl = `${BACKEND_BASE_URL}/api/report/${id}`
-        console.log(`Fetching from: ${reportUrl}`)
-
+        let reportUrl = `${BACKEND_BASE_URL}/api/report/${id}`
+        
+        console.log(`Fetching certificate data from: ${reportUrl}`)
         const response = await fetch(reportUrl, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            'Content-Type': 'application/json'
           }
         })
-
         if (!response.ok) {
           console.error('Response not OK:', response.status, response.statusText)
-          throw new Error(`Failed to fetch claim: ${response.statusText}`)
+          throw new Error(`Failed to fetch certificate: ${response.statusText}`)
         }
-
         const responseData = await response.json()
-        console.log('Received report data:', responseData)
-
-        // Set data directly from the report endpoint
-        setData(responseData)
+        console.log('Received certificate data:', responseData)
+        
+        setData(responseData.data)
       } catch (err) {
-        console.error('Error fetching data:', err)
+        console.error('Error fetching certificate data:', err)
         setError(err instanceof Error ? err.message : 'An unknown error occurred')
       } finally {
         setLoading(false)
@@ -79,22 +72,22 @@ const CertificateView: React.FC = () => {
     )
   }
 
-  // Destructure the data
   const claim = data.claim.claim
 
   return (
     <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
       <Certificate
-        subject_name={data.claim.claimData.subject_name}
-        issuer_name={data.claim.claimData.issuer_name}
-        subject={claim.subject}
-        statement={claim.statement}
+        subject_name={data.claim.claimData?.subject_name || ''}
+        issuer_name={data.claim.claimData?.issuer_name || ''}
+        subject={claim.subject || ''}
+        statement={claim.statement || ''}
         effectiveDate={claim.effectiveDate}
         sourceURI={claim.sourceURI}
         validations={data.validations || []}
         claimId={id}
-        image={data.claim.image}
-        name={data.claim.claimData.name}
+        image={data.claim.claimData?.image || data.claim.image}
+        name={data.claim.claimData?.name || ''}
+        claim={data.claim}
       />
     </Box>
   )
