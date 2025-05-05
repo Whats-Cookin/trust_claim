@@ -270,19 +270,18 @@ function MyCard({
                 </Typography>
               )}
               <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
-                {data.curator}
+                {data.subject_name}
               </Typography>
             </Box>
           </Box>
           <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${data.author ? data.author : 'Unknown'}, ${new Date(data.effectiveDate).toLocaleDateString(
-              'en-US',
-              {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              }
-            )}`}
+            {`Created by: ${data.issuer_name ? data.issuer_name : 'Unknown'}, ${new Date(
+              data.effectiveDate
+            ).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}`}
           </Typography>
 
           {data.statement && (
