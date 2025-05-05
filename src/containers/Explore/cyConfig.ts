@@ -136,7 +136,6 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
       ])
     }
   }
-
 }
 
 export default cyConfig
