@@ -375,7 +375,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         >
           <Box sx={{ width: '100%', p: '0' }}>
             {/* Form Content */}
-            
 
             <Box
               sx={{
@@ -399,7 +398,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   gap: '20px'
                 }}
               >
-                <Typography variant='h6' sx={{  fontWeight: 'bold', width: '95%' }}>
+                <Typography variant='h6' sx={{ fontWeight: 'bold', width: '95%' }}>
                   Validate the Credential
                 </Typography>
                 <Box
@@ -466,10 +465,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 alignItems: 'center'
                               }}
                             >
-                              <Typography variant='body2' sx={{ color: theme.palette.texts, fontSize: '18px !important' }}>
+                              <Typography
+                                variant='body2'
+                                sx={{ color: theme.palette.texts, fontSize: '18px !important' }}
+                              >
                                 {claimName && subject_name ? `${claimName} - ${subject_name}` : subjectValue}
                               </Typography>
-                              <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts ,paddingLeft: '5px'}} />
+                              <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts, paddingLeft: '5px' }} />
                             </Link>
                           </Box>
                           <ClaimBadge claim={claim} />
@@ -589,8 +591,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     }}
                   >
                     <Box sx={{ height: '544', width: '100%' }}>
-                      
-                      
                       {/* How Known Select Field */}
                       <Typography variant='body2'>How Known(Required)</Typography>
                       <FormControl
