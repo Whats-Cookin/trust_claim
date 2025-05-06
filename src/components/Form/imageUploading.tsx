@@ -127,21 +127,24 @@ const MediaUploader = <TFieldValues extends FieldValues>({
               justifyContent: 'center',
               margin: isMobile ? '10px' : 'auto',
               height: 180,
-              border: '1px solid #A3A3A3',
+              border: '1px solid #000000',
               borderRadius: '8px',
               cursor: 'pointer',
               transition: 'border-color 0.3s',
               '&:hover': {
-                borderColor: theme.palette.borderColor
+                borderColor: '#000000'
               },
-              backgroundColor: '#fffff',
+              backgroundColor: '#FFFFFF',
 
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
-                  borderColor: 'transparent'
+                  borderColor: '#000000'
                 },
                 '&:hover fieldset': {
-                  borderColor: 'transparent'
+                  borderColor: '#000000'
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#000000'
                 },
                 '& .MuiInputBase-input': {
                   color: theme.palette.texts,
@@ -150,7 +153,7 @@ const MediaUploader = <TFieldValues extends FieldValues>({
                 }
               }
             }}
-            style={{ borderColor: isDragging ? theme.palette.borderColor : theme.palette.input }}
+            style={{ borderColor: isDragging ? '#000000' : '#000000' }}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
