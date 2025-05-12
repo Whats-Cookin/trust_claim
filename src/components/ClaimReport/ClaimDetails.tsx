@@ -359,7 +359,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   fontFamily: 'Roboto'
                 }}
               >
-                {data.claim.claimData.name} 
+                {data.claim.claimData.name}
               </Typography>
             </Stack>
           </Stack>
@@ -372,11 +372,11 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
           {claim.claim !== 'credential' ? (
             <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-              {`Created by: ${
-                data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'
-              }`}
+              {`Created by: ${data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'}`}
             </Typography>
-          ) : ""}
+          ) : (
+            ''
+          )}
           {data.claim.image && <MediaContent url={data.claim.image} />}
 
           {/* Info Sections */}
@@ -417,11 +417,10 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
             <Box>
               <Stack spacing={1}>
-               
                 <MuiLink
-                  sx={{ 
-                    color: 'black', 
-                    justifyContent: 'flex-start', 
+                  sx={{
+                    color: 'black',
+                    justifyContent: 'flex-start',
                     width: 'fit-content',
                     display: 'block',
                     wordBreak: 'break-all'
@@ -432,23 +431,23 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   {data.edge.startNode.nodeUri}
                   <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
                 </MuiLink>
-                {claim.sourceURI && (
-                  <>
-                    <MuiLink
-                      sx={{ 
-                        color: 'black', 
-                        justifyContent: 'flex-start', 
-                        width: 'fit-content',
-                        display: 'block',
-                        wordBreak: 'break-all'
-                      }}
-                      target='_blank'
-                      href={claim.sourceURI}
-                    >
-                      {claim.sourceURI}
-                      <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
-                    </MuiLink>
-                  </>
+                {claim.sourceURI && claim.claim !== 'credential' ? (
+                  <MuiLink
+                    sx={{
+                      color: 'black',
+                      justifyContent: 'flex-start',
+                      width: 'fit-content',
+                      display: 'block',
+                      wordBreak: 'break-all'
+                    }}
+                    target='_blank'
+                    href={claim.sourceURI}
+                  >
+                    {claim.sourceURI}
+                    <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
+                  </MuiLink>
+                ) : (
+                  ''
                 )}
               </Stack>
             </Box>
