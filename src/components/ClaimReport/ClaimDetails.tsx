@@ -69,25 +69,28 @@ const ButtonContainer = styled(Box)(({ theme }) => ({
   width: '100%',
   maxWidth: '740px',
   height: '61px',
-  background: '#FEFEFF',
+  background: '#FFFFFF',
   boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
   borderRadius: '8px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: '0 20px',
+  justifyContent: 'center',
+  padding: '0 16px',
   margin: '20px auto',
-  position: 'relative'
+  position: 'relative',
+  gap: '16px'
 }))
 
 const ActionButton = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: 2,
+  gap: '8px',
   cursor: 'pointer',
   background: 'none',
   border: 'none',
-  padding: 0,
+  padding: '8px 16px',
+  minWidth: '120px',
+  justifyContent: 'center',
   '&:hover': {
     opacity: 0.8
   }
@@ -233,6 +236,9 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const isStatementLong = claim?.statement && claim.statement.length > 200
 
   useEffect(() => {
+    console.log('Full data:', data)
+    console.log('Claim data:', data.claim)
+    console.log('Claim:', claim)
     setCurrentUrl(window.location.href)
   }, [])
 
@@ -321,10 +327,11 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         minHeight: '200px',
         width: '100%',
         borderRadius: '20px',
-        backgroundColor: theme.palette.cardBackground,
+        backgroundColor: '#FFFFFF',
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        marginBottom: '2rem',
+        boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.1)'
       }}
     >
       <CardContent>
@@ -352,27 +359,24 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   fontFamily: 'Roboto'
                 }}
               >
-                {data.claim.claimData.name}
+                {data.claim.claimData.name} 
               </Typography>
             </Stack>
           </Stack>
 
           <Stack direction='row' spacing={1} alignItems='center'>
-            <VerifiedOutlinedIcon sx={{ color: theme.palette.date, fontSize: '20px' }} />
             <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
               {data.claim.claimData.subject_name}
             </Typography>
           </Stack>
 
-          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${
-              data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'
-            }, ${new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}`}
-          </Typography>
+          {claim.claim !== 'credential' ? (
+            <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+              {`Created by: ${
+                data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'
+              }`}
+            </Typography>
+          ) : ""}
           {data.claim.image && <MediaContent url={data.claim.image} />}
 
           {/* Info Sections */}
@@ -397,38 +401,55 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
           </Stack>
 
           <Stack spacing={3}>
-            {claim.statement && (
-              <Box>
-                <Typography color='black'>
-                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
-                  {isStatementLong && (
-                    <MuiLink
-                      onClick={handleToggleExpand}
-                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
-                    >
-                      {isExpanded ? 'Show Less' : 'See More'}
-                    </MuiLink>
-                  )}
-                </Typography>
-              </Box>
-            )}
+            <Box>
+              <Typography color='black'>
+                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
+                {isStatementLong && (
+                  <MuiLink
+                    onClick={handleToggleExpand}
+                    sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
+                  >
+                    {isExpanded ? 'Show Less' : 'See More'}
+                  </MuiLink>
+                )}
+              </Typography>
+            </Box>
 
             <Box>
               <Stack spacing={1}>
+               
                 <MuiLink
-                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
+                  sx={{ 
+                    color: 'black', 
+                    justifyContent: 'flex-start', 
+                    width: 'fit-content',
+                    display: 'block',
+                    wordBreak: 'break-all'
+                  }}
                   target='_blank'
-                  href={claim.subject}
+                  href={data.edge.startNode.nodeUri}
                 >
-                  {claim.subject}
+                  {data.edge.startNode.nodeUri}
+                  <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
                 </MuiLink>
-                <MuiLink
-                  sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
-                  target='_blank'
-                  href={claim.sourceURI}
-                >
-                  {claim.sourceURI}
-                </MuiLink>
+                {claim.sourceURI && (
+                  <>
+                    <MuiLink
+                      sx={{ 
+                        color: 'black', 
+                        justifyContent: 'flex-start', 
+                        width: 'fit-content',
+                        display: 'block',
+                        wordBreak: 'break-all'
+                      }}
+                      target='_blank'
+                      href={claim.sourceURI}
+                    >
+                      {claim.sourceURI}
+                      <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
+                    </MuiLink>
+                  </>
+                )}
               </Stack>
             </Box>
 
@@ -462,10 +483,12 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 fontWeight: 500,
                 borderRadius: '24px',
                 fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: { xs: '1rem', sm: '2rem' },
-                width: { xs: '100%', sm: 'auto' },
-                minWidth: { xs: 'auto', sm: '120px' },
-                height: '48px'
+                px: '16px',
+                minWidth: '120px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}
             >
               Validate
@@ -475,17 +498,19 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               component={Link}
               startIcon={<PictureAsPdfIcon />}
               to={`/certificate/${claim.id}`}
-              state={{ claimData: data }} // Pass the current data object
+              state={{ claimData: data }}
               sx={{
                 textTransform: 'none',
                 color: '#2D6A4F',
                 fontWeight: 500,
                 borderRadius: '24px',
                 fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: { xs: '1rem', sm: '2rem' },
-                width: { xs: '100%', sm: 'auto' },
-                minWidth: { xs: 'auto', sm: '120px' },
-                height: '48px'
+                px: '16px',
+                minWidth: '120px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}
             >
               Certificate
