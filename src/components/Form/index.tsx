@@ -9,9 +9,7 @@ import {
   Select,
   TextField,
   Typography,
-  useMediaQuery,
-  useTheme,
-  InputAdornment
+  useTheme
 } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -24,336 +22,347 @@ import MainContainer from '../MainContainer'
 import MediaUploader, { MediaI } from './imageUploading'
 import { HowKnown } from '../../enums'
 
-const CLAIM_TYPES = {
-  rated: {
-    label: 'Rate or Review',
-    aspects: ['quality:speed', 'quality:excellence', 'quality:affordable', 'quality:technical', 'quality:usefulness']
-  },
-  impact: {
-    label: 'Impact Assessment',
-    aspects: ['impact:social', 'impact:climate', 'impact:work', 'impact:financial', 'impact:educational']
-  },
-  report: {
-    label: 'Report Issue',
-    aspects: ['report:scam', 'report:spam', 'report:misinfo', 'report:abuse', 'report:dangerous']
-  },
-  related_to: {
-    label: 'Relationship',
-    aspects: [
-      'relationship:owns',
-      'relationship:works-for',
-      'relationship:works-with',
-      'relationship:worked-on',
-      'relationship:same-as'
-    ]
-  }
-}
+const CLAIM_CATEGORIES = [
+  'Scam',
+  'Spam',
+  'Misinformation',
+  'Abuse',
+  'Dangerous',
+  'Social',
+  'Climate',
+  'Work',
+  'Financial',
+  'Educational',
+  'Ownership',
+  'Employment',
+  'Collaboration',
+  'Similarity'
+]
 
 interface FormData {
   stars: number | null
   amt: number | null
   confidence: number | null
-  name: string | null
+  name: string
   subject: string
-  statement: string | null
-  sourceURI: string | null
+  statement: string
+  sourceURI: string
   howKnown: HowKnown
-  effectiveDate: Date | null
-  claimAddress: string | null
-  aspect: string | null
+  effectiveDate: Date
+  claimAddress: string
+  aspect: string
   images: MediaI[]
   claim: string
-  object: string | null
+  object: string
 }
 
-interface IFormProps {
-  toggleSnackbar?: (open: boolean) => void
-  setSnackbarMessage?: (message: string) => void
-  setLoading?: (loading: boolean) => void
-  onCancel?: () => void
-  selectedClaim?: any
-}
+const URL_PATTERN = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\/[^\s]*)?$/
 
-export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel, selectedClaim }: IFormProps) => {
+export const Form = () => {
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const navigate = useNavigate()
   const { createClaim } = useCreateClaim()
 
-  const [selectedClaimType, setSelectedClaimType] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
 
   const {
     register,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
-      name: null,
-      subject: '',
       claim: '',
-      object: null,
-      statement: null,
-      aspect: null,
-      howKnown: HowKnown.FIRST_HAND,
-      sourceURI: null,
+      subject: '',
+      sourceURI: '',
+      statement: '',
+      aspect: '',
+      stars: 0,
       effectiveDate: new Date(),
-      confidence: 1,
-      stars: null,
-      amt: null,
-      images: []
+      images: [],
+      howKnown: HowKnown.FIRST_HAND,
+      name: '',
+      amt: 0
     }
   })
 
-  const imageFieldArray = useFieldArray({
-    control,
-    name: 'images'
-  })
-
+  const imageFieldArray = useFieldArray({ control, name: 'images' })
   const watchHowKnown = watch('howKnown')
+  const watchSourceURI = watch('sourceURI')
+  const watchSubject = watch('subject')
 
-  const onSubmit = async (formData: any) => {
-    if (setLoading) setLoading(true)
+  const formatURL = (url: string): string => {
+    if (!url) return ''
+
+    if (!url.match(/^https?:\/\//)) {
+      return `https://${url}`
+    }
+    return url
+  }
+
+  const validateURL = (url: string): boolean => {
+    return URL_PATTERN.test(url)
+  }
+
+  const onSubmit = async (formData: FormData) => {
+    setIsSubmitting(true)
+    setSubmissionError(null)
+
+    // Format URLs before submission
+    const formattedData = {
+      ...formData,
+      sourceURI: formatURL(formData.sourceURI),
+      subject: formatURL(formData.subject)
+    }
 
     try {
-      const response = await timeoutPromise(createClaim(formData), 10_000)
-
-      if (response.message && setSnackbarMessage && toggleSnackbar) {
-        setSnackbarMessage(response.message)
-        toggleSnackbar(true)
-      }
+      const response = await timeoutPromise(createClaim(formattedData), 10_000)
+      console.log('Claim submission response:', response)
 
       if (response.isSuccess) {
+        const claimData = {
+          ...formattedData,
+          id: response.claim?.id || response.claimData?.id,
+          claimId: response.claimData?.claimId,
+          subject_name: response.claimData?.subject_name || formattedData.subject,
+          issuer_name: response.claimData?.issuer_name || formattedData.name
+        }
+
+        sessionStorage.setItem('newClaimData', JSON.stringify(claimData))
+
+        // Navigate to feed with the new claim data
+        navigate('/feed', { state: { newClaim: claimData, timestamp: new Date().getTime() } })
+      } else {
+        setSubmissionError('Submission successful but marked as unsuccessful. Please check your feed.')
         navigate('/feed')
       }
     } catch (e) {
-      if (e instanceof PromiseTimeoutError) {
-        navigate('/feed')
-      } else {
-        if (setSnackbarMessage && toggleSnackbar) {
-          setSnackbarMessage('Failed to create claim')
-          toggleSnackbar(true)
-        }
-      }
+      console.error('Claim submission error:', e)
+      setSubmissionError('Failed to submit the claim. Please try again.')
+      // Still navigate to feed after a short delay
+      setTimeout(() => navigate('/feed'), 2000)
     } finally {
-      if (setLoading) setLoading(false)
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleURLBlur = (field: 'sourceURI' | 'subject') => {
+    const value = field === 'sourceURI' ? watchSourceURI : watchSubject
+    if (value) {
+      setValue(field, formatURL(value))
     }
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mx: 'auto' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', px: 2, width: '100%' }}>
       <MainContainer
-        flexRowOnDesktop={true}
         sx={{
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
           backgroundColor: theme.palette.cardBackground,
-          padding: '20px',
+          padding: 3,
           width: '100%',
-          borderRadius: '8px',
-          mr: '4.2vw'
-          // maxWidth: '800px'
+          maxWidth: '1000px',
+          borderRadius: '8px'
         }}
       >
+        <Typography variant='h6' sx={{ mb: 6, boxShadow: '2px 2px 3px rgba(0, 0, 0, 0.5)', padding: 2 }}>
+          Create a Claim{' '}
+        </Typography>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Claim Type Selection - only show if no type selected */}
-          {!selectedClaimType ? (
-            <Box sx={{ mb: 4 }}>
-              <Typography sx={{ mb: 2 }}>What kind of claim would you like to make?</Typography>
-              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
-                {Object.entries(CLAIM_TYPES).map(([type, info]) => (
-                  <Button
-                    key={type}
-                    onClick={() => setSelectedClaimType(type)}
-                    variant='outlined'
-                    sx={{ justifyContent: 'flex-start', p: 2 }}
-                  >
-                    {info.label}
-                  </Button>
-                ))}
-              </Box>
+          <Box sx={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)', mb: 4, padding: 2, borderRadius: 1 }}>
+            <Typography sx={{ mb: 1 }}>Claim Type</Typography>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Choose the Claim type</InputLabel>
+              <Controller
+                name='claim'
+                control={control}
+                rules={{ required: 'Claim type is required' }}
+                render={({ field }) => (
+                  <Select label='Choose the Claim type' {...field} error={!!errors.claim}>
+                    <MenuItem value='rated'>Rate or Review</MenuItem>
+                    <MenuItem value='impact'>Impact Assessment</MenuItem>
+                    <MenuItem value='report'>Report Issue</MenuItem>
+                    <MenuItem value='related_to'>Relationship</MenuItem>
+                  </Select>
+                )}
+              />
+            </FormControl>
+            {errors.claim && (
+              <Typography color='error' variant='caption'>
+                {errors.claim.message}
+              </Typography>
+            )}
+          </Box>
+
+          <Box sx={{ boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.5)', padding: 2, borderRadius: 1 }}>
+            <Typography sx={{ mb: 3 }}>Claim Information</Typography>
+
+            <Typography>Claim Subject</Typography>
+            <TextField
+              {...register('name', { required: 'Claim subject is required' })}
+              label='Enter the name of the person, company, or entity involved'
+              fullWidth
+              sx={{ mb: 2 }}
+              error={!!errors.name}
+              helperText={errors.name ? errors.name.message : ''}
+            />
+
+            <Typography>Reference Link</Typography>
+            <TextField
+              {...register('subject', {
+                required: 'Reference link is required',
+                validate: value =>
+                  !value || validateURL(formatURL(value)) || 'Please enter a valid URL e.g https//...com'
+              })}
+              label='Provide a supporting link'
+              fullWidth
+              sx={{ mb: 2 }}
+              error={!!errors.subject}
+              helperText={errors.subject ? errors.subject.message : 'Format: https://example.com'}
+              placeholder='https://claim.com'
+              onBlur={() => handleURLBlur('subject')}
+            />
+
+            <Typography>Claim Description</Typography>
+            <TextField
+              {...register('statement', { required: 'Claim description is required' })}
+              label='Explain your claim in detail'
+              fullWidth
+              multiline
+              rows={4}
+              sx={{ mb: 2 }}
+              error={!!errors.statement}
+              helperText={errors.statement ? errors.statement.message : ''}
+            />
+
+            <Typography>Claim Category</Typography>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Choose the category that best fits your claim</InputLabel>
+              <Controller
+                name='aspect'
+                control={control}
+                rules={{ required: 'Claim category is required' }}
+                render={({ field }) => (
+                  <Select label='Claim Category' {...field} error={!!errors.aspect}>
+                    {CLAIM_CATEGORIES.map((cat, i) => (
+                      <MenuItem key={i} value={cat.toLowerCase()}>
+                        {cat}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+            {errors.aspect && (
+              <Typography color='error' variant='caption'>
+                {errors.aspect.message}
+              </Typography>
+            )}
+
+            <Box sx={{ mb: 2, border: 1, padding: 2, borderRadius: 1, borderColor: 'rgba(0, 0, 0, 0.12)' }}>
+              <Typography>Claim Rating</Typography>
+              <Controller
+                name='stars'
+                control={control}
+                rules={{ required: 'Rating is required' }}
+                render={({ field }) => {
+                  const ratingValue = typeof field.value === 'string' ? parseFloat(field.value) : field.value
+                  return <Rating {...field} value={ratingValue || 0} />
+                }}
+              />
+              {errors.stars && (
+                <Typography color='error' variant='caption'>
+                  {errors.stars.message}
+                </Typography>
+              )}
             </Box>
-          ) : (
-            <>
-              {/* Basic Information */}
-              <Box sx={{ mb: 4 }}>
-                <TextField
-                  {...register('name', { required: true })}
-                  label="Name of what you're making a claim about"
-                  fullWidth
-                  sx={{ mb: 2 }}
-                  error={Boolean(errors.name)}
-                  helperText={errors.name ? 'This field is required' : ''}
-                />
-                <TextField
-                  {...register('subject', {
-                    required: 'This field is required',
-                    pattern: {
-                      value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
-                      message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
-                    }
-                  })}
-                  label="Link to what you're making a claim about"
-                  fullWidth
-                  sx={{ mb: 2 }}
-                  error={Boolean(errors.subject)}
-                  helperText={errors.subject ? errors.subject.message : ''}
-                />
-                <TextField
-                  {...register('statement', { required: true })}
-                  label='Describe your claim'
-                  multiline
-                  rows={4}
-                  fullWidth
-                  error={Boolean(errors.statement)}
-                  helperText={errors.statement ? 'This field is required' : ''}
-                />
-              </Box>
 
-              {/* Claim Type Specific Fields */}
-              <Box sx={{ mb: 4 }}>
-                {selectedClaimType === 'rated' && (
-                  <>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel>Aspect</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.rated.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <Controller
-                      name='stars'
-                      control={control}
-                      render={({ field }) => (
-                        <Box sx={{ mb: 2 }}>
-                          <Typography>Rating</Typography>
-                          <Rating {...field} />
-                        </Box>
-                      )}
-                    />
-                  </>
-                )}
-
-                {selectedClaimType === 'impact' && (
-                  <>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel>Impact Type</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.impact.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <TextField
-                      {...register('amt')}
-                      label='Value'
-                      type='number'
-                      fullWidth
-                      InputProps={{
-                        startAdornment: <InputAdornment position='start'>$</InputAdornment>
-                      }}
-                    />
-                  </>
-                )}
-
-                {selectedClaimType === 'report' && (
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel>Report Type</InputLabel>
-                    <Select {...register('aspect')}>
-                      {CLAIM_TYPES.report.aspects.map(aspect => (
-                        <MenuItem key={aspect} value={aspect}>
-                          {aspect.split(':')[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-
-                {selectedClaimType === 'related_to' && (
-                  <>
-                    <TextField {...register('object')} label='Related To (URL)' fullWidth sx={{ mb: 2 }} />
-                    <FormControl fullWidth>
-                      <InputLabel>Relationship Type</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.related_to.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </>
-                )}
-              </Box>
-
-              {/* Common Bottom Fields */}
-              <Box sx={{ mb: 4 }}>
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>How do you know this?</InputLabel>
-                  <Select {...register('howKnown')} defaultValue={HowKnown.FIRST_HAND}>
+            <Typography sx={{ mb: 2 }}>Source of Information:</Typography>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>How did you learn about this?</InputLabel>
+              <Controller
+                name='howKnown'
+                control={control}
+                rules={{ required: 'Source of information is required' }}
+                render={({ field }) => (
+                  <Select label='How did you learn about this?' {...field} error={!!errors.howKnown}>
                     <MenuItem value={HowKnown.FIRST_HAND}>First Hand</MenuItem>
                     <MenuItem value={HowKnown.SECOND_HAND}>Second Hand</MenuItem>
                     <MenuItem value={HowKnown.WEB_DOCUMENT}>Website</MenuItem>
                     <MenuItem value={HowKnown.PHYSICAL_DOCUMENT}>Physical Document</MenuItem>
                   </Select>
-                </FormControl>
+                )}
+              />
+            </FormControl>
+            {errors.howKnown && (
+              <Typography color='error' variant='caption'>
+                {errors.howKnown.message}
+              </Typography>
+            )}
 
-                <TextField
-                  {...register('sourceURI', {
-                    pattern: {
-                      value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \.-]*)*\/?$/,
-                      message:
-                        watchHowKnown === HowKnown.FIRST_HAND
-                          ? 'Please enter a valid home page or social media link (e.g., http://example.com or www.example.com)'
-                          : 'Please enter a valid source link (e.g., http://example.com or www.example.com)'
-                    }
-                  })}
-                  label={
-                    watchHowKnown === HowKnown.FIRST_HAND
-                      ? 'Your home page or social media link'
-                      : 'Where did you find the information'
-                  }
-                  fullWidth
-                  sx={{ mb: 2 }}
-                  error={Boolean(errors.sourceURI)} // Check for errors in `sourceURI`
-                  helperText={errors.sourceURI ? errors.sourceURI.message : ''} // Display `sourceURI` errors
-                />
+            <Typography>Your Website</Typography>
+            <TextField
+              {...register('sourceURI', {
+                required: 'Website link is required',
+                validate: value => !value || validateURL(formatURL(value)) || 'Please enter a valid URL'
+              })}
+              label={
+                watchHowKnown === HowKnown.FIRST_HAND
+                  ? 'Provide your website or social media for verification'
+                  : 'Source Link'
+              }
+              fullWidth
+              sx={{ mb: 2 }}
+              error={!!errors.sourceURI}
+              helperText={errors.sourceURI ? errors.sourceURI.message : 'Format: https://example.com'}
+              placeholder='https://yourwebsite.com'
+              onBlur={() => handleURLBlur('sourceURI')}
+            />
 
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <Controller
-                    name='effectiveDate'
-                    control={control}
-                    render={({ field }) => (
-                      <DatePicker
-                        label='When did this happen?'
-                        value={field.value}
-                        onChange={field.onChange}
-                        renderInput={params => <TextField {...params} fullWidth />}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Typography sx={{ mb: 2 }}>Incident Date</Typography>
+              <Controller
+                name='effectiveDate'
+                control={control}
+                rules={{ required: 'Incident date is required' }}
+                render={({ field }) => (
+                  <DatePicker
+                    label='Date of Incident'
+                    value={field.value}
+                    onChange={field.onChange}
+                    renderInput={params => (
+                      <TextField
+                        fullWidth
+                        sx={{ mb: 2 }}
+                        {...params}
+                        error={!!errors.effectiveDate}
+                        helperText={errors.effectiveDate ? errors.effectiveDate.message : ''}
                       />
                     )}
                   />
-                </LocalizationProvider>
-              </Box>
+                )}
+              />
+            </LocalizationProvider>
 
-              {/* Optional Image Upload */}
-              <Box sx={{ mb: 4 }}>
-                <Typography sx={{ mb: 1 }}>Add supporting image (optional)</Typography>
-                <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
-              </Box>
+            <Typography sx={{ mb: 1 }}>Upload Supporting Evidence (optional)</Typography>
+            <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
 
-              {/* Submit Buttons */}
-              <DialogActions sx={{ justifyContent: 'flex-end', gap: 2 }}>
-                {onCancel && <Button onClick={onCancel}>Cancel</Button>}
-                <Button type='submit' variant='contained' color='primary'>
-                  Submit
-                </Button>
-              </DialogActions>
-            </>
-          )}
+            {submissionError && (
+              <Typography color='error' sx={{ mt: 2 }}>
+                {submissionError}
+              </Typography>
+            )}
+
+            <DialogActions sx={{ justifyContent: 'flex-end', mt: 3 }}>
+              <Button type='submit' variant='contained' disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </Button>
+            </DialogActions>
+          </Box>
         </form>
       </MainContainer>
     </Box>
