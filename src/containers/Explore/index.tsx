@@ -250,11 +250,11 @@ const Explore = (homeProps: IHomeProps) => {
             <NodeDetails
               open={showDetails}
               setOpen={setShowDetails}
-              selectedClaimId={selectedClaim.claimId}
+              selectedClaimId={selectedClaim?.claimId || ''}
               isDarkMode={isDarkMode}
-              claimImg={selectedClaim.img || ''}
-              startNodeId={startNode.claimId}
-              endNodeId={endNode}
+              claimImg={selectedClaim?.img || ''}
+              startNodeId={startNode?.claimId || ''}
+              endNodeId={endNode?.claimId || ''}
             />
           ))}
       </MainContainer>

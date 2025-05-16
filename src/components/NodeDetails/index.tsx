@@ -28,11 +28,19 @@ export default function NodeDetails({ setOpen, selectedClaimId, claimImg, startN
 
   useEffect(() => {
     async function fetchNodeDetails(nodeId: string, setNode: any) {
-      const claimRes = await axios.get(`/api/claim/${nodeId}`)
-      setNode(claimRes.data.claim)
+      if (!nodeId) {
+        console.warn('No nodeId provided to fetchNodeDetails');
+        return;
+      }
+      try {
+        const claimRes = await axios.get(`/api/claim/${nodeId}`);
+        setNode(claimRes.data.claim);
+      } catch (error) {
+        console.error('Error fetching node details:', error);
+      }
     }
-    fetchNodeDetails(startNodeId, setStartNode)
-  }, [startNodeId])
+    fetchNodeDetails(startNodeId, setStartNode);
+  }, [startNodeId]);
 
   return (
     <>

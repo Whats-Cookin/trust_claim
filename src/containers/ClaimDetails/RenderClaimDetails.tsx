@@ -52,7 +52,7 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
           >
             <Typography variant='body2'>{camelCaseToSimpleString(key)}:</Typography>
             <Typography
-              component='p'
+              component='div'
               sx={{
                 overflowWrap: 'break-word',
                 width: '75%'
