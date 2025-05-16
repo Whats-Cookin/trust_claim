@@ -38,15 +38,15 @@ const Explore = (homeProps: IHomeProps) => {
   const layoutName = 'concentric'
   const layoutOptions = {
     fit: true,
-    padding: 50,
+    padding: 70,
     avoidOverlap: true,
-    nodeSpacing: 50,
+    nodeSpacing: 70,
     nodeDimensionsIncludeLabels: true,
-    spacingFactor: 1.3,
+    spacingFactor: 1.5,
 
     concentric: (node: any) => node.degree(),
     levelWidth: (nodes: any) => nodes.maxDegree() / 2,
-    minNodeSpacing: 70,
+    minNodeSpacing: 100,
     animate: true,
     animationDuration: 800,
     animationEasing: 'ease-in-out',
@@ -62,7 +62,7 @@ const Explore = (homeProps: IHomeProps) => {
     })
     layout.run()
     cyInstance.animate({
-      fit: { eles: cyInstance.elements(), padding: 20 },
+      fit: { eles: cyInstance.elements(), padding: 40 },
       duration: 1000
     })
   }

@@ -23,7 +23,8 @@ const getNodeStyles = () =>
         width: 150,
         shape: 'roundrectangle',
         'background-opacity': 0,
-        'border-opacity': 0
+        'border-opacity': 0,
+        'padding': 20
       }
     },
     {
@@ -31,7 +32,8 @@ const getNodeStyles = () =>
       style: {
         shape: 'ellipse',
         height: 80,
-        'background-opacity': 0
+        'background-opacity': 0,
+        'padding': 20
       }
     }
   ] as any
@@ -51,8 +53,10 @@ const getEdgeStyles = (theme: Theme) =>
         'text-rotation': 'autorotate',
         label: 'data(relation)',
         'line-cap': 'round',
-        'source-endpoint': 'outside-to-node',
-        'target-endpoint': 'outside-to-node',
+        'source-endpoint': 'outside-to-node-or-label',
+        'target-endpoint': 'outside-to-node-or-label',
+        'arrow-scale': 2,
+        'target-distance-from-node': 15,
         'text-margin-y': 0,
         'text-margin-x': 0,
         'text-halign': 'center',
