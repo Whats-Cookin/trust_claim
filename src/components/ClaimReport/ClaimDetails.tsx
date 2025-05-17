@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  useTheme,
   ButtonBase
 } from '@mui/material'
 import ShareIcon from '@mui/icons-material/Share'
@@ -34,6 +35,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary'
 import ImageIcon from '@mui/icons-material/Image'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { memo, useCallback, useEffect, useState, useRef } from 'react'
@@ -49,8 +51,6 @@ const TextLabel = styled(Typography)(({ theme }) => ({
 
 const MediaContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(2),
   borderRadius: '12px',
   overflow: 'hidden',
   '& img': {
@@ -67,30 +67,26 @@ const MediaContainer = styled(Box)(({ theme }) => ({
 
 const ButtonContainer = styled(Box)(({ theme }) => ({
   width: '100%',
-  maxWidth: '740px',
   height: '61px',
-  background: '#FFFFFF',
+  background: '#FEFEFF',
   boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
   borderRadius: '8px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: '0 16px',
+  justifyContent: 'space-between',
+  padding: '0 20px',
   margin: '20px auto',
-  position: 'relative',
-  gap: '16px'
+  position: 'relative'
 }))
 
 const ActionButton = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  gap: '8px',
+  gap: 2,
   cursor: 'pointer',
   background: 'none',
   border: 'none',
-  padding: '8px 16px',
-  minWidth: '120px',
-  justifyContent: 'center',
+  padding: 0,
   '&:hover': {
     opacity: 0.8
   }
@@ -232,6 +228,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [selectedValidation, setSelectedValidation] = useState<any>(null)
   const [isExpanded, setIsExpanded] = useState(false)
+  const navigate = useNavigate()
   const claim = data.claim.claim
   const isStatementLong = claim?.statement && claim.statement.length > 200
 
@@ -242,8 +239,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     setCurrentUrl(window.location.href)
   }, [])
 
-  const handleShareClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleShareClick = (event: React.MouseEvent<Element>) => {
+    setAnchorEl(event.currentTarget as HTMLButtonElement)
   }
 
   const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -330,23 +327,20 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         backgroundColor: '#FFFFFF',
         backgroundImage: 'none',
         color: theme.palette.texts,
+        boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',
         marginBottom: '2rem',
-        boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.1)'
+        boxSizing: 'border-box'
       }}
     >
-      <CardContent>
+      <CardContent sx={{ width: '100%', boxSizing: 'border-box', p: 3 }}>
         <Stack spacing={3}>
-          {/* Title and Actions Row */}
-          <Stack
-            direction={{ xs: 'column', md: 'column', lg: 'row' }}
-            spacing={2}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            justifyContent='space-between'
-          >
-            <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
+          <Box>
+            <Stack direction='row' alignItems='center' spacing={1}>
               <Typography
-                component={Link}
-                to={data.edge.startNode.nodeUri}
+                component='a'
+                href={data.edge.startNode.nodeUri}
+                target='_blank'
+                rel='noopener noreferrer'
                 variant='h6'
                 color='black'
                 sx={{
@@ -356,184 +350,142 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                   overflow: 'hidden',
                   fontSize: '24px',
                   fontWeight: 600,
-                  fontFamily: 'Roboto'
+                  fontFamily: 'Roboto',
+                  display: 'inline-block'
                 }}
               >
                 {data.claim.claimData.name}
               </Typography>
+              <OpenInNewIcon fontSize='small' />
             </Stack>
-          </Stack>
-
-          <Stack direction='row' spacing={1} alignItems='center'>
-            <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
-              {data.claim.claimData.subject_name}
+            <Typography variant='body2' sx={{ mt: 0.5 }}>
+              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
             </Typography>
-          </Stack>
+          </Box>
 
-          {claim.claim !== 'credential' ? (
-            <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-              {`Created by: ${data.claim.claimData.issuer_name ? data.claim.claimData.issuer_name : 'Unknown'}`}
-            </Typography>
-          ) : (
-            ''
-          )}
-          {data.claim.image && <MediaContent url={data.claim.image} />}
-
-          {/* Info Sections */}
-          <Stack spacing={3}>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
-                <TextLabel variant='body2' gutterBottom>
-                  Issued On
-                </TextLabel>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+            {data.claim.image && (
+              <Box sx={{ minWidth: { md: 220 }, maxWidth: { md: 320 }, padding: '0' }}>
+                <MediaContent url={data.claim.image} />
               </Box>
-              <Box>
-                <Typography variant='body1'>
-                  {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+            )}
+            <Stack spacing={2} flex={1}>
+              {claim.statement && (
+                <Typography variant='body2' color='black'>
+                  {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
+                  {isStatementLong && (
+                    <MuiLink
+                      onClick={handleToggleExpand}
+                      sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
+                    >
+                      {isExpanded ? 'Show Less' : 'See More'}
+                    </MuiLink>
+                  )}
                 </Typography>
-              </Box>
-            </Box>
-          </Stack>
-
-          <Stack spacing={3}>
-            <Box>
-              <Typography color='black'>
-                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
-                {isStatementLong && (
-                  <MuiLink
-                    onClick={handleToggleExpand}
-                    sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
-                  >
-                    {isExpanded ? 'Show Less' : 'See More'}
-                  </MuiLink>
-                )}
-              </Typography>
-            </Box>
-
-            <Box>
+              )}
               <Stack spacing={1}>
                 <MuiLink
                   sx={{
-                    color: 'black',
+                    color: theme.palette.link,
                     justifyContent: 'flex-start',
                     width: 'fit-content',
-                    display: 'block',
-                    wordBreak: 'break-all'
+                    fontSize: '16px',
+                    fontWeight: 500
                   }}
                   target='_blank'
-                  href={data.edge.startNode.nodeUri}
+                  href={claim.subject}
                 >
-                  {data.edge.startNode.nodeUri}
-                  <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
+                  {claim.subject}
                 </MuiLink>
-                {claim.sourceURI && claim.claim !== 'credential' ? (
-                  <MuiLink
-                    sx={{
-                      color: 'black',
-                      justifyContent: 'flex-start',
-                      width: 'fit-content',
-                      display: 'block',
-                      wordBreak: 'break-all'
-                    }}
-                    target='_blank'
-                    href={claim.sourceURI}
-                  >
-                    {claim.sourceURI}
-                    <OpenInNewIcon sx={{ ml: 1, fontSize: '16px', verticalAlign: 'middle' }} />
-                  </MuiLink>
-                ) : (
-                  ''
-                )}
+                <MuiLink
+                  sx={{
+                    color: theme.palette.link,
+                    justifyContent: 'flex-start',
+                    width: 'fit-content',
+                    fontSize: '16px',
+                    fontWeight: 500
+                  }}
+                  target='_blank'
+                  href={claim.sourceURI}
+                >
+                  {claim.sourceURI}
+                </MuiLink>
               </Stack>
-            </Box>
-
-            <Box>
-              <Stack direction='row' spacing={1} alignItems='center' mb={1}>
-                <Typography color='black'>{data.validations.length} Recommendations</Typography>
-              </Stack>
-            </Box>
+              <Typography variant='body2' color='black' sx={{ mt: 1 }}>
+                {data.validations.length} Recommendations
+              </Typography>
+            </Stack>
           </Stack>
 
-          <ButtonContainer>
-            <ActionButton onClick={handleExportClick}>
-              <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
+          <Box sx={{ width: '100%', height: '1px', backgroundColor: theme.palette.divider, my: 2 }} />
+
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: 'center',
+              justifyContent: { xs: 'center', sm: 'space-between' },
+              gap: { xs: '16px', sm: '8px' },
+              '& > *': {
+                width: { xs: '100%', sm: 'auto' },
+                flex: { sm: '1' },
+                minWidth: { sm: '0' }
+              }
+            }}
+          >
+            <ActionButton
+              onClick={handleExportClick}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
+              <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Export</ButtonText>
             </ActionButton>
 
-            <Box component={Link} to={`/explore/${claim.id}`} sx={{ textDecoration: 'none' }}>
-              <ActionButton>
-                <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
-                <ButtonText>Graph View</ButtonText>
-              </ActionButton>
-            </Box>
-
-            <Button
-              component={Link}
-              startIcon={<CheckCircleOutlineOutlinedIcon />}
-              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
-              sx={{
-                textTransform: 'none',
-                color: '#2D6A4F',
-                fontWeight: 500,
-                borderRadius: '24px',
-                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: '16px',
-                minWidth: '120px',
-                height: '48px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
+            <ActionButton
+              onClick={() => navigate(`/explore/${claim.id}`)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
             >
-              Validate
-            </Button>
+              <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
+              <ButtonText>Graph</ButtonText>
+            </ActionButton>
 
-            <Button
-              component={Link}
-              startIcon={<PictureAsPdfIcon />}
-              to={`/certificate/${claim.id}`}
-              state={{ claimData: data }}
-              sx={{
-                textTransform: 'none',
-                color: '#2D6A4F',
-                fontWeight: 500,
-                borderRadius: '24px',
-                fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                px: '16px',
-                minWidth: '120px',
-                height: '48px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
+            <ActionButton
+              onClick={e => handleShareClick(e)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
             >
-              Certificate
-            </Button>
-
-            <ActionButton onClick={(e: React.MouseEvent<HTMLDivElement>) => handleShareClick(e as any)}>
-              <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24 }} />
+              <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
-          </ButtonContainer>
+
+            <ActionButton
+              onClick={() => navigate(`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
+              <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
+              <ButtonText>Validate</ButtonText>
+            </ActionButton>
+
+            <ActionButton
+              onClick={() => navigate(`/certificate/${claim.id}`)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
+              <PictureAsPdfIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
+              <ButtonText>Certificate</ButtonText>
+            </ActionButton>
+          </Box>
 
           <Popover
             id={id}
             open={open}
             anchorEl={anchorEl}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right'
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Button
@@ -558,14 +510,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             open={openEx}
             anchorEl={anchorExportEl}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right'
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right'
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
             <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Button
