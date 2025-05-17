@@ -5,6 +5,7 @@ import {
   Container,
   Typography,
   Card,
+  CardContent,
   CircularProgress,
   Box,
   useTheme,
@@ -12,7 +13,11 @@ import {
   Button,
   Stack
 } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import StarIcon from '@mui/icons-material/Star'
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
 import ClaimDetails from './ClaimDetails'
 import MainContainer from '../MainContainer'
@@ -219,9 +224,10 @@ function MyCard({
   return (
     <Card
       sx={{
-        width: '100%',
+        maxWidth: 'fit-content',
         height: 'fit-content',
         borderRadius: '20px',
+        display: isLargeScreen ? 'column' : 'row',
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
@@ -229,60 +235,84 @@ function MyCard({
         mb: '10px'
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%'
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: '20px',
-            p: '20px'
-          }}
-        >
-          {img && (
-            <Box
+      <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box>
+              {data.name && (
+                <Typography variant='body2' sx={{ color: theme.palette.texts, mt: 1 }}>
+                  {data.name}
+                </Typography>
+              )}
+              <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
+                {data.subject_name}
+              </Typography>
+            </Box>
+          </Box>
+          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
+            {`Created by: ${data.issuer_name ? data.issuer_name : 'Unknown'}, ${new Date(
+              data.effectiveDate
+            ).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}`}
+          </Typography>
+
+          {data.statement && (
+            <Typography
+              variant='body1'
               sx={{
-                width: '300px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                flexShrink: 0
+                padding: '5px 1 1 5px',
+                wordBreak: 'break-word',
+                marginBottom: '1px',
+                color: theme.palette.claimtext
               }}
             >
-              {img.includes('.mp4') ? (
-                <video
-                  controls
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    maxHeight: '300px',
-                    objectFit: 'contain',
-                    borderRadius: '8px'
-                  }}
-                >
-                  <source src={img} type='video/mp4' />
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <img
-                  src={img}
-                  alt={data.subject}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    maxHeight: '300px',
-                    objectFit: 'contain',
-                    borderRadius: '8px'
+              {data.statement}
+            </Typography>
+          )}
+        </CardContent>
+
+        {img && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', m: '20px' }}>
+            {img.includes('.mp4') ? (
+              <video controls style={{ width: '100%', maxWidth: '500px', height: 'auto' }}>
+                <source src={img} type='video/mp4' />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img src={img} alt={data.subject} style={{ width: '100%', maxWidth: '500px', height: 'auto' }} />
+            )}
+          </Box>
+        )}
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
+          {data.stars && (
+            <Box
+              sx={{
+                display: 'flex',
+                p: '4px',
+                flexWrap: 'wrap',
+                justifyContent: 'flex-end'
+              }}
+            >
+              {Array.from({ length: data.stars }).map((_, index) => (
+                <StarIcon
+                  key={index}
+                  sx={{
+                    color: '#FFC107',
+                    width: '3vw',
+                    height: '3vw',
+                    fontSize: '3vw',
+                    maxWidth: '24px',
+                    maxHeight: '24px'
                   }}
                 />
-              )}
+              ))}
             </Box>
           )}
+        </Box>
 
           <Box sx={{ flex: 1 }}>
             <Typography

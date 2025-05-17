@@ -35,6 +35,8 @@ import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
 import Badge from './Badge'
+import { extractProfileName } from '../../utils/string.utils'
+import ClaimMetadata from './ClaimMetadata'
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
@@ -46,43 +48,6 @@ interface LocalClaim {
   issuer_name: string
 }
 
-const extractProfileName = (url: string): string | null => {
-  const capitalizeFirstLetter = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1)
-
-  try {
-    const formattedUri = url.startsWith('http') ? url : `https://${url}`
-    const parsedUrl = new URL(formattedUri)
-    const domain = parsedUrl.hostname.replace(/^www\./, '')
-
-    const pathParts = parsedUrl.pathname.split('/').filter(Boolean)
-
-    // Define common social media platforms and their username extraction logic
-    const socialMediaPatterns: { [key: string]: number } = {
-      'linkedin.com': 1, // linkedin.com/in/username
-      'twitter.com': 0, // twitter.com/username
-      'x.com': 0, // x.com/username
-      'instagram.com': 0, // instagram.com/username
-      'facebook.com': 0, // facebook.com/username or facebook.com/profile.php?id=xyz
-      'tiktok.com': 1, // tiktok.com/@username
-      'github.com': 0, // github.com/username
-      'youtube.com': 1, // youtube.com/c/username or youtube.com/user/username
-      'medium.com': 0, // medium.com/@username
-      'reddit.com': 1 // reddit.com/user/username
-    }
-
-    // Extract username if domain is a known social media platform
-    const usernameIndex = socialMediaPatterns[domain]
-    if (usernameIndex !== undefined && pathParts.length > usernameIndex) {
-      return capitalizeFirstLetter(pathParts[usernameIndex].replace('@', ''))
-    }
-
-    return capitalizeFirstLetter(domain.replace('.com', ''))
-  } catch (error) {
-    console.error('Failed to parse URL:', error)
-    return null
-  }
-}
-
 const extractSourceName = (url: string) => {
   const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
   const match = regex.exec(url)
@@ -90,7 +55,9 @@ const extractSourceName = (url: string) => {
 }
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
   let displayName = claim.name
-  if (extractProfileName(claim.link)) {
+  if (claim.subject_name) {
+    displayName = `${claim.subject_name} - ${claim.name}`
+  } else {
     displayName = `${extractProfileName(claim.link)} - ${claim.name}`
   }
 
@@ -315,7 +282,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {claims.length > 0 ? (
             <MainContainer
               sx={{
-                marginLeft: 'auto',
                 backgroundColor: '#FFFFFF',
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)'
               }}
@@ -409,7 +375,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     textDecoration: 'none',
                                     color: 'inherit',
                                     fontSize: '18px !important',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+                                    fontWeight: '700'
                                   }}
                                 >
                                   <ClaimName claim={claim} searchTerm={searchTerm} />
@@ -419,34 +386,17 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
                             <Badge claim={claim.claim} />
                           </Box>
-                          <Typography
-                            variant='body1'
-                            sx={{
-                              marginBottom: '10px',
-                              color: theme.palette.text1,
-                              fontSize: '14px !important',
-                              fontFamily: 'Roboto'
-                            }}
-                          >
-                            {`Created by: ${
-                              claim.issuer_name ? claim.issuer_name : extractProfileName(claim.link)
-                            }, ${new Date(claim.effective_date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}`}
-                          </Typography>
+                          {claim.claim !== 'credential' && <ClaimMetadata claim={claim} />}
 
                           {claim.statement && (
                             <Typography
-                              variant='body1'
                               sx={{
                                 padding: '5px 1 1 5px',
                                 wordBreak: 'break-word',
                                 fontSize: '16px !important',
                                 fontWeight: 500,
                                 marginBottom: '1px',
-                                color: theme.palette.claimtext
+                                color: '#212529'
                               }}
                             >
                               <span

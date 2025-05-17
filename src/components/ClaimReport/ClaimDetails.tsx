@@ -233,11 +233,23 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   const isStatementLong = claim?.statement && claim.statement.length > 200
 
   useEffect(() => {
+    console.log('Full data:', data)
+    console.log('Claim data:', data.claim)
+    console.log('Claim:', claim)
     setCurrentUrl(window.location.href)
   }, [])
 
   const handleShareClick = (event: React.MouseEvent<Element>) => {
     setAnchorEl(event.currentTarget as HTMLButtonElement)
+  }
+
+  const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorExportEl(event.currentTarget as unknown as HTMLButtonElement)
+  }
+
+  const handleLinkedInCertification = () => {
+    const linkedInUrl = generateLinkedInCertificationUrl(claim)
+    window.open(linkedInUrl, '_blank')
   }
 
   const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -321,7 +333,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
         minHeight: '200px',
         width: '100%',
         borderRadius: '20px',
-        backgroundColor: theme.palette.cardBackground,
+        backgroundColor: '#FFFFFF',
         backgroundImage: 'none',
         color: theme.palette.texts,
         boxShadow: '0px 0px 10px 0px rgba(0, 0, 0, 0.2)',

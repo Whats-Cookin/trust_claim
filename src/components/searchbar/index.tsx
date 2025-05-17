@@ -147,7 +147,7 @@ const SearchBar = () => {
         onChange={handleInputChange}
         onKeyUp={handleSearchKeypress}
         variant='standard'
-        placeholder='search for Claims, Credentials...'
+        placeholder='Search for Claims, Credentials...'
         sx={{
           flex: 1,
           fontFamily: 'Roboto',

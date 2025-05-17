@@ -18,15 +18,10 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
         flexDirection: flexRowOnDesktop && !isMobile ? 'row' : 'column',
         justifyContent: flexRowOnDesktop && !isMobile ? 'flex-end' : 'center',
         height: 'auto',
-        mt: '56px',
-        mb: isMobile ? '77px' : '28px',
+        mt: '40px',
         ml: '4.2vw',
-
-        mr: {
-          xs: 'auto',
-          md: 'auto',
-          lg: 'auto'
-        },
+        mr: '1.6vw',
+        mb: isMobile ? '77px' : '28px',
         paddingTop: isMobile ? '0px' : '30px',
         paddingBottom: 0,
         paddingLeft: isMobile ? '16px' : '30px',
@@ -34,7 +29,7 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
         width: {
           xs: '97%',
           md: 'calc(100% - 4.2vw)',
-          lg: 'calc(100% - 4.2vw )'
+          lg: 'calc(100% - 2.2vw )'
         },
         backgroundColor: '#F8F9FA',
         borderRadius: '8px',
