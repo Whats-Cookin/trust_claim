@@ -224,7 +224,6 @@ function MyCard({
   return (
     <Card
       sx={{
-        maxWidth: 'fit-content',
         height: 'fit-content',
         borderRadius: '20px',
         display: isLargeScreen ? 'column' : 'row',
@@ -235,97 +234,33 @@ function MyCard({
         mb: '10px'
       }}
     >
-      <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box>
-              {data.name && (
-                <Typography variant='body2' sx={{ color: theme.palette.texts, mt: 1 }}>
-                  {data.name}
-                </Typography>
+      <Box sx={{ display: 'block', width: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
+          {img && (
+            <Box sx={{ width: '100%', m: '20px' }}>
+              {img.includes('.mp4') ? (
+                <video controls style={{ width: '100%', maxWidth: '500px', height: '100%' }}>
+                  <source src={img} type='video/mp4' />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img src={img} alt={data.subject} style={{ width: '100%', maxWidth: '500px', height: 'auto' }} />
               )}
-              <Typography variant='body1' sx={{ color: theme.palette.texts, fontWeight: 500 }}>
-                {data.subject_name}
+            </Box>
+          )}
+          <Box sx={{ width: '100%', m: '20px' }}>
+            {data.statement && (
+              <Typography
+                variant='body1'
+                sx={{
+                  wordBreak: 'break-word',
+                  marginBottom: '1px',
+                  color: theme.palette.claimtext
+                }}
+              >
+                {data.statement}
               </Typography>
-            </Box>
-          </Box>
-          <Typography variant='body1' sx={{ marginBottom: '10px', color: theme.palette.text1 }}>
-            {`Created by: ${data.issuer_name ? data.issuer_name : 'Unknown'}, ${new Date(
-              data.effectiveDate
-            ).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}`}
-          </Typography>
-
-          {data.statement && (
-            <Typography
-              variant='body1'
-              sx={{
-                padding: '5px 1 1 5px',
-                wordBreak: 'break-word',
-                marginBottom: '1px',
-                color: theme.palette.claimtext
-              }}
-            >
-              {data.statement}
-            </Typography>
-          )}
-        </CardContent>
-
-        {img && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', m: '20px' }}>
-            {img.includes('.mp4') ? (
-              <video controls style={{ width: '100%', maxWidth: '500px', height: 'auto' }}>
-                <source src={img} type='video/mp4' />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img src={img} alt={data.subject} style={{ width: '100%', maxWidth: '500px', height: 'auto' }} />
             )}
-          </Box>
-        )}
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: '20px' }}>
-          {data.stars && (
-            <Box
-              sx={{
-                display: 'flex',
-                p: '4px',
-                flexWrap: 'wrap',
-                justifyContent: 'flex-end'
-              }}
-            >
-              {Array.from({ length: data.stars }).map((_, index) => (
-                <StarIcon
-                  key={index}
-                  sx={{
-                    color: '#FFC107',
-                    width: '3vw',
-                    height: '3vw',
-                    fontSize: '3vw',
-                    maxWidth: '24px',
-                    maxHeight: '24px'
-                  }}
-                />
-              ))}
-            </Box>
-          )}
-        </Box>
-
-          <Box sx={{ flex: 1 }}>
-            <Typography
-              variant='body2'
-              sx={{
-                padding: '5px 1 1 5px',
-                wordBreak: 'break-word',
-                marginBottom: '1px',
-                color: theme.palette.claimtext
-              }}
-            >
-              {data.statement}
-            </Typography>
             <Stack spacing={2}>
               <Stack direction='row' spacing={2}>
                 <Typography variant='body2' sx={{ width: 120 }}>
@@ -341,7 +276,7 @@ function MyCard({
               </Stack>
               <Stack direction='row' spacing={2}>
                 <Typography variant='body2' sx={{ width: 120 }}>
-                  Sourse Link:
+                  Source Link:
                 </Typography>
                 <Typography variant='body2'>{data.source_link}</Typography>
               </Stack>

@@ -252,15 +252,6 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
     window.open(linkedInUrl, '_blank')
   }
 
-  const handleExportClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorExportEl(event.currentTarget as unknown as HTMLButtonElement)
-  }
-
-  const handleLinkedInCertification = () => {
-    const linkedInUrl = generateLinkedInCertificationUrl(claim)
-    window.open(linkedInUrl, '_blank')
-  }
-
   const handleLinkedInPost = () => {
     let credentialName = 'a new'
     if (data?.claim?.claimData?.name && !data.claim.claimData.name.includes('https')) {
@@ -432,40 +423,57 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
           <Box sx={{ width: '100%', height: '1px', backgroundColor: theme.palette.divider, my: 2 }} />
 
-          <Box sx={{ 
-            width: '100%', 
-            display: 'flex', 
-            flexDirection: { xs: 'column', sm: 'row' },
-            flexWrap: { xs: 'nowrap', sm: 'wrap' },
-            alignItems: 'center',
-            justifyContent: { xs: 'center', sm: 'space-around', md: 'center' },
-            gap: { xs: '16px', sm: '40px', md: '60px', lg: '120px' },
-            '& > *': {
-              width: { xs: '100%', sm: 'auto' },
-              maxWidth: { xs: '280px', sm: 'none' }
-            }
-          }}>
-            <ActionButton onClick={handleExportClick} sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}>
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: 'center',
+              justifyContent: { xs: 'center', sm: 'space-between' },
+              gap: { xs: '16px', sm: '8px' },
+              '& > *': {
+                width: { xs: '100%', sm: 'auto' },
+                flex: { sm: '1' },
+                minWidth: { sm: '0' }
+              }
+            }}
+          >
+            <ActionButton
+              onClick={handleExportClick}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
               <SystemUpdateAltIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Export</ButtonText>
             </ActionButton>
 
-            <ActionButton onClick={() => navigate(`/explore/${claim.id}`)} sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}>
+            <ActionButton
+              onClick={() => navigate(`/explore/${claim.id}`)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
               <HubOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Graph</ButtonText>
             </ActionButton>
 
-            <ActionButton onClick={e => handleShareClick(e)} sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}>
+            <ActionButton
+              onClick={e => handleShareClick(e)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
               <ShareIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Share</ButtonText>
             </ActionButton>
 
-            <ActionButton onClick={() => navigate(`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`)} sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}>
+            <ActionButton
+              onClick={() => navigate(`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
               <CheckCircleOutlineOutlinedIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Validate</ButtonText>
             </ActionButton>
 
-            <ActionButton onClick={() => navigate(`/certificate/${claim.id}`)} sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}>
+            <ActionButton
+              onClick={() => navigate(`/certificate/${claim.id}`)}
+              sx={{ justifyContent: 'center', width: { xs: '100%', sm: 'auto' } }}
+            >
               <PictureAsPdfIcon sx={{ color: '#2D6A4F', fontSize: 24, mr: '10px' }} />
               <ButtonText>Certificate</ButtonText>
             </ActionButton>
