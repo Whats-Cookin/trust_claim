@@ -16,7 +16,8 @@ import {
   Snackbar,
   Container,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Divider
 } from '@mui/material'
 import { Link } from 'react-router-dom'
 import badge from '../../assets/images/badge.svg'
@@ -269,6 +270,10 @@ const Certificate: React.FC<CertificateProps> = ({
           overflow: 'visible'
         }}
       >
+        <Typography variant="body1" sx={{ p: "10px" }}>
+          The Evidence
+        </Typography>
+        <Divider/>
         <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3, lg: 4 } }}>
           <Stack spacing={{ xs: 2, sm: 2.5, md: 3 }}>
             <Box
@@ -278,19 +283,6 @@ const Certificate: React.FC<CertificateProps> = ({
                 position: 'relative'
               }}
             >
-              <IconButton
-                onClick={() => navigate(-1)}
-                sx={{
-                  position: 'absolute',
-                  top: { xs: 8, sm: 12, md: 16 },
-                  right: { xs: 8, sm: 12, md: 16 },
-                  zIndex: 10
-                }}
-                size={isXs ? 'small' : 'medium'}
-              >
-                <CloseIcon fontSize={isXs ? 'small' : 'medium'} />
-              </IconButton>
-
               <Box
                 component='img'
                 src={badge}
@@ -330,7 +322,8 @@ const Certificate: React.FC<CertificateProps> = ({
                   marginBottom: { xs: 2, sm: 3, md: 4 },
                   textAlign: 'center',
                   textTransform: 'uppercase',
-                  letterSpacing: { xs: '1px', sm: '1.5px', md: '2px' }
+                  letterSpacing: { xs: '1px', sm: '1.5px', md: '2px' },
+                  fontFamily: 'Merriweather, serif'
                 }}
               >
                 OF SKILL VALIDATION
@@ -340,7 +333,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 variant='h3'
                 sx={{
                   fontSize: { xs: '20px', sm: '24px', md: '28px', lg: '32px' },
-                  fontFamily: "'Roboto', sans-serif",
+                  fontFamily: 'Great Vibes, cursive',
                   fontWeight: 500,
                   marginBottom: { xs: 2, sm: 2.5, md: 3 },
                   textAlign: 'center',
@@ -464,6 +457,7 @@ const Certificate: React.FC<CertificateProps> = ({
                             e.stopPropagation()
                             handleClaimClick(validation)
                           }}
+                          endIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
                           sx={{
                             position: 'absolute',
                             bottom: 16,
@@ -474,6 +468,7 @@ const Certificate: React.FC<CertificateProps> = ({
                             fontSize: '14px',
                             padding: 0,
                             minWidth: 'auto',
+                            textDecoration: 'underline',
                             '&:hover': {
                               backgroundColor: 'transparent',
                               textDecoration: 'underline'
@@ -510,12 +505,10 @@ const Certificate: React.FC<CertificateProps> = ({
                 <Typography
                   variant='body2'
                   color='#495057'
-                  textAlign='center'
+                  textAlign='left'
                   mt={{ xs: 2, sm: 2.5, md: 3 }}
                   fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
-                >
-                  Issued on:{' '}
-                  {new Date(effectiveDate).toLocaleDateString('en-US', {
+                >                  {new Date(effectiveDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -523,18 +516,16 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Typography>
               )}
               {claimId && (
-                <Box sx={{ mt: { xs: 2, sm: 2.5, md: 3 }, textAlign: 'center' }}>
+                <Box sx={{ mt: { xs: 2, sm: 2.5, md: 3 }, textAlign: 'left' }}>
                   <Box
                     sx={{
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      alignItems: 'left',
                       gap: 1,
-                      flexWrap: 'wrap'
                     }}
                   >
                     <Typography variant='body2' color='#495057' fontSize={{ xs: '12px', sm: '13px', md: '14px' }}>
-                      Certificate ID:
+                    ID :
                     </Typography>
                     <MuiLink
                       href={`/certificate/${claimId}`}
@@ -558,28 +549,23 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Box>
               )}
             </Box>
+                      </Stack>
 
+          </CardContent>
+
+      <Divider/>
             <Box
               sx={{
                 width: '100%',
-                maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '740px' },
+                maxWidth: '50%',
                 height: { xs: 'auto', sm: 'auto', md: '61px' },
-                background: '#FEFEFF',
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)',
-                borderRadius: { xs: '8px', sm: '10px', md: '12px' },
                 display: 'flex',
                 flexDirection: { xs: 'column', sm: 'column', md: 'row' },
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: { xs: '12px', sm: '14px', md: '0 20px' },
-                margin: { xs: '16px auto', sm: '18px auto', md: '20px auto' },
-                position: 'relative',
-                transition: 'all 0.3s ease',
-                gap: { xs: '10px', sm: '12px', md: 0 },
-                '&:hover': {
-                  boxShadow: '0px 6px 24px rgba(0, 0, 0, 0.2)',
-                  transform: 'translateY(-2px)'
-                }
+                padding:'20px',
+                margin: '16px auto',
+                gap: '30px'
+                
               }}
             >
               <Box
@@ -666,8 +652,6 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Typography>
               </Box>
             </Box>
-          </Stack>
-        </CardContent>
 
         <Popover
           open={Boolean(anchorEl)}
@@ -834,6 +818,7 @@ const Certificate: React.FC<CertificateProps> = ({
                       e.stopPropagation()
                       handleClaimClick(validation)
                     }}
+                    endIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
                     sx={{
                       position: 'absolute',
                       bottom: 16,
@@ -844,6 +829,7 @@ const Certificate: React.FC<CertificateProps> = ({
                       fontSize: '14px',
                       padding: 0,
                       minWidth: 'auto',
+                      textDecoration: 'underline',
                       '&:hover': {
                         backgroundColor: 'transparent',
                         textDecoration: 'underline'
