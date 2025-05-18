@@ -270,10 +270,10 @@ const Certificate: React.FC<CertificateProps> = ({
           overflow: 'visible'
         }}
       >
-        <Typography variant="body1" sx={{ p: "10px" }}>
+        <Typography variant='body1' sx={{ p: '10px' }}>
           The Evidence
         </Typography>
-        <Divider/>
+        <Divider />
         <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3, lg: 4 } }}>
           <Stack spacing={{ xs: 2, sm: 2.5, md: 3 }}>
             <Box
@@ -508,7 +508,9 @@ const Certificate: React.FC<CertificateProps> = ({
                   textAlign='left'
                   mt={{ xs: 2, sm: 2.5, md: 3 }}
                   fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
-                >                  {new Date(effectiveDate).toLocaleDateString('en-US', {
+                >
+                  {' '}
+                  {new Date(effectiveDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -521,11 +523,11 @@ const Certificate: React.FC<CertificateProps> = ({
                     sx={{
                       display: 'flex',
                       alignItems: 'left',
-                      gap: 1,
+                      gap: 1
                     }}
                   >
                     <Typography variant='body2' color='#495057' fontSize={{ xs: '12px', sm: '13px', md: '14px' }}>
-                    ID :
+                      ID :
                     </Typography>
                     <MuiLink
                       href={`/certificate/${claimId}`}
@@ -549,109 +551,107 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Box>
               )}
             </Box>
-                      </Stack>
+          </Stack>
+        </CardContent>
 
-          </CardContent>
-
-      <Divider/>
-            <Box
+        <Divider />
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '50%',
+            height: { xs: 'auto', sm: 'auto', md: '61px' },
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'column', md: 'row' },
+            alignItems: 'center',
+            padding: '20px',
+            margin: '16px auto',
+            gap: '30px'
+          }}
+        >
+          <Box
+            onClick={handleExport}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+              padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
+              borderRadius: '8px',
+              transition: 'all 0.2s ease',
+              width: { xs: '100%', sm: '100%', md: 'auto' },
+              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
+              '&:hover': {
+                backgroundColor: 'rgba(45, 106, 79, 0.08)',
+                transform: 'scale(1.02)'
+              }
+            }}
+          >
+            <SystemUpdateAltIcon
               sx={{
-                width: '100%',
-                maxWidth: '50%',
-                height: { xs: 'auto', sm: 'auto', md: '61px' },
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'column', md: 'row' },
-                alignItems: 'center',
-                padding:'20px',
-                margin: '16px auto',
-                gap: '30px'
-                
+                color: '#2D6A4F',
+                fontSize: { xs: 20, sm: 22, md: 24 }
+              }}
+            />
+            <Typography
+              sx={{
+                fontFamily: 'Roboto',
+                fontStyle: 'normal',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '16px' },
+                lineHeight: { xs: '17px', sm: '18px', md: '19px' },
+                color: '#2D6A4F',
+                transition: 'color 0.2s ease',
+                whiteSpace: 'nowrap'
               }}
             >
-              <Box
-                onClick={handleExport}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  cursor: 'pointer',
-                  background: 'none',
-                  border: 'none',
-                  padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
-                  borderRadius: '8px',
-                  transition: 'all 0.2s ease',
-                  width: { xs: '100%', sm: '100%', md: 'auto' },
-                  justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
-                  '&:hover': {
-                    backgroundColor: 'rgba(45, 106, 79, 0.08)',
-                    transform: 'scale(1.02)'
-                  }
-                }}
-              >
-                <SystemUpdateAltIcon
-                  sx={{
-                    color: '#2D6A4F',
-                    fontSize: { xs: 20, sm: 22, md: 24 }
-                  }}
-                />
-                <Typography
-                  sx={{
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: 600,
-                    fontSize: { xs: '13px', sm: '14px', md: '16px' },
-                    lineHeight: { xs: '17px', sm: '18px', md: '19px' },
-                    color: '#2D6A4F',
-                    transition: 'color 0.2s ease',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  Export Certificate
-                </Typography>
-              </Box>
+              Export Certificate
+            </Typography>
+          </Box>
 
-              <Box
-                onClick={handleShareClick}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  cursor: 'pointer',
-                  background: 'none',
-                  border: 'none',
-                  padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
-                  borderRadius: '8px',
-                  transition: 'all 0.2s ease',
-                  width: { xs: '100%', sm: '100%', md: 'auto' },
-                  justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
-                  '&:hover': {
-                    backgroundColor: 'rgba(45, 106, 79, 0.08)',
-                    transform: 'scale(1.02)'
-                  }
-                }}
-              >
-                <ShareIcon
-                  sx={{
-                    color: '#2D6A4F',
-                    fontSize: { xs: 20, sm: 22, md: 24 }
-                  }}
-                />
-                <Typography
-                  sx={{
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: 600,
-                    fontSize: { xs: '13px', sm: '14px', md: '16px' },
-                    lineHeight: { xs: '17px', sm: '18px', md: '19px' },
-                    color: '#2D6A4F',
-                    transition: 'color 0.2s ease',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  Share
-                </Typography>
-              </Box>
-            </Box>
+          <Box
+            onClick={handleShareClick}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+              padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
+              borderRadius: '8px',
+              transition: 'all 0.2s ease',
+              width: { xs: '100%', sm: '100%', md: 'auto' },
+              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
+              '&:hover': {
+                backgroundColor: 'rgba(45, 106, 79, 0.08)',
+                transform: 'scale(1.02)'
+              }
+            }}
+          >
+            <ShareIcon
+              sx={{
+                color: '#2D6A4F',
+                fontSize: { xs: 20, sm: 22, md: 24 }
+              }}
+            />
+            <Typography
+              sx={{
+                fontFamily: 'Roboto',
+                fontStyle: 'normal',
+                fontWeight: 600,
+                fontSize: { xs: '13px', sm: '14px', md: '16px' },
+                lineHeight: { xs: '17px', sm: '18px', md: '19px' },
+                color: '#2D6A4F',
+                transition: 'color 0.2s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Share
+            </Typography>
+          </Box>
+        </Box>
 
         <Popover
           open={Boolean(anchorEl)}
