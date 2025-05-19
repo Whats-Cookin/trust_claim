@@ -91,13 +91,14 @@ const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: st
         halignBox: 'center',
         cssClass: 'custom-node-container',
         tpl: (data: any) => `
-          <div class="custom-node-container">
+          <div class="custom-node-container ${data.type === 'CREDENTIAL' ? 'credential-node' : ''}">
             ${
               data.image
                 ? `<div class="node-icon" style="background-image: url(${data.image})"></div>`
                 : `<div class="node-placeholder">${getInitials(data.label || data.id)}</div>`
             }
             <div class="node-label">${truncateLabel(data.label || data.id, 40)}</div>
+            ${data.type === 'CREDENTIAL' && data.link ? `<div class="node-link">${truncateLabel(data.link, 30)}</div>` : ''}
           </div>
         `
       }

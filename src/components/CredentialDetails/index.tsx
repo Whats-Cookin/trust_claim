@@ -142,7 +142,7 @@ const CredentialDetails = ({ handleClose, selectedClaimId }: any) => {
       <CardContent sx={{ pt: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <Typography variant='h5' component='div' sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            {credentialData.subject}
+            {credentialData.name || 'Untitled Credential'}
             <Box component='span' sx={{ ml: 1 }}>
               <VerifiedIcon sx={{ color: '#00c9a7', fontSize: 20 }} />
             </Box>
@@ -151,6 +151,13 @@ const CredentialDetails = ({ handleClose, selectedClaimId }: any) => {
         <Typography variant='body2' color='text.secondary' sx={{ color: '#a0a0b0', mb: 2 }}>
           Issued by {truncateIssuerId(credentialData.issuerId)}
         </Typography>
+        {credentialData.subject && (
+          <Typography variant='body2' color='text.secondary' sx={{ color: '#a0a0b0', mb: 2 }}>
+            Verification URL: {credentialData.subject.length > 40 ? 
+              `${credentialData.subject.substring(0, 20)}...${credentialData.subject.slice(-20)}` : 
+              credentialData.subject}
+          </Typography>
+        )}
         <Box sx={{ mb: 2 }}>
           <Typography variant='body2' color='text.secondary' sx={{ color: '#a0a0b0', display: 'flex', mb: 0.5 }}>
             <Box component='span' sx={{ width: 100 }}>
