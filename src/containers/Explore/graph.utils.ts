@@ -86,20 +86,20 @@ const parseMultipleNodes = (data: any) => {
 
 const getNodeData = (node: any) => {
   let uri = node.nodeUri
-  
+
   // For credential nodes, use name as label and subject as URI
   let label = ''
   if (node.claim === 'credential') {
     // Use name as the label (focus/topic of the credential)
     label = node.name || node.claimData?.name || 'Untitled Credential'
-    
+
     // Store subject as the verification URL
     uri = node.subject
   } else {
     // For non-credential nodes, use existing logic
     label = node.name || uri
   }
-  
+
   if (label === 'Not Acceptable!' || label === 'Not Acceptable') {
     console.log('Node name is ' + node.name)
     label = ''
@@ -122,7 +122,7 @@ const getNodeData = (node: any) => {
         // Ensure raw data has the right fields for downstream use
         claimId: node.id,
         subject: node.claim === 'credential' ? node.subject : node.nodeUri, // Store verification URL in subject
-        name: node.claim === 'credential' ? label : node.name, // Store credential focus/topic in name
+        name: node.claim === 'credential' ? label : node.name // Store credential focus/topic in name
       },
       image: imageUrl,
       type: node.claim === 'credential' ? 'CREDENTIAL' : 'CLAIM'

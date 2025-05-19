@@ -98,7 +98,11 @@ const cyConfig = (containerRef: HTMLElement | null, theme: Theme, layoutName: st
                 : `<div class="node-placeholder">${getInitials(data.label || data.id)}</div>`
             }
             <div class="node-label">${truncateLabel(data.label || data.id, 40)}</div>
-            ${data.type === 'CREDENTIAL' && data.link ? `<div class="node-link">${truncateLabel(data.link, 30)}</div>` : ''}
+            ${
+              data.type === 'CREDENTIAL' && data.link
+                ? `<div class="node-link">${truncateLabel(data.link, 30)}</div>`
+                : ''
+            }
           </div>
         `
       }

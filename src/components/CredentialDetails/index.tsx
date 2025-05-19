@@ -153,9 +153,10 @@ const CredentialDetails = ({ handleClose, selectedClaimId }: any) => {
         </Typography>
         {credentialData.subject && (
           <Typography variant='body2' color='text.secondary' sx={{ color: '#a0a0b0', mb: 2 }}>
-            Verification URL: {credentialData.subject.length > 40 ? 
-              `${credentialData.subject.substring(0, 20)}...${credentialData.subject.slice(-20)}` : 
-              credentialData.subject}
+            Verification URL:{' '}
+            {credentialData.subject.length > 40
+              ? `${credentialData.subject.substring(0, 20)}...${credentialData.subject.slice(-20)}`
+              : credentialData.subject}
           </Typography>
         )}
         <Box sx={{ mb: 2 }}>
