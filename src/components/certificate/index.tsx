@@ -270,10 +270,6 @@ const Certificate: React.FC<CertificateProps> = ({
           overflow: 'visible'
         }}
       >
-        <Typography variant='body1' sx={{ p: '10px' }}>
-          The Evidence
-        </Typography>
-        <Divider />
         <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3, lg: 4 } }}>
           <Stack spacing={{ xs: 2, sm: 2.5, md: 3 }}>
             <Box
@@ -309,7 +305,8 @@ const Certificate: React.FC<CertificateProps> = ({
                   fontWeight: 600,
                   marginBottom: { xs: 0.5, sm: 0.75, md: 1 },
                   textAlign: 'center',
-                  color: '#2D6A4F'
+                  color: '#212529',
+                  fontFamily: 'Adamina, serif'
                 }}
               >
                 Certificate
@@ -318,12 +315,12 @@ const Certificate: React.FC<CertificateProps> = ({
                 variant='h6'
                 sx={{
                   fontSize: { xs: '12px', sm: '14px', md: '16px' },
-                  color: '#666',
+                  color: '#212529',
                   marginBottom: { xs: 2, sm: 3, md: 4 },
                   textAlign: 'center',
                   textTransform: 'uppercase',
                   letterSpacing: { xs: '1px', sm: '1.5px', md: '2px' },
-                  fontFamily: 'Merriweather, serif'
+                  fontFamily: 'Roboto, serif'
                 }}
               >
                 OF SKILL VALIDATION
@@ -333,7 +330,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 variant='h3'
                 sx={{
                   fontSize: { xs: '20px', sm: '24px', md: '28px', lg: '32px' },
-                  fontFamily: 'Great Vibes, cursive',
+                  fontFamily: 'Allison, cursive',
                   fontWeight: 500,
                   marginBottom: { xs: 2, sm: 2.5, md: 3 },
                   textAlign: 'center',
@@ -347,11 +344,11 @@ const Certificate: React.FC<CertificateProps> = ({
                 variant='h3'
                 sx={{
                   fontSize: { xs: '20px', sm: '24px', md: '28px', lg: '32px' },
-                  fontFamily: "'Roboto', sans-serif",
+                  fontFamily: 'Roboto, sans-serif',
                   fontWeight: 500,
                   marginBottom: { xs: 2, sm: 2.5, md: 3 },
                   textAlign: 'center',
-                  color: '#2D6A4F'
+                  color: '#212529'
                 }}
               >
                 {getDisplayText()}
@@ -359,8 +356,9 @@ const Certificate: React.FC<CertificateProps> = ({
 
               <Typography
                 sx={{
+                  fontFamily: 'Roboto, sans-serif',
                   fontSize: { xs: '14px', sm: '15px', md: '16px' },
-                  color: '#666',
+                  color: '#212529',
                   marginBottom: { xs: 2, sm: 3, md: 4 },
                   textAlign: 'center',
                   maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
@@ -378,24 +376,20 @@ const Certificate: React.FC<CertificateProps> = ({
                 <Box sx={{ width: '100%', mt: { xs: 2, sm: 3, md: 4 } }}>
                   <Typography
                     variant='h6'
-                    color='#2D6A4F'
+                    color='#212529'
                     textAlign='center'
                     marginBottom={{ xs: 2, sm: 2.5, md: 3 }}
                     fontSize={{ xs: '18px', sm: '20px', md: '22px' }}
                   >
                     Endorsed by:
                   </Typography>
-
-                  {/* IMPROVED ENDORSEMENT CARDS LAYOUT */}
                   <Box
                     sx={{
-                      display: 'grid',
-                      gridTemplateColumns: {
-                        xs: '1fr',
-                        sm: 'repeat(2, 1fr)',
-                        md: 'repeat(3, 1fr)',
-                        lg: 'repeat(4, 1fr)'
-                      },
+                      display: 'flex',
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       gap: { xs: 2, sm: 2.5, md: 3 },
                       width: '100%',
                       maxWidth: '100%',
@@ -406,10 +400,10 @@ const Certificate: React.FC<CertificateProps> = ({
                       <Card
                         key={index}
                         sx={{
-                          minHeight: { xs: '180px', sm: '190px' },
                           p: { xs: 2, sm: 2.5 },
                           boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
                           borderRadius: { xs: 1.5, sm: 2 },
+                          fontWeight: 500,
                           cursor: 'pointer',
                           position: 'relative',
                           transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
@@ -418,14 +412,13 @@ const Certificate: React.FC<CertificateProps> = ({
                             boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
                           },
                           display: 'flex',
-                          flexDirection: 'column',
-                          width: '100%'
+                          flexDirection: 'column'
                         }}
                         onClick={() => handleClaimClick(validation)}
                       >
                         <Typography
+                          variant='body2'
                           color='#2D6A4F'
-                          fontWeight={500}
                           fontSize={{ xs: 18, sm: 20 }}
                           marginBottom={1.5}
                           sx={{
@@ -439,6 +432,7 @@ const Certificate: React.FC<CertificateProps> = ({
                           {validation.issuer_name}
                         </Typography>
                         <Typography
+                          variant='body2'
                           color='#212529'
                           fontSize={{ xs: 14, sm: 16 }}
                           sx={{
@@ -457,7 +451,6 @@ const Certificate: React.FC<CertificateProps> = ({
                             e.stopPropagation()
                             handleClaimClick(validation)
                           }}
-                          endIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
                           sx={{
                             position: 'absolute',
                             bottom: 16,
@@ -468,11 +461,7 @@ const Certificate: React.FC<CertificateProps> = ({
                             fontSize: '14px',
                             padding: 0,
                             minWidth: 'auto',
-                            textDecoration: 'underline',
-                            '&:hover': {
-                              backgroundColor: 'transparent',
-                              textDecoration: 'underline'
-                            }
+                            textDecoration: 'none'
                           }}
                         >
                           see all
@@ -553,19 +542,17 @@ const Certificate: React.FC<CertificateProps> = ({
             </Box>
           </Stack>
         </CardContent>
-
         <Divider />
         <Box
           sx={{
             width: '100%',
             maxWidth: '50%',
-            height: { xs: 'auto', sm: 'auto', md: '61px' },
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'column', md: 'row' },
+            justifyContent: 'center',
             alignItems: 'center',
-            padding: '20px',
-            margin: '16px auto',
-            gap: '30px'
+            gap: 2,
+            margin: '0 auto',
+            padding: { xs: 2, sm: 2.5, md: 3 }
           }}
         >
           <Box
@@ -573,6 +560,7 @@ const Certificate: React.FC<CertificateProps> = ({
             sx={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: 1,
               cursor: 'pointer',
               background: 'none',
@@ -581,7 +569,6 @@ const Certificate: React.FC<CertificateProps> = ({
               borderRadius: '8px',
               transition: 'all 0.2s ease',
               width: { xs: '100%', sm: '100%', md: 'auto' },
-              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
               '&:hover': {
                 backgroundColor: 'rgba(45, 106, 79, 0.08)',
                 transform: 'scale(1.02)'
@@ -591,19 +578,13 @@ const Certificate: React.FC<CertificateProps> = ({
             <SystemUpdateAltIcon
               sx={{
                 color: '#2D6A4F',
-                fontSize: { xs: 20, sm: 22, md: 24 }
               }}
             />
             <Typography
+              variant='body2'
               sx={{
-                fontFamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: 600,
-                fontSize: { xs: '13px', sm: '14px', md: '16px' },
-                lineHeight: { xs: '17px', sm: '18px', md: '19px' },
                 color: '#2D6A4F',
-                transition: 'color 0.2s ease',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
               }}
             >
               Export Certificate
@@ -615,6 +596,7 @@ const Certificate: React.FC<CertificateProps> = ({
             sx={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
               gap: 1,
               cursor: 'pointer',
               background: 'none',
@@ -623,7 +605,6 @@ const Certificate: React.FC<CertificateProps> = ({
               borderRadius: '8px',
               transition: 'all 0.2s ease',
               width: { xs: '100%', sm: '100%', md: 'auto' },
-              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
               '&:hover': {
                 backgroundColor: 'rgba(45, 106, 79, 0.08)',
                 transform: 'scale(1.02)'
@@ -633,19 +614,13 @@ const Certificate: React.FC<CertificateProps> = ({
             <ShareIcon
               sx={{
                 color: '#2D6A4F',
-                fontSize: { xs: 20, sm: 22, md: 24 }
               }}
             />
             <Typography
+              variant='body2'
               sx={{
-                fontFamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: 600,
-                fontSize: { xs: '13px', sm: '14px', md: '16px' },
-                lineHeight: { xs: '17px', sm: '18px', md: '19px' },
                 color: '#2D6A4F',
-                transition: 'color 0.2s ease',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
               }}
             >
               Share
