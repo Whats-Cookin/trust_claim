@@ -123,4 +123,4 @@ export const isVideoUrl = (url: string): boolean => {
   } catch {
     return false
   }
-} 
+}

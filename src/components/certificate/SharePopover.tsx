@@ -4,12 +4,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { SharePopoverProps } from '../../types/certificate'
 
-const SharePopover: React.FC<SharePopoverProps> = ({
-  anchorEl,
-  onClose,
-  onCopyLink,
-  onLinkedInShare
-}) => {
+const SharePopover: React.FC<SharePopoverProps> = ({ anchorEl, onClose, onCopyLink, onLinkedInShare }) => {
   return (
     <Popover
       open={Boolean(anchorEl)}
@@ -65,4 +60,4 @@ const SharePopover: React.FC<SharePopoverProps> = ({
   )
 }
 
-export default SharePopover 
+export default SharePopover

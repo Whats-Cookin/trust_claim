@@ -51,4 +51,4 @@ export interface SharePopoverProps {
   onClose: () => void
   onCopyLink: () => void
   onLinkedInShare: () => void
-} 
+}

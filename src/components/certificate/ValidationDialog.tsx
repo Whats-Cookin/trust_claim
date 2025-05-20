@@ -1,25 +1,11 @@
 import React from 'react'
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  Card,
-  Typography
-} from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Card, Typography } from '@mui/material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import { ValidationDialogProps } from '../../types/certificate'
 import { validationCardStyles, truncateText } from '../../constants/certificateStyles'
 import { useTheme, useMediaQuery } from '@mui/material'
 
-const ValidationDialog: React.FC<ValidationDialogProps> = ({
-  open,
-  onClose,
-  validations,
-  onValidationClick
-}) => {
+const ValidationDialog: React.FC<ValidationDialogProps> = ({ open, onClose, validations, onValidationClick }) => {
   const theme = useTheme()
   const isXs = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -150,4 +136,4 @@ const ValidationDialog: React.FC<ValidationDialogProps> = ({
   )
 }
 
-export default ValidationDialog 
+export default ValidationDialog

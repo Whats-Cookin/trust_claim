@@ -170,7 +170,15 @@ const Certificate: React.FC<CertificateProps> = ({
 
   return (
     <Container
-      maxWidth={useMediaQuery(theme.breakpoints.up('xl')) ? 'xl' : useMediaQuery(theme.breakpoints.up('lg')) ? 'lg' : useMediaQuery(theme.breakpoints.up('md')) ? 'md' : 'sm'}
+      maxWidth={
+        useMediaQuery(theme.breakpoints.up('xl'))
+          ? 'xl'
+          : useMediaQuery(theme.breakpoints.up('lg'))
+          ? 'lg'
+          : useMediaQuery(theme.breakpoints.up('md'))
+          ? 'md'
+          : 'sm'
+      }
       sx={{
         py: { xs: 2, sm: 3, md: 4 },
         px: { xs: 1, sm: 2, md: 3 }
@@ -266,11 +274,7 @@ const Certificate: React.FC<CertificateProps> = ({
                     }}
                   >
                     {validations.slice(0, visibleValidationCount).map((validation, index) => (
-                      <Card
-                        key={index}
-                        sx={validationCardStyles}
-                        onClick={() => handleClaimClick(validation)}
-                      >
+                      <Card key={index} sx={validationCardStyles} onClick={() => handleClaimClick(validation)}>
                         <Typography
                           variant='body2'
                           color={COLORS.primary}
@@ -365,7 +369,11 @@ const Certificate: React.FC<CertificateProps> = ({
               {claimId && (
                 <Box sx={{ mt: { xs: 2, sm: 2.5, md: 3 }, textAlign: 'left' }}>
                   <Box sx={{ display: 'flex', alignItems: 'left', gap: 1 }}>
-                    <Typography variant='body2' color={COLORS.text.secondary} fontSize={{ xs: '12px', sm: '13px', md: '14px' }}>
+                    <Typography
+                      variant='body2'
+                      color={COLORS.text.secondary}
+                      fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
+                    >
                       ID :
                     </Typography>
                     <MuiLink

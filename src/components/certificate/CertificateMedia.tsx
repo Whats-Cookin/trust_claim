@@ -57,4 +57,4 @@ const CertificateMedia: React.FC<CertificateMediaProps> = ({ image }) => {
   )
 }
 
-export default CertificateMedia 
+export default CertificateMedia
