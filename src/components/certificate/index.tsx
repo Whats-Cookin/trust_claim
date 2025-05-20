@@ -29,6 +29,21 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { useNavigate } from 'react-router-dom'
 import html2pdf from 'html2pdf.js'
+import { CertificateProps } from '../../types/certificate'
+import {
+  cardStyles,
+  badgeStyles,
+  titleStyles,
+  subtitleStyles,
+  validationCardStyles,
+  actionButtonStyles,
+  COLORS,
+  getVisibleValidationCount
+} from '../../constants/certificateStyles'
+import ValidationDialog from './ValidationDialog'
+import ValidationDetailsDialog from './ValidationDetailsDialog'
+import SharePopover from './SharePopover'
+import CertificateMedia from './CertificateMedia'
 
 interface Validation {
   subject_name: string
@@ -49,20 +64,6 @@ interface Claim {
   claim?: {
     name?: string
   }
-}
-
-interface CertificateProps {
-  subject_name: string
-  issuer_name: string
-  subject: string
-  statement?: string
-  effectiveDate?: string
-  sourceURI?: string
-  validations: Validation[]
-  claimId?: string
-  image?: string
-  name?: string
-  claim?: Claim
 }
 
 const Certificate: React.FC<CertificateProps> = ({
@@ -111,13 +112,8 @@ const Certificate: React.FC<CertificateProps> = ({
     }
   }
 
-  const handleValidationDialogOpen = () => {
-    setValidationDialogOpen(true)
-  }
-
-  const handleValidationDialogClose = () => {
-    setValidationDialogOpen(false)
-  }
+  const handleValidationDialogOpen = () => setValidationDialogOpen(true)
+  const handleValidationDialogClose = () => setValidationDialogOpen(false)
 
   const handleClaimClick = (validation: Validation) => {
     setSelectedValidation(validation)
@@ -133,9 +129,7 @@ const Certificate: React.FC<CertificateProps> = ({
     setAnchorEl(event.currentTarget as unknown as HTMLButtonElement)
   }
 
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
+  const handleClose = () => setAnchorEl(null)
 
   const handleCopyLink = async () => {
     try {
@@ -165,111 +159,24 @@ const Certificate: React.FC<CertificateProps> = ({
     handleClose()
   }
 
-  const truncateText = (text: string, length: number) => {
-    if (text.length <= length) return text
-    return `${text.substring(0, length)}...`
-  }
-
-  // Function to render media content
-  const renderMedia = () => {
-    if (!image) return null
-
-    const isVideoUrl = (url: string): boolean => {
-      try {
-        const parsedUrl = new URL(url)
-        const extension = parsedUrl.pathname.split('.').pop()?.toLowerCase()
-        return ['mp4', 'webm', 'ogg'].includes(extension || '')
-      } catch {
-        return false
-      }
-    }
-
-    return (
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: isXl ? '900px' : isLg ? '800px' : isMd ? '700px' : '100%',
-          margin: '0 auto',
-          marginTop: { xs: 2, sm: 3 },
-          marginBottom: { xs: 2, sm: 3 },
-          borderRadius: '12px',
-          overflow: 'hidden'
-        }}
-      >
-        {isVideoUrl(image) ? (
-          <video
-            controls
-            style={{
-              width: '100%',
-              maxHeight: isXl ? '600px' : isLg ? '500px' : isMd ? '450px' : isSm ? '400px' : '350px',
-              objectFit: 'contain'
-            }}
-          >
-            <source src={image} type='video/mp4' />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <img
-            src={image}
-            alt='Certificate media content'
-            style={{
-              width: '100%',
-              height: 'auto',
-              maxHeight: isXl ? '600px' : isLg ? '500px' : isMd ? '450px' : isSm ? '400px' : '350px',
-              objectFit: 'contain'
-            }}
-            loading='lazy'
-          />
-        )}
-      </Box>
-    )
-  }
-
-  // Determine the number of validation cards to show based on screen size
-  const getVisibleValidationCount = () => {
-    if (isXs) return 1
-    if (isSm) return 2
-    if (isMd) return 3
-    return 4 // For large screens
-  }
-
-  const visibleValidationCount = getVisibleValidationCount()
-
-  // Determine what text to display based on claim type and existence
   const getDisplayText = () => {
     if (claim?.type === 'credential') {
       return subject
-    } else {
-      return name
     }
-    return subject // Default fallback to subject
+    return name || subject
   }
+
+  const visibleValidationCount = getVisibleValidationCount(isXs, isSm, isMd)
 
   return (
     <Container
-      maxWidth={isXl ? 'xl' : isLg ? 'lg' : isMd ? 'md' : 'sm'}
+      maxWidth={useMediaQuery(theme.breakpoints.up('xl')) ? 'xl' : useMediaQuery(theme.breakpoints.up('lg')) ? 'lg' : useMediaQuery(theme.breakpoints.up('md')) ? 'md' : 'sm'}
       sx={{
         py: { xs: 2, sm: 3, md: 4 },
         px: { xs: 1, sm: 2, md: 3 }
       }}
     >
-      <Card
-        sx={{
-          width: '100%',
-          borderRadius: { xs: '16px', sm: '20px' },
-          backgroundColor: '#FFFFFF',
-          backgroundImage: 'none',
-          color: '#212529',
-          marginBottom: { xs: '1rem', sm: '1.5rem', md: '2rem' },
-          position: 'relative',
-          boxShadow: {
-            xs: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            sm: '0 6px 16px rgba(0, 0, 0, 0.12)',
-            md: '0 8px 24px rgba(0, 0, 0, 0.12)'
-          },
-          overflow: 'visible'
-        }}
-      >
+      <Card sx={cardStyles}>
         <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3, lg: 4 } }}>
           <Stack spacing={{ xs: 2, sm: 2.5, md: 3 }}>
             <Box
@@ -279,50 +186,12 @@ const Certificate: React.FC<CertificateProps> = ({
                 position: 'relative'
               }}
             >
-              <Box
-                component='img'
-                src={badge}
-                alt='Certificate Badge'
-                sx={{
-                  width: { xs: '100px', sm: '120px', md: '140px', lg: '150px', xl: '160px' },
-                  height: { xs: '100px', sm: '120px', md: '140px', lg: '150px', xl: '160px' },
-                  display: 'block',
-                  margin: '0 auto',
-                  marginTop: { xs: 2, sm: 2.5, md: 3 },
-                  marginBottom: { xs: 2, sm: 2.5, md: 3 },
-                  filter: 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.1))',
-                  transition: 'transform 0.3s ease-in-out',
-                  '&:hover': {
-                    transform: 'scale(1.05)'
-                  }
-                }}
-              />
+              <Box component='img' src={badge} alt='Certificate Badge' sx={badgeStyles} />
 
-              <Typography
-                variant='h4'
-                sx={{
-                  fontSize: { xs: '24px', sm: '28px', md: '32px', lg: '36px' },
-                  fontWeight: 600,
-                  marginBottom: { xs: 0.5, sm: 0.75, md: 1 },
-                  textAlign: 'center',
-                  color: '#212529',
-                  fontFamily: 'Adamina, serif'
-                }}
-              >
+              <Typography variant='h4' sx={titleStyles}>
                 Certificate
               </Typography>
-              <Typography
-                variant='h6'
-                sx={{
-                  fontSize: { xs: '12px', sm: '14px', md: '16px' },
-                  color: '#212529',
-                  marginBottom: { xs: 2, sm: 3, md: 4 },
-                  textAlign: 'center',
-                  textTransform: 'uppercase',
-                  letterSpacing: { xs: '1px', sm: '1.5px', md: '2px' },
-                  fontFamily: 'Roboto, serif'
-                }}
-              >
+              <Typography variant='h6' sx={subtitleStyles}>
                 OF SKILL VALIDATION
               </Typography>
 
@@ -334,7 +203,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   fontWeight: 500,
                   marginBottom: { xs: 2, sm: 2.5, md: 3 },
                   textAlign: 'center',
-                  color: '#2D6A4F'
+                  color: COLORS.primary
                 }}
               >
                 {subject_name}
@@ -348,7 +217,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   fontWeight: 500,
                   marginBottom: { xs: 2, sm: 2.5, md: 3 },
                   textAlign: 'center',
-                  color: '#212529'
+                  color: COLORS.text.primary
                 }}
               >
                 {getDisplayText()}
@@ -358,7 +227,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 sx={{
                   fontFamily: 'Roboto, sans-serif',
                   fontSize: { xs: '14px', sm: '15px', md: '16px' },
-                  color: '#212529',
+                  color: COLORS.text.primary,
                   marginBottom: { xs: 2, sm: 3, md: 4 },
                   textAlign: 'center',
                   maxWidth: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
@@ -370,13 +239,13 @@ const Certificate: React.FC<CertificateProps> = ({
                 {statement || 'This certificate validates the skills and expertise demonstrated by the recipient.'}
               </Typography>
 
-              {renderMedia()}
+              <CertificateMedia image={image} />
 
               {validations && validations.length > 0 && (
                 <Box sx={{ width: '100%', mt: { xs: 2, sm: 3, md: 4 } }}>
                   <Typography
                     variant='h6'
-                    color='#212529'
+                    color={COLORS.text.primary}
                     textAlign='center'
                     marginBottom={{ xs: 2, sm: 2.5, md: 3 }}
                     fontSize={{ xs: '18px', sm: '20px', md: '22px' }}
@@ -399,26 +268,12 @@ const Certificate: React.FC<CertificateProps> = ({
                     {validations.slice(0, visibleValidationCount).map((validation, index) => (
                       <Card
                         key={index}
-                        sx={{
-                          p: { xs: 2, sm: 2.5 },
-                          boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
-                          borderRadius: { xs: 1.5, sm: 2 },
-                          fontWeight: 500,
-                          cursor: 'pointer',
-                          position: 'relative',
-                          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-                          '&:hover': {
-                            transform: 'translateY(-4px)',
-                            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
-                          },
-                          display: 'flex',
-                          flexDirection: 'column'
-                        }}
+                        sx={validationCardStyles}
                         onClick={() => handleClaimClick(validation)}
                       >
                         <Typography
                           variant='body2'
-                          color='#2D6A4F'
+                          color={COLORS.primary}
                           fontSize={{ xs: 18, sm: 20 }}
                           marginBottom={1.5}
                           sx={{
@@ -433,7 +288,7 @@ const Certificate: React.FC<CertificateProps> = ({
                         </Typography>
                         <Typography
                           variant='body2'
-                          color='#212529'
+                          color={COLORS.text.primary}
                           fontSize={{ xs: 14, sm: 16 }}
                           sx={{
                             flexGrow: 1,
@@ -455,7 +310,7 @@ const Certificate: React.FC<CertificateProps> = ({
                             position: 'absolute',
                             bottom: 16,
                             right: 16,
-                            color: '#2D6A4F',
+                            color: COLORS.primary,
                             textTransform: 'none',
                             fontWeight: 500,
                             fontSize: '14px',
@@ -475,12 +330,12 @@ const Certificate: React.FC<CertificateProps> = ({
                       <Button
                         onClick={handleValidationDialogOpen}
                         sx={{
-                          color: '#2D6A4F',
+                          color: COLORS.primary,
                           textTransform: 'none',
                           fontWeight: 500,
                           fontSize: { xs: '14px', sm: '15px', md: '16px' },
                           '&:hover': {
-                            backgroundColor: 'rgba(45, 106, 79, 0.04)'
+                            backgroundColor: COLORS.background.hover
                           }
                         }}
                       >
@@ -490,15 +345,15 @@ const Certificate: React.FC<CertificateProps> = ({
                   )}
                 </Box>
               )}
+
               {effectiveDate && (
                 <Typography
                   variant='body2'
-                  color='#495057'
+                  color={COLORS.text.secondary}
                   textAlign='left'
                   mt={{ xs: 2, sm: 2.5, md: 3 }}
                   fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
                 >
-                  {' '}
                   {new Date(effectiveDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -506,16 +361,11 @@ const Certificate: React.FC<CertificateProps> = ({
                   })}
                 </Typography>
               )}
+
               {claimId && (
                 <Box sx={{ mt: { xs: 2, sm: 2.5, md: 3 }, textAlign: 'left' }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'left',
-                      gap: 1
-                    }}
-                  >
-                    <Typography variant='body2' color='#495057' fontSize={{ xs: '12px', sm: '13px', md: '14px' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'left', gap: 1 }}>
+                    <Typography variant='body2' color={COLORS.text.secondary} fontSize={{ xs: '12px', sm: '13px', md: '14px' }}>
                       ID :
                     </Typography>
                     <MuiLink
@@ -525,7 +375,7 @@ const Certificate: React.FC<CertificateProps> = ({
                         window.location.href = `/certificate/${claimId}`
                       }}
                       sx={{
-                        color: '#2D6A4F',
+                        color: COLORS.primary,
                         textDecoration: 'none',
                         fontSize: { xs: '12px', sm: '13px', md: '14px' },
                         wordBreak: 'break-all',
@@ -542,7 +392,9 @@ const Certificate: React.FC<CertificateProps> = ({
             </Box>
           </Stack>
         </CardContent>
+
         <Divider />
+
         <Box
           sx={{
             width: '100%',
@@ -555,130 +407,27 @@ const Certificate: React.FC<CertificateProps> = ({
             padding: { xs: 2, sm: 2.5, md: 3 }
           }}
         >
-          <Box
-            onClick={handleExport}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 1,
-              cursor: 'pointer',
-              background: 'none',
-              border: 'none',
-              padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
-              borderRadius: '8px',
-              transition: 'all 0.2s ease',
-              width: { xs: '100%', sm: '100%', md: 'auto' },
-              '&:hover': {
-                backgroundColor: 'rgba(45, 106, 79, 0.08)',
-                transform: 'scale(1.02)'
-              }
-            }}
-          >
-            <SystemUpdateAltIcon
-              sx={{
-                color: '#2D6A4F',
-              }}
-            />
-            <Typography
-              variant='body2'
-              sx={{
-                color: '#2D6A4F',
-                whiteSpace: 'nowrap',
-              }}
-            >
+          <Box onClick={handleExport} sx={actionButtonStyles}>
+            <SystemUpdateAltIcon sx={{ color: COLORS.primary }} />
+            <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
               Export Certificate
             </Typography>
           </Box>
 
-          <Box
-            onClick={handleShareClick}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: { xs: 'center', sm: 'center', md: 'flex-start' },
-              gap: 1,
-              cursor: 'pointer',
-              background: 'none',
-              border: 'none',
-              padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
-              borderRadius: '8px',
-              transition: 'all 0.2s ease',
-              width: { xs: '100%', sm: '100%', md: 'auto' },
-              '&:hover': {
-                backgroundColor: 'rgba(45, 106, 79, 0.08)',
-                transform: 'scale(1.02)'
-              }
-            }}
-          >
-            <ShareIcon
-              sx={{
-                color: '#2D6A4F',
-              }}
-            />
-            <Typography
-              variant='body2'
-              sx={{
-                color: '#2D6A4F',
-                whiteSpace: 'nowrap',
-              }}
-            >
+          <Box onClick={handleShareClick} sx={actionButtonStyles}>
+            <ShareIcon sx={{ color: COLORS.primary }} />
+            <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
               Share
             </Typography>
           </Box>
         </Box>
 
-        <Popover
-          open={Boolean(anchorEl)}
+        <SharePopover
           anchorEl={anchorEl}
           onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          sx={{
-            '& .MuiPopover-paper': {
-              width: { xs: '200px', sm: 'auto' },
-              padding: { xs: 1, sm: 1.5, md: 2 }
-            }
-          }}
-        >
-          <Box
-            sx={{
-              p: { xs: 1, sm: 1.5, md: 2 },
-              display: 'flex',
-              flexDirection: 'column',
-              gap: { xs: 0.5, sm: 1 }
-            }}
-          >
-            <Button
-              startIcon={<LinkedInIcon />}
-              onClick={handleLinkedInPost}
-              sx={{
-                color: '#2D6A4F',
-                justifyContent: 'flex-start',
-                fontSize: { xs: '13px', sm: '14px', md: '15px' }
-              }}
-            >
-              Share on LinkedIn
-            </Button>
-            <Button
-              startIcon={<ContentCopyIcon />}
-              onClick={handleCopyLink}
-              sx={{
-                color: '#2D6A4F',
-                justifyContent: 'flex-start',
-                fontSize: { xs: '13px', sm: '14px', md: '15px' }
-              }}
-            >
-              Copy Link
-            </Button>
-          </Box>
-        </Popover>
+          onCopyLink={handleCopyLink}
+          onLinkedInShare={handleLinkedInPost}
+        />
 
         <Snackbar
           open={snackbarOpen}
@@ -687,342 +436,23 @@ const Certificate: React.FC<CertificateProps> = ({
           message='Link copied to clipboard!'
           sx={{
             '& .MuiSnackbarContent-root': {
-              backgroundColor: '#2D6A4F'
+              backgroundColor: COLORS.primary
             }
           }}
         />
 
-        {/* Validation Dialog */}
-        <Dialog
+        <ValidationDialog
           open={validationDialogOpen}
           onClose={handleValidationDialogClose}
-          maxWidth='md'
-          fullWidth
-          sx={{
-            '& .MuiDialog-paper': {
-              width: { xs: '95%', sm: '90%', md: '85%' },
-              maxWidth: '800px',
-              maxHeight: { xs: '95vh', sm: '90vh' },
-              borderRadius: { xs: '8px', sm: '10px', md: '12px' },
-              backgroundColor: '#FFFFFF',
-              overflowY: 'auto'
-            }
-          }}
-        >
-          <DialogTitle
-            sx={{
-              color: '#2D6A4F',
-              fontSize: { xs: '20px', sm: '22px', md: '24px' },
-              fontWeight: 600,
-              textAlign: 'center',
-              padding: { xs: 2, sm: 2.5, md: 3 }
-            }}
-          >
-            All Validations
-          </DialogTitle>
-          <DialogContent
-            sx={{
-              padding: { xs: 2, sm: 2.5, md: 3 }
-            }}
-          >
-            {/* IMPROVED DIALOG VALIDATION CARDS LAYOUT */}
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)'
-                },
-                gap: 2.5
-              }}
-            >
-              {validations?.map((validation, index) => (
-                <Card
-                  key={index}
-                  onClick={() => handleClaimClick(validation)}
-                  sx={{
-                    minHeight: { xs: '180px', sm: '190px' },
-                    backgroundColor: '#ffffff',
-                    borderRadius: { xs: '6px', sm: '8px' },
-                    boxShadow: '0 2px 14px 0 rgba(0, 0, 0, 0.25)',
-                    padding: { xs: '16px', sm: '20px' },
-                    position: 'relative',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
-                    },
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%'
-                  }}
-                >
-                  <Typography
-                    color='#2D6A4F'
-                    fontWeight={500}
-                    fontSize={{ xs: 18, sm: 20 }}
-                    marginBottom={1.5}
-                    sx={{
-                      wordBreak: 'break-word',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {validation.issuer_name}
-                  </Typography>
-                  <Typography
-                    color='#212529'
-                    fontSize={{ xs: 14, sm: 16 }}
-                    sx={{
-                      flexGrow: 1,
-                      overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      marginBottom: 3.5
-                    }}
-                  >
-                    {truncateText(validation.statement || '', isXs ? 70 : 90)}
-                  </Typography>
-                  <Button
-                    onClick={e => {
-                      e.stopPropagation()
-                      handleClaimClick(validation)
-                    }}
-                    endIcon={<OpenInNewIcon sx={{ fontSize: 18 }} />}
-                    sx={{
-                      position: 'absolute',
-                      bottom: 16,
-                      right: 16,
-                      color: '#2D6A4F',
-                      textTransform: 'none',
-                      fontWeight: 500,
-                      fontSize: '14px',
-                      padding: 0,
-                      minWidth: 'auto',
-                      textDecoration: 'underline',
-                      '&:hover': {
-                        backgroundColor: 'transparent',
-                        textDecoration: 'underline'
-                      }
-                    }}
-                  >
-                    see all
-                  </Button>
-                </Card>
-              ))}
-            </Box>
-          </DialogContent>
-          <DialogActions sx={{ padding: { xs: '12px 16px', sm: '14px 20px', md: '16px 24px' } }}>
-            <Button
-              onClick={handleValidationDialogClose}
-              sx={{
-                color: '#2D6A4F',
-                textTransform: 'none',
-                fontWeight: 500,
-                fontSize: { xs: '14px', sm: '15px', md: '16px' },
-                '&:hover': {
-                  backgroundColor: 'rgba(45, 106, 79, 0.04)'
-                }
-              }}
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+          validations={validations}
+          onValidationClick={handleClaimClick}
+        />
 
-        {/* Validation Details Dialog */}
-        <Dialog
+        <ValidationDetailsDialog
           open={claimDialogOpen}
           onClose={handleClaimDialogClose}
-          maxWidth={false}
-          sx={{
-            '& .MuiDialog-paper': {
-              width: { xs: '95%', sm: '90%', md: '85%' },
-              maxWidth: '800px',
-              maxHeight: { xs: '95vh', sm: '90vh' },
-              borderRadius: { xs: '8px', sm: '10px', md: '12px' },
-              backgroundColor: '#FFFFFF',
-              overflowY: 'auto'
-            }
-          }}
-        >
-          <DialogContent sx={{ p: 0, position: 'relative' }}>
-            <IconButton
-              onClick={handleClaimDialogClose}
-              sx={{
-                position: 'absolute',
-                right: { xs: 6, sm: 8 },
-                top: { xs: 6, sm: 8 },
-                color: '#212529',
-                zIndex: 1,
-                padding: { xs: '4px', sm: '8px' }
-              }}
-              size={isXs ? 'small' : 'medium'}
-            >
-              <CloseIcon fontSize={isXs ? 'small' : 'medium'} />
-            </IconButton>
-            {selectedValidation && (
-              <Box sx={{ padding: { xs: 2, sm: 2.5, md: 3 } }}>
-                <Box sx={{ marginBottom: { xs: 2, sm: 2.5, md: 3 } }}>
-                  {selectedValidation.subject && (
-                    <Box
-                      sx={{
-                        fontSize: { xs: '16px', sm: '18px', md: '20px' },
-                        fontWeight: 500,
-                        color: '#2D6A4F',
-                        marginBottom: { xs: 1.5, sm: 2 },
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        flexWrap: 'wrap'
-                      }}
-                    >
-                      <MuiLink
-                        href={selectedValidation.sourceURI}
-                        target='_blank'
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          color: 'inherit',
-                          textDecoration: 'none',
-                          '&:hover': {
-                            textDecoration: 'underline'
-                          },
-                          wordBreak: 'break-word'
-                        }}
-                      >
-                        {selectedValidation.sourceURI}
-                        <OpenInNewIcon sx={{ fontSize: { xs: 16, sm: 18, md: 20 } }} />
-                      </MuiLink>
-                    </Box>
-                  )}
-                  <Typography
-                    sx={{
-                      fontSize: { xs: '18px', sm: '20px', md: '24px' },
-                      fontWeight: 500,
-                      color: '#2D6A4F',
-                      marginBottom: { xs: 1.5, sm: 2 }
-                    }}
-                  >
-                    {selectedValidation.issuer_name}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: '14px', sm: '15px', md: '16px' },
-                      color: '#212529',
-                      marginBottom: { xs: 1.5, sm: 2 },
-                      lineHeight: 1.6
-                    }}
-                  >
-                    {selectedValidation.statement}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: '12px', sm: '13px', md: '14px' },
-                      color: '#495057',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}
-                  >
-                    {selectedValidation.effectiveDate &&
-                      new Date(selectedValidation.effectiveDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                  </Typography>
-                </Box>
-                <Box sx={{ marginTop: { xs: 2, sm: 2.5, md: 3 } }}>
-                  {selectedValidation.howKnown && (
-                    <Box sx={{ marginBottom: { xs: 1.5, sm: 2 } }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          color: '#495057',
-                          minWidth: { xs: '120px', sm: '140px', md: '150px' },
-                          display: { xs: 'block', sm: 'inline-block' },
-                          fontSize: { xs: '13px', sm: '14px' }
-                        }}
-                      >
-                        How Known:
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: '#212529',
-                          fontSize: { xs: '13px', sm: '14px' }
-                        }}
-                      >
-                        {selectedValidation.howKnown.replace(/_/g, ' ')}
-                      </Typography>
-                    </Box>
-                  )}
-                  {selectedValidation.sourceURI && (
-                    <Box sx={{ marginBottom: { xs: 1.5, sm: 2 } }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          color: '#495057',
-                          minWidth: { xs: '120px', sm: '140px', md: '150px' },
-                          display: { xs: 'block', sm: 'inline-block' },
-                          fontSize: { xs: '13px', sm: '14px' }
-                        }}
-                      >
-                        Source:
-                      </Typography>
-                      <Typography>
-                        <MuiLink
-                          href={selectedValidation.sourceURI}
-                          target='_blank'
-                          sx={{
-                            color: '#2D6A4F',
-                            textDecoration: 'none',
-                            fontSize: { xs: '13px', sm: '14px' },
-                            '&:hover': {
-                              textDecoration: 'underline'
-                            },
-                            wordBreak: 'break-word'
-                          }}
-                        >
-                          {selectedValidation.sourceURI}
-                        </MuiLink>
-                      </Typography>
-                    </Box>
-                  )}
-                  {selectedValidation.confidence !== undefined && (
-                    <Box sx={{ marginBottom: { xs: 1.5, sm: 2 } }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          color: '#495057',
-                          minWidth: { xs: '120px', sm: '140px', md: '150px' },
-                          display: { xs: 'block', sm: 'inline-block' },
-                          fontSize: { xs: '13px', sm: '14px' }
-                        }}
-                      >
-                        Confidence:
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: '#212529',
-                          fontSize: { xs: '13px', sm: '14px' }
-                        }}
-                      >
-                        {selectedValidation.confidence}
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-              </Box>
-            )}
-          </DialogContent>
-        </Dialog>
+          validation={selectedValidation}
+        />
       </Card>
     </Container>
   )
