@@ -41,4 +41,16 @@ const extractProfileName = (url: string): string | null => {
   }
 }
 
+export const extractCredentialId = (claimAddress: string): string | null => {
+  try {
+    const url = new URL(claimAddress)
+    const pathParts = url.pathname.split('/')
+    const lastPart = pathParts[pathParts.length - 1]
+    return lastPart || null
+  } catch (error) {
+    console.error('Failed to parse claimAddress:', error)
+    return null
+  }
+}
+
 export { camelCaseToSimpleString, extractProfileName }

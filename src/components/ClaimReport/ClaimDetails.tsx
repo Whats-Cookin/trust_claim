@@ -42,6 +42,8 @@ import { memo, useCallback, useEffect, useState, useRef } from 'react'
 import jsPDF from 'jspdf'
 import badge from '../../assets/images/badge.svg'
 import html2pdf from 'html2pdf.js'
+import { extractCredentialId } from '../../utils/string.utils'
+import axios from 'axios'
 // import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
 // import Duration from '../../assets/duration.svg'
 
@@ -165,7 +167,22 @@ const generateLinkedInCertificationUrl = (claim: any) => {
   return `${baseLinkedInUrl}?${params}`
 }
 
-const exportClaimData = (claimData: any, format: 'json' | 'pdf') => {
+const credentialData = async (claimAddress: string): Promise<boolean> => {
+  try {
+    const credentialId = extractCredentialId(claimAddress)
+    if (!credentialId) return false
+
+    const response = await axios.get(`${BACKEND_BASE_URL}/api/getcredential/${credentialId}`, {
+      timeout: 5000 // 5 second timeout
+    })
+    return response.data
+  } catch (error) {
+    console.error('Error checking credential status:', error)
+    return false
+  }
+}
+
+const exportClaimData = async (claimData: any, format: 'json' | 'pdf') => {
   if (!claimData) {
     console.error('exportClaimData: claimData is null or undefined.')
     return
@@ -177,13 +194,17 @@ const exportClaimData = (claimData: any, format: 'json' | 'pdf') => {
   }
 
   try {
+    // Check if it's a credential by making API call
+
     if (format === 'json') {
-      const jsonString = JSON.stringify(claimData, null, 2)
+      const isCredential = claimData.claim === 'credential'
+      const credential = await credentialData(claimData.claimAddress)
+      const jsonString = isCredential ? JSON.stringify(credential, null, 2) : JSON.stringify(claimData, null, 2)
       const blob = new Blob([jsonString], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = `claim_${claimData.id}.json`
+      link.download = isCredential ? `credential_${claimData.id}.json` : `claim_${claimData.id}.json`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
