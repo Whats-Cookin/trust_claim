@@ -33,7 +33,6 @@ import ImageUploader from '../Form/imageUploading'
 import MainContainer from '../MainContainer'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ClaimBadge from '../../containers/feedOfClaim/Badge'
-// Constants for How Known options
 const FIRST_HAND = 'FIRST_HAND'
 const SECOND_HAND = 'SECOND_HAND'
 const WEB_DOCUMENT = 'WEB_DOCUMENT'
@@ -346,6 +345,30 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     return claim === 'credential' ? claimAddress : subjectValue
   }
 
+  const inputFieldSx = {
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#000000',
+        borderWidth: '1.5px'
+      },
+      '&:hover fieldset': {
+        borderColor: '#000000',
+        borderWidth: '1.5px'
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#000000',
+        borderWidth: '1.5px'
+      },
+      '& .MuiInputBase-input': {
+        color: theme.palette.texts,
+        fontWeight: 400,
+        fontSize: 16
+      }
+    }
+  }
+
   return (
     <>
       <Loader open={loading} />
@@ -356,8 +379,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
             md: 'calc(100% - 4.2vw)',
             lg: 'calc(100% - 4.2vw)'
           },
-          // marginLeft: '4.2vw',
-          // width: '100%',
+
           maxWidth: '1115px',
           marginLeft: 'auto',
           marginRight: 'auto',
@@ -454,27 +476,29 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                               whiteSpace: 'normal'
                             }}
                           >
-                            <Link
-                              to={getLinkUrl()}
-                              rel='noopener noreferrer'
-                              target='_blank'
-                              style={{
-                                textDecoration: 'none',
-                                color: 'inherit',
-                                fontSize: '18px !important',
-                                alignItems: 'center'
-                              }}
-                            >
-                              <Typography
-                                variant='body2'
-                                sx={{ color: theme.palette.texts, fontSize: '18px !important' }}
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Link
+                                to={getLinkUrl()}
+                                rel='noopener noreferrer'
+                                target='_blank'
+                                style={{
+                                  textDecoration: 'none',
+                                  color: 'inherit',
+                                  fontSize: '18px',
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
                               >
-                                {claimName && subject_name ? `${claimName} - ${subject_name}` : subjectValue}
-                              </Typography>
-                              <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts, paddingLeft: '5px' }} />
-                            </Link>
+                                <Typography variant='body1' sx={{ color: theme.palette.texts, mr: 1 }}>
+                                  {claimName && subject_name ? `${claimName} - ${subject_name}` : subjectValue}
+                                </Typography>
+                                <OpenInNewIcon fontSize='small' sx={{ color: theme.palette.texts }} />
+                              </Link>
+                              <Box sx={{ ml: 5, display: 'flex', alignItems: 'center' }}>
+                                <ClaimBadge claim={claim} />
+                              </Box>
+                            </Box>
                           </Box>
-                          <ClaimBadge claim={claim} />
                         </Box>
 
                         <Typography
@@ -505,65 +529,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           </Typography>
                         )}
                       </CardContent>
-
-                      <Box
-                        sx={{
-                          height: '1px',
-                          backgroundColor: '#E0E0E0',
-                          marginTop: '4px',
-                          borderRadius: '2px',
-                          display: 'flex',
-                          width: '100%',
-                          mb: '10px',
-                          mr: 'auto',
-                          ml: 'auto'
-                        }}
-                      />
-
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-evenly',
-                          gap: 2,
-                          position: 'relative',
-                          mt: '10px',
-                          mb: '10px',
-                          pl: '20px',
-                          pr: '20px'
-                        }}
-                      >
-                        {aspectValue && (
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant='body2' sx={{ color: theme.palette.texts, mr: 1 }}>
-                              Aspect:
-                            </Typography>
-                            <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                              {aspectValue}
-                            </Typography>
-                          </Box>
-                        )}
-                        {confidenceValue !== null && (
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant='body2' sx={{ color: theme.palette.texts, mr: 1 }}>
-                              Confidence:
-                            </Typography>
-                            <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                              {confidenceValue}
-                            </Typography>
-                          </Box>
-                        )}
-                        {amtValue && (
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant='body2' sx={{ color: theme.palette.texts, mr: 1 }}>
-                              Amount:
-                            </Typography>
-                            <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                              {amtValue}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
                     </Box>
                   </Card>
                 </Box>
@@ -591,31 +556,40 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     }}
                   >
                     <Box sx={{ height: '544', width: '100%' }}>
-                      {/* How Known Select Field */}
-                      <Typography variant='body2'>How Known(Required)</Typography>
-                      <FormControl
-                        fullWidth
-                        margin='normal'
-                        sx={{
-                          backgroundColor: '#FFFFFF',
-                          '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                              borderColor: '#000000'
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#000000'
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#000000'
-                            },
-                            '& .MuiInputBase-input': {
-                              color: theme.palette.texts,
-                              fontWeight: 400,
-                              fontSize: 16
+                      <Typography variant='body1' sx={{ mt: 2, mb: 2, fontWeight: 'bold' }}>
+                        Validator Information
+                      </Typography>
+                      <Typography variant='body2' sx={{ fontWeight: 500, mb: 1 }}>
+                        Website (required):
+                      </Typography>
+                      <FormControl fullWidth margin='normal' sx={inputFieldSx}>
+                        <Controller
+                          name='sourceURI'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: 'This field is required',
+                            pattern: {
+                              value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
+                              message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
                             }
-                          }
-                        }}
-                      >
+                          }}
+                          render={({ field, fieldState: { error } }) => (
+                            <TextField
+                              {...field}
+                              placeholder='Add your website'
+                              sx={inputFieldSx}
+                              error={Boolean(error)}
+                              helperText={error ? error.message : ''}
+                            />
+                          )}
+                        />
+                      </FormControl>
+                      <Typography variant='body1' sx={{ mt: 4, mb: 2, fontWeight: 'bold' }}>
+                        Claim Validation Details
+                      </Typography>
+                      <Typography variant='body2'>How Known(Required)</Typography>
+                      <FormControl fullWidth margin='normal' sx={inputFieldSx}>
                         <Controller
                           name='howKnown'
                           control={control}
@@ -627,19 +601,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             <>
                               <Select
                                 {...field}
-                                sx={{
-                                  '& .MuiSelect-icon': {
-                                    color: '#0A1C1D'
-                                  },
-                                  '& .MuiOutlinedInput-notchedOutline': {
-                                    border: '1px solid #000000'
-                                  },
-                                  '& .MuiInputBase-input': {
-                                    color: theme.palette.texts,
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                  }
-                                }}
+                                sx={inputFieldSx}
                                 error={Boolean(error)} // Pass the error state to the Select component
                               >
                                 {inputOptions.howKnown.map((option, index: number) => (
@@ -719,80 +681,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           )}
                         />
                       </FormControl>
-
-                      {/* URL Input Field */}
-                      {(watchHowKnown === FIRST_HAND ||
-                        watchHowKnown === SECOND_HAND ||
-                        watchHowKnown === FIRST_HAND_BENEFIT ||
-                        watchHowKnown === FIRST_HAND_REJECTED) && (
-                        <URLInputField control={control} label='Your Website (Required)' />
-                      )}
-                      {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
-                        <URLInputField control={control} label='Source URL (Required)' />
-                      )}
-                      <Typography variant='h6' sx={{ mt: 2, mb: 4, fontWeight: 'bold' }}>
-                        {`Claim Validation Details `}
-                      </Typography>
-                      {/* Effective Date Field */}
-                      <Typography variant='body2'>Effective Date</Typography>
-                      <FormControl fullWidth sx={{ mt: 1 }}>
-                        <Controller
-                          name='effectiveDate'
-                          control={control}
-                          render={({ field }) => (
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                              <DatePicker
-                                {...field}
-                                renderInput={params => (
-                                  <TextField
-                                    {...params}
-                                    sx={{
-                                      backgroundColor: '#FFFFFF',
-                                      '& .MuiOutlinedInput-root': {
-                                        '& fieldset': {
-                                          borderColor: '#000000'
-                                        },
-                                        '&:hover fieldset': {
-                                          borderColor: '#000000'
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                          borderColor: '#000000'
-                                        }
-                                      },
-                                      '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-                                        color: '#0A1C1D'
-                                      },
-                                      '& .MuiInputBase-input': {
-                                        color: theme.palette.texts,
-                                        fontSize: 16,
-                                        fontWeight: 400
-                                      }
-                                    }}
-                                    margin='normal'
-                                    InputProps={{
-                                      ...params.InputProps,
-                                      sx: {
-                                        '&:before': {
-                                          borderBottom: 'none'
-                                        },
-                                        '&:hover:not(.Mui-disabled):before': {
-                                          borderBottom: 'none'
-                                        },
-                                        '&.Mui-focused:after': {
-                                          borderBottom: 'none'
-                                        }
-                                      }
-                                    }}
-                                  />
-                                )}
-                                value={field.value}
-                                onChange={date => field.onChange(date)}
-                              />
-                            </LocalizationProvider>
-                          )}
-                        />
-                      </FormControl>
-
                       {/* Statement Field */}
                       <Typography
                         variant='body2'
@@ -814,42 +702,38 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             {...field}
                             multiline
                             rows={4}
-                            sx={{
-                              width: '100%',
-                              height: '179px',
-                              backgroundColor: '#FFFFFF',
-                              border: 'none',
-                              '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                  borderColor: '#000000'
-                                },
-                                '&:hover fieldset': {
-                                  borderColor: '#000000'
-                                },
-                                '&.Mui-focused fieldset': {
-                                  borderColor: '#000000'
-                                },
-                                '& .MuiInputBase-input': {
-                                  color: theme.palette.texts,
-                                  fontWeight: 400,
-                                  fontSize: 16
-                                }
-                              }
-                            }}
-                            margin='normal'
+                            sx={inputFieldSx}
                             error={Boolean(error)}
                             helperText={error ? error.message : ''}
                           />
                         )}
                       />
-
-                      {/* Image Uploader */}
                       <Typography
                         variant='body2'
                         sx={{
-                          margin: '10px'
+                          p: '5px'
                         }}
                       >
+                        Effective Date
+                      </Typography>
+                      <Controller
+                        name='effectiveDate'
+                        control={control}
+                        render={({ field }) => (
+                          <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                              {...field}
+                              renderInput={params => <TextField {...params} sx={inputFieldSx} margin='normal' />}
+                              value={field.value}
+                              onChange={date => field.onChange(date)}
+                            />
+                          </LocalizationProvider>
+                        )}
+                      />
+
+                      {/* Image Uploader */}
+
+                      <Typography variant='body1' sx={{ mt: 4, mb: 2, fontWeight: 'bold' }}>
                         Upload supporting Evidence (Optional)
                       </Typography>
                       <ImageUploader
@@ -867,33 +751,31 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         control={control}
                         register={register}
                       />
+                      <Box sx={{ display: 'flex', justifyContent: 'center', mt: '27px' }}>
+                        <Button
+                          onClick={onSubmit}
+                          variant='contained'
+                          size='large'
+                          sx={{
+                            fontSize: '18px',
+                            fontWeight: 400,
+                            height: '48px',
+                            width: '180px',
+                            color: theme.palette.buttontext,
+                            borderRadius: '24px',
+                            bgcolor: theme.palette.buttons,
+                            '&:hover': {
+                              backgroundColor: theme.palette.buttonHover
+                            }
+                          }}
+                        >
+                          Submit
+                        </Button>
+                      </Box>
                     </Box>
                   </Card>
                 </Box>
               </Box>
-            </Box>
-
-            {/* Submit Button */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: '27px' }}>
-              <Button
-                onClick={onSubmit}
-                variant='contained'
-                size='large'
-                sx={{
-                  fontSize: '18px',
-                  fontWeight: 400,
-                  height: '48px',
-                  width: '180px',
-                  color: theme.palette.buttontext,
-                  borderRadius: '24px',
-                  bgcolor: theme.palette.buttons,
-                  '&:hover': {
-                    backgroundColor: theme.palette.buttonHover
-                  }
-                }}
-              >
-                Submit
-              </Button>
             </Box>
           </Box>
         </form>

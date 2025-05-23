@@ -115,7 +115,7 @@ const MediaUploader = <TFieldValues extends FieldValues>({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
-    <Box sx={{ mx: 'auto', p: '10px', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
+    <Box sx={{ mx: 'auto', bgcolor: 'transparent', borderRadius: 2, width: '100%' }}>
       <Box sx={{ mb: 4 }}>
         <label htmlFor='media-upload'>
           <Box
