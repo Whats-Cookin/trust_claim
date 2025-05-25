@@ -7,19 +7,13 @@ import axios from '../../axiosInstance'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
-// import GraphinfButton from './GraphInfButton'
+import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import MainContainer from '../../components/MainContainer'
 import NodeDetails from '../../components/NodeDetails'
-import CredentialPopup from '../../components/CredentialDetails'
-interface ISelectedClaim {
-  claimId: string
-  claim: string
-  nodeId: string
-  img: string
-}
+
 const Explore = (homeProps: IHomeProps) => {
   const { nodeId } = useParams<{ nodeId: string }>()
   const theme = useTheme()
@@ -27,31 +21,21 @@ const Explore = (homeProps: IHomeProps) => {
   const ref = useRef<any>(null)
   const cyRef = useRef<Cytoscape.Core | null>(null)
   const [showDetails, setShowDetails] = useState<boolean>(false)
-  const [selectedClaim, setSelectedClaim] = useState<ISelectedClaim | null>(null)
+  const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [startNode, setStartNode] = useState<any>(null)
   const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
   const page = useRef(1)
+  const isMediumUp = useMediaQuery(theme.breakpoints.up('md'))
 
   const navigate = useNavigate()
 
-  const layoutName = 'concentric'
-  const layoutOptions = {
+  const layoutName = isMediumUp ? 'circle' : 'breadthfirst'
+    const layoutOptions = {
+    directed: !isMediumUp,
     fit: true,
-    padding: 50,
-    avoidOverlap: true,
-    nodeSpacing: 50,
-    nodeDimensionsIncludeLabels: true,
-    spacingFactor: 1.3,
-
-    concentric: (node: any) => node.degree(),
-    levelWidth: (nodes: any) => nodes.maxDegree() / 2,
-    minNodeSpacing: 70,
-    animate: true,
-    animationDuration: 800,
-    animationEasing: 'ease-in-out',
-
-    transform: (node: any, position: any) => position
+    spacingFactor: isMediumUp ? 1 : 1.1,
+    padding: isMediumUp ? 150 : 0
   }
 
   const runCy = (cyInstance: Cytoscape.Core | undefined) => {
@@ -67,14 +51,16 @@ const Explore = (homeProps: IHomeProps) => {
     })
   }
 
-  const fetchRelatedClaims = async (id: string, type: string, page: number) => {
+  const fetchRelatedClaims = async (id: string, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/claim_graph/${id}/expand?page=${page}&limit=2&type=${type}`)
+      const res = await axios.get(`/api/node/${id}?page=${page}&limit=5`)
       if (res.data) {
-        const { nodes, edges } = res.data
+        let newNodes: any[] = []
+        let newEdges: any[] = []
+        parseSingleNode(newNodes, newEdges, res.data)
         if (!cy) return
-        cy.add({ nodes, edges } as any)
+        cy.add({ nodes: newNodes, edges: newEdges } as any)
       } else {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
@@ -91,31 +77,29 @@ const Explore = (homeProps: IHomeProps) => {
   }
 
   const handleNodeClick = async (event: any) => {
-    event.preventDefault()
-    const currentClaim = event?.target?.data('raw')
-    if (currentClaim) {
-      setSelectedClaim(currentClaim)
-      setShowDetails(true)
-      setStartNode(currentClaim)
-    }
-  }
-
-  const handleNodeRightClick = async (event: any) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
       const currentClaim = event.target.data('raw')
-      if (currentClaim && currentClaim.claimId) {
+      if (currentClaim) {
         setSelectedClaim(currentClaim)
-        fetchRelatedClaims(currentClaim.claimId, currentClaim.claim, currentClaim.page + 1)
-        event.target.data('raw').page += 1
+        fetchRelatedClaims(event.target.data('id'), page.current)
       }
     }
   }
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-    return
+    const currentClaim = event?.target?.data('raw')?.claim
+    const endNode = event?.target?.data('raw')?.endNode
+    const startNode = event?.target?.data('raw')?.claim
+
+    if (currentClaim) {
+      setSelectedClaim(currentClaim)
+      setShowDetails(true)
+      setStartNode(startNode)
+      setEndNode(endNode)
+    }
   }
 
   const handleMouseOver = (event: any) => {
@@ -154,20 +138,13 @@ const Explore = (homeProps: IHomeProps) => {
   const initializeGraph = async (claimId: string) => {
     setLoading(true)
     try {
-      // First fetch the central node
-      const claimRes = await axios.get(`/api/claim_graph/${claimId}`)
+      // First fetch the central node      
+      const claimRes = await axios.get(`/api/claim_graph/${claimId}`, {timeout: 60000})
       if (!cy) return
-
       cy.elements().remove() // Clear any existing elements
-
       console.log('Result was : ' + JSON.stringify(claimRes.data))
-      //  parseSingleNode(nodes, edges, claimRes.data)
-      // const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
-      const {
-        data: { nodes, edges }
-      } = claimRes
-      // console.log('Adding nodes: ' + nodes)
-
+      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
+      console.log('Adding nodes: ' + nodes)
       cy.add({ nodes, edges } as any)
     } catch (err: any) {
       toggleSnackbar(true)
@@ -184,21 +161,20 @@ const Explore = (homeProps: IHomeProps) => {
     if (cy) {
       cy.on('tap', 'node', handleNodeClick)
       cy.on('tap', 'edge', handleEdgeClick)
-      cy.on('cxttap', 'node', handleNodeRightClick)
+      cy.on('cxttap', 'node,edge', handleMouseRightClick)
       cy.on('mouseover', 'edge,node', handleMouseOver)
       cy.on('mouseout', 'edge,node', handleMouseOut)
       return () => {
         if (!cy) return
         cy.off('tap', 'node', handleNodeClick)
         cy.off('tap', 'edge', handleEdgeClick)
-        cy.off('cxttap', 'node', handleNodeRightClick)
+        cy.off('cxttap', 'node,edge', handleMouseRightClick)
         cy.off('mouseover', 'edge,node', handleMouseOver)
         cy.off('mouseout', 'edge,node', handleMouseOut)
       }
     }
   }, [cy])
 
-  // Replace the removed useEffect with this one
   useEffect(() => {
     if (nodeId && cy) {
       initializeGraph(nodeId)
@@ -207,11 +183,11 @@ const Explore = (homeProps: IHomeProps) => {
 
   useEffect(() => {
     if (!cyRef.current && ref.current) {
-      const newCy = cyConfig(ref.current, theme, layoutName, layoutOptions)
+      const newCy = Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions))
       setCy(newCy)
       cyRef.current = newCy
     }
-  }, [theme])
+  }, [theme, layoutName, layoutOptions])
 
   useEffect(() => {
     document.addEventListener('contextmenu', event => event.preventDefault())
@@ -233,32 +209,21 @@ const Explore = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <MainContainer sx={{ width: '80%' }}>
-        <Box
-          ref={ref}
-          sx={{ ...styles.cy, display: showDetails && selectedClaim?.claim !== 'credential' ? 'none' : 'block' }}
-        />{' '}
-        {showDetails &&
-          selectedClaim &&
-          (selectedClaim.claim === 'credential' ? (
-            <CredentialPopup
-              isOpen={showDetails}
-              selectedClaimId={selectedClaim.claimId}
-              onClose={() => setShowDetails(false)}
-            />
-          ) : (
-            <NodeDetails
-              open={showDetails}
-              setOpen={setShowDetails}
-              selectedClaimId={selectedClaim.claimId}
-              isDarkMode={isDarkMode}
-              claimImg={selectedClaim.img || ''}
-              startNodeId={startNode.claimId}
-              endNodeId={endNode}
-            />
-          ))}
+      <MainContainer>
+        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />{' '}
+        {showDetails && (
+          <NodeDetails
+            open={showDetails}
+            setOpen={setShowDetails}
+            selectedClaim={selectedClaim}
+            isDarkMode={isDarkMode}
+            claimImg={selectedClaim.img || ''}
+            startNode={startNode}
+            endNode={endNode}
+          />
+        )}
       </MainContainer>
-      {/* <GraphinfButton /> */}
+      <GraphinfButton />
     </>
   )
 }
