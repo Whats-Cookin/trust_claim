@@ -1,6 +1,11 @@
 import { useMemo, memo } from 'react'
 import { Typography } from '@mui/material'
-import { extractProfileName } from '../../utils/string.utils'
+
+const extractProfileName = (url: string) => {
+  const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
+  const match = regex.exec(url)
+  return match ? match[1].replace(/-/g, ' ') : url
+}
 
 interface LocalClaim {
   name: string
