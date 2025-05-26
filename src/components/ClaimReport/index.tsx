@@ -1,3 +1,4 @@
+// RenderClaimInfo.tsx - Last updated: April 8, 2025 - 18:45:32
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link, useParams } from 'react-router-dom'
