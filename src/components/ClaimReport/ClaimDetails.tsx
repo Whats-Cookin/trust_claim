@@ -50,8 +50,8 @@ const MediaContainer = styled(Box)(({ theme }) => ({
 
 // Update the SmallerMediaContainer to center on smaller devices
 const SmallerMediaContainer = styled(Box)(({ theme }) => ({
-  width: '350px',
-  minWidth: '350px',
+  width: '280px',
+  minWidth: '280px',
   borderRadius: '12px',
   overflow: 'hidden',
   alignSelf: 'flex-start',
@@ -63,12 +63,12 @@ const SmallerMediaContainer = styled(Box)(({ theme }) => ({
   '& img': {
     width: '100%',
     height: 'auto',
-    maxHeight: '350px',
+    maxHeight: '280px',
     objectFit: 'cover'
   },
   '& video': {
     width: '100%',
-    maxHeight: '350px'
+    maxHeight: '280px'
   }
 }))
 
@@ -151,55 +151,56 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
   return (
     <Card
       sx={{
-        minHeight: '200px',
         width: '100%',
         borderRadius: '20px',
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        marginBottom: '1.5rem'
       }}
     >
-      <CardContent>
-        <Stack spacing={3}>
+      <CardContent sx={{ pb: 2 }}>
+        <Stack spacing={2}>
           {/* Title and Actions Row */}
           <Stack
-            direction={{ xs: 'column', md: 'column', lg: 'row' }}
+            direction={{ xs: 'column', md: 'row' }}
             spacing={2}
             alignItems={{ xs: 'flex-start', sm: 'center' }}
             justifyContent='space-between'
           >
-            <Stack direction='row' spacing={2} alignItems='center' sx={{ flexWrap: 'wrap', overflow: 'hidden' }}>
-              <Typography variant='h6' color='white' sx={{ minWidth: 0, textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {data.edge.startNode.name}
-              </Typography>
-            </Stack>
+            <Typography variant='h6' color='white' sx={{ fontSize: '18px', fontWeight: 600 }}>
+              {data.edge.startNode.name}
+            </Typography>
 
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
-              spacing={{ xs: 2, sm: 2 }}
+              spacing={1}
               sx={{
-                width: '100%',
-                alignItems: { xs: 'center', sm: 'flex-start' },
-                justifyContent: { xs: 'center', sm: 'flex-end', md: 'center' }
+                width: { xs: '100%', sm: 'auto' },
+                alignItems: { xs: 'stretch', sm: 'center' },
+                justifyContent: { xs: 'center', sm: 'flex-end' }
               }}
             >
               <Button
                 component={Link}
-                startIcon={<CheckCircleOutlineOutlinedIcon />}
+                startIcon={<CheckCircleOutlineOutlinedIcon sx={{ fontSize: '18px' }} />}
                 to={`/explore/${claim.id}`}
                 sx={{
                   textTransform: 'none',
                   color: theme.palette.buttontext,
                   bgcolor: theme.palette.buttons,
                   fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  px: '16px',
+                  py: '8px',
                   width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '150px' },
-                  height: '48px',
-                  whiteSpace: 'nowrap'
+                  minWidth: 'auto',
+                  height: '36px',
+                  whiteSpace: 'nowrap',
+                  '&:hover': {
+                    bgcolor: theme.palette.buttonHover
+                  }
                 }}
               >
                 Graph View
@@ -207,19 +208,23 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               <Button
                 component={Link}
-                startIcon={<CheckCircleOutlineOutlinedIcon />}
+                startIcon={<CheckCircleOutlineOutlinedIcon sx={{ fontSize: '18px' }} />}
                 to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id}`}
                 sx={{
                   textTransform: 'none',
                   color: theme.palette.buttontext,
                   bgcolor: theme.palette.buttons,
                   fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  px: '16px',
+                  py: '8px',
                   width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
+                  minWidth: 'auto',
+                  height: '36px',
+                  '&:hover': {
+                    bgcolor: theme.palette.buttonHover
+                  }
                 }}
               >
                 Validate
@@ -227,18 +232,24 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               <Button
                 variant='outlined'
-                startIcon={<ShareIcon />}
+                startIcon={<ShareIcon sx={{ fontSize: '18px' }} />}
                 onClick={handleShareClick}
                 sx={{
                   textTransform: 'none',
-                  color: theme.palette.buttontext,
+                  color: theme.palette.buttons,
+                  borderColor: theme.palette.buttons,
                   fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  px: '16px',
+                  py: '8px',
                   width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
+                  minWidth: 'auto',
+                  height: '36px',
+                  '&:hover': {
+                    borderColor: theme.palette.buttonHover,
+                    bgcolor: 'transparent'
+                  }
                 }}
               >
                 Share
@@ -315,18 +326,24 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               <Button
                 variant='outlined'
-                startIcon={<SystemUpdateAltIcon />}
+                startIcon={<SystemUpdateAltIcon sx={{ fontSize: '18px' }} />}
                 onClick={() => exportClaimData(claim)}
                 sx={{
                   textTransform: 'none',
-                  color: theme.palette.buttontext,
+                  color: theme.palette.buttons,
+                  borderColor: theme.palette.buttons,
                   fontWeight: 500,
-                  borderRadius: '24px',
-                  fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-                  px: { xs: '1rem', sm: '2rem' },
+                  borderRadius: '20px',
+                  fontSize: '14px',
+                  px: '16px',
+                  py: '8px',
                   width: { xs: '100%', sm: 'auto' },
-                  minWidth: { xs: 'auto', sm: '120px' },
-                  height: '48px'
+                  minWidth: 'auto',
+                  height: '36px',
+                  '&:hover': {
+                    borderColor: theme.palette.buttonHover,
+                    bgcolor: 'transparent'
+                  }
                 }}
               >
                 Export
@@ -339,8 +356,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             sx={{
               display: 'flex',
               flexDirection: { xs: 'column', md: 'row' },
-              gap: 3,
-              alignItems: { xs: 'center', md: 'flex-start' } // Center items on xs, align to start on md+
+              gap: 2,
+              alignItems: { xs: 'center', md: 'flex-start' }
             }}
           >
             {/* Left side - Image */}
@@ -355,8 +372,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             >
               {/* Statement */}
               {claim.statement && (
-                <Box sx={{ mb: 3 }}>
-                  <Typography color='white'>
+                <Box sx={{ mb: 2 }}>
+                  <Typography color='white' variant='body2'>
                     {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
                     {isStatementLong && (
                       <MuiLink
@@ -371,15 +388,15 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               )}
 
               {/* Issue Date */}
-              <Box sx={{ mb: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                   <CalendarMonthOutlinedIcon sx={{ color: theme.palette.date, mr: '10px' }} />
                   <TextLabel variant='body2' gutterBottom>
                     Issued On
                   </TextLabel>
                 </Box>
                 <Box>
-                  <Typography variant='body1'>
+                  <Typography variant='body2'>
                     {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -390,8 +407,8 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               </Box>
 
               {/* Links */}
-              <Box sx={{ mb: 3 }}>
-                <Stack spacing={1}>
+              <Box sx={{ mb: 2 }}>
+                <Stack spacing={0.5}>
                   <MuiLink
                     sx={{ color: theme.palette.link, justifyContent: 'flex-start', width: 'fit-content' }}
                     target='_blank'
@@ -411,7 +428,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               {/* Recommendations */}
               <Box>
-                <Typography color='white'>{data.validations.length} Recommendations</Typography>
+                <Typography color='white' variant='body2'>{data.validations.length} Recommendations</Typography>
               </Box>
             </Box>
           </Box>
