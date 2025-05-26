@@ -15,6 +15,8 @@ import MainContainer from '../../components/MainContainer'
 import NodeDetails from '../../components/NodeDetails'
 import { s } from 'vitest/dist/types-e3c9754d'
 import { set } from 'lodash'
+import { Fab, Tooltip } from '@mui/material'
+import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
 
 const Explore = (homeProps: IHomeProps) => {
   const { nodeId } = useParams<{ nodeId: string }>()
@@ -40,17 +42,77 @@ const Explore = (homeProps: IHomeProps) => {
     padding: isMediumUp ? 150 : 0
   }
 
-  const runCy = (cyInstance: Cytoscape.Core | undefined) => {
+  const handleFitToScreen = () => {
+    if (cy && cy.elements().length > 0) {
+      cy.fit(cy.elements(), 50)
+      
+      // Apply same zoom constraints as initial load
+      const nodeCount = cy.nodes().length
+      if (nodeCount <= 3 && cy.zoom() > 1) {
+        cy.zoom(1)
+        cy.center()
+      } else if (cy.zoom() > 1.5) {
+        cy.zoom(1.5)
+        cy.center()
+      }
+    }
+  }
+
+  const runCy = (cyInstance: Cytoscape.Core | undefined, shouldFit: boolean = false) => {
     if (!cyInstance) return
     const layout = cyInstance.layout({
       name: layoutName,
       ...layoutOptions
     })
     layout.run()
-    cyInstance.animate({
-      fit: { eles: cyInstance.elements(), padding: 20 },
-      duration: 1000
-    })
+    
+    // Only fit to viewport on initial load or when explicitly requested
+    if (shouldFit) {
+      const nodeCount = cyInstance.nodes().length
+      
+      // For small graphs, don't zoom in too much
+      if (nodeCount <= 3) {
+        cyInstance.zoom(1) // Keep at default zoom
+        cyInstance.center() // Just center the graph
+      } else {
+        // For larger graphs, fit but with constraints
+        cyInstance.fit(cyInstance.elements(), 50)
+        
+        // Limit max zoom to prevent giant nodes
+        if (cyInstance.zoom() > 1.5) {
+          cyInstance.zoom(1.5)
+          cyInstance.center()
+        }
+      }
+    } else {
+      // When not auto-fitting, check if new nodes are outside viewport
+      const extent = cyInstance.extent()
+      const elements = cyInstance.elements()
+      let needsAdjustment = false
+      
+      // Check if any nodes are outside the current viewport
+      elements.nodes().forEach((node: any) => {
+        const pos = node.position()
+        if (pos.x < extent.x1 || pos.x > extent.x2 || 
+            pos.y < extent.y1 || pos.y > extent.y2) {
+          needsAdjustment = true
+        }
+      })
+      
+      // If nodes are outside viewport, zoom out just enough to include them
+      if (needsAdjustment) {
+        const currentZoom = cyInstance.zoom()
+        cyInstance.fit(elements, 100) // Fit with padding
+        
+        // But try to preserve some of the current zoom if possible
+        const newZoom = cyInstance.zoom()
+        if (newZoom < currentZoom * 0.7) {
+          // Only zoom out to 70% of current zoom at most per expansion
+          cyInstance.zoom(currentZoom * 0.7)
+          cyInstance.center()
+        }
+      }
+    }
   }
 
   const fetchRelatedClaims = async (id: string, page: number) => {
@@ -74,7 +136,7 @@ const Explore = (homeProps: IHomeProps) => {
       console.trace()
     } finally {
       setLoading(false)
-      runCy(cy)
+      runCy(cy, false) // Don't auto-fit when adding new nodes
     }
   }
 
@@ -161,7 +223,7 @@ const Explore = (homeProps: IHomeProps) => {
       console.trace()
     } finally {
       setLoading(false)
-      runCy(cy)
+      runCy(cy, true) // Fit on initial load
     }
   }
 
@@ -233,6 +295,24 @@ const Explore = (homeProps: IHomeProps) => {
         )}
       </MainContainer>
       <GraphinfButton />
+      <Tooltip title="Fit to Screen" placement="left">
+        <Fab
+          color="primary"
+          size="small"
+          onClick={handleFitToScreen}
+          sx={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            backgroundColor: theme.palette.primary.main,
+            '&:hover': {
+              backgroundColor: theme.palette.primary.dark
+            }
+          }}
+        >
+          <CenterFocusStrongIcon />
+        </Fab>
+      </Tooltip>
     </>
   )
 }

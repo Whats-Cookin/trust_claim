@@ -1,3 +1,16 @@
+// Edge styles by claim type
+const edgeStylesByClaimType: any = {
+  is_vouched_for: { color: '#10B981', style: 'solid', width: 4, arrow: 'triangle' },
+  rated: { color: '#3B82F6', style: 'solid', width: 3, arrow: 'chevron' },
+  funds_for_purpose: { color: '#F59E0B', style: 'dashed', width: 2, arrow: 'vee' },
+  same_as: { color: '#6B7280', style: 'dashed', width: 2, arrow: 'none' },
+  validated: { color: '#059669', style: 'solid', width: 5, arrow: 'triangle' },
+  verified: { color: '#059669', style: 'solid', width: 4, arrow: 'triangle' },
+  impact: { color: '#F59E0B', style: 'solid', width: 4, arrow: 'triangle-tee' },
+  agree: { color: '#10B981', style: 'solid', width: 3, arrow: 'circle' },
+  default: { color: '#9CA3AF', style: 'solid', width: 2, arrow: 'triangle' }
+}
+
 const isValidUrl = (urlString: string) => {
   var inputElement = document.createElement('input')
   inputElement.type = 'url'
@@ -104,7 +117,11 @@ const getNodeData = (node: any) => {
       id: node.id.toString(),
       label: label,
       raw: node,
-      image: imageUrl
+      image: imageUrl,
+      thumbnail: node.thumbnail,
+      entType: node.entType || 'UNKNOWN',
+      confidence: node.confidence,
+      stars: node.stars
     }
   }
   return nodeData
@@ -134,15 +151,24 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
     })
 
     edges.push(
-      ...node.edgesFrom.map((e: any) => ({
-        data: {
-          id: e.id,
-          source: e.startNodeId,
-          target: e.endNodeId,
-          relation: e.label,
-          raw: e
+      ...node.edgesFrom.map((e: any) => {
+        const claimType = e.claim?.claim || e.label || ''
+        const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+        
+        return {
+          data: {
+            id: e.id,
+            source: e.startNodeId,
+            target: e.endNodeId,
+            relation: e.label,
+            raw: e,
+            color: edgeStyle.color,
+            width: edgeStyle.width,
+            arrow: edgeStyle.arrow,
+            lineStyle: edgeStyle.style
+          }
         }
-      }))
+      })
     )
   }
 
@@ -157,15 +183,24 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
     })
 
     edges.push(
-      ...node.edgesTo.map((e: any) => ({
-        data: {
-          id: e.id,
-          source: e.endNodeId,
-          target: e.startNodeId,
-          relation: e.label,
-          raw: e
+      ...node.edgesTo.map((e: any) => {
+        const claimType = e.claim?.claim || e.label || ''
+        const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+        
+        return {
+          data: {
+            id: e.id,
+            source: e.endNodeId,
+            target: e.startNodeId,
+            relation: e.label,
+            raw: e,
+            color: edgeStyle.color,
+            width: edgeStyle.width,
+            arrow: edgeStyle.arrow,
+            lineStyle: edgeStyle.style
+          }
         }
-      }))
+      })
     )
   }
 
