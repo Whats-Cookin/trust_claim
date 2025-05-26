@@ -168,7 +168,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
             alignItems={{ xs: 'flex-start', sm: 'center' }}
             justifyContent='space-between'
           >
-            <Typography variant='h6' color='white' sx={{ fontSize: '18px', fontWeight: 600 }}>
+            <Typography variant='h6' sx={{ fontSize: '18px', fontWeight: 600, color: theme.palette.texts }}>
               {data.edge.startNode.name}
             </Typography>
 
@@ -373,7 +373,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
               {/* Statement */}
               {claim.statement && (
                 <Box sx={{ mb: 2 }}>
-                  <Typography color='white' variant='body2'>
+                  <Typography variant='body2' sx={{ color: theme.palette.texts }}>
                     {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 200)}
                     {isStatementLong && (
                       <MuiLink
@@ -428,7 +428,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               {/* Recommendations */}
               <Box>
-                <Typography color='white' variant='body2'>{data.validations.length} Recommendations</Typography>
+                <Typography variant='body2' sx={{ color: theme.palette.texts }}>{data.validations.length} Recommendations</Typography>
               </Box>
             </Box>
           </Box>
