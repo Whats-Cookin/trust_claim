@@ -81,9 +81,9 @@ export const semanticColors = {
 // UI-specific colors
 export const uiColors = {
   // Headers and navigation
-  headerBg: lightColors.green[10], // #D1FAE5 as requested
+  headerBg: neutralColors.white, // Clean white header
   headerText: darkColors.green,
-  headerBorder: lightColors.green[20],
+  headerBorder: neutralColors.gray[200], // Light grey border
   
   // Backgrounds
   pageBg: neutralColors.gray[50],

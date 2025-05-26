@@ -33,6 +33,8 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
+import Badge from './Badge'
+import ClaimMetadata from './ClaimMetadata'
 
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
@@ -295,6 +297,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
                         <CardContent>
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                            <Badge claim={claim.claim || 'claim'} />
+                          </Box>
                           <Link
                             to={claim.link}
                             onClick={e => handleLinkClick(e, claim.link)}
@@ -304,13 +309,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           >
                             <ClaimName claim={claim} searchTerm={searchTerm} />
                           </Link>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {new Date(claim.effective_date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </Typography>
+                          <ClaimMetadata claim={claim} />
                           {claim.statement && (
                             <Typography
                               variant='body2'

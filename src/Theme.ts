@@ -215,13 +215,13 @@ const lightModeTheme = createTheme({
     buttons: primaryColors.green,
     buttonHover: darkColors.green,
     buttontext: neutralColors.white,
-    cardsbuttons: lightColors.green[10],
+    cardsbuttons: neutralColors.gray[100], // Light grey for button backgrounds
     maintext: darkColors.green,
     icons: darkColors.green,
     stars: primaryColors.amber,
     footerBackground: neutralColors.gray[100],
     footerText: uiColors.textPrimary,
-    menuBackground: uiColors.headerBg, // Using the requested #D1FAE5
+    menuBackground: neutralColors.white, // Clean white background
     pageBackground: uiColors.pageBg,
     formBackground: neutralColors.white,
     formMainText: uiColors.textPrimary,
@@ -234,7 +234,7 @@ const lightModeTheme = createTheme({
     dialogBackground: neutralColors.white,
     searchBarBackground: `${neutralColors.gray[400]}33`,
     searchBarText: uiColors.textSecondary,
-    chipColor: lightColors.green[20],
+    chipColor: neutralColors.gray[100], // Light grey for chips
     borderColor: uiColors.border,
     shadows: uiColors.shadow,
     sidecolor: uiColors.textPrimary,
