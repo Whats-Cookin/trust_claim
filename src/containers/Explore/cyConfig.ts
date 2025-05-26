@@ -118,7 +118,7 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
             const isClaim = entType === 'CLAIM'
             
             // Get color based on entity type
-            let bgColor = nodeColors.default
+            let bgColor: string = nodeColors.default
             if (isClaim) {
               bgColor = nodeColors.claim
             } else if (entType.toLowerCase() in nodeColors) {
