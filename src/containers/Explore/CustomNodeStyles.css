@@ -1,33 +1,84 @@
 .custom-node-container {
-  width: 180px;
-  height: 60px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  background-color: #557572;
+  justify-content: center;
+  flex-direction: column;
   color: #ffffff;
   font-size: 13px;
-  border-radius: 50px;
+  border: 2px solid;
   box-sizing: border-box;
   overflow: visible;
-  padding: 0 5px 0 0;
+  padding: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.node-icon {
-  width: 60px;
-  height: 60px;
-  background-size: cover;
-  background-position: center;
+/* Non-claim nodes (circles) */
+.custom-node-container:not(.node-claim) {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
 }
 
+/* Claim nodes (squares) */
+.node-claim {
+  width: 160px;
+  height: 80px;
+  border-radius: 8px;
+  flex-direction: row;
+}
+
+/* Icon styles */
+.node-icon {
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin-bottom: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.node-claim .node-icon {
+  margin-bottom: 0;
+  margin-right: 8px;
+}
+
+/* Label styles */
 .node-label {
-  flex: 1;
   text-align: center;
   word-wrap: break-word;
   white-space: normal;
-  padding: 0 5px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Stars rating */
+.node-stars {
+  font-size: 10px;
+  color: #FCD34D;
+  margin-top: 2px;
+}
+
+/* Confidence indicator */
+.node-confidence {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* Hover effects */
+.custom-node-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
 }

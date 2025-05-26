@@ -33,6 +33,8 @@ import MainContainer from '../../components/MainContainer'
 import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
+import Badge from './Badge'
+import ClaimMetadata from './ClaimMetadata'
 
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
@@ -255,28 +257,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
         <>
           {claims.length > 0 ? (
             <MainContainer>
-              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-                <Typography
-                  variant='body1'
-                  component='div'
-                  sx={{
-                    color: theme.palette.texts,
-                    textAlign: 'center',
-                    marginLeft: isMediumScreen ? '0' : '1rem'
-                  }}
-                >
-                  Recent Claims
-                  <Box
-                    sx={{
-                      height: '4px',
-                      backgroundColor: theme.palette.maintext,
-                      marginTop: '4px',
-                      borderRadius: '2px',
-                      width: '80%'
-                    }}
-                  />
-                </Typography>
-              </Box>
               {claims.map((claim: any, index: number) => (
                 <Grow in={true} timeout={1000} key={claim.claim_id}>
                   <Box sx={{ marginBottom: '15px' }}>
@@ -294,23 +274,24 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                       }}
                     >
                       <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
+                        {/* Badge positioned absolutely in top right */}
+                        <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
+                          <Badge claim={claim.claim || ''} />
+                        </Box>
+                        
                         <CardContent>
-                          <Link
-                            to={claim.link}
-                            onClick={e => handleLinkClick(e, claim.link)}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            style={{ textDecoration: 'none' }}
-                          >
-                            <ClaimName claim={claim} searchTerm={searchTerm} />
-                          </Link>
-                          <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.date }}>
-                            {new Date(claim.effective_date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </Typography>
+                          <Box sx={{ pr: '140px' }}> {/* Add padding to prevent overlap with badge */}
+                            <Link
+                              to={claim.link}
+                              onClick={e => handleLinkClick(e, claim.link)}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <ClaimName claim={claim} searchTerm={searchTerm} />
+                            </Link>
+                            <ClaimMetadata claim={claim} />
+                          </Box>
                           {claim.statement && (
                             <Typography
                               variant='body2'
