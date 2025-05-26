@@ -38,7 +38,7 @@ const edgeStylesByClaimType = {
   default: { color: '#9CA3AF', style: 'solid', width: 2, arrow: 'triangle' }
 }
 
-const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOptions: object) => {
+const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOptions: object): any => {
   return {
     container: containerRef || undefined,
     boxSelectionEnabled: false,
