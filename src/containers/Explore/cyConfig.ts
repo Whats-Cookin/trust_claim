@@ -1,7 +1,7 @@
 import cytoscape from 'cytoscape'
 import { Theme } from '@mui/material'
 import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
-import { nodeColors, edgeColors } from '../theme/colors'
+import { nodeColors, edgeColors } from '../../theme/colors'
 
 cytoscape.use(cytoscapeNodeHtmlLabel)
 
