@@ -14,71 +14,19 @@
   position: relative;
 }
 
-/* Entity-specific container styles */
-.node-person {
+/* Non-claim nodes (circles) */
+.custom-node-container:not(.node-claim) {
   width: 80px;
   height: 80px;
   border-radius: 50%;
 }
 
-.node-organization {
-  width: 100px;
-  height: 100px;
-  border-radius: 12px;
-  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-}
-
+/* Claim nodes (squares) */
 .node-claim {
-  width: 200px;
+  width: 160px;
   height: 80px;
   border-radius: 8px;
   flex-direction: row;
-}
-
-.node-impact {
-  width: 90px;
-  height: 90px;
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
-
-.node-event {
-  width: 100px;
-  height: 100px;
-  transform: rotate(45deg);
-}
-
-.node-event .node-label {
-  transform: rotate(-45deg);
-}
-
-.node-document {
-  width: 160px;
-  height: 60px;
-  border-radius: 4px;
-}
-
-.node-product {
-  width: 140px;
-  height: 70px;
-  border-radius: 8px;
-}
-
-.node-place {
-  width: 80px;
-  height: 80px;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-}
-
-.node-place .node-label {
-  transform: rotate(45deg);
-}
-
-.node-unknown,
-.node-other {
-  width: 100px;
-  height: 60px;
-  border-radius: 30px;
 }
 
 /* Icon styles */

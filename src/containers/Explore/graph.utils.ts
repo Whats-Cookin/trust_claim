@@ -1,14 +1,16 @@
-// Edge styles by claim type
+import { edgeColors } from '../../theme/colors'
+
+// Edge styles configuration using theme colors
 const edgeStylesByClaimType: any = {
-  is_vouched_for: { color: '#10B981', style: 'solid', width: 4, arrow: 'triangle' },
-  rated: { color: '#3B82F6', style: 'solid', width: 3, arrow: 'chevron' },
-  funds_for_purpose: { color: '#F59E0B', style: 'dashed', width: 2, arrow: 'vee' },
-  same_as: { color: '#6B7280', style: 'dashed', width: 2, arrow: 'none' },
-  validated: { color: '#059669', style: 'solid', width: 5, arrow: 'triangle' },
-  verified: { color: '#059669', style: 'solid', width: 4, arrow: 'triangle' },
-  impact: { color: '#F59E0B', style: 'solid', width: 4, arrow: 'triangle-tee' },
-  agree: { color: '#10B981', style: 'solid', width: 3, arrow: 'circle' },
-  default: { color: '#9CA3AF', style: 'solid', width: 2, arrow: 'triangle' }
+  is_vouched_for: { color: edgeColors.is_vouched_for, style: 'solid', width: 4, arrow: 'triangle' },
+  rated: { color: edgeColors.rated, style: 'solid', width: 3, arrow: 'chevron' },
+  funds_for_purpose: { color: edgeColors.funds_for_purpose, style: 'dashed', width: 2, arrow: 'vee' },
+  same_as: { color: edgeColors.same_as, style: 'dashed', width: 2, arrow: 'none' },
+  validated: { color: edgeColors.validated, style: 'solid', width: 5, arrow: 'triangle' },
+  verified: { color: edgeColors.verified, style: 'solid', width: 4, arrow: 'triangle' },
+  impact: { color: edgeColors.impact, style: 'solid', width: 4, arrow: 'triangle-tee' },
+  agree: { color: edgeColors.agree, style: 'solid', width: 3, arrow: 'circle' },
+  default: { color: edgeColors.default, style: 'solid', width: 2, arrow: 'triangle' }
 }
 
 const isValidUrl = (urlString: string) => {

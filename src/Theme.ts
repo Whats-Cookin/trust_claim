@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles'
+import { primaryColors, lightColors, darkColors, neutralColors, uiColors } from './theme/colors'
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -96,8 +97,8 @@ const darkModeTheme = createTheme({
       input:-webkit-autofill:hover,
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 100px #172D2D inset !important;
-      -webkit-text-fill-color: #ffffff !important;
+      -webkit-box-shadow: 0 0 0 100px ${neutralColors.gray[800]} inset !important;
+      -webkit-text-fill-color: ${neutralColors.white} !important;
       border-top-left-radius: initial !important;
       border-top-right-radius: initial !important;
       }
@@ -126,38 +127,38 @@ const darkModeTheme = createTheme({
   palette: {
     mode: 'dark',
     background: {
-      default: '#0A1C1D'
+      default: neutralColors.gray[900]
     },
-    smallButton: '#4C726F',
-    buttons: '#009688',
-    buttonHover: '#00695f',
-    buttontext: '#ffffff',
-    cardsbuttons: '#223B3A',
-    maintext: '#009688',
-    icons: '#009688',
-    stars: '#009688',
-    footerBackground: '#0A1C1D',
-    footerText: '#ffffff',
-    menuBackground: '#172d2d',
-    pageBackground: '#0A1C1D',
-    formBackground: '#172D2D',
-    formMainText: '#ffffff',
-    cardBackground: '#223B3A',
-    cardBackgroundBlur: '#43434380',
-    texts: '#ffffff',
-    date: '#96B1AC',
-    cardDate: '#B7B7B7',
-    link: '#009688',
-    profileButton: '#2f0101',
-    dialogBackground: '#333333',
-    searchBarBackground: '#4C726F80',
-    searchBarText: '#DFDFDF',
-    chipColor: '#4C726F',
-    borderColor: '#008a7cdc',
-    shadows: '#00000040',
-    sidecolor: '#ffffff',
-    darkinputtext: '#ffffff',
-    input: '#425655'
+    smallButton: neutralColors.gray[600],
+    buttons: primaryColors.green,
+    buttonHover: darkColors.green,
+    buttontext: neutralColors.white,
+    cardsbuttons: `${darkColors.green}40`,
+    maintext: primaryColors.green,
+    icons: primaryColors.green,
+    stars: primaryColors.amber,
+    footerBackground: neutralColors.gray[900],
+    footerText: neutralColors.white,
+    menuBackground: neutralColors.gray[800],
+    pageBackground: neutralColors.gray[900],
+    formBackground: neutralColors.gray[800],
+    formMainText: neutralColors.white,
+    cardBackground: neutralColors.gray[800],
+    cardBackgroundBlur: `${neutralColors.gray[700]}80`,
+    texts: neutralColors.white,
+    date: neutralColors.gray[400],
+    cardDate: neutralColors.gray[300],
+    link: primaryColors.cyan,
+    profileButton: primaryColors.red,
+    dialogBackground: neutralColors.gray[700],
+    searchBarBackground: `${neutralColors.gray[600]}80`,
+    searchBarText: neutralColors.gray[200],
+    chipColor: neutralColors.gray[600],
+    borderColor: `${primaryColors.green}dc`,
+    shadows: `${neutralColors.gray[900]}40`,
+    sidecolor: neutralColors.white,
+    darkinputtext: neutralColors.white,
+    input: neutralColors.gray[700]
   },
   breakpoints: {
     values: {
@@ -178,8 +179,8 @@ const lightModeTheme = createTheme({
       input:-webkit-autofill:hover,
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 100px #ffffff inset !important;
-      -webkit-text-fill-color: #0A1C1D !important;
+      -webkit-box-shadow: 0 0 0 100px ${neutralColors.white} inset !important;
+      -webkit-text-fill-color: ${uiColors.textPrimary} !important;
       border-top-left-radius: initial !important;
       border-top-right-radius: initial !important;
       }
@@ -208,37 +209,37 @@ const lightModeTheme = createTheme({
   palette: {
     mode: 'light',
     background: {
-      default: '#F2FAF9'
+      default: uiColors.pageBg
     },
-    smallButton: '#797979',
-    buttons: '#009688',
-    buttonHover: '#00695f',
-    buttontext: '#ffffff',
-    cardsbuttons: '#00968833',
-    maintext: '#00796B',
-    icons: '#00796B',
-    stars: '#009688',
-    footerBackground: '#43434380',
-    footerText: '#0A1C1D',
-    menuBackground: '#D5E7E4',
-    pageBackground: '#F2FAF9',
-    formBackground: '#ffffff',
-    formMainText: '#000000',
-    cardBackground: '#ffffff',
-    cardBackgroundBlur: '#79797933',
-    texts: '#000000',
-    date: '#797979',
-    link: '#1565C0',
-    profileButton: '#D32F2F',
-    dialogBackground: '#ffffff',
-    searchBarBackground: '#79797933',
-    searchBarText: '#797979',
-    chipColor: '#B2DFDB',
-    borderColor: '#00796B80',
-    shadows: '#00000020',
-    sidecolor: '#0A1C1D',
-    darkinputtext: '#0A1C1D',
-    input: '#E6F0EE'
+    smallButton: neutralColors.gray[500],
+    buttons: primaryColors.green,
+    buttonHover: darkColors.green,
+    buttontext: neutralColors.white,
+    cardsbuttons: lightColors.green[10],
+    maintext: darkColors.green,
+    icons: darkColors.green,
+    stars: primaryColors.amber,
+    footerBackground: neutralColors.gray[100],
+    footerText: uiColors.textPrimary,
+    menuBackground: uiColors.headerBg, // Using the requested #D1FAE5
+    pageBackground: uiColors.pageBg,
+    formBackground: neutralColors.white,
+    formMainText: uiColors.textPrimary,
+    cardBackground: uiColors.cardBg,
+    cardBackgroundBlur: `${neutralColors.gray[400]}33`,
+    texts: uiColors.textPrimary,
+    date: uiColors.textMuted,
+    link: primaryColors.cyan,
+    profileButton: primaryColors.red,
+    dialogBackground: neutralColors.white,
+    searchBarBackground: `${neutralColors.gray[400]}33`,
+    searchBarText: uiColors.textSecondary,
+    chipColor: lightColors.green[20],
+    borderColor: uiColors.border,
+    shadows: uiColors.shadow,
+    sidecolor: uiColors.textPrimary,
+    darkinputtext: uiColors.textPrimary,
+    input: neutralColors.gray[100]
   },
   breakpoints: {
     values: {

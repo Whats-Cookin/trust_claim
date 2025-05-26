@@ -25,7 +25,7 @@ const App = () => {
   const [loading, setLoading] = useState(false)
   const [isSnackbarOpen, toggleSnackbar] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isNavbarVisible, setIsNavbarVisible] = useState(true)
