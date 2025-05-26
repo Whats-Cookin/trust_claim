@@ -130,14 +130,14 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
       {
         selector: 'edge',
         style: {
-          width: 'data(width)',
+          width: 'data(width)' as any,
           fontSize: 12,
-          targetArrowShape: 'data(arrow)',
-          lineColor: 'data(color)',
-          targetArrowColor: 'data(color)',
-          lineStyle: 'data(lineStyle)',
+          targetArrowShape: 'data(arrow)' as any,
+          lineColor: 'data(color)' as any,
+          targetArrowColor: 'data(color)' as any,
+          lineStyle: 'data(lineStyle)' as any,
           curveStyle: 'bezier',
-          color: 'data(color)',
+          color: 'data(color)' as any,
           textRotation: 'autorotate',
           textMarginY: -10,
           content: 'data(relation)',
@@ -145,7 +145,7 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           'text-background-opacity': 0.8,
           'text-background-padding': 2,
           'text-background-shape': 'roundrectangle',
-          'line-cap': 'round',
+          'line-cap': 'round' as 'round',
           'source-endpoint': 'outside-to-node',
           'target-endpoint': 'outside-to-node',
           'arrow-scale': 1.5
@@ -184,7 +184,7 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           cssClass: 'custom-node',
           tpl: (data: any) => {
             const entType = data.entType || 'UNKNOWN'
-            const colors = nodeColors[entType] || nodeColors.UNKNOWN
+            const colors = nodeColors[entType as keyof typeof nodeColors] || nodeColors.UNKNOWN
             const hasImage = data.image || data.thumbnail
             
             return `
