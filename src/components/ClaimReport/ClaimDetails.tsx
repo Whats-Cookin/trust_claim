@@ -275,7 +275,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                 <Typography
                   variant='body1'
                   sx={{
-                    color: 'white',
+                    color: theme.palette.texts,
                     fontWeight: 'bold',
                     textAlign: 'left'
                   }}
@@ -290,14 +290,14 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
                       InputProps={{
                         readOnly: true,
                         sx: {
-                          color: 'white',
-                          backgroundColor: '#2f4f4f',
+                          color: theme.palette.texts,
+                          backgroundColor: theme.palette.input,
                           borderRadius: '5px'
                         },
                         endAdornment: (
                           <InputAdornment position='end'>
                             <IconButton onClick={handleCopyLink}>
-                              <ContentCopyIcon sx={{ color: 'white', textAlign: 'center' }} />
+                              <ContentCopyIcon sx={{ color: theme.palette.icons }} />
                             </IconButton>
                           </InputAdornment>
                         )
