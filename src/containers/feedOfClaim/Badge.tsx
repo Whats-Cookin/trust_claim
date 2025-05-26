@@ -1,21 +1,43 @@
 import { Box, Typography } from '@mui/material'
-import { Medal, ShieldCheck, CircleCheck } from 'lucide-react'
+import { ShieldCheck, TrendingUp, Link as LinkIcon, Star, Award } from 'lucide-react'
 
 const Badge = ({ claim }: { claim: string }) => {
-  const bgColor = claim === 'credential' ? '#cce6ff' : claim === 'validated' ? '#f8e8cc' : '#c0efd7'
-
-  const color = claim === 'credential' ? '#0052e0' : claim === 'validated' ? '#e08a00' : '#2d6a4f'
-
-  const icon =
-    claim === 'credential' ? (
-      <Medal size={22} style={{ marginRight: 5 }} />
-    ) : claim === 'validated' ? (
-      <ShieldCheck size={22} style={{ marginRight: 5 }} />
-    ) : (
-      <CircleCheck size={22} style={{ marginRight: 5 }} />
-    )
-
-  const label = claim === 'validated' ? 'Validation' : claim.charAt(0).toUpperCase() + claim.slice(1) || 'Claim'
+  // Validation types
+  const validationTypes = ['is_vouched_for', 'agree', 'verified', 'validated']
+  // Impact types
+  const impactTypes = ['funds_for_purpose', 'helped', 'impact']
+  // Relationship types
+  const relationshipTypes = ['same_as', 'related_to', 'owns']
+  
+  let bgColor = '#c0efd7' // default green
+  let color = '#2d6a4f' // default green text
+  let icon = <Award size={18} style={{ marginRight: 5 }} /> // default icon
+  let label = 'Claim'
+  
+  if (validationTypes.includes(claim)) {
+    bgColor = '#f8e8cc' // amber/yellow
+    color = '#e08a00'
+    icon = <ShieldCheck size={18} style={{ marginRight: 5 }} />
+    label = 'Validation'
+  } else if (impactTypes.includes(claim)) {
+    bgColor = '#cce6ff' // blue
+    color = '#0052e0'
+    icon = <TrendingUp size={18} style={{ marginRight: 5 }} />
+    label = 'Impact'
+  } else if (relationshipTypes.includes(claim)) {
+    bgColor = '#e8d4f8' // purple
+    color = '#6b21a8'
+    icon = <LinkIcon size={18} style={{ marginRight: 5 }} />
+    label = 'Relationship'
+  } else if (claim === 'rated') {
+    bgColor = '#fff4d4' // yellow
+    color = '#d97706'
+    icon = <Star size={18} style={{ marginRight: 5 }} />
+    label = 'Rated'
+  } else if (claim) {
+    // For any other claim types, use the claim name as label
+    label = claim.charAt(0).toUpperCase() + claim.slice(1).replace(/_/g, ' ')
+  }
 
   return (
     <Box
@@ -23,9 +45,9 @@ const Badge = ({ claim }: { claim: string }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 40,
-        minWidth: 110,
-        borderRadius: 20,
+        height: 32,
+        minWidth: 100,
+        borderRadius: 16,
         px: 2,
         backgroundColor: bgColor,
         color,
@@ -38,8 +60,7 @@ const Badge = ({ claim }: { claim: string }) => {
         variant='body2'
         sx={{
           fontWeight: 600,
-          fontSize: '16px',
-          fontFamily: 'Roboto',
+          fontSize: '14px',
           color
         }}
       >
