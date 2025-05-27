@@ -15,7 +15,7 @@ import LoadingState from './LoadingState'
 import ErrorState from './ErrorState'
 
 interface LocalClaim {
-  statement: string | null
+  statement: string | null | undefined
   subject: string
   id: string
   claim_id?: number

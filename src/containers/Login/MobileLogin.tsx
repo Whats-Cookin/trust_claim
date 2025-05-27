@@ -12,13 +12,13 @@ import metaicon from './metamask-icon.svg'
 import styles from './styles'
 import ILoginProps from './types'
 import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
-import { getAccountId } from '@didtools/pkh-ethereum'
-import { ceramic, composeClient } from '../../composedb'
+import { connectWallet, createDidFromAddress } from '../../utils/web3Auth'
+// Ceramic removed
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 import { GoogleLogin } from '@react-oauth/google'
-import { handleAuthSuccess, initializeDIDAuth } from '../../utils/authUtils'
+import { handleAuthSuccess } from '../../utils/authUtils'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
 
@@ -44,28 +44,37 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
 
   const handleWalletAuth = async () => {
     try {
-      const ethProvider = window.ethereum
-      const addresses = await ethProvider.request({ method: 'eth_requestAccounts' })
-      const accountId = await getAccountId(ethProvider, addresses[0])
-
-      if (accountId) {
-        handleAuthSuccess({ ethAddress: accountId.address })
-
-        // Initialize DID authentication
-        const success = await initializeDIDAuth(ceramic, composeClient)
-        if (success) {
-          navigate(location.state?.from || '/')
-        } else {
-          throw new Error('DID authentication failed')
+      const address = await connectWallet()
+      const did = createDidFromAddress(address)
+      
+      // Store wallet info
+      handleAuthSuccess({ 
+        ethAddress: address,
+        did: did
+      })
+      
+      // Optional: Send to backend to create/verify account
+      try {
+        const res = await axios.post('/auth/wallet', { 
+          address,
+          did 
+        })
+        if (res.data.accessToken) {
+          handleAuthSuccess({
+            accessToken: res.data.accessToken,
+            refreshToken: res.data.refreshToken
+          })
         }
-      } else {
-        throw new Error('No account ID returned')
+      } catch (backendError) {
+        // Backend auth is optional - can still use client-side signing
+        console.log('Backend wallet auth not available, using client-side only')
       }
+      
+      navigate(location.state?.from || '/')
     } catch (e) {
       console.error('Wallet auth error:', e)
       toggleSnackbar(true)
-      setSnackbarMessage('Failed to authenticate with wallet')
-      navigate('/login')
+      setSnackbarMessage('Failed to connect wallet')
     }
   }
 

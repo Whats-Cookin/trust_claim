@@ -27,7 +27,7 @@ import IHomeProps from '../../containers/Form/types'
 import styles from './styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
-import { composeClient } from '../../composedb'
+// Ceramic removed
 const tooltips = {
   claim: [
     'Indicates a claim about rating or evaluating a subject based on specific criteria or aspects',
@@ -81,28 +81,7 @@ export const Form = ({
   const { createClaim } = useCreateClaim()
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
-  useEffect(() => {
-    const QUERY = `
-      query{
-        linkedClaimIndex(last: 3) {
-          edges {
-            node {
-              statement
-              effectiveDate
-              confidence
-              rating { stars, aspect }
-              source { howKnown }
-            }
-          }
-        }
-      }
-    `
-    const getData = async () => {
-      const data = await composeClient.executeQuery(QUERY)
-      console.log(data)
-    }
-    getData()
-  }, [])
+  // Ceramic query removed - no longer using ComposeDB
   const onSubmit = handleSubmit(
     async ({
       subject,
