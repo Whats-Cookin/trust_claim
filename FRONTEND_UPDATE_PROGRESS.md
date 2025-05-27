@@ -1,11 +1,24 @@
 # Frontend Update Progress Tracker
 
-## CRITICAL: API Changes to Implement
-- `/api/claim/v2` → `/api/claims`
-- `/api/claims/v3` → `/api/feed`
-- `/api/claim/:id` → `/api/claims/:id`
-- `rating` → `score`
-- `amount` → `amt`
+## CRITICAL: API Changes to Implement ✅
+- `/api/claim/v2` → `/api/claims` ✅
+- `/api/claims/v3` → `/api/feed` ✅ 
+- `/api/claim/:id` → `/api/claims/:id` ✅
+- `rating` → `score` ✅
+- `amount` → `amt` ✅
+
+## Jenkins Build Fixes Applied
+- Fixed Validate component type errors
+- Fixed feed component type mismatches  
+- Fixed ClaimDetails type conflicts
+- Added missing fields to API types
+- Fixed nextPage nullable assignments
+
+## Files Changed for Build Fixes
+- `/src/api/types.ts` - Added legacy fields for compatibility
+- `/src/containers/feedOfClaim/index.tsx` - Fixed type imports and nullable fields
+- `/src/components/Validate/index.tsx` - Fixed getClaim call and field access
+- `/src/containers/ClaimDetails/index.tsx` - Fixed local type conflicts
 
 ## Immediate Tasks (In Order)
 

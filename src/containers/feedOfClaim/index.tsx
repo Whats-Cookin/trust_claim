@@ -7,7 +7,8 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
-import { Claim as ImportedClaim, IHomeProps } from './types'
+import { IHomeProps } from './types'
+import type { Claim } from '../../api/types'
 import {
   Box,
   Button,
@@ -41,8 +42,8 @@ const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
 interface LocalClaim {
-  name: string
-  source_link: string
+  name?: string
+  source_link?: string
 }
 
 const extractProfileName = (url: string) => {
@@ -58,7 +59,7 @@ const extractSourceName = (url: string) => {
 }
 
 const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
-  const displayName = extractProfileName(claim.name)
+  const displayName = claim.name ? extractProfileName(claim.name) : ''
   const theme = useTheme()
   const highlightedName = searchTerm.trim()
     ? displayName.replace(
@@ -76,7 +77,7 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
 }
 
 const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
-  const displayLink = extractSourceName(claim.source_link)
+  const displayLink = claim.source_link ? extractSourceName(claim.source_link) : ''
   const theme = useTheme()
   const highlightedLink = searchTerm.trim()
     ? displayLink.replace(
@@ -102,8 +103,8 @@ async function fetchClaims(nextPage: string | null, query?: string) {
 }
 
 const FeedClaim: React.FC<IHomeProps> = () => {
-  const [claims, setClaims] = useState<ImportedClaim[]>([])
-  const claimsRef = useRef<ImportedClaim[]>([])
+  const [claims, setClaims] = useState<Claim[]>([])
+  const claimsRef = useRef<Claim[]>([])
 
   const location = useLocation()
   const [isLoading, setIsLoading] = useState(true)
@@ -135,7 +136,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     fetchClaims(null, searchTerm)
       .then(({ data }) => {
         claimsRef.current = data.claims
-        nextPage.current = data.nextPage
+        nextPage.current = data.nextPage || null
         if (data.claims.length < PAGE_LIMIT) {
           setIsLastPage(true)
         }
@@ -176,7 +177,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       const { data } = await fetchClaims(nextPage.current, searchTerm)
 
       claimsRef.current = claimsRef.current.concat(data.claims)
-      nextPage.current = data.nextPage
+      nextPage.current = data.nextPage || null
 
       if (data.claims.length < PAGE_LIMIT) {
         setIsLastPage(true)
@@ -200,7 +201,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     })
   }
 
-  const handleSchema = async (claim: ImportedClaim) => {
+  const handleSchema = async (claim: Claim) => {
     navigate({
       pathname: `/explore/${claim.claim_id}`
     })

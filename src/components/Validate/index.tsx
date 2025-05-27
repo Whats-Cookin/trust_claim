@@ -96,19 +96,19 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const res = await api.getClaim(number)
+        const res = await api.getClaim(number!)
 
         if (res.data.claim.subject) setSubjectValue(res.data.claim.subject)
         if (res.data.claim.statement) setStatementValue(res.data.claim.statement)
-        if (res.data.claim.amt) setAmtValue(res.data.claim.amt)
+        if (res.data.claim.amt) setAmtValue(res.data.claim.amt.toString())
         if (res.data.claim.aspect) setAspectValue(res.data.claim.aspect)
         if (res.data.claim.confidence !== undefined) setConfidenceValue(res.data.claim.confidence)
-        if (res.data.claim.source_name) setIssuerValue(res.data.claim.source_name)
-        if (res.data.claim.source_thumbnail) setSourceThumbnail(res.data.claim.source_thumbnail)
+        if ((res.data.claim as any).source_name) setIssuerValue((res.data.claim as any).source_name)
+        if ((res.data.claim as any).source_thumbnail) setSourceThumbnail((res.data.claim as any).source_thumbnail)
         if (res.data.claim.howKnown) setHowKnownValue(res.data.claim.howKnown)
 
-        if (res.data.effectiveDate) {
-          const dayPart = res.data.effectiveDate.split('T')[0] || res.data.effectiveDate
+        if (res.data.claim.effectiveDate) {
+          const dayPart = res.data.claim.effectiveDate.split('T')[0] || res.data.claim.effectiveDate
           setEffectiveDateValue(dayPart)
         }
       } catch (error) {

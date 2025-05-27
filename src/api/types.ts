@@ -30,6 +30,15 @@ export interface Claim {
     caption?: string
     metadata?: any
   }>
+  // Legacy fields from old types
+  id?: number
+  nodeUri?: string
+  entType?: string
+  descrip?: string
+  image?: string | null
+  thumbnail?: string
+  edgesFrom?: any[]
+  edgesTo?: any[]
 }
 
 export interface FeedResponse {

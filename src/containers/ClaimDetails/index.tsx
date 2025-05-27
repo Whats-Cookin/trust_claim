@@ -14,10 +14,11 @@ import RenderClaimDetails from './RenderClaimDetails'
 import LoadingState from './LoadingState'
 import ErrorState from './ErrorState'
 
-interface Claim {
+interface LocalClaim {
   statement: string | null
   subject: string
   id: string
+  claim_id?: number
   [key: string]: any
 }
 
@@ -28,7 +29,7 @@ interface IHomeProps {
 const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   const { claimId } = useParams<{ claimId: string }>()
   const [isLoading, setIsLoading] = useState(false)
-  const [claimData, setClaimData] = useState<Claim | null>(null)
+  const [claimData, setClaimData] = useState<LocalClaim | null>(null)
   const [error, setError] = useState<string>('')
   const navigate = useNavigate()
   const claimImage = claimData?.image ?? null
@@ -40,7 +41,10 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
     setIsLoading(true)
     try {
       const response = await api.getClaim(claimId!)
-      setClaimData(response.data.claim)
+      setClaimData({
+        ...response.data.claim,
+        id: response.data.claim.claim_id.toString()
+      })
     } catch (err) {
       setError('Failed to fetch report data')
       console.error('Error fetching report data:', err)
