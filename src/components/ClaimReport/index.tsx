@@ -157,7 +157,8 @@ const ClaimReport: React.FC = () => {
                 Subject
               </Typography>
               <Typography variant="body1">
-                {claim.edges[0].startNode?.name || claim.subject}
+                {claim.edges[0].startNode?.name || 
+                 (typeof claim.subject === 'string' ? claim.subject : claim.subject.uri)}
               </Typography>
               {claim.edges[0].startNode?.entType && (
                 <EntityBadge 
