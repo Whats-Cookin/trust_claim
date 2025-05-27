@@ -1,7 +1,7 @@
 import cytoscape from 'cytoscape'
 import { Theme } from '@mui/material'
 import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
-import { nodeColors, edgeColors } from '../../theme/colors'
+import { nodeColors, edgeColors, primaryColors } from '../../theme/colors'
 
 cytoscape.use(cytoscapeNodeHtmlLabel)
 
@@ -9,7 +9,20 @@ const truncateLabel = (label: string, maxLength: number) => {
   if (label.length <= maxLength) {
     return label
   }
-  return label.slice(0, maxLength) + '.....'
+  return label.slice(0, maxLength) + '...'
+}
+
+// Get color for rating nodes (red to green gradient)
+const getRatingColor = (stars: number | undefined) => {
+  if (!stars && stars !== 0) return nodeColors.default
+  const colors = [
+    primaryColors.red,     // 0-1 stars
+    '#FF8C42',            // 1-2 stars (orange)
+    primaryColors.amber,   // 2-3 stars
+    '#7CB518',            // 3-4 stars (yellow-green)
+    primaryColors.green    // 4-5 stars
+  ]
+  return colors[Math.floor(stars)] || nodeColors.default
 }
 
 // Edge styles configuration using theme colors
@@ -30,7 +43,7 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
     container: containerRef || undefined,
     boxSelectionEnabled: false,
     autounselectify: true,
-    minZoom: 0.1,  // Allow zooming out quite far for large graphs
+    minZoom: 0.1,
     maxZoom: 2,
     wheelSensitivity: 0.2,
     style: [
@@ -42,18 +55,58 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           shape: 'ellipse',
           backgroundOpacity: 0,
           borderOpacity: 0,
-          'background-color': theme.palette.darkinputtext,
+          'background-color': 'transparent',
           'overlay-opacity': 0.1,
           'overlay-color': '#000',
           'overlay-padding': 4
         }
       },
-      // Claims are squares, everything else is circles/ellipses
+      // Different shapes for different entity types
       {
         selector: 'node[entType="CLAIM"]',
         style: {
           shape: 'roundrectangle',
-          width: 160,
+          width: 140,
+          height: 70
+        }
+      },
+      {
+        selector: 'node[entityType="CLAIM"]',
+        style: {
+          shape: 'roundrectangle',
+          width: 140,
+          height: 70
+        }
+      },
+      {
+        selector: 'node[entType="PERSON"]',
+        style: {
+          shape: 'ellipse',
+          width: 90,
+          height: 90
+        }
+      },
+      {
+        selector: 'node[entityType="PERSON"]',
+        style: {
+          shape: 'ellipse',
+          width: 90,
+          height: 90
+        }
+      },
+      {
+        selector: 'node[entType="ORGANIZATION"]',
+        style: {
+          shape: 'ellipse',
+          width: 100,
+          height: 80
+        }
+      },
+      {
+        selector: 'node[entityType="ORGANIZATION"]',
+        style: {
+          shape: 'ellipse',
+          width: 100,
           height: 80
         }
       },
@@ -114,28 +167,51 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           halignBox: 'center',
           cssClass: 'custom-node',
           tpl: (data: any) => {
-            const entType = data.entType || 'UNKNOWN'
+            const entType = data.entType || data.entityType || 'UNKNOWN'
             const isClaim = entType === 'CLAIM'
+            const hasImage = data.image || data.thumbnail
+            const isRating = data.claim === 'rated' || data.stars !== undefined
             
-            // Get color based on entity type
+            // Get color based on entity type or rating
             let bgColor: string = nodeColors.default
-            if (isClaim) {
-              bgColor = nodeColors.claim
+            if (isRating && data.stars !== undefined) {
+              bgColor = getRatingColor(data.stars)
+            } else if (isClaim) {
+              if (data.claim === 'impact' || data.label?.toLowerCase().includes('impact')) {
+                bgColor = '#065F46' // Dark green for impact claims
+              } else {
+                bgColor = nodeColors.claim
+              }
+            } else if (entType === 'PERSON') {
+              bgColor = '#C2410C' // Dark burnt orange
             } else if (entType.toLowerCase() in nodeColors) {
               bgColor = nodeColors[entType.toLowerCase() as keyof typeof nodeColors]
             }
             
-            const hasImage = data.image || data.thumbnail
+            const nodeTypeClass = isClaim ? 'node-claim' : 
+                                entType === 'PERSON' ? 'node-person' : 
+                                entType === 'ORGANIZATION' ? 'node-organization' : ''
             
-            return `
-              <div class="custom-node-container ${isClaim ? 'node-claim' : ''}" 
-                   style="background-color: ${bgColor}; border-color: ${bgColor}">
-                ${hasImage ? `<div class="node-icon" style="background-image: url(${data.image || data.thumbnail})"></div>` : ''}
-                <div class="node-label">${truncateLabel(data.label, 40)}</div>
-                ${data.stars ? `<div class="node-stars">${'★'.repeat(data.stars)}${'☆'.repeat(5-data.stars)}</div>` : ''}
-                ${data.confidence ? `<div class="node-confidence">${Math.round(data.confidence * 100)}%</div>` : ''}
-              </div>
-            `
+            if (hasImage) {
+              // For nodes with images, make the image the full circle
+              return `
+                <div class="custom-node-container ${nodeTypeClass} node-with-image">
+                  <div class="node-full-image" style="background-image: url(${data.image || data.thumbnail})"></div>
+                  <div class="node-label-box" style="background-color: ${bgColor}">
+                    <span>${truncateLabel(data.label, 30)}</span>
+                  </div>
+                </div>
+              `
+            } else {
+              // For nodes without images, use colored shape
+              return `
+                <div class="custom-node-container ${nodeTypeClass}" 
+                     style="background-color: ${bgColor};">
+                  <div class="node-label">${truncateLabel(data.label, 40)}</div>
+                  ${data.stars !== undefined ? `<div class="node-stars">${'★'.repeat(data.stars)}${'☆'.repeat(5-data.stars)}</div>` : ''}
+                </div>
+              `
+            }
           }
         }
       ])

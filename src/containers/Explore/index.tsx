@@ -124,6 +124,26 @@ const Explore = (homeProps: IHomeProps) => {
         let newEdges: any[] = []
         parseSingleNode(newNodes, newEdges, res.data)
         if (!cy) return
+        
+        // Check current node count before adding
+        const currentNodeCount = cy.nodes().length
+        if (currentNodeCount >= 30) {
+          setSnackbarMessage('Graph size limit reached. Please start a new exploration.')
+          toggleSnackbar(true)
+          return
+        }
+        
+        // Limit new nodes to add
+        const maxNodesToAdd = Math.min(5, 30 - currentNodeCount)
+        if (newNodes.length > maxNodesToAdd) {
+          newNodes = newNodes.slice(0, maxNodesToAdd)
+          // Only include edges that connect to included nodes
+          const nodeIds = new Set([...cy.nodes().map(n => n.id()), ...newNodes.map(n => n.data.id)])
+          newEdges = newEdges.filter(edge => 
+            nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
+          )
+        }
+        
         cy.add({ nodes: newNodes, edges: newEdges } as any)
       } else {
         setSnackbarMessage('No results found')
@@ -209,13 +229,23 @@ const Explore = (homeProps: IHomeProps) => {
 
       cy.elements().remove() // Clear any existing elements
 
-      //      let nodes: any[] = []
-      //      let edges: any[] = []
       console.log('Result was : ' + JSON.stringify(claimRes.data))
-      //      parseSingleNode(nodes, edges, claimRes.data)
       const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
-      console.log('Adding nodes: ' + nodes)
-      cy.add({ nodes, edges } as any)
+      
+      // Limit initial nodes to 7
+      let limitedNodes = nodes
+      let limitedEdges = edges
+      if (nodes.length > 7) {
+        // Keep the central node and closest 6 nodes
+        limitedNodes = nodes.slice(0, 7)
+        const nodeIds = new Set(limitedNodes.map((n: any) => n.data.id))
+        limitedEdges = edges.filter((edge: any) => 
+          nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
+        )
+      }
+      
+      console.log('Adding nodes: ' + limitedNodes.length)
+      cy.add({ nodes: limitedNodes, edges: limitedEdges } as any)
     } catch (err: any) {
       toggleSnackbar(true)
       setSnackbarMessage(err.message)

@@ -138,110 +138,14 @@ const ClaimReport: React.FC = () => {
         }}
       >
         {/* Main Claim Details */}
-        <Card
-          sx={{
-            mb: 3,
-            p: 3,
-            borderRadius: '20px',
-            backgroundColor: theme.palette.cardBackground
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Claim Details
-          </Typography>
-          
-          {/* Extract subject info from edges if entity is null */}
-          {claim.edges && claim.edges.length > 0 && (
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" color="text.secondary">
-                Subject
-              </Typography>
-              <Typography variant="body1">
-                {claim.edges[0].startNode?.name || 
-                 (typeof claim.subject === 'string' ? claim.subject : claim.subject.uri)}
-              </Typography>
-              {claim.edges[0].startNode?.entType && (
-                <EntityBadge 
-                  entityType={claim.edges[0].startNode.entType} 
-                  size="small" 
-                />
-              )}
-            </Box>
-          )}
-          
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle2" color="text.secondary">
-              Claim Type
-            </Typography>
-            <Typography variant="body1">
-              {claim.claim}
-            </Typography>
-          </Box>
-          
-          {claim.statement && (
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" color="text.secondary">
-                Statement
-              </Typography>
-              <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                {claim.statement}
-              </Typography>
-            </Box>
-          )}
-          
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            {claim.effectiveDate && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  Date
-                </Typography>
-                <Typography variant="body2">
-                  {new Date(claim.effectiveDate).toLocaleDateString()}
-                </Typography>
-              </Box>
-            )}
-            
-            {claim.confidence && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  Confidence
-                </Typography>
-                <Typography variant="body2">
-                  {Math.round(claim.confidence * 100)}%
-                </Typography>
-              </Box>
-            )}
-            
-            {claim.howKnown && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  How Known
-                </Typography>
-                <Typography variant="body2">
-                  {claim.howKnown.replace('_', ' ')}
-                </Typography>
-              </Box>
-            )}
-            
-            {claim.sourceURI && (
-              <Box>
-                <Typography variant="caption" color="text.secondary">
-                  Source
-                </Typography>
-                <Typography variant="body2">
-                  <Link 
-                    href={claim.sourceURI} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{ color: theme.palette.primary.main }}
-                  >
-                    {claim.edges && claim.edges[1]?.endNode?.name || new URL(claim.sourceURI).hostname}
-                  </Link>
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </Card>
+        <Box sx={{ mb: 3 }}>
+          <RenderClaimInfo 
+            claim={claim} 
+            index={0}
+            setSelectedIndex={setSelectedIndex}
+            handleMenuClose={() => {}}
+          />
+        </Box>
 
         {/* Validation Summary */}
         {validationSummary.total > 0 && (
@@ -294,13 +198,15 @@ const ClaimReport: React.FC = () => {
               </Typography>
             </Box>
 
-            {validations.map((validation) => (
-              <ValidationCard
-                key={validation.id}
-                validation={validation}
-                theme={theme}
-                isLargeScreen={isLargeScreen}
-              />
+            {validations.map((validation, index) => (
+              <Box key={validation.id} sx={{ mb: 2 }}>
+                <RenderClaimInfo 
+                  claim={validation} 
+                  index={index}
+                  setSelectedIndex={setSelectedIndex}
+                  handleMenuClose={() => {}}
+                />
+              </Box>
             ))}
           </>
         )}
@@ -330,13 +236,15 @@ const ClaimReport: React.FC = () => {
               </Typography>
             </Box>
 
-            {relatedClaims.map((relatedClaim) => (
-              <RelatedClaimCard
-                key={relatedClaim.id}
-                claim={relatedClaim}
-                theme={theme}
-                isLargeScreen={isLargeScreen}
-              />
+            {relatedClaims.map((relatedClaim, index) => (
+              <Box key={relatedClaim.id} sx={{ mb: 2 }}>
+                <RenderClaimInfo 
+                  claim={relatedClaim} 
+                  index={index}
+                  setSelectedIndex={setSelectedIndex}
+                  handleMenuClose={() => {}}
+                />
+              </Box>
             ))}
           </>
         )}
@@ -358,138 +266,6 @@ const ClaimReport: React.FC = () => {
           </Button>
         </Box>
       </Box>
-    </Box>
-  )
-}
-
-function ValidationCard({
-  validation,
-  theme,
-  isLargeScreen
-}: {
-  validation: Claim
-  theme: any
-  isLargeScreen: boolean
-}) {
-  const getValidationColor = (claimType: string) => {
-    switch (claimType) {
-      case 'AGREES_WITH':
-      case 'CONFIRMS':
-        return 'success.main'
-      case 'DISAGREES_WITH':
-      case 'REFUTES':
-        return 'error.main'
-      default:
-        return 'text.primary'
-    }
-  }
-
-  return (
-    <Card
-      sx={{
-        minHeight: '120px',
-        width: '100%',
-        borderRadius: '20px',
-        backgroundColor: theme.palette.cardBackground,
-        backgroundImage: 'none',
-        color: theme.palette.texts,
-        marginBottom: '1rem',
-        borderLeft: `4px solid`,
-        borderLeftColor: getValidationColor(validation.claim)
-      }}
-    >
-      <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Box>
-            <Typography variant='subtitle2' color={getValidationColor(validation.claim)}>
-              {validation.claim.replace('_', ' ')}
-            </Typography>
-            {validation.statement && (
-              <Typography variant='body1' sx={{ mt: 1 }}>
-                {validation.statement}
-              </Typography>
-            )}
-            <Typography variant='caption' sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
-              By: {validation.issuerId || 'Unknown'} • 
-              {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
-            </Typography>
-          </Box>
-          {validation.confidence && (
-            <Chip 
-              label={`${Math.round(validation.confidence * 100)}% confident`}
-              size="small"
-              variant="outlined"
-            />
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-  )
-}
-
-function RelatedClaimCard({
-  claim,
-  theme,
-  isLargeScreen
-}: {
-  claim: Claim
-  theme: any
-  isLargeScreen: boolean
-}) {
-  return (
-    <Card
-      sx={{
-        minHeight: '100px',
-        width: '100%',
-        borderRadius: '20px',
-        backgroundColor: theme.palette.cardBackground,
-        backgroundImage: 'none',
-        color: theme.palette.texts,
-        marginBottom: '1rem'
-      }}
-    >
-      <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography variant='subtitle2' color='primary'>
-              {claim.claim}
-            </Typography>
-            {claim.statement && (
-              <Typography variant='body2' sx={{ mt: 1 }}>
-                {claim.statement}
-              </Typography>
-            )}
-            <Typography variant='caption' sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
-              {claim.effectiveDate && new Date(claim.effectiveDate).toLocaleDateString()}
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
-            {claim.stars && <Stars stars={claim.stars} theme={theme} />}
-            <RouterLink to={`/report/${claim.id}`} style={{ textDecoration: 'none' }}>
-              <Button size="small" variant="outlined">
-                View
-              </Button>
-            </RouterLink>
-          </Box>
-        </Box>
-      </CardContent>
-    </Card>
-  )
-}
-
-function Stars({ stars, theme }: { stars: number; theme: any }) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <StarIcon
-          key={index}
-          sx={{
-            color: index < stars ? theme.palette.stars : theme.palette.action.disabled,
-            width: '16px',
-            height: '16px'
-          }}
-        />
-      ))}
     </Box>
   )
 }

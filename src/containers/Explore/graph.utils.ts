@@ -121,10 +121,12 @@ const getNodeData = (node: any) => {
       raw: node,
       image: imageUrl,
       thumbnail: node.thumbnail,
+      entType: node.entType || node.entityType || 'OTHER',
       entityType: node.entityType || node.entType || 'OTHER',
       entityData: node.entityData,
       confidence: node.confidence,
-      stars: node.stars
+      stars: node.stars,
+      claim: node.claim // Include claim type for proper coloring
     }
   }
   return nodeData
