@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { camelCaseToSimpleString } from '../../utils/string.utils'
 
 interface Claim {
-  statement: string | null
+  statement?: string | null | undefined
   subject: string
   id: string
   [key: string]: any
@@ -37,7 +37,7 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
         if (EXCLUDED_FIELDS.includes(key) || value == null || value === '') return null
         if (key === 'effectiveDate') value = formatDate(value) // Format the date
 
-        const displayText = key === 'statement' && !showFullText[key] ? truncateText(value, 120) : value
+        const displayText = key === 'statement' && value && !showFullText[key] ? truncateText(value, 120) : value
 
         return (
           <Box
@@ -59,7 +59,7 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
               }}
             >
               {displayText}
-              {key === 'statement' && value.length > 120 && (
+              {key === 'statement' && value && value.length > 120 && (
                 <Typography
                   component='span'
                   onClick={() => handleToggleText(key)}
