@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography'
 import { useMediaQuery, useTheme } from '@mui/material'
 import SearchBar from '../searchbar'
 import Logo from '../../assets/logolinkedtrust.svg'
+import { IdentityButton } from '../IdentityManager'
+import { hasIdentity } from '../../utils/web3Auth'
 
 interface NavbarProps {
   isAuth: boolean
@@ -82,8 +84,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             Linked Trust
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', gap: 2 }}>
           <SearchBar />
+          {isAuth && hasIdentity() && <IdentityButton />}
         </Box>
       </Toolbar>
     </AppBar>

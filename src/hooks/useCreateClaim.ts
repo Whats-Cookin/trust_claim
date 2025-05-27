@@ -1,38 +1,29 @@
 import { useCallback } from 'react'
 import * as api from '../api'
 import { MediaI } from '../components/Form/imageUploading'
-import { ceramic, composeClient } from '../composedb'
-import { PublishClaim } from '../composedb/compose'
-import { canSignClaims, initializeDIDAuth } from '../utils/authUtils'
+import { getCurrentAccount, signAndPrepareClaim } from '../utils/web3Auth'
 
 export function useCreateClaim() {
   const createClaim = useCallback(async (payload: any) => {
     let message = 'Something went wrong!'
     let isSuccess = false
     try {
-      // Check if we can sign claims with DID
-      if (canSignClaims()) {
-        // Ensure ceramic is authenticated
-        if (!ceramic.did) {
-          await initializeDIDAuth(ceramic, composeClient)
-        }
-
+      // Check if user has wallet connected for client-side signing
+      const walletAddress = await getCurrentAccount()
+      let finalPayload = payload
+      
+      if (walletAddress) {
         try {
-          const claim = await PublishClaim(payload)
-          if (claim) {
-            console.log('Published to ceramic!', claim)
-            try {
-              payload['claimAddress'] = claim['data']['createLinkedClaim']['document']['id']
-            } catch (err) {
-              console.warn('Could not extract claim address:', err)
-            }
-          }
-        } catch (err) {
-          console.error('Error publishing claim to ceramic:', err)
+          // Sign the claim with MetaMask
+          finalPayload = await signAndPrepareClaim(payload)
+          console.log('Claim signed with wallet:', walletAddress)
+        } catch (signError) {
+          console.warn('Failed to sign claim with wallet:', signError)
+          // Continue without signature - backend will sign
         }
       }
 
-      const { images, dto } = preparePayload(payload)
+      const { images, dto } = preparePayload(finalPayload)
       console.log('Sending payload:', dto, images)
       // Transform field names for new API
       const transformedDto = {

@@ -60,6 +60,7 @@
 4. Created entity system in /src/types/entities.ts
 5. Created EntityBadge component
 6. Updated graph utils to handle entity data
+7. REMOVED ALL CERAMIC CODE ✅
 
 ## Testing Needed
 - Test feed loading with entity badges

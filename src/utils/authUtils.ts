@@ -1,6 +1,4 @@
-import { CeramicApi } from '@ceramicnetwork/common'
-import { ComposeClient } from '@composedb/client'
-import { authenticateCeramic } from '../composedb'
+// Ceramic imports removed - no longer using ceramic
 
 interface AuthState {
   accessToken?: string
@@ -60,24 +58,4 @@ export const clearAuth = () => {
   localStorage.removeItem('did')
 }
 
-export const initializeDIDAuth = async (ceramic: CeramicApi, compose: ComposeClient) => {
-  try {
-    const session = await authenticateCeramic(ceramic, compose)
-    if (session?.did) {
-      handleAuthSuccess({
-        did: session.did.parent,
-        ethAddress: localStorage.getItem('ethAddress') || undefined // Keep existing ethAddress
-      })
-      return true
-    }
-  } catch (error) {
-    console.error('DID authentication failed:', error)
-  }
-  return false
-}
-
-export const canSignClaims = () => {
-  const did = localStorage.getItem('did')
-  const ethAddress = localStorage.getItem('ethAddress')
-  return !!(did && ethAddress)
-}
+// Ceramic-related functions removed
