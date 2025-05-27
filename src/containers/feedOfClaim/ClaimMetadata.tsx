@@ -1,5 +1,6 @@
 import { useMemo, memo } from 'react'
 import { Typography } from '@mui/material'
+import type { Claim, Entity } from '../../api/types'
 
 const extractProfileName = (url: string) => {
   const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
@@ -7,36 +8,29 @@ const extractProfileName = (url: string) => {
   return match ? match[1].replace(/-/g, ' ') : url
 }
 
-interface LocalClaim {
-  name: string
-  link: string
-  claim_id: number
-  statement: string
-  claim: string
-  subject_name: string
-  issuer_name: string
-  stars: null
-  effective_date: string
-}
-
 interface ClaimMetadataProps {
-  claim: LocalClaim
+  claim: Claim
 }
 
 const ClaimMetadata = memo(({ claim }: ClaimMetadataProps) => {
-  const creatorName = useMemo(
-    () => (claim.issuer_name ? claim.issuer_name : extractProfileName(claim.link)),
-    [claim.issuer_name, claim.link]
-  )
+  const creatorName = useMemo(() => {
+    // If we have issuer info, use that
+    if (claim.issuerId) {
+      return extractProfileName(claim.issuerId)
+    }
+    // Otherwise use subject as creator
+    const subject = typeof claim.subject === 'string' ? claim.subject : claim.subject.uri
+    return extractProfileName(subject)
+  }, [claim.issuerId, claim.subject])
 
   const formattedDate = useMemo(
     () =>
-      new Date(claim.effective_date).toLocaleDateString('en-US', {
+      new Date(claim.effectiveDate).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       }),
-    [claim.effective_date]
+    [claim.effectiveDate]
   )
 
   return (

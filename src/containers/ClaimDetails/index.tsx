@@ -16,7 +16,7 @@ import ErrorState from './ErrorState'
 
 interface LocalClaim {
   statement?: string | null | undefined
-  subject: string
+  subject: string | { uri: string; name?: string; type?: string; image?: string }
   id: string
   claim_id?: number
   [key: string]: any
@@ -43,7 +43,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
       const response = await api.getClaim(claimId!)
       setClaimData({
         ...response.data.claim,
-        id: response.data.claim.claim_id.toString()
+        id: (response.data.claim.id || response.data.claim.claim_id || 0).toString()
       })
     } catch (err) {
       setError('Failed to fetch report data')

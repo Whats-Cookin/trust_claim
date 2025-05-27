@@ -8,7 +8,7 @@ import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import { IHomeProps } from './types'
-import type { Claim } from '../../api/types'
+import type { Claim, Entity } from '../../api/types'
 import {
   Box,
   Button,
@@ -22,7 +22,8 @@ import {
   Typography,
   Fade,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Chip
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import * as api from '../../api'
@@ -41,9 +42,11 @@ import EntityBadge from '../../components/EntityBadge'
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
-interface LocalClaim {
-  name?: string
-  source_link?: string
+// Helper to get entity data whether it's nested or string
+const getEntityData = (entity: Entity | string | undefined): { uri: string; name?: string; type?: string; image?: string } => {
+  if (!entity) return { uri: '' }
+  if (typeof entity === 'string') return { uri: entity }
+  return entity
 }
 
 const extractProfileName = (url: string) => {
@@ -58,8 +61,9 @@ const extractSourceName = (url: string) => {
   return match ? match[1].replace(/\./g, ' ') : url
 }
 
-const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
-  const displayName = claim.name ? extractProfileName(claim.name) : ''
+const ClaimName = ({ claim, searchTerm }: { claim: Claim; searchTerm: string }) => {
+  const subject = getEntityData(claim.subject)
+  const displayName = subject.name || extractProfileName(subject.uri)
   const theme = useTheme()
   const highlightedName = searchTerm.trim()
     ? displayName.replace(
@@ -76,8 +80,8 @@ const ClaimName = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: strin
   )
 }
 
-const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: string }) => {
-  const displayLink = claim.source_link ? extractSourceName(claim.source_link) : ''
+const SourceLink = ({ claim, searchTerm }: { claim: Claim; searchTerm: string }) => {
+  const displayLink = claim.sourceURI ? extractSourceName(claim.sourceURI) : ''
   const theme = useTheme()
   const highlightedLink = searchTerm.trim()
     ? displayLink.replace(
@@ -93,11 +97,11 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
   )
 }
 
-async function fetchClaims(nextPage: string | null, query?: string) {
+async function fetchClaims(page: number, query?: string) {
   const res = await api.getFeed({
     limit: PAGE_LIMIT,
     search: query || undefined,
-    nextPage: nextPage || undefined
+    page: page
   })
   return res
 }
@@ -105,6 +109,7 @@ async function fetchClaims(nextPage: string | null, query?: string) {
 const FeedClaim: React.FC<IHomeProps> = () => {
   const [claims, setClaims] = useState<Claim[]>([])
   const claimsRef = useRef<Claim[]>([])
+  const currentPage = useRef(1)
 
   const location = useLocation()
   const [isLoading, setIsLoading] = useState(true)
@@ -124,7 +129,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const [isLastPage, setIsLastPage] = useState(false)
   const initialPageLoad = useRef(true)
-  const nextPage = useRef<string | null>(null)
 
   const isAuth = checkAuth()
 
@@ -133,11 +137,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     initialPageLoad.current = false
     setIsLastPage(false)
     setIsLoading(true)
-    fetchClaims(null, searchTerm)
+    currentPage.current = 1
+    fetchClaims(1, searchTerm)
       .then(({ data }) => {
-        claimsRef.current = data.claims
-        nextPage.current = data.nextPage || null
-        if (data.claims.length < PAGE_LIMIT) {
+        claimsRef.current = data.entries
+        if (data.pagination.page >= data.pagination.pages) {
           setIsLastPage(true)
         }
         setClaims(claimsRef.current)
@@ -174,12 +178,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       // To give room for the spinner to render
       await sleep()
 
-      const { data } = await fetchClaims(nextPage.current, searchTerm)
+      currentPage.current += 1
+      const { data } = await fetchClaims(currentPage.current, searchTerm)
 
-      claimsRef.current = claimsRef.current.concat(data.claims)
-      nextPage.current = data.nextPage || null
-
-      if (data.claims.length < PAGE_LIMIT) {
+      claimsRef.current = claimsRef.current.concat(data.entries)
+      
+      if (data.pagination.page >= data.pagination.pages) {
         setIsLastPage(true)
       }
       setClaims(claimsRef.current)
@@ -203,7 +207,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
   const handleSchema = async (claim: Claim) => {
     navigate({
-      pathname: `/explore/${claim.claim_id}`
+      pathname: `/explore/${claim.id || claim.claim_id}`
     })
   }
 
@@ -256,96 +260,92 @@ const FeedClaim: React.FC<IHomeProps> = () => {
         <>
           {claims.length > 0 ? (
             <MainContainer>
-              {claims.map((claim: any, index: number) => (
-                <Grow in={true} timeout={1000} key={claim.claim_id}>
-                  <Box sx={{ marginBottom: '15px' }}>
-                    <Card
-                      sx={{
-                        maxWidth: 'fit',
-                        height: 'fit',
-                        borderRadius: '20px',
-                        display: isMediumScreen ? 'column' : 'row',
-                        backgroundColor:
-                          selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
-                        backgroundImage: 'none',
-                        filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
-                        color: theme.palette.texts
-                      }}
-                    >
-                      <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
-                        {/* Badge positioned absolutely in top right */}
-                        <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
-                          <Badge claim={claim.claim || ''} />
-                        </Box>
-                        
-                        <CardContent>
-                          <Box sx={{ pr: '140px' }}> {/* Add padding to prevent overlap with badge */}
-                            <Link
-                              to={claim.link}
-                              onClick={e => handleLinkClick(e, claim.link)}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              style={{ textDecoration: 'none' }}
-                            >
-                              <ClaimName claim={claim} searchTerm={searchTerm} />
-                            </Link>
-                            <ClaimMetadata claim={claim} />
+              {claims.map((claim: Claim, index: number) => {
+                const subject = getEntityData(claim.subject)
+                const object = getEntityData(claim.object)
+                const claimId = claim.id || claim.claim_id || 0
+                
+                return (
+                  <Grow in={true} timeout={1000} key={claimId}>
+                    <Box sx={{ marginBottom: '15px' }}>
+                      <Card
+                        sx={{
+                          maxWidth: 'fit',
+                          height: 'fit',
+                          borderRadius: '20px',
+                          display: isMediumScreen ? 'column' : 'row',
+                          backgroundColor:
+                            selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
+                          backgroundImage: 'none',
+                          filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
+                          color: theme.palette.texts
+                        }}
+                      >
+                        <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
+                          {/* Badge positioned absolutely in top right */}
+                          <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
+                            <Badge claim={claim.claim || ''} />
                           </Box>
-                          {claim.statement && (
-                            <Typography
-                              variant='body2'
-                              sx={{
-                                padding: '5px 1 1 5px',
-                                wordBreak: 'break-word',
-                                marginBottom: '1px',
-                                color: theme.palette.texts
-                              }}
-                            >
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: searchTerm
-                                    ? claim.statement.replace(
-                                        new RegExp(`(${searchTerm})`, 'gi'),
-                                        (match: any) =>
-                                          `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
-                                      )
-                                    : claim.statement
+                          
+                          <CardContent>
+                            <Box sx={{ pr: '140px' }}> {/* Add padding to prevent overlap with badge */}
+                              <Link
+                                to={subject.uri}
+                                onClick={e => handleLinkClick(e, subject.uri)}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                style={{ textDecoration: 'none' }}
+                              >
+                                <ClaimName claim={claim} searchTerm={searchTerm} />
+                              </Link>
+                              
+                              {/* Show entity badges */}
+                              <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                                {subject.type && <EntityBadge entityType={subject.type} />}
+                                {object?.type && <EntityBadge entityType={object.type} label="Object" />}
+                              </Box>
+                              
+                              <ClaimMetadata claim={claim} />
+                            </Box>
+                            {claim.statement && (
+                              <Typography
+                                variant='body2'
+                                sx={{
+                                  padding: '5px 1 1 5px',
+                                  wordBreak: 'break-word',
+                                  marginBottom: '1px',
+                                  color: theme.palette.texts
                                 }}
-                              />
-                            </Typography>
-                          )}
-                        </CardContent>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            position: 'relative',
-                            mt: '10px',
-                            mb: '10px',
-                            pl: '20px',
-                            pr: '20px'
-                          }}
-                        >
-                          <Button
-                            onClick={() => handleValidation(claim.claim_id)}
-                            startIcon={<VerifiedOutlinedIcon />}
-                            variant='text'
+                              >
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html: searchTerm
+                                      ? claim.statement.replace(
+                                          new RegExp(`(${searchTerm})`, 'gi'),
+                                          (match: any) =>
+                                            `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
+                                        )
+                                      : claim.statement
+                                  }}
+                                />
+                              </Typography>
+                            )}
+                          </CardContent>
+                          <Box
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '12px',
-                              marginRight: '10px',
-                              p: '4px',
-                              color: theme.palette.sidecolor,
-                              '&:hover': {
-                                backgroundColor: theme.palette.cardsbuttons
-                              }
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              position: 'relative',
+                              mt: '10px',
+                              mb: '10px',
+                              pl: '20px',
+                              pr: '20px'
                             }}
                           >
-                            Validate
-                          </Button>
-                          <Link to={'/report/' + claim.claim_id}>
                             <Button
-                              startIcon={<FeedOutlinedIcon />}
+                              onClick={() => handleValidation(claimId)}
+                              startIcon={<VerifiedOutlinedIcon />}
                               variant='text'
                               sx={{
                                 fontSize: isMediumScreen ? '8px' : '12px',
@@ -357,151 +357,168 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 }
                               }}
                             >
-                              Evidence
+                              Validate
                             </Button>
-                          </Link>
-                          <Button
-                            startIcon={<ShareOutlinedIcon />}
-                            onClick={() => handleSchema(claim)}
-                            variant='text'
+                            <Link to={'/report/' + claimId}>
+                              <Button
+                                startIcon={<FeedOutlinedIcon />}
+                                variant='text'
+                                sx={{
+                                  fontSize: isMediumScreen ? '8px' : '12px',
+                                  marginRight: '10px',
+                                  p: '4px',
+                                  color: theme.palette.sidecolor,
+                                  '&:hover': {
+                                    backgroundColor: theme.palette.cardsbuttons
+                                  }
+                                }}
+                              >
+                                Evidence
+                              </Button>
+                            </Link>
+                            <Button
+                              startIcon={<ShareOutlinedIcon />}
+                              onClick={() => handleSchema(claim)}
+                              variant='text'
+                              sx={{
+                                fontSize: isMediumScreen ? '8px' : '12px',
+                                marginRight: '10px',
+                                p: '4px',
+                                color: theme.palette.sidecolor,
+                                '&:hover': {
+                                  backgroundColor: theme.palette.cardsbuttons
+                                }
+                              }}
+                            >
+                              Graph View
+                            </Button>
+                            <Box sx={{ flexGrow: 1 }} />
+                            {claim.stars && (
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  p: '4px',
+                                  flexWrap: 'wrap',
+                                  justifyContent: 'flex-end'
+                                }}
+                              >
+                                {Array.from({ length: claim.stars }).map((_, index) => (
+                                  <StarIcon
+                                    key={index}
+                                    sx={{
+                                      color: theme.palette.stars,
+                                      width: '3vw',
+                                      height: '3vw',
+                                      fontSize: '3vw',
+                                      maxWidth: '24px',
+                                      maxHeight: '24px'
+                                    }}
+                                  />
+                                ))}
+                              </Box>
+                            )}
+                          </Box>
+
+                          <IconButton
                             sx={{
-                              fontSize: isMediumScreen ? '8px' : '12px',
-                              marginRight: '10px',
-                              p: '4px',
-                              color: theme.palette.sidecolor,
-                              '&:hover': {
-                                backgroundColor: theme.palette.cardsbuttons
-                              }
+                              position: 'absolute',
+                              top: '10px',
+                              right: '10px',
+                              color: theme.palette.texts,
+                              cursor: 'pointer'
                             }}
+                            onClick={event => handleMenuClick(event, index)}
                           >
-                            Graph View
-                          </Button>
-                          <Box sx={{ flexGrow: 1 }} />
-                          {claim.stars && (
                             <Box
                               sx={{
                                 display: 'flex',
-                                p: '4px',
-                                flexWrap: 'wrap',
-                                justifyContent: 'flex-end'
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transform: 'rotate(90deg)',
+                                color: theme.palette.smallButton
                               }}
                             >
-                              {Array.from({ length: claim.stars }).map((_, index) => (
-                                <StarIcon
-                                  key={index}
-                                  sx={{
-                                    color: theme.palette.stars,
-                                    width: '3vw',
-                                    height: '3vw',
-                                    fontSize: '3vw',
-                                    maxWidth: '24px',
-                                    maxHeight: '24px'
-                                  }}
-                                />
-                              ))}
+                              <MoreVertIcon />
                             </Box>
-                          )}
-                        </Box>
-
-                        <IconButton
-                          sx={{
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            color: theme.palette.texts,
-                            cursor: 'pointer'
-                          }}
-                          onClick={event => handleMenuClick(event, index)}
-                        >
-                          <Box
+                          </IconButton>
+                          <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl && selectedIndex === index)}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right'
+                            }}
+                            transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'right'
+                            }}
+                            TransitionComponent={Grow}
+                            transitionDuration={250}
                             sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              transform: 'rotate(90deg)',
-                              color: theme.palette.smallButton
+                              '& .MuiPaper-root': {
+                                backgroundColor: theme.palette.menuBackground,
+                                color: theme.palette.texts
+                              }
                             }}
                           >
-                            <MoreVertIcon />
-                          </Box>
-                        </IconButton>
-                        <Menu
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl && selectedIndex === index)}
-                          onClose={handleClose}
-                          anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
-                          }}
-                          TransitionComponent={Grow}
-                          transitionDuration={250}
-                          sx={{
-                            '& .MuiPaper-root': {
-                              backgroundColor: theme.palette.menuBackground,
-                              color: theme.palette.texts
-                            }
-                          }}
-                        >
-                          {claim.source_link && (
-                            <MenuItem onClick={() => window.open(claim.source_link, '_blank')}>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                <SourceLink claim={claim} searchTerm={searchTerm} />
-                              </Typography>
-                              <OpenInNewIcon sx={{ marginLeft: '5px' }} />
-                            </MenuItem>
-                          )}
-                          {claim.how_known && (
-                            <MenuItem>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                How Known: {claim.how_known}
-                              </Typography>
-                            </MenuItem>
-                          )}
-                          {claim.aspect && (
-                            <MenuItem>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                Aspect: {claim.aspect}
-                              </Typography>
-                            </MenuItem>
-                          )}
-                          {claim.confidence !== 0 && (
-                            <MenuItem>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                Confidence: {claim.confidence}
-                              </Typography>
-                            </MenuItem>
-                          )}
-                          {claim.stars && (
-                            <MenuItem>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                Rating as Stars: {claim.stars}
-                              </Typography>
-                            </MenuItem>
-                          )}
-                          {claim.score && (
-                            <MenuItem>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                Rating as Score: {claim.score}
-                              </Typography>
-                            </MenuItem>
-                          )}
-                          {claim.amt && (
-                            <MenuItem>
-                              <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                Amount of claim: $ {claim.amt}
-                              </Typography>
-                            </MenuItem>
-                          )}
-                        </Menu>
-                      </Box>
-                    </Card>
-                  </Box>
-                </Grow>
-              ))}
+                            {claim.sourceURI && (
+                              <MenuItem onClick={() => window.open(claim.sourceURI, '_blank')}>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  <SourceLink claim={claim} searchTerm={searchTerm} />
+                                </Typography>
+                                <OpenInNewIcon sx={{ marginLeft: '5px' }} />
+                              </MenuItem>
+                            )}
+                            {claim.howKnown && (
+                              <MenuItem>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  How Known: {claim.howKnown}
+                                </Typography>
+                              </MenuItem>
+                            )}
+                            {claim.aspect && (
+                              <MenuItem>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  Aspect: {claim.aspect}
+                                </Typography>
+                              </MenuItem>
+                            )}
+                            {claim.confidence !== 0 && (
+                              <MenuItem>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  Confidence: {claim.confidence}
+                                </Typography>
+                              </MenuItem>
+                            )}
+                            {claim.stars && (
+                              <MenuItem>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  Rating as Stars: {claim.stars}
+                                </Typography>
+                              </MenuItem>
+                            )}
+                            {claim.score && (
+                              <MenuItem>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  Rating as Score: {claim.score}
+                                </Typography>
+                              </MenuItem>
+                            )}
+                            {claim.amt && (
+                              <MenuItem>
+                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
+                                  Amount of claim: $ {claim.amt}
+                                </Typography>
+                              </MenuItem>
+                            )}
+                          </Menu>
+                        </Box>
+                      </Card>
+                    </Box>
+                  </Grow>
+                )
+              })}
               <Grow in={showScrollButton}>
                 <Fab
                   aria-label='scroll to top'

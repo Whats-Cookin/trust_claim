@@ -4,7 +4,7 @@ import { camelCaseToSimpleString } from '../../utils/string.utils'
 
 interface Claim {
   statement?: string | null | undefined
-  subject: string
+  subject: string | { uri: string; name?: string; type?: string; image?: string }
   id: string
   [key: string]: any
 }
@@ -37,7 +37,13 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
         if (EXCLUDED_FIELDS.includes(key) || value == null || value === '') return null
         if (key === 'effectiveDate') value = formatDate(value) // Format the date
 
-        const displayText = key === 'statement' && value && !showFullText[key] ? truncateText(value, 120) : value
+        // Handle subject display
+        let displayValue = value
+        if (key === 'subject' && typeof value === 'object' && value.uri) {
+          displayValue = value.name || value.uri
+        }
+        
+        const displayText = key === 'statement' && displayValue && !showFullText[key] ? truncateText(displayValue, 120) : displayValue
 
         return (
           <Box

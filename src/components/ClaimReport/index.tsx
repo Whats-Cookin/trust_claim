@@ -1,4 +1,4 @@
-// RenderClaimInfo.tsx - Last updated: April 8, 2025 - 18:45:32
+// ClaimReport.tsx - Updated to work with new backend
 import React, { useEffect, useState } from 'react'
 import * as api from '../../api'
 import { Link, useParams } from 'react-router-dom'
@@ -12,7 +12,8 @@ import {
   Box,
   useTheme,
   useMediaQuery,
-  Button
+  Button,
+  Chip
 } from '@mui/material'
 import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
@@ -20,23 +21,31 @@ import StarIcon from '@mui/icons-material/Star'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
 import ClaimDetails from './ClaimDetails'
+import type { Claim } from '../../api/types'
 
-interface Claim {
-  statement: string | null
-  subject: string
-  id: string
-  [key: string]: any
+interface ClaimWithEntities extends Claim {
+  subjectEntity?: any
+  objectEntity?: any
 }
 
 interface ReportData {
-  data: {
-    claim: Claim
-    validations: Claim[]
-    attestations: Claim[]
+  claim: ClaimWithEntities
+  validations: Claim[]
+  validationSummary: {
+    total: number
+    agrees: number
+    disagrees: number
+    confirms: number
+    refutes: number
+  }
+  relatedClaims: Claim[]
+  issuerReputation: {
+    totalClaims: number
+    recentClaims: Claim[]
   }
 }
 
-const DonationReport: React.FC = () => {
+const ClaimReport: React.FC = () => {
   const theme = useTheme()
   const { claimId } = useParams<{ claimId: string }>()
   const [reportData, setReportData] = useState<ReportData | null>(null)
@@ -87,6 +96,8 @@ const DonationReport: React.FC = () => {
     )
   }
 
+  const { claim, validations, validationSummary, relatedClaims } = reportData
+
   return (
     <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
       <Box
@@ -102,13 +113,41 @@ const DonationReport: React.FC = () => {
           padding: '25px'
         }}
       >
-        <ClaimDetails theme={theme} data={reportData.data} />
+        {/* Main Claim Details */}
+        <ClaimDetails theme={theme} data={{ claim }} />
 
-        {reportData.data.validations.some((validation: Claim) => validation.statement !== null) && (
+        {/* Validation Summary */}
+        {validationSummary.total > 0 && (
+          <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
+            <Chip 
+              label={`${validationSummary.agrees} Agree`} 
+              color="success" 
+              variant={validationSummary.agrees > 0 ? "filled" : "outlined"}
+            />
+            <Chip 
+              label={`${validationSummary.disagrees} Disagree`} 
+              color="error"
+              variant={validationSummary.disagrees > 0 ? "filled" : "outlined"}
+            />
+            <Chip 
+              label={`${validationSummary.confirms} Confirm`} 
+              color="info"
+              variant={validationSummary.confirms > 0 ? "filled" : "outlined"}
+            />
+            <Chip 
+              label={`${validationSummary.refutes} Refute`} 
+              color="warning"
+              variant={validationSummary.refutes > 0 ? "filled" : "outlined"}
+            />
+          </Box>
+        )}
+
+        {/* Validations */}
+        {validations.length > 0 && (
           <>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
               <Typography
-                variant='body1'
+                variant='h6'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
@@ -121,43 +160,37 @@ const DonationReport: React.FC = () => {
                     height: '4px',
                     backgroundColor: theme.palette.maintext,
                     borderRadius: '2px',
-                    width: '80%'
+                    width: '80%',
+                    mt: 1
                   }}
                 />
               </Typography>
             </Box>
 
-            {reportData.data.validations.map(
-              (validation: Claim) =>
-                validation.statement && (
-                  <MyCard
-                    key={validation.id}
-                    data={validation}
-                    img={validation.image}
-                    theme={theme}
-                    isLargeScreen={isLargeScreen}
-                    setSelectedIndex={setSelectedIndex}
-                    handleMenuClose={() => setSelectedIndex(null)}
-                  />
-                )
-            )}
+            {validations.map((validation) => (
+              <ValidationCard
+                key={validation.id}
+                validation={validation}
+                theme={theme}
+                isLargeScreen={isLargeScreen}
+              />
+            ))}
           </>
         )}
 
-        {reportData.data.attestations.length > 0 && (
+        {/* Related Claims */}
+        {relatedClaims.length > 0 && (
           <>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px', mt: 4 }}>
               <Typography
-                variant='body2'
+                variant='h6'
                 sx={{
                   color: theme.palette.texts,
                   textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem',
-                  fontSize: '20px',
-                  fontWeight: 600
+                  marginLeft: isMediumScreen ? '0' : '1rem'
                 }}
               >
-                Related Attestations
+                Other Claims About This Subject
                 <Box
                   sx={{
                     height: '4px',
@@ -170,22 +203,17 @@ const DonationReport: React.FC = () => {
               </Typography>
             </Box>
 
-            {reportData.data.attestations.map(
-              (attestation: Claim) =>
-                attestation.statement && (
-                  <MyCard
-                    key={attestation.id}
-                    data={attestation}
-                    img={attestation.image}
-                    theme={theme}
-                    isLargeScreen={isLargeScreen}
-                    setSelectedIndex={setSelectedIndex}
-                    handleMenuClose={() => setSelectedIndex(null)}
-                  />
-                )
-            )}
+            {relatedClaims.map((relatedClaim) => (
+              <RelatedClaimCard
+                key={relatedClaim.id}
+                claim={relatedClaim}
+                theme={theme}
+                isLargeScreen={isLargeScreen}
+              />
+            ))}
           </>
         )}
+
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
           <Button
             component={Link}
@@ -207,117 +235,136 @@ const DonationReport: React.FC = () => {
   )
 }
 
-function MyCard({
-  data,
-  img,
+function ValidationCard({
+  validation,
   theme,
-  setSelectedIndex,
-  handleMenuClose,
   isLargeScreen
-}: Readonly<{
-  data: any
-  img: any
+}: {
+  validation: Claim
   theme: any
-  setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
-  handleMenuClose: () => void
-  isLargeScreen: any
-}>) {
+  isLargeScreen: boolean
+}) {
+  const getValidationColor = (claimType: string) => {
+    switch (claimType) {
+      case 'AGREES_WITH':
+      case 'CONFIRMS':
+        return 'success.main'
+      case 'DISAGREES_WITH':
+      case 'REFUTES':
+        return 'error.main'
+      default:
+        return 'text.primary'
+    }
+  }
+
   return (
     <Card
       sx={{
-        minHeight: '200px',
+        minHeight: '120px',
         width: '100%',
         borderRadius: '20px',
         backgroundColor: theme.palette.cardBackground,
         backgroundImage: 'none',
         color: theme.palette.texts,
-        marginBottom: '2rem'
+        marginBottom: '1rem',
+        borderLeft: `4px solid`,
+        borderLeftColor: getValidationColor(validation.claim)
       }}
     >
-      {img ? (
-        <Grid container spacing={isLargeScreen ? 4 : 2}>
-          <Grid item xs={12} md={6}>
-            {img.includes('.mp4') ? (
-              <video controls style={{ width: '100%', height: 'auto' }}>
-                <source src={img} type='video/mp4' />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img src={img} alt={data.subject} style={{ width: '100%', height: 'auto' }} />
+      <CardContent>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Box>
+            <Typography variant='subtitle2' color={getValidationColor(validation.claim)}>
+              {validation.claim.replace('_', ' ')}
+            </Typography>
+            {validation.statement && (
+              <Typography variant='body1' sx={{ mt: 1 }}>
+                {validation.statement}
+              </Typography>
             )}
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <CardContent>
-              <RenderClaimInfo
-                claim={data}
-                index={-1}
-                setSelectedIndex={setSelectedIndex}
-                handleMenuClose={handleMenuClose}
-              />
-            </CardContent>
-
-            {data.stars && <Stars stars={data.stars} theme={theme} />}
-          </Grid>
-        </Grid>
-      ) : (
-        <>
-          <CardContent>
-            <RenderClaimInfo
-              claim={data}
-              index={-1}
-              setSelectedIndex={setSelectedIndex}
-              handleMenuClose={handleMenuClose}
+            <Typography variant='caption' sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
+              By: {validation.issuerId || 'Unknown'} • 
+              {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
+            </Typography>
+          </Box>
+          {validation.confidence && (
+            <Chip 
+              label={`${Math.round(validation.confidence * 100)}% confident`}
+              size="small"
+              variant="outlined"
             />
-          </CardContent>
-
-          {data.stars && <Stars stars={data.stars} theme={theme} />}
-        </>
-      )}
+          )}
+        </Box>
+      </CardContent>
     </Card>
   )
 }
 
-function Stars({ stars, theme }: Readonly<{ stars: number; theme: any }>) {
+function RelatedClaimCard({
+  claim,
+  theme,
+  isLargeScreen
+}: {
+  claim: Claim
+  theme: any
+  isLargeScreen: boolean
+}) {
   return (
-    <Box
+    <Card
       sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        position: 'relative',
-        mt: '10px',
-        mb: '10px',
-        pl: '20px',
-        pr: '20px'
+        minHeight: '100px',
+        width: '100%',
+        borderRadius: '20px',
+        backgroundColor: theme.palette.cardBackground,
+        backgroundImage: 'none',
+        color: theme.palette.texts,
+        marginBottom: '1rem'
       }}
     >
-      <Box sx={{ flexGrow: 1 }} />
-      <Box
-        sx={{
-          display: 'flex',
-          p: '4px',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end'
-        }}
-      >
-        {Array.from({ length: stars }).map((_, index) => (
-          <StarIcon
-            key={`${stars}-${index}`}
-            sx={{
-              color: theme.palette.stars,
-              width: '3vw',
-              height: '3vw',
-              fontSize: '3vw',
-              minWidth: '16px',
-              minHeight: '16px',
-              maxWidth: '20px',
-              maxHeight: '20px'
-            }}
-          />
-        ))}
-      </Box>
+      <CardContent>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Box sx={{ flex: 1 }}>
+            <Typography variant='subtitle2' color='primary'>
+              {claim.claim}
+            </Typography>
+            {claim.statement && (
+              <Typography variant='body2' sx={{ mt: 1 }}>
+                {claim.statement}
+              </Typography>
+            )}
+            <Typography variant='caption' sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
+              {claim.effectiveDate && new Date(claim.effectiveDate).toLocaleDateString()}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
+            {claim.stars && <Stars stars={claim.stars} theme={theme} />}
+            <Link to={`/report/${claim.id}`} style={{ textDecoration: 'none' }}>
+              <Button size="small" variant="outlined">
+                View
+              </Button>
+            </Link>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  )
+}
+
+function Stars({ stars, theme }: { stars: number; theme: any }) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      {Array.from({ length: 5 }).map((_, index) => (
+        <StarIcon
+          key={index}
+          sx={{
+            color: index < stars ? theme.palette.stars : theme.palette.action.disabled,
+            width: '16px',
+            height: '16px'
+          }}
+        />
+      ))}
     </Box>
   )
 }
 
-export default DonationReport
+export default ClaimReport

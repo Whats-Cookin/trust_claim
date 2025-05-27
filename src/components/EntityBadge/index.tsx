@@ -8,32 +8,36 @@ import {
 } from '../../types/entities'
 
 interface EntityBadgeProps {
-  type: EntityType | string
+  entityType?: EntityType | string
+  type?: EntityType | string  // For backward compatibility
   size?: 'small' | 'medium'
   variant?: 'filled' | 'outlined'
   onClick?: () => void
+  label?: string
 }
 
 export const EntityBadge: React.FC<EntityBadgeProps> = ({
+  entityType,
   type,
   size = 'small',
   variant = 'filled',
-  onClick
+  onClick,
+  label
 }) => {
   const theme = useTheme()
   
   // Handle string types from API
-  const entityType = type as EntityType
-  if (!EntityMetadata[entityType]) {
+  const typeValue = (entityType || type) as EntityType
+  if (!EntityMetadata[typeValue]) {
     return null
   }
   
-  const metadata = EntityMetadata[entityType]
+  const metadata = EntityMetadata[typeValue]
   
   const chipStyle = {
-    backgroundColor: variant === 'filled' ? getEntityColor(entityType) : 'transparent',
-    color: variant === 'filled' ? 'white' : getEntityColor(entityType),
-    border: variant === 'outlined' ? `1px solid ${getEntityColor(entityType)}` : 'none',
+    backgroundColor: variant === 'filled' ? getEntityColor(typeValue) : 'transparent',
+    color: variant === 'filled' ? 'white' : getEntityColor(typeValue),
+    border: variant === 'outlined' ? `1px solid ${getEntityColor(typeValue)}` : 'none',
     fontWeight: 600,
     fontSize: size === 'small' ? '0.7rem' : '0.8rem',
     height: size === 'small' ? 20 : 24,
@@ -45,7 +49,7 @@ export const EntityBadge: React.FC<EntityBadgeProps> = ({
         ? theme.palette.mode === 'dark' 
           ? theme.palette.grey[700]
           : theme.palette.grey[300]
-        : `${getEntityColor(entityType)}20`,
+        : `${getEntityColor(typeValue)}20`,
       cursor: 'pointer'
     } : {}
   }
@@ -53,7 +57,7 @@ export const EntityBadge: React.FC<EntityBadgeProps> = ({
   return (
     <Tooltip title={metadata.description} arrow>
       <Chip 
-        label={getEntityLabel(entityType)}
+        label={label || getEntityLabel(typeValue)}
         size={size}
         sx={chipStyle}
         onClick={onClick}

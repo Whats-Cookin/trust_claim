@@ -1,49 +1,40 @@
-// API Types matching new backend
+// Proper entity structure
+export interface Entity {
+  uri: string
+  name?: string
+  type?: string
+  image?: string
+}
+
+// Claim structure matching backend
 export interface Claim {
-  claim_id: number
-  subject: string
+  id: number
+  subject: Entity | string  // Can be entity object or just URI
   claim: string
-  object?: string
+  object?: Entity | string  // Can be entity object or just URI
   statement?: string
-  issuerId: string
-  sourceURI: string
-  howKnown: string
+  effectiveDate: string
   confidence?: number
+  sourceURI?: string
+  howKnown?: string
   stars?: number
-  score?: number  // New field (was rating)
-  amt?: number    // New field (was amount)
+  score?: number
+  amt?: number
   unit?: string
   aspect?: string
-  effectiveDate: string
-  createdDate: string
-  subject_entity_type?: string
-  issuer_entity_type?: string
-  source_entity_type?: string
-  link?: string
-  name?: string
-  source_link?: string
-  source_name?: string
-  source_thumbnail?: string
-  how_known?: string
-  images?: Array<{
-    url: string
-    caption?: string
-    metadata?: any
-  }>
-  // Legacy fields from old types
-  id?: number
-  nodeUri?: string
-  entType?: string
-  descrip?: string
-  image?: string | null
-  thumbnail?: string
-  edgesFrom?: any[]
-  edgesTo?: any[]
+  issuerId?: string
+  // Keep some legacy fields during migration
+  claim_id?: number  // same as id
 }
 
 export interface FeedResponse {
-  claims: Claim[]
-  nextPage?: string
+  entries: Claim[]
+  pagination: {
+    page: number
+    limit: number
+    total: number
+    pages: number
+  }
 }
 
 export interface Node {

@@ -9,23 +9,11 @@ import type {
   EntityReport
 } from './types'
 
-// Helper to transform old field names
-export const transformClaimData = (data: any) => {
-  // Handle both old and new field names
-  if ('rating' in data) {
-    data.score = data.rating
-    delete data.rating
-  }
-  if ('amount' in data) {
-    data.amt = data.amount
-    delete data.amount
-  }
-  return data
-}
+// NO TRANSFORMATIONS - We use the proper data structure from the backend
 
 // Claims API
-export const createClaim = (data: FormData) => 
-  axios.post<{ id: number; message: string }>('/api/claims', data)
+export const createClaim = (data: any) => 
+  axios.post<{ claim: Claim }>('/api/claims', data)
 
 export const getClaim = (id: string) => 
   axios.get<{ claim: Claim }>(`/api/claims/${id}`)
@@ -33,12 +21,15 @@ export const getClaim = (id: string) =>
 export const getClaimsBySubject = (uri: string) => 
   axios.get<{ claims: Claim[] }>(`/api/claims/subject/${encodeURIComponent(uri)}`)
 
-// Feed API (replaces /api/claims/v3)
+// Feed API
 export const getFeed = (params?: {
   limit?: number
   search?: string
-  nextPage?: string
-}) => axios.get<FeedResponse>('/api/feed', { params, timeout: 60000 })
+  page?: number
+}) => axios.get<FeedResponse>('/api/feed', { 
+  params,
+  timeout: 60000 
+})
 
 export const getFeedByEntity = (entityType: string, params?: {
   limit?: number
@@ -78,12 +69,4 @@ export const submitCredential = (credential: any) =>
 export const getCredential = (uri: string) => 
   axios.get<{ credential: Credential }>(`/api/credentials/${encodeURIComponent(uri)}`)
 
-// Legacy endpoint mapping for backward compatibility
-export const legacyEndpoints = {
-  // Map old endpoints to new functions
-  '/api/claim/v2': createClaim,
-  '/api/claims/v3': getFeed,
-  '/api/claim/': getClaim,
-  '/api/node/': getNodeNeighbors,
-  '/api/claim_graph/': getGraph
-}
+// NO LEGACY ENDPOINTS - We use the proper API structure
