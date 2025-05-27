@@ -21,7 +21,7 @@ import IHomeProps from '../../containers/Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { useQueryParams } from '../../hooks'
 import Loader from '../Loader'
-import axios from '../../axiosInstance'
+import * as api from '../../api'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import placeholderImage from '../../assets/images/imgplaceholder.svg'
@@ -96,7 +96,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const res = await axios.get(`/api/claim/${number}`)
+        const res = await api.getClaim(number)
 
         if (res.data.claim.subject) setSubjectValue(res.data.claim.subject)
         if (res.data.claim.statement) setStatementValue(res.data.claim.statement)

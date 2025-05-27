@@ -100,8 +100,8 @@ const parseMultipleNodes = (data: any) => {
 }
 
 const getNodeData = (node: any) => {
-  let uri = node.nodeUri
-  let label = node.name || uri
+  let uri = node.nodeUri || node.uri
+  let label = node.displayName || node.name || uri
   if (label === 'Not Acceptable!' || label === 'Not Acceptable') {
     console.log('Node name is ' + node.name)
     label = ''
@@ -121,7 +121,8 @@ const getNodeData = (node: any) => {
       raw: node,
       image: imageUrl,
       thumbnail: node.thumbnail,
-      entType: node.entType || 'UNKNOWN',
+      entityType: node.entityType || node.entType || 'OTHER',
+      entityData: node.entityData,
       confidence: node.confidence,
       stars: node.stars
     }

@@ -24,7 +24,7 @@ import {
   useTheme
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import axios from 'axios'
+import * as api from '../../api'
 import Loader from '../../components/Loader'
 import IntersectionObservee from '../../components/IntersectionObservee'
 import { BACKEND_BASE_URL } from '../../utils/settings'
@@ -35,6 +35,7 @@ import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
 import Badge from './Badge'
 import ClaimMetadata from './ClaimMetadata'
+import EntityBadge from '../../components/EntityBadge'
 
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
@@ -92,13 +93,10 @@ const SourceLink = ({ claim, searchTerm }: { claim: LocalClaim; searchTerm: stri
 }
 
 async function fetchClaims(nextPage: string | null, query?: string) {
-  const res = await axios.get(`${BACKEND_BASE_URL}/api/claims/v3`, {
-    timeout: 60000,
-    params: {
-      limit: PAGE_LIMIT,
-      search: query || undefined,
-      nextPage: nextPage || undefined
-    }
+  const res = await api.getFeed({
+    limit: PAGE_LIMIT,
+    search: query || undefined,
+    nextPage: nextPage || undefined
   })
   return res
 }

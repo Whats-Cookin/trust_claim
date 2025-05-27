@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import axios from '../axiosInstance'
+import * as api from '../api'
 import { MediaI } from '../components/Form/imageUploading'
 import { ceramic, composeClient } from '../composedb'
 import { PublishClaim } from '../composedb/compose'
@@ -34,7 +34,16 @@ export function useCreateClaim() {
 
       const { images, dto } = preparePayload(payload)
       console.log('Sending payload:', dto, images)
-      const res = await axios.post('/api/claim/v2', generateFormData(dto, images))
+      // Transform field names for new API
+      const transformedDto = {
+        ...dto,
+        score: (dto as any).rating,
+        amt: (dto as any).amount
+      }
+      delete (transformedDto as any).rating
+      delete (transformedDto as any).amount
+      
+      const res = await api.createClaim(generateFormData(transformedDto, images))
 
       if (res.status === 201) {
         message = 'Claim submitted successfully!'

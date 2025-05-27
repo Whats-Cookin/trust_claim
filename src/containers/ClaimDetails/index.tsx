@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import MainContainer from '../../components/MainContainer'
 import { Box, Button, Card, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import * as api from '../../api'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import imageSvg from '../../assets/images/imgplaceholder.svg'
 import imageSvgDark from '../../assets/images/imgplaceholderdark.svg'
@@ -39,7 +39,7 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   const fetchReportData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const response = await axios.get(`${BACKEND_BASE_URL}/api/claim/${claimId}`)
+      const response = await api.getClaim(claimId!)
       setClaimData(response.data.claim)
     } catch (err) {
       setError('Failed to fetch report data')

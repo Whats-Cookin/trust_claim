@@ -3,7 +3,7 @@ import styles from './styles'
 import IHomeProps from './types'
 import Cytoscape from 'cytoscape'
 import cyConfig from './cyConfig'
-import axios from '../../axiosInstance'
+import * as api from '../../api'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme } from '@mui/material'
@@ -118,7 +118,7 @@ const Explore = (homeProps: IHomeProps) => {
   const fetchRelatedClaims = async (id: string, page: number) => {
     setLoading(true)
     try {
-      const res = await axios.get(`/api/node/${id}?page=${page}&limit=5`)
+      const res = await api.getNodeNeighbors(id, page, 5)
       if (res.data) {
         let newNodes: any[] = []
         let newEdges: any[] = []
@@ -204,7 +204,7 @@ const Explore = (homeProps: IHomeProps) => {
     setLoading(true)
     try {
       // First fetch the central node
-      const claimRes = await axios.get(`/api/claim_graph/${claimId}`)
+      const claimRes = await api.getGraph(claimId)
       if (!cy) return
 
       cy.elements().remove() // Clear any existing elements

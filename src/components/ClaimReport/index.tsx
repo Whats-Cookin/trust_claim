@@ -1,6 +1,6 @@
 // RenderClaimInfo.tsx - Last updated: April 8, 2025 - 18:45:32
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import * as api from '../../api'
 import { Link, useParams } from 'react-router-dom'
 import {
   Container,
@@ -46,14 +46,12 @@ const DonationReport: React.FC = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
 
-  const url = `${BACKEND_BASE_URL}/api/report/${claimId}`
-
   useEffect(() => {
     const fetchReportData = async () => {
       setIsLoading(true)
       try {
-        const response = await axios.get(url)
-        setReportData(response.data)
+        const response = await api.getClaimReport(claimId!)
+        setReportData(response.data as any)
       } catch (err) {
         setError('Failed to fetch report data')
       } finally {
