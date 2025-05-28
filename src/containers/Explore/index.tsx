@@ -222,9 +222,17 @@ const Explore = (homeProps: IHomeProps) => {
   }
 
   const initializeGraph = async (claimId: string) => {
+    if (!claimId || claimId === 'undefined') {
+      console.error('Invalid claim ID:', claimId)
+      setSnackbarMessage('Invalid claim ID')
+      toggleSnackbar(true)
+      return
+    }
+    
     setLoading(true)
     try {
-      // First fetch the central node
+      // Use claim ID directly - backend expects numeric ID
+      console.log('Fetching graph for claim ID:', claimId)
       const claimRes = await api.getGraph(claimId)
       console.log('Graph API response:', claimRes.data)
       
@@ -235,7 +243,7 @@ const Explore = (homeProps: IHomeProps) => {
 
       cy.elements().remove() // Clear any existing elements
 
-      const { nodes, edges } = parseMultipleNodes(claimRes.data)
+      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
       console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
       
       // Limit initial nodes to 7
@@ -253,7 +261,7 @@ const Explore = (homeProps: IHomeProps) => {
       cy.add({ nodes: limitedNodes, edges: limitedEdges } as any)
     } catch (err: any) {
       toggleSnackbar(true)
-      setSnackbarMessage(err.message)
+      setSnackbarMessage(err.message || 'Failed to load graph')
       console.error('Graph rendering error: ', err)
       console.trace()
     } finally {

@@ -1,96 +1,28 @@
-// ClaimReport.tsx - Updated to work with new backend
+// ClaimReport.tsx - Clean, minimal design focused on content
 import React, { useEffect, useState } from 'react'
 import * as api from '../../api'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import {
   Container,
   Typography,
-  Card,
-  CardContent,
-  Grid,
   CircularProgress,
   Box,
   useTheme,
   useMediaQuery,
   Button,
-  Chip,
-  Link
+  Chip
 } from '@mui/material'
-import RenderClaimInfo from './RenderClaimInfo'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import StarIcon from '@mui/icons-material/Star'
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import backSvg from '../../assets/images/back.svg'
-import EntityBadge from '../EntityBadge'
 import type { Claim } from '../../api/types'
 
-interface ClaimWithEntities extends Claim {
-  subjectEntity?: any
-  objectEntity?: any
-  edges?: Array<{
-    id: number
-    startNode?: {
-      id: number
-      nodeUri: string
-      name: string
-      entType: string
-      descrip: string
-      image?: string | null
-      thumbnail?: string | null
-    }
-    endNode?: {
-      id: number
-      nodeUri: string
-      name: string
-      entType: string
-      descrip: string
-      image?: string | null
-      thumbnail?: string | null
-    }
-    label: string
-    claimId: number
-  }>
-}
-
 interface ReportData {
-  claim: ClaimWithEntities
-  validations: Claim[]
+  claim: any
+  validations: any[]
   validationSummary: {
     total: number
-    agrees: number
-    disagrees: number
-    confirms: number
-    refutes: number
   }
-  relatedClaims: Claim[]
-  issuerReputation: {
-    totalClaims: number
-    recentClaims: Claim[]
-  }
-}
-
-// Helper function to convert claim to format expected by RenderClaimInfo
-function claimToStringRecord(claim: any): { [key: string]: string } {
-  const result: { [key: string]: string } = {}
-  
-  for (const [key, value] of Object.entries(claim)) {
-    // Skip complex objects that can't be rendered directly
-    if (key === 'edges' || key === 'subjectEntity' || key === 'objectEntity') {
-      continue
-    }
-    
-    // Convert values to strings
-    if (value === null || value === undefined) {
-      continue
-    } else if (typeof value === 'object') {
-      // For dates and other objects, convert to string
-      result[key] = value instanceof Date ? value.toISOString() : JSON.stringify(value)
-    } else {
-      result[key] = String(value)
-    }
-  }
-  
-  return result
+  relatedClaims: any[]
 }
 
 const ClaimReport: React.FC = () => {
@@ -99,9 +31,7 @@ const ClaimReport: React.FC = () => {
   const [reportData, setReportData] = useState<ReportData | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
-  const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -136,7 +66,7 @@ const ClaimReport: React.FC = () => {
 
   if (error || !reportData) {
     return (
-      <Container maxWidth='sm' sx={{ mt: 50 }}>
+      <Container maxWidth='md' sx={{ mt: 4 }}>
         <Typography variant='body1' sx={{ color: theme.palette.texts }}>
           {error || 'Report data is not available.'}
         </Typography>
@@ -144,171 +74,211 @@ const ClaimReport: React.FC = () => {
     )
   }
 
-  const { claim, validations, validationSummary, relatedClaims } = reportData
+  const { claim, validations, relatedClaims } = reportData
 
   return (
-    <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
-      <Box
-        id='report-container'
+    <Container maxWidth="md" sx={{ py: 4, px: isMobile ? 2 : 3 }}>
+      {/* Simple back button */}
+      <Button
+        component={RouterLink}
+        to='/feed'
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          position: 'relative',
-          mt: '5vh',
-          flexDirection: 'column',
-          backgroundColor: theme.palette.menuBackground,
-          borderRadius: '20px',
-          padding: '25px'
+          color: theme.palette.link,
+          mb: 3,
+          p: 0,
+          minWidth: 'auto',
+          '&:hover': {
+            backgroundColor: 'transparent',
+            textDecoration: 'underline'
+          }
         }}
       >
-        {/* Main Claim Details */}
+        <img src={backSvg} alt='back' style={{ width: '16px', marginRight: '8px' }} />
+        Back
+      </Button>
+
+      {/* Main Claim */}
+      <Box sx={{ mb: 6 }}>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 500, color: theme.palette.texts }}>
+          {claim.claim}
+        </Typography>
+        
+        {claim.statement && (
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              mb: 3,
+              lineHeight: 1.8,
+              color: theme.palette.texts,
+              whiteSpace: 'pre-wrap'
+            }}
+          >
+            {claim.statement}
+          </Typography>
+        )}
+
+        {/* Main claim image */}
         {claim.image && (
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ mb: 3 }}>
             <img 
               src={claim.image} 
               alt="Claim" 
               style={{ 
-                maxWidth: '100%', 
+                width: '100%',
+                maxWidth: '600px',
                 height: 'auto',
-                borderRadius: '8px'
+                borderRadius: '8px',
+                display: 'block'
               }} 
             />
           </Box>
         )}
-        
-        <Box sx={{ mb: 3 }}>
-          <RenderClaimInfo 
-            claim={claimToStringRecord(claim)} 
-            index={0}
-            setSelectedIndex={setSelectedIndex}
-            handleMenuClose={() => {}}
-          />
-        </Box>
 
-
-
-        {/* Validations */}
-        {validations.length > 0 && (
-          <>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-              <Typography
-                variant='h6'
-                sx={{
-                  color: theme.palette.texts,
-                  textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem'
-                }}
-              >
-                Validations
-                <Box
-                  sx={{
-                    height: '4px',
-                    backgroundColor: theme.palette.maintext,
-                    borderRadius: '2px',
-                    width: '80%',
-                    mt: 1
-                  }}
-                />
-              </Typography>
-            </Box>
-
-            {validations.map((validation, index) => (
-              <Box key={validation.id} sx={{ mb: 3 }}>
-                {/* Show validation image if present */}
-                {validation.image && (
-                  <Box sx={{ mb: 2 }}>
-                    <img 
-                      src={validation.image} 
-                      alt="Validation" 
-                      style={{ 
-                        maxWidth: '100%', 
-                        height: 'auto',
-                        borderRadius: '8px'
-                      }} 
-                    />
-                  </Box>
-                )}
-                <RenderClaimInfo 
-                  claim={claimToStringRecord(validation)} 
-                  index={index}
-                  setSelectedIndex={setSelectedIndex}
-                  handleMenuClose={() => {}}
-                />
-              </Box>
-            ))}
-          </>
-        )}
-
-        {/* Related Claims */}
-        {relatedClaims.length > 0 && (
-          <>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px', mt: 4 }}>
-              <Typography
-                variant='h6'
-                sx={{
-                  color: theme.palette.texts,
-                  textAlign: 'center',
-                  marginLeft: isMediumScreen ? '0' : '1rem'
-                }}
-              >
-                Other Claims About This Subject
-                <Box
-                  sx={{
-                    height: '4px',
-                    backgroundColor: theme.palette.maintext,
-                    marginTop: '4px',
-                    borderRadius: '2px',
-                    width: '80%'
-                  }}
-                />
-              </Typography>
-            </Box>
-
-            {relatedClaims.map((relatedClaim, index) => (
-              <Box key={relatedClaim.id} sx={{ mb: 3 }}>
-                {/* Show related claim image if present */}
-                {relatedClaim.image && (
-                  <Box sx={{ mb: 2 }}>
-                    <img 
-                      src={relatedClaim.image} 
-                      alt="Related claim" 
-                      style={{ 
-                        maxWidth: '100%', 
-                        height: 'auto',
-                        borderRadius: '8px'
-                      }} 
-                    />
-                  </Box>
-                )}
-                <RenderClaimInfo 
-                  claim={claimToStringRecord(relatedClaim)} 
-                  index={index}
-                  setSelectedIndex={setSelectedIndex}
-                  handleMenuClose={() => {}}
-                />
-              </Box>
-            ))}
-          </>
-        )}
-
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '15px' }}>
-          <Button
-            component={RouterLink}
-            to='/feed'
-            sx={{
-              color: theme.palette.link,
-              fontWeight: 400,
-              borderRadius: '24px',
-              fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-              px: '2rem'
-            }}
-          >
-            <img src={backSvg} alt='arrow' style={{ width: '10px', marginRight: '10px' }} />
-            BACK
-          </Button>
+        {/* Metadata in a subtle way */}
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2, 
+          flexWrap: 'wrap',
+          fontSize: '0.875rem',
+          color: theme.palette.textSecondary
+        }}>
+          {claim.effectiveDate && (
+            <span>
+              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </span>
+          )}
+          {claim.howKnown && (
+            <span>• {claim.howKnown.replace(/_/g, ' ').toLowerCase()}</span>
+          )}
+          {claim.confidence && (
+            <span>• {Math.round(claim.confidence * 100)}% confidence</span>
+          )}
         </Box>
       </Box>
-    </Box>
+
+      {/* Validations */}
+      {validations.length > 0 && (
+        <Box sx={{ mb: 6 }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              mb: 3,
+              fontWeight: 500,
+              color: theme.palette.texts 
+            }}
+          >
+            Validations ({validations.length})
+          </Typography>
+
+          {validations.map((validation) => (
+            <Box 
+              key={validation.id} 
+              sx={{ 
+                mb: 3,
+                pb: 3,
+                borderBottom: `1px solid ${theme.palette.divider}`
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Chip 
+                  label={validation.claim} 
+                  size="small"
+                  sx={{ 
+                    fontSize: '0.75rem',
+                    height: '24px'
+                  }}
+                />
+                <Typography variant="caption" color="textSecondary">
+                  {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
+                </Typography>
+              </Box>
+              
+              {validation.statement && (
+                <Typography variant="body2" sx={{ mb: 2, lineHeight: 1.6 }}>
+                  {validation.statement}
+                </Typography>
+              )}
+              
+              {validation.image && (
+                <img 
+                  src={validation.image} 
+                  alt="Validation" 
+                  style={{ 
+                    width: '100%',
+                    maxWidth: '400px',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    display: 'block'
+                  }} 
+                />
+              )}
+            </Box>
+          ))}
+        </Box>
+      )}
+
+      {/* Related Claims */}
+      {relatedClaims.length > 0 && (
+        <Box sx={{ mb: 6 }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              mb: 3,
+              fontWeight: 500,
+              color: theme.palette.texts 
+            }}
+          >
+            Other Claims About This Subject
+          </Typography>
+
+          {relatedClaims.map((relatedClaim) => (
+            <Box 
+              key={relatedClaim.id} 
+              sx={{ 
+                mb: 2,
+                p: 2,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: theme.palette.action.hover
+                }
+              }}
+            >
+              <RouterLink 
+                to={`/report/${relatedClaim.id}`} 
+                style={{ 
+                  textDecoration: 'none',
+                  color: 'inherit'
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+                  {relatedClaim.claim}
+                </Typography>
+                {relatedClaim.statement && (
+                  <Typography 
+                    variant="body2" 
+                    color="textSecondary"
+                    sx={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical'
+                    }}
+                  >
+                    {relatedClaim.statement}
+                  </Typography>
+                )}
+              </RouterLink>
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Container>
   )
 }
 

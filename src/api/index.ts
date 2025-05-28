@@ -1,3 +1,24 @@
+// IMPORTANT API DESIGN NOTES - READ THIS FIRST!
+// =============================================
+//
+// ID vs URI Usage:
+// ----------------
+// 1. **ALWAYS USE NUMERIC IDs** for all main API endpoints
+//    - /api/graph/{id} - Use claim ID (number), NOT URI
+//    - /api/claims/{id} - Use claim ID (number), NOT URI
+//    - /api/reports/claim/{id} - Use claim ID (number), NOT URI
+//
+// 2. **URIs are only used at the database level** for Claims
+//    - Claims have subject/object as URIs for linked data semantics
+//    - But the API should work with numeric IDs for simplicity
+//
+// 3. **Nodes and Edges already have numeric IDs**
+//    - Always reference them by their ID field
+//    - The nodeUri is just data, not the primary identifier
+//
+// THIS HAS BROKEN TWICE - DON'T USE URIs IN API PATHS!
+// =====================================================
+
 import axios from '../axiosInstance'
 import type {
   Claim,
@@ -9,13 +30,11 @@ import type {
   EntityReport
 } from './types'
 
-// NO TRANSFORMATIONS - We use the proper data structure from the backend
-
-// Claims API
+// Claims API - USE NUMERIC IDs
 export const createClaim = (data: any) => 
   axios.post<{ claim: Claim }>('/api/claims', data)
 
-export const getClaim = (id: string) => 
+export const getClaim = (id: string | number) => 
   axios.get<{ claim: Claim }>(`/api/claims/${id}`)
 
 export const getClaimsBySubject = (uri: string) => 
@@ -39,24 +58,22 @@ export const getFeedByEntity = (entityType: string, params?: {
 export const getTrending = (limit: number = 10) => 
   axios.get<{ topics: Array<{ topic: string; count: number; trend: string }> }>('/api/feed/trending', { params: { limit } })
 
-// Graph API
-export const getGraph = (uri?: string) => {
-  if (uri) {
-    return axios.get<GraphResponse>(`/api/graph/${encodeURIComponent(uri)}`)
-  }
-  return axios.get<GraphResponse>('/api/graph')
+// Graph API - USE NUMERIC IDs
+export const getGraph = (claimId: string | number) => {
+  // ALWAYS use numeric ID, not URI!
+  return axios.get<GraphResponse>(`/api/graph/${claimId}`)
 }
 
-export const getNodeNeighbors = (nodeId: string, page: number = 1, limit: number = 5) => 
+export const getNodeNeighbors = (nodeId: string | number, page: number = 1, limit: number = 5) => 
   axios.get<GraphResponse>(`/api/graph/node/${nodeId}/neighbors`, {
     params: { page, limit }
   })
 
-// Reports API
-export const getClaimReport = (claimId: string) => 
+// Reports API - USE NUMERIC IDs
+export const getClaimReport = (claimId: string | number) => 
   axios.get<ClaimReportResponse>(`/api/reports/claim/${claimId}`)
 
-export const submitValidation = (claimId: string, validation: ValidationRequest) => 
+export const submitValidation = (claimId: string | number, validation: ValidationRequest) => 
   axios.post<{ message: string; validationId: number }>(`/api/reports/claim/${claimId}/validate`, validation)
 
 export const getEntityReport = (uri: string) => 
@@ -68,5 +85,3 @@ export const submitCredential = (credential: any) =>
 
 export const getCredential = (uri: string) => 
   axios.get<{ credential: Credential }>(`/api/credentials/${encodeURIComponent(uri)}`)
-
-// NO LEGACY ENDPOINTS - We use the proper API structure
