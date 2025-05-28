@@ -89,44 +89,19 @@ const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
   
-  // Handle new GraphResponse structure
-  if (data.nodes && data.edges) {
-    // New format with separate nodes and edges arrays
-    data.nodes.forEach((node: any) => {
-      const nodeData = getNodeData(node)
-      if (nodeData) {
-        nodes.push(nodeData)
-      }
-    })
-    
-    data.edges.forEach((edge: any) => {
-      const claimType = edge.label || ''
-      const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
-      
-      edges.push({
-        data: {
-          id: edge.id,
-          source: edge.source,
-          target: edge.target,
-          relation: edge.label,
-          raw: edge,
-          color: edgeStyle.color,
-          width: edgeStyle.width,
-          arrow: edgeStyle.arrow,
-          lineStyle: edgeStyle.style
-        }
-      })
-    })
-  } else if (Array.isArray(data)) {
-    // Old format - array of nodes with embedded edges
+  // The backend returns an array of nodes with embedded edges
+  if (Array.isArray(data)) {
+    console.log('Parsing array of nodes:', data.length)
     data.forEach((node: any) => {
       parseSingleNode(nodes, edges, node)
     })
-  } else {
+  } else if (data && typeof data === 'object') {
     // Single node with edges
+    console.log('Parsing single node')
     parseSingleNode(nodes, edges, data)
   }
   
+  console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
   return { nodes, edges }
 }
 
@@ -207,15 +182,15 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
 
     edges.push(
       ...node.edgesFrom.map((e: any) => {
-        const claimType = e.claim?.claim || e.label || ''
+        const claimType = e.label || e.claim?.claim || ''
         const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
         
         return {
           data: {
             id: e.id.toString(),
-            source: e.startNodeId?.toString() || node.id.toString(),
-            target: e.endNodeId?.toString() || e.endNode?.id?.toString(),
-            relation: e.label || claimType,
+            source: e.startNodeId.toString(),
+            target: e.endNodeId.toString(),
+            relation: claimType,
             raw: e,
             color: edgeStyle.color,
             width: edgeStyle.width,
@@ -241,15 +216,15 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
 
     edges.push(
       ...node.edgesTo.map((e: any) => {
-        const claimType = e.claim?.claim || e.label || ''
+        const claimType = e.label || e.claim?.claim || ''
         const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
         
         return {
           data: {
             id: e.id.toString(),
-            source: e.startNodeId?.toString() || e.startNode?.id?.toString(),
-            target: e.endNodeId?.toString() || node.id.toString(),
-            relation: e.label || claimType,
+            source: e.startNodeId.toString(),
+            target: e.endNodeId.toString(),
+            relation: claimType,
             raw: e,
             color: edgeStyle.color,
             width: edgeStyle.width,

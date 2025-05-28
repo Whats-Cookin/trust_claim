@@ -64,6 +64,14 @@ export const getGraph = (claimId: string | number) => {
   return axios.get<GraphResponse>(`/api/graph/${claimId}`)
 }
 
+// For node expansion - matches what main branch uses
+export const getNode = (nodeId: string | number, page?: number, limit?: number) => {
+  const params: any = {}
+  if (page) params.page = page
+  if (limit) params.limit = limit
+  return axios.get<any>(`/api/node/${nodeId}`, { params })
+}
+
 export const getNodeNeighbors = (nodeId: string | number, page: number = 1, limit: number = 5) => 
   axios.get<any>(`/api/node/${nodeId}/expand`, {
     params: { page, limit }

@@ -119,8 +119,8 @@ const Explore = (homeProps: IHomeProps) => {
   const fetchRelatedClaims = async (id: string, page: number) => {
     setLoading(true)
     try {
-      // Use node expansion endpoint
-      const res = await api.getNodeNeighbors(id, page, 5)
+      // Use node endpoint like main does
+      const res = await api.getNode(id, page, 5)
       if (res.data) {
         let newNodes: any[] = []
         let newEdges: any[] = []
