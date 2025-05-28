@@ -203,6 +203,10 @@ const RenderClaimInfo = ({
                   >
                     {value}
                   </MuiLink>
+                ) : typeof value === 'object' ? (
+                  JSON.stringify(value)
+                ) : typeof value === 'object' ? (
+                  JSON.stringify(value)
                 ) : (
                   value
                 )}
@@ -258,6 +262,8 @@ const RenderClaimInfo = ({
                     {value}
                     <OpenInNewIcon sx={{ marginLeft: '5px' }} />
                   </MuiLink>
+                ) : typeof value === 'object' ? (
+                  JSON.stringify(value)
                 ) : (
                   value
                 )}

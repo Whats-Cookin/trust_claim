@@ -69,6 +69,30 @@ interface ReportData {
   }
 }
 
+// Helper function to convert claim to format expected by RenderClaimInfo
+function claimToStringRecord(claim: any): { [key: string]: string } {
+  const result: { [key: string]: string } = {}
+  
+  for (const [key, value] of Object.entries(claim)) {
+    // Skip complex objects that can't be rendered directly
+    if (key === 'edges' || key === 'subjectEntity' || key === 'objectEntity') {
+      continue
+    }
+    
+    // Convert values to strings
+    if (value === null || value === undefined) {
+      continue
+    } else if (typeof value === 'object') {
+      // For dates and other objects, convert to string
+      result[key] = value instanceof Date ? value.toISOString() : JSON.stringify(value)
+    } else {
+      result[key] = String(value)
+    }
+  }
+  
+  return result
+}
+
 const ClaimReport: React.FC = () => {
   const theme = useTheme()
   const { claimId } = useParams<{ claimId: string }>()
@@ -120,7 +144,9 @@ const ClaimReport: React.FC = () => {
     )
   }
 
+  console.log('ClaimReport version: 2024-01-09-images-v2');
   const { claim, validations, validationSummary, relatedClaims } = reportData
+  console.log('Validation example:', validations[0])
 
   return (
     <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
@@ -140,12 +166,28 @@ const ClaimReport: React.FC = () => {
         {/* Main Claim Details */}
         <Box sx={{ mb: 3 }}>
           <RenderClaimInfo 
-            claim={claim as any} 
+            claim={claimToStringRecord(claim)} 
             index={0}
             setSelectedIndex={setSelectedIndex}
             handleMenuClose={() => {}}
           />
         </Box>
+
+        {/* Show image if present */}
+        {claim.image && (
+          <Box sx={{ mb: 3, textAlign: 'center' }}>
+            <img 
+              src={claim.image} 
+              alt="Claim" 
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '400px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+              }} 
+            />
+          </Box>
+        )}
 
         {/* Validation Summary */}
         {validationSummary.total > 0 && (
@@ -201,11 +243,26 @@ const ClaimReport: React.FC = () => {
             {validations.map((validation, index) => (
               <Box key={validation.id} sx={{ mb: 2 }}>
                 <RenderClaimInfo 
-                  claim={validation as any} 
+                  claim={claimToStringRecord(validation)} 
                   index={index}
                   setSelectedIndex={setSelectedIndex}
                   handleMenuClose={() => {}}
                 />
+                {/* Show validation image if present */}
+                {(validation as any).image && (
+                  <Box sx={{ mt: 2, ml: 2 }}>
+                    <img 
+                      src={(validation as any).image} 
+                      alt="Validation" 
+                      style={{ 
+                        maxWidth: '300px', 
+                        maxHeight: '200px',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                      }} 
+                    />
+                  </Box>
+                )}
               </Box>
             ))}
           </>
@@ -239,11 +296,26 @@ const ClaimReport: React.FC = () => {
             {relatedClaims.map((relatedClaim, index) => (
               <Box key={relatedClaim.id} sx={{ mb: 2 }}>
                 <RenderClaimInfo 
-                  claim={relatedClaim as any} 
+                  claim={claimToStringRecord(relatedClaim)} 
                   index={index}
                   setSelectedIndex={setSelectedIndex}
                   handleMenuClose={() => {}}
                 />
+                {/* Show related claim image if present */}
+                {(relatedClaim as any).image && (
+                  <Box sx={{ mt: 2, ml: 2 }}>
+                    <img 
+                      src={(relatedClaim as any).image} 
+                      alt="Related claim" 
+                      style={{ 
+                        maxWidth: '300px', 
+                        maxHeight: '200px',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                      }} 
+                    />
+                  </Box>
+                )}
               </Box>
             ))}
           </>

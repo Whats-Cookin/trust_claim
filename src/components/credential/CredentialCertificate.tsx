@@ -21,6 +21,7 @@ import {
   TextField,
   Popover
 } from '@mui/material'
+import { BASE_URL } from '../../utils/settings'
 // import badge from '../../assets/images/badge.svg'
 import ShareIcon from '@mui/icons-material/Share'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
@@ -144,6 +145,8 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
   const [searchParams] = useSearchParams()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success')
   const [currentUrl, setCurrentUrl] = useState('')
   const [offerModalOpen, setOfferModalOpen] = useState(false)
   const [recipientEmail, setRecipientEmail] = useState('')
@@ -192,13 +195,20 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
 
   const handleClose = () => setAnchorEl(null)
 
+  const showMessage = (message: string, severity: 'success' | 'error' = 'success') => {
+    setSnackbarMessage(message)
+    setSnackbarSeverity(severity)
+    setSnackbarOpen(true)
+  }
+
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(currentUrl)
-      setSnackbarOpen(true)
+      showMessage('Link copied to clipboard!')
       handleClose()
     } catch (err) {
       console.error('Failed to copy link:', err)
+      showMessage('Failed to copy link', 'error')
     }
   }
 
@@ -239,7 +249,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
       window.location.reload()
     } catch (error) {
       console.error('Failed to claim credential:', error)
-      // TODO: Show error snackbar
+      showMessage('Failed to claim credential. Please try again.', 'error')
     } finally {
       setClaiming(false)
     }
@@ -264,13 +274,13 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
       
       // TODO: Implement offer endpoint
       console.log('Send offer to:', recipientEmail)
+      showMessage(`Invitation will be sent to ${recipientEmail}`)
       
       setOfferModalOpen(false)
       setRecipientEmail('')
-      // TODO: Show success snackbar
     } catch (error) {
       console.error('Failed to send offer:', error)
-      // TODO: Show error snackbar
+      showMessage('Failed to send invitation. Please try again.', 'error')
     } finally {
       setOffering(false)
     }
@@ -293,9 +303,9 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
       return `did:pkh:eip155:1:${currentUser.metamaskAddress}`
     }
     if (currentUser.googleId) {
-      return `https://live.linkedtrust.us/userids/google/${currentUser.googleId}`
+      return `${BASE_URL}/userids/google/${currentUser.googleId}`
     }
-    return `https://live.linkedtrust.us/users/${currentUser.id}`
+    return `${BASE_URL}/users/${currentUser.id}`
   }
 
   const userUri = getUserUri()
@@ -794,10 +804,10 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={() => setSnackbarOpen(false)}
-          message='Link copied to clipboard!'
+          message={snackbarMessage}
           sx={{
             '& .MuiSnackbarContent-root': {
-              backgroundColor: COLORS.primary
+              backgroundColor: snackbarSeverity === 'error' ? '#d32f2f' : COLORS.primary
             }
           }}
         />

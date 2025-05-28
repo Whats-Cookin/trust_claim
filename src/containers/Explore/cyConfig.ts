@@ -53,9 +53,9 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           height: 80,
           width: 80,
           shape: 'ellipse',
-          backgroundOpacity: 0,
-          borderOpacity: 0,
           'background-color': 'transparent',
+          'background-opacity': 0,
+          'border-width': 0,
           'overlay-opacity': 0.1,
           'overlay-color': '#000',
           'overlay-padding': 4
@@ -193,13 +193,11 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
                                 entType === 'ORGANIZATION' ? 'node-organization' : ''
             
             if (hasImage) {
-              // For nodes with images, make the image the full circle
+              // For nodes with images, show circular image with label below
               return `
                 <div class="custom-node-container ${nodeTypeClass} node-with-image">
-                  <div class="node-full-image" style="background-image: url(${data.image || data.thumbnail})"></div>
-                  <div class="node-label-box" style="background-color: ${bgColor}">
-                    <span>${truncateLabel(data.label, 30)}</span>
-                  </div>
+                  <div class="node-image-circle" style="background-image: url(${data.image || data.thumbnail})"></div>
+                  <div class="node-label-below">${truncateLabel(data.label, 30)}</div>
                 </div>
               `
             } else {

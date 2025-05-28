@@ -229,8 +229,7 @@ const Explore = (homeProps: IHomeProps) => {
 
       cy.elements().remove() // Clear any existing elements
 
-      console.log('Result was : ' + JSON.stringify(claimRes.data))
-      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes)
+      const { nodes, edges } = parseMultipleNodes(claimRes.data)
       
       // Limit initial nodes to 7
       let limitedNodes = nodes
@@ -244,7 +243,6 @@ const Explore = (homeProps: IHomeProps) => {
         )
       }
       
-      console.log('Adding nodes: ' + limitedNodes.length)
       cy.add({ nodes: limitedNodes, edges: limitedEdges } as any)
     } catch (err: any) {
       toggleSnackbar(true)

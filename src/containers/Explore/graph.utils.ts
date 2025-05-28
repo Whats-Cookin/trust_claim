@@ -88,23 +88,71 @@ const parseClaims = (claims: any) => {
 const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
-
-  console.log('About to parse each node from ' + JSON.stringify(data))
-  data.forEach((node: any) => {
-    // adding subject node
-    console.log('Parsing node ' + JSON.stringify(node))
-    parseSingleNode(nodes, edges, node)
-  })
-  console.log('FINALLY returning nodes ' + JSON.stringify(nodes) + ' and EDGES ' + JSON.stringify(edges))
+  
+  // Handle new GraphResponse structure
+  if (data.nodes && data.edges) {
+    // New format with separate nodes and edges arrays
+    data.nodes.forEach((node: any) => {
+      const nodeData = getNodeData(node)
+      if (nodeData) {
+        nodes.push(nodeData)
+      }
+    })
+    
+    data.edges.forEach((edge: any) => {
+      const claimType = edge.label || ''
+      const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+      
+      edges.push({
+        data: {
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          relation: edge.label,
+          raw: edge,
+          color: edgeStyle.color,
+          width: edgeStyle.width,
+          arrow: edgeStyle.arrow,
+          lineStyle: edgeStyle.style
+        }
+      })
+    })
+  } else if (Array.isArray(data)) {
+    // Old format - array of nodes with embedded edges
+    data.forEach((node: any) => {
+      parseSingleNode(nodes, edges, node)
+    })
+  } else {
+    // Single node with edges
+    parseSingleNode(nodes, edges, data)
+  }
+  
   return { nodes, edges }
 }
 
 const getNodeData = (node: any) => {
-  let uri = node.nodeUri || node.uri
+  // Handle both old and new node structures
+  let uri = node.nodeUri || node.uri || node.id
   let label = node.displayName || node.name || uri
-  if (label === 'Not Acceptable!' || label === 'Not Acceptable') {
-    console.log('Node name is ' + node.name)
-    label = ''
+  
+  // Handle empty or invalid labels
+  if (!label || label === '' || label === 'Not Acceptable!' || label === 'Not Acceptable') {
+    // Try to extract a meaningful label from the URI
+    if (uri) {
+      if (uri.includes('://')) {
+        // Extract domain from URL
+        try {
+          const url = new URL(uri)
+          label = url.hostname || url.pathname.split('/').pop() || uri
+        } catch {
+          label = uri.split('/').pop() || uri
+        }
+      } else {
+        label = uri.split('/').pop() || uri
+      }
+    } else {
+      label = 'Unknown'
+    }
   }
 
   let imageUrl = ''
@@ -126,14 +174,14 @@ const getNodeData = (node: any) => {
       entityData: node.entityData,
       confidence: node.confidence,
       stars: node.stars,
-      claim: node.claim // Include claim type for proper coloring
+      claim: node.claim, // Include claim type for proper coloring
+      uri: uri
     }
   }
   return nodeData
 }
 
 const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
-  console.log('IN single node node is ' + JSON.stringify(node))
   // adding subject node
   if (node.name && node.nodeUri) {
     const nodeData = getNodeData(node)
@@ -142,15 +190,17 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
     }
   }
 
-  // adding edge between subject and object
-  if (node.edgesFrom) {
-    node.edgesFrom.map((e: any) => {
-      if (nodes.indexOf((n: any) => n.id === e.endNode.id.toString()) > -1) return
+  // Check for node duplication to prevent duplicate nodes
+  const existingNodeIds = new Set(nodes.map((n: any) => n.data.id))
 
-      if (e.endNode) {
+  // adding edges from this node
+  if (node.edgesFrom) {
+    node.edgesFrom.forEach((e: any) => {
+      if (e.endNode && !existingNodeIds.has(e.endNode.id.toString())) {
         const nodeData = getNodeData(e.endNode)
         if (nodeData) {
           nodes.push(nodeData)
+          existingNodeIds.add(e.endNode.id.toString())
         }
       }
     })
@@ -162,10 +212,10 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
         
         return {
           data: {
-            id: e.id,
-            source: e.startNodeId,
-            target: e.endNodeId,
-            relation: e.label,
+            id: e.id.toString(),
+            source: e.startNodeId?.toString() || node.id.toString(),
+            target: e.endNodeId?.toString() || e.endNode?.id?.toString(),
+            relation: e.label || claimType,
             raw: e,
             color: edgeStyle.color,
             width: edgeStyle.width,
@@ -177,13 +227,15 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
     )
   }
 
+  // adding edges to this node
   if (node.edgesTo) {
-    node.edgesTo.map((e: any) => {
-      if (nodes.indexOf((n: any) => n.id === e.startNode.id.toString()) > -1) return
-
-      const nodeData = getNodeData(e.startNode)
-      if (nodeData) {
-        nodes.push(nodeData)
+    node.edgesTo.forEach((e: any) => {
+      if (e.startNode && !existingNodeIds.has(e.startNode.id.toString())) {
+        const nodeData = getNodeData(e.startNode)
+        if (nodeData) {
+          nodes.push(nodeData)
+          existingNodeIds.add(e.startNode.id.toString())
+        }
       }
     })
 
@@ -194,10 +246,10 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
         
         return {
           data: {
-            id: e.id,
-            source: e.endNodeId,
-            target: e.startNodeId,
-            relation: e.label,
+            id: e.id.toString(),
+            source: e.startNodeId?.toString() || e.startNode?.id?.toString(),
+            target: e.endNodeId?.toString() || node.id.toString(),
+            relation: e.label || claimType,
             raw: e,
             color: edgeStyle.color,
             width: edgeStyle.width,
@@ -209,7 +261,6 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
     )
   }
 
-  console.log('Returning Nodes ' + JSON.stringify(nodes) + ' and edges ' + JSON.stringify(edges))
   return { nodes, edges }
 }
 
