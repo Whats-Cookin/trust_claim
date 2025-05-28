@@ -3,14 +3,16 @@ import React, { useEffect, useState } from 'react'
 import * as api from '../../api'
 import { Link as RouterLink, useParams } from 'react-router-dom'
 import {
-  Container,
   Typography,
   CircularProgress,
   Box,
   useTheme,
   useMediaQuery,
   Button,
-  Chip
+  Chip,
+  Card,
+  CardContent,
+  Grid
 } from '@mui/material'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import backSvg from '../../assets/images/back.svg'
@@ -51,8 +53,7 @@ const ClaimReport: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Container
-        maxWidth='sm'
+      <Box
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -61,24 +62,24 @@ const ClaimReport: React.FC = () => {
         }}
       >
         <CircularProgress />
-      </Container>
+      </Box>
     )
   }
 
   if (error || !reportData) {
     return (
-      <Container maxWidth='md' sx={{ mt: 4 }}>
+      <Box sx={{ mt: 4, px: 4 }}>
         <Typography variant='body1' sx={{ color: theme.palette.texts }}>
           {error || 'Report data is not available.'}
         </Typography>
-      </Container>
+      </Box>
     )
   }
 
   const { claim, validations, relatedClaims, subjectNode } = reportData
 
   return (
-    <Container maxWidth="md" sx={{ py: 4, px: isMobile ? 2 : 3 }}>
+    <Box sx={{ py: 4, px: { xs: 2, sm: 3, md: 4, lg: 6, xl: 8 }, width: '100%' }}>
       {/* Simple back button */}
       <Button
         component={RouterLink}
@@ -178,7 +179,6 @@ const ClaimReport: React.FC = () => {
               alt="Claim" 
               style={{ 
                 width: '100%',
-                maxWidth: '600px',
                 height: 'auto',
                 borderRadius: '8px',
                 display: 'block'
@@ -242,9 +242,9 @@ const ClaimReport: React.FC = () => {
       {validations.length > 0 && (
         <Box sx={{ mb: 6 }}>
           <Typography 
-            variant="h6" 
+            variant="body2" 
             sx={{ 
-              mb: 3,
+              mb: 2,
               fontWeight: 500,
               color: theme.palette.texts 
             }}
@@ -253,73 +253,80 @@ const ClaimReport: React.FC = () => {
           </Typography>
 
           {validations.map((validation) => (
-            <Box 
-              key={validation.id} 
-              sx={{ 
+            <Card
+              key={validation.id}
+              sx={{
                 mb: 3,
-                pb: 3,
-                borderBottom: `1px solid ${theme.palette.divider}`
+                backgroundColor: theme.palette.background.paper,
+                boxShadow: 1,
+                borderRadius: 2
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <Chip 
-                  label={validation.claim} 
-                  size="small"
-                  sx={{ 
-                    fontSize: '0.75rem',
-                    height: '24px'
-                  }}
-                />
-                <Typography variant="caption" color="text.secondary">
-                  {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
-                </Typography>
-              </Box>
-              
-              {validation.statement && (
-                <Typography variant="body2" sx={{ mb: 2, lineHeight: 1.6 }}>
-                  {validation.statement}
-                </Typography>
-              )}
-              
-              {validation.image && (
-                <img 
-                  src={validation.image} 
-                  alt="Validation" 
-                  style={{ 
-                    width: '100%',
-                    maxWidth: '400px',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    display: 'block'
-                  }} 
-                />
-              )}
-              
-              {/* Source URI for validation */}
-              {validation.sourceURI && (
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: 'block',
-                    mt: 1.5,
-                    color: theme.palette.text.secondary,
-                    wordBreak: 'break-all'
-                  }}
-                >
-                  Source: <a 
-                    href={validation.sourceURI} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{ 
-                      color: theme.palette.text.secondary,
-                      textDecoration: 'underline'
-                    }}
-                  >
-                    {validation.sourceURI}
-                  </a>
-                </Typography>
-              )}
-            </Box>
+              <CardContent>
+                <Grid container spacing={3}>
+                  {validation.image && (
+                    <Grid item xs={12} md={5}>
+                      <Box
+                        component="img"
+                        src={validation.image}
+                        alt="Validation"
+                        sx={{
+                          width: '100%',
+                          height: 'auto',
+                          borderRadius: 1,
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </Grid>
+                  )}
+                  <Grid item xs={12} md={validation.image ? 7 : 12}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                      <Chip 
+                        label={validation.claim} 
+                        size="small"
+                        sx={{ 
+                          fontSize: '0.75rem',
+                          height: '24px'
+                        }}
+                      />
+                      <Typography variant="caption" color="text.secondary">
+                        {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
+                      </Typography>
+                    </Box>
+                    
+                    {validation.statement && (
+                      <Typography variant="body2" sx={{ mb: 2, lineHeight: 1.6 }}>
+                        {validation.statement}
+                      </Typography>
+                    )}
+                    
+                    {/* Source URI for validation */}
+                    {validation.sourceURI && (
+                      <Typography 
+                        variant="caption" 
+                        sx={{ 
+                          display: 'block',
+                          color: theme.palette.text.secondary,
+                          wordBreak: 'break-all'
+                        }}
+                      >
+                        Source: <a 
+                          href={validation.sourceURI} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{ 
+                            color: theme.palette.text.secondary,
+                            textDecoration: 'underline'
+                          }}
+                        >
+                          {validation.sourceURI}
+                        </a>
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
           ))}
         </Box>
       )}
@@ -397,7 +404,7 @@ const ClaimReport: React.FC = () => {
           ))}
         </Box>
       )}
-    </Container>
+    </Box>
   )
 }
 
