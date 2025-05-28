@@ -140,7 +140,7 @@ const ClaimReport: React.FC = () => {
         {/* Main Claim Details */}
         <Box sx={{ mb: 3 }}>
           <RenderClaimInfo 
-            claim={claim} 
+            claim={claim as any} 
             index={0}
             setSelectedIndex={setSelectedIndex}
             handleMenuClose={() => {}}
@@ -201,7 +201,7 @@ const ClaimReport: React.FC = () => {
             {validations.map((validation, index) => (
               <Box key={validation.id} sx={{ mb: 2 }}>
                 <RenderClaimInfo 
-                  claim={validation} 
+                  claim={validation as any} 
                   index={index}
                   setSelectedIndex={setSelectedIndex}
                   handleMenuClose={() => {}}
@@ -239,7 +239,7 @@ const ClaimReport: React.FC = () => {
             {relatedClaims.map((relatedClaim, index) => (
               <Box key={relatedClaim.id} sx={{ mb: 2 }}>
                 <RenderClaimInfo 
-                  claim={relatedClaim} 
+                  claim={relatedClaim as any} 
                   index={index}
                   setSelectedIndex={setSelectedIndex}
                   handleMenuClose={() => {}}
