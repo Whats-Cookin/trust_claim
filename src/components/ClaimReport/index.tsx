@@ -98,39 +98,51 @@ const ClaimReport: React.FC = () => {
         Back
       </Button>
 
-      {/* Subject Node Info */}
+      {/* Subject Node Info - More prominent display */}
       {(subjectNode || claim.subjectNode) && (
         <Box sx={{ 
           mb: 4, 
           p: 3, 
           backgroundColor: theme.palette.background.paper,
           borderRadius: 2,
-          boxShadow: 1
+          boxShadow: 2,
+          border: `1px solid ${theme.palette.divider}`
         }}>
-          <Typography variant="overline" sx={{ color: theme.palette.text.secondary, mb: 1, display: 'block' }}>
-            About
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
             {(subjectNode?.image || claim.subjectNode?.image) && (
               <Box
                 component="img"
                 src={subjectNode?.image || claim.subjectNode?.image}
                 alt="Subject"
                 sx={{
-                  width: 60,
-                  height: 60,
+                  width: 100,
+                  height: 100,
                   borderRadius: '50%',
-                  objectFit: 'cover'
+                  objectFit: 'cover',
+                  flexShrink: 0,
+                  boxShadow: 1
                 }}
               />
             )}
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 500 }}>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
                 {subjectNode?.name || claim.subjectNode?.name || 'Subject'}
               </Typography>
               {(subjectNode?.entType || claim.subjectNode?.entType) && (
-                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                  {subjectNode?.entType || claim.subjectNode?.entType}
+                <Chip 
+                  label={subjectNode?.entType || claim.subjectNode?.entType}
+                  size="small"
+                  sx={{ mb: 2 }}
+                />
+              )}
+              {(subjectNode?.descrip || claim.subjectNode?.descrip) && (
+                <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1 }}>
+                  {subjectNode?.descrip || claim.subjectNode?.descrip}
+                </Typography>
+              )}
+              {(subjectNode?.nodeUri || claim.subjectNode?.nodeUri) && (
+                <Typography variant="caption" sx={{ color: theme.palette.text.secondary, display: 'block' }}>
+                  URI: {subjectNode?.nodeUri || claim.subjectNode?.nodeUri}
                 </Typography>
               )}
             </Box>
@@ -138,10 +150,10 @@ const ClaimReport: React.FC = () => {
         </Box>
       )}
 
-      {/* Main Claim */}
+      {/* Main Claim - now secondary to the subject */}
       <Box sx={{ mb: 6 }}>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 500, color: theme.palette.texts }}>
-          {claim.claim}
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 500, color: theme.palette.texts }}>
+          Claim: {claim.claim}
         </Typography>
         
         {claim.statement && (
@@ -199,6 +211,31 @@ const ClaimReport: React.FC = () => {
             <span>• {Math.round(claim.confidence * 100)}% confidence</span>
           )}
         </Box>
+        
+        {/* Source URI */}
+        {claim.sourceURI && (
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              display: 'block',
+              mt: 1,
+              color: theme.palette.text.secondary,
+              wordBreak: 'break-all'
+            }}
+          >
+            Source: <a 
+              href={claim.sourceURI} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                color: theme.palette.text.secondary,
+                textDecoration: 'underline'
+              }}
+            >
+              {claim.sourceURI}
+            </a>
+          </Typography>
+        )}
       </Box>
 
       {/* Validations */}
@@ -257,6 +294,31 @@ const ClaimReport: React.FC = () => {
                   }} 
                 />
               )}
+              
+              {/* Source URI for validation */}
+              {validation.sourceURI && (
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    display: 'block',
+                    mt: 1.5,
+                    color: theme.palette.text.secondary,
+                    wordBreak: 'break-all'
+                  }}
+                >
+                  Source: <a 
+                    href={validation.sourceURI} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ 
+                      color: theme.palette.text.secondary,
+                      textDecoration: 'underline'
+                    }}
+                  >
+                    {validation.sourceURI}
+                  </a>
+                </Typography>
+              )}
             </Box>
           ))}
         </Box>
@@ -312,6 +374,22 @@ const ClaimReport: React.FC = () => {
                     }}
                   >
                     {relatedClaim.statement}
+                  </Typography>
+                )}
+                {/* Source URI for related claims */}
+                {relatedClaim.sourceURI && (
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      display: 'block',
+                      mt: 0.5,
+                      color: theme.palette.text.secondary,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Source: {relatedClaim.sourceURI}
                   </Typography>
                 )}
               </RouterLink>
