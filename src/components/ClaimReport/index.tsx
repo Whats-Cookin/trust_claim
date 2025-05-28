@@ -140,7 +140,7 @@ const ClaimReport: React.FC = () => {
           gap: 2, 
           flexWrap: 'wrap',
           fontSize: '0.875rem',
-          color: theme.palette.textSecondary
+          color: theme.palette.text.secondary
         }}>
           {claim.effectiveDate && (
             <span>
@@ -192,7 +192,7 @@ const ClaimReport: React.FC = () => {
                     height: '24px'
                   }}
                 />
-                <Typography variant="caption" color="textSecondary">
+                <Typography variant="caption" color="text.secondary">
                   {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
                 </Typography>
               </Box>
@@ -261,7 +261,7 @@ const ClaimReport: React.FC = () => {
                 {relatedClaim.statement && (
                   <Typography 
                     variant="body2" 
-                    color="textSecondary"
+                    color="text.secondary"
                     sx={{
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
