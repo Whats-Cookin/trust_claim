@@ -194,8 +194,10 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
               // For nodes with images, show circular image with label below
               return `
                 <div class="custom-node-container ${nodeTypeClass} node-with-image">
-                  <div class="node-image-circle" style="background-image: url(${data.image || data.thumbnail})"></div>
-                  <div class="node-label-below">${truncateLabel(data.label, 30)}</div>
+                  <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <div class="node-image-circle" style="background-image: url(${data.image || data.thumbnail})"></div>
+                    <div class="node-label-below">${truncateLabel(data.label, 30)}</div>
+                  </div>
                 </div>
               `
             } else {

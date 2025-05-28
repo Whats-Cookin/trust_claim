@@ -23,6 +23,7 @@ interface ReportData {
     total: number
   }
   relatedClaims: any[]
+  subjectNode?: any
 }
 
 const ClaimReport: React.FC = () => {
@@ -74,7 +75,7 @@ const ClaimReport: React.FC = () => {
     )
   }
 
-  const { claim, validations, relatedClaims } = reportData
+  const { claim, validations, relatedClaims, subjectNode } = reportData
 
   return (
     <Container maxWidth="md" sx={{ py: 4, px: isMobile ? 2 : 3 }}>
@@ -96,6 +97,46 @@ const ClaimReport: React.FC = () => {
         <img src={backSvg} alt='back' style={{ width: '16px', marginRight: '8px' }} />
         Back
       </Button>
+
+      {/* Subject Node Info */}
+      {(subjectNode || claim.subjectNode) && (
+        <Box sx={{ 
+          mb: 4, 
+          p: 3, 
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 2,
+          boxShadow: 1
+        }}>
+          <Typography variant="overline" sx={{ color: theme.palette.text.secondary, mb: 1, display: 'block' }}>
+            About
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {(subjectNode?.image || claim.subjectNode?.image) && (
+              <Box
+                component="img"
+                src={subjectNode?.image || claim.subjectNode?.image}
+                alt="Subject"
+                sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  objectFit: 'cover'
+                }}
+              />
+            )}
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                {subjectNode?.name || claim.subjectNode?.name || 'Subject'}
+              </Typography>
+              {(subjectNode?.entType || claim.subjectNode?.entType) && (
+                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                  {subjectNode?.entType || claim.subjectNode?.entType}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        </Box>
+      )}
 
       {/* Main Claim */}
       <Box sx={{ mb: 6 }}>

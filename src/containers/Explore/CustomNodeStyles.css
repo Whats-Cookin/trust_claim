@@ -18,19 +18,22 @@
 /* Non-claim nodes (circles) */
 .custom-node-container:not(.node-claim) {
   width: 80px;
-  height: 100px; /* Extra height for label */
+  height: auto; /* Changed from fixed height to auto */
+  min-height: 100px; /* Ensure minimum space */
 }
 
 /* Person nodes (perfect circles) */
 .node-person {
-  width: 90px;
-  height: 110px;
+  width: 80px;
+  height: auto;
+  min-height: 110px;
 }
 
 /* Organization nodes (circles for consistency) */
 .node-organization {
-  width: 100px;
-  height: 120px;
+  width: 80px;
+  height: auto;
+  min-height: 120px;
 }
 
 /* Claim nodes (rectangles) */
@@ -44,10 +47,11 @@
   background: transparent !important;
   border: none !important;
   padding: 0;
-  overflow: visible;
+  overflow: visible !important; /* Ensure labels aren't cut off */
+  height: auto !important;
 }
 
-/* Circular image for nodes with thumbnails */
+/* Circular image for nodes with thumbnails - always perfect circles */
 .node-image-circle {
   width: 80px;
   height: 80px;
@@ -56,16 +60,14 @@
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   margin-bottom: 8px;
+  flex-shrink: 0; /* Prevent distortion */
 }
 
-.node-person .node-image-circle {
-  width: 90px;
-  height: 90px;
-}
-
+/* Keep all images the same size for perfect circles */
+.node-person .node-image-circle,
 .node-organization .node-image-circle {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 }
 
 /* Label below image nodes */
@@ -79,7 +81,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 4px 8px;
-  background-color: #f5f5f5;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -114,9 +116,7 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.node-with-image:hover .node-label-below {
-  background-color: #e8e8e8;
-}
+/* Removed hover background change */
 
 /* Remove any background for the cytoscape container */
 .cy-container {

@@ -11,7 +11,7 @@ import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
 import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
-import NodeDetails from '../../components/NodeDetails'
+import GraphDetailModal from '../../components/GraphDetailModal'
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
 
 // Register the extension
@@ -25,8 +25,9 @@ const Explore = (homeProps: IHomeProps) => {
   const { setLoading, setSnackbarMessage, toggleSnackbar, isDarkMode } = homeProps
   const ref = useRef<any>(null)
   const cyRef = useRef<Cytoscape.Core | null>(null)
-  const [showDetails, setShowDetails] = useState<boolean>(false)
-  const [selectedClaim, setSelectedClaim] = useState<any>(null)
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalType, setModalType] = useState<'node' | 'edge'>('node')
+  const [modalData, setModalData] = useState<any>(null)
   const [startNode, setStartNode] = useState<any>(null)
   const [endNode, setEndNode] = useState<any>(null)
   const [cy, setCy] = useState<Cytoscape.Core>()
@@ -146,7 +147,24 @@ const Explore = (homeProps: IHomeProps) => {
           )
         }
         
-        cy.add({ nodes: newNodes, edges: newEdges } as any)
+        // Filter out nodes that already exist in the graph
+        const existingNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
+        const actuallyNewNodes = newNodes.filter((node: any) => !existingNodeIds.has(node.data.id))
+        
+        // Only add and re-layout if we have truly new nodes to add
+        if (actuallyNewNodes.length > 0) {
+          // Only include edges that connect to nodes in the graph
+          const allNodeIds = new Set([...existingNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
+          const relevantEdges = newEdges.filter((edge: any) => 
+            allNodeIds.has(edge.data.source) && allNodeIds.has(edge.data.target)
+          )
+          
+          cy.add({ nodes: actuallyNewNodes, edges: relevantEdges } as any)
+          runCy(cy, false) // Re-layout with new nodes
+        } else {
+          setSnackbarMessage('No new connections found')
+          toggleSnackbar(true)
+        }
       } else {
         setSnackbarMessage('No results found')
         toggleSnackbar(true)
@@ -158,7 +176,6 @@ const Explore = (homeProps: IHomeProps) => {
       console.trace()
     } finally {
       setLoading(false)
-      runCy(cy, false) // Don't auto-fit when adding new nodes
     }
   }
 
@@ -166,26 +183,26 @@ const Explore = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      const currentClaim = event.target.data('raw')
+      const nodeData = event.target.data('raw')
+      const nodeId = event.target.data('id')
 
-      if (currentClaim) {
-        setSelectedClaim(currentClaim)
-        fetchRelatedClaims(event.target.data('id'), page.current)
+      if (nodeData && nodeId) {
+        // Expand the graph on left click
+        fetchRelatedClaims(nodeId, page.current)
       }
     }
   }
 
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
-    const currentClaim = event?.target?.data('raw')?.claim
-    const endNode = event?.target?.data('raw')?.endNode
-    const startNode = event?.target?.data('raw')?.claim
-
-    if (currentClaim) {
-      setSelectedClaim(currentClaim)
-      setShowDetails(true)
-      setStartNode(startNode)
-      setEndNode(endNode)
+    const edgeData = event?.target?.data('raw')
+    
+    if (edgeData) {
+      setModalData(edgeData)
+      setStartNode(edgeData.startNode)
+      setEndNode(edgeData.endNode)
+      setModalType('edge')
+      setModalOpen(true)
     }
   }
 
@@ -205,20 +222,22 @@ const Explore = (homeProps: IHomeProps) => {
 
   const handleMouseRightClick = (event: any) => {
     event.preventDefault()
-    const claim = event.target
-    const currentClaim = claim.data('raw')
+    event.stopPropagation()
+    const element = event.target
+    const data = element.data('raw')
 
-    if (claim.isNode() && currentClaim) {
-      setSelectedClaim(currentClaim)
-      navigate('/claim')
-    } else if (claim.isEdge() && currentClaim) {
-      setSelectedClaim(currentClaim)
-      navigate({
-        pathname: '/validate',
-        search: `?subject=${BACKEND_BASE_URL}/claims/${currentClaim.claimId}`
-      })
-    } else {
-      console.warn('Right-click target is neither a node nor a valid edge with claimId')
+    if (element.isNode() && data) {
+      // Show node details modal on right-click
+      setModalData(data)
+      setModalType('node')
+      setModalOpen(true)
+    } else if (element.isEdge() && data) {
+      // Show edge details modal on right-click
+      setModalData(data)
+      setStartNode(data.startNode)
+      setEndNode(data.endNode)
+      setModalType('edge')
+      setModalOpen(true)
     }
   }
 
@@ -320,29 +339,26 @@ const Explore = (homeProps: IHomeProps) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setShowDetails(false)
+        setModalOpen(false)
       }
     }
 
     window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
-  }, [showDetails])
+  }, [modalOpen])
 
   return (
     <>
       <Box sx={{ width: '100%', height: '100vh', position: 'relative' }}>
-        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />
-        {showDetails && (
-          <NodeDetails
-            open={showDetails}
-            setOpen={setShowDetails}
-            selectedClaim={selectedClaim}
-            isDarkMode={isDarkMode}
-            claimImg={selectedClaim.img || ''}
-            startNode={startNode}
-            endNode={endNode}
-          />
-        )}
+        <Box ref={ref} sx={styles.cy} />
+        <GraphDetailModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          type={modalType}
+          data={modalData}
+          startNode={startNode}
+          endNode={endNode}
+        />
       </Box>
       <GraphinfButton />
       <Tooltip title="Fit to Screen" placement="left">
