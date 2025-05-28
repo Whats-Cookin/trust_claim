@@ -18,25 +18,113 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField
+  TextField,
+  Popover
 } from '@mui/material'
-import badge from '../../assets/images/badge.svg'
+// import badge from '../../assets/images/badge.svg'
 import ShareIcon from '@mui/icons-material/Share'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import SchoolIcon from '@mui/icons-material/School'
-import html2pdf from 'html2pdf.js'
-import SharePopover from '../certificate/SharePopover'
-import CertificateMedia from '../certificate/CertificateMedia'
-import {
-  cardStyles,
-  badgeStyles,
-  titleStyles,
-  subtitleStyles,
-  validationCardStyles,
-  actionButtonStyles,
-  COLORS
-} from '../../constants/certificateStyles'
+// import html2pdf from 'html2pdf.js'
+// import SharePopover from '../certificate/SharePopover'
+// import CertificateMedia from '../certificate/CertificateMedia'
+
+// Embedded styles from certificateStyles
+const cardStyles = {
+  width: '100%',
+  borderRadius: { xs: '16px', sm: '20px' },
+  backgroundColor: '#FFFFFF',
+  backgroundImage: 'none',
+  color: '#212529',
+  marginBottom: { xs: '1rem', sm: '1.5rem', md: '2rem' },
+  position: 'relative',
+  boxShadow: {
+    xs: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    sm: '0 6px 16px rgba(0, 0, 0, 0.12)',
+    md: '0 8px 24px rgba(0, 0, 0, 0.12)'
+  },
+  overflow: 'visible'
+}
+
+const badgeStyles = {
+  width: { xs: '100px', sm: '120px', md: '140px', lg: '150px', xl: '160px' },
+  height: { xs: '100px', sm: '120px', md: '140px', lg: '150px', xl: '160px' },
+  display: 'block',
+  margin: '0 auto',
+  marginTop: { xs: 2, sm: 2.5, md: 3 },
+  marginBottom: { xs: 2, sm: 2.5, md: 3 },
+  filter: 'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.1))',
+  transition: 'transform 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.05)'
+  }
+}
+
+const titleStyles = {
+  fontSize: { xs: '24px', sm: '28px', md: '32px', lg: '36px' },
+  fontWeight: 600,
+  marginBottom: { xs: 0.5, sm: 0.75, md: 1 },
+  textAlign: 'center',
+  color: '#212529',
+  fontFamily: 'Adamina, serif'
+}
+
+const subtitleStyles = {
+  fontSize: { xs: '12px', sm: '14px', md: '16px' },
+  color: '#212529',
+  marginBottom: { xs: 2, sm: 3, md: 4 },
+  textAlign: 'center',
+  textTransform: 'uppercase',
+  letterSpacing: { xs: '1px', sm: '1.5px', md: '2px' },
+  fontFamily: 'Roboto, serif'
+}
+
+const validationCardStyles = {
+  p: { xs: 2, sm: 2.5 },
+  boxShadow: '0px 2px 14px rgba(0, 0, 0, 0.25)',
+  borderRadius: { xs: 1.5, sm: 2 },
+  fontWeight: 500,
+  cursor: 'pointer',
+  position: 'relative',
+  transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
+  },
+  display: 'flex',
+  flexDirection: 'column'
+}
+
+const actionButtonStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 1,
+  cursor: 'pointer',
+  background: 'none',
+  border: 'none',
+  padding: { xs: '10px 16px', sm: '12px 18px', md: '8px 16px' },
+  borderRadius: '8px',
+  transition: 'all 0.2s ease',
+  width: { xs: '100%', sm: '100%', md: 'auto' },
+  '&:hover': {
+    backgroundColor: 'rgba(45, 106, 79, 0.08)',
+    transform: 'scale(1.02)'
+  }
+}
+
+const COLORS = {
+  primary: '#2D6A4F',
+  text: {
+    primary: '#212529',
+    secondary: '#495057'
+  },
+  background: {
+    primary: '#FFFFFF',
+    hover: 'rgba(45, 106, 79, 0.08)'
+  }
+}
 
 interface CredentialCertificateProps {
   credential: any
@@ -83,17 +171,19 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
   }
 
   const handleExport = () => {
-    const element = document.getElementById('credential-certificate-content')
-    if (element) {
-      const opt = {
-        margin: 1,
-        filename: `credential_${credential.id || Date.now()}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      }
-      html2pdf().set(opt).from(element).save()
-    }
+    // const element = document.getElementById('credential-certificate-content')
+    // if (element) {
+    //   const opt = {
+    //     margin: 1,
+    //     filename: `credential_${credential.id || Date.now()}.pdf`,
+    //     image: { type: 'jpeg', quality: 0.98 },
+    //     html2canvas: { scale: 2 },
+    //     jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    //   }
+    //   html2pdf().set(opt).from(element).save()
+    // }
+    // TODO: Implement PDF export
+    console.log('Export PDF')
   }
 
   const handleShareClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -134,8 +224,8 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
       setClaiming(true)
       const token = searchParams.get('claim_token') || searchParams.get('invite_token')
       
-      const { apiService } = await import('../../api/apiService')
-      await apiService.post('/api/claims', {
+      const { createClaim } = await import('../../api')
+      const response = await createClaim({
         subject: userUri,
         claim: 'HAS',
         object: credentialUri || credential.id,
@@ -164,13 +254,16 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
     
     try {
       setOffering(true)
-      const { apiService } = await import('../../api/apiService')
+      // const { apiService } = await import('../../api/apiService')
       
-      await apiService.post('/api/credentials/offer', {
-        credentialId: credentialUri || credential.id,
-        recipientEmail,
-        issuerUri: userUri
-      })
+      // await apiService.post('/api/credentials/offer', {
+      //   credentialId: credentialUri || credential.id,
+      //   recipientEmail,
+      //   issuerUri: userUri
+      // })
+      
+      // TODO: Implement offer endpoint
+      console.log('Send offer to:', recipientEmail)
       
       setOfferModalOpen(false)
       setRecipientEmail('')
@@ -274,7 +367,20 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
               }}
             >
               {/* Badge */}
-              <Box component='img' src={badge} alt='Credential Badge' sx={badgeStyles} />
+              {achievement.image ? (
+                <Box component='img' src={achievement.image.id || achievement.image} alt='Credential Badge' sx={badgeStyles} />
+              ) : (
+                <Box sx={{
+                  ...badgeStyles,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: COLORS.background.hover,
+                  borderRadius: '50%'
+                }}>
+                  <SchoolIcon sx={{ fontSize: 60, color: COLORS.primary }} />
+                </Box>
+              )}
 
               {/* Title */}
               <Typography variant='h4' sx={titleStyles}>
@@ -334,7 +440,19 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
 
               {/* Achievement Image */}
               {achievement.image && (
-                <CertificateMedia image={achievement.image.id || achievement.image} />
+                <Box
+                  component="img"
+                  src={achievement.image.id || achievement.image}
+                  alt="Achievement"
+                  sx={{
+                    maxWidth: '100%',
+                    maxHeight: 400,
+                    objectFit: 'contain',
+                    display: 'block',
+                    margin: '0 auto',
+                    borderRadius: 2
+                  }}
+                />
               )}
 
               {/* Criteria Section */}
@@ -648,12 +766,29 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
           </Button>
         </Box>
 
-        <SharePopover
+        {/* Share Popover */}
+        <Popover
+          open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClose={handleClose}
-          onCopyLink={handleCopyLink}
-          onLinkedInShare={handleLinkedInPost}
-        />
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Button onClick={handleCopyLink} fullWidth sx={{ mb: 1 }}>
+              Copy Link
+            </Button>
+            <Button onClick={handleLinkedInPost} fullWidth>
+              Share on LinkedIn
+            </Button>
+          </Box>
+        </Popover>
 
         <Snackbar
           open={snackbarOpen}

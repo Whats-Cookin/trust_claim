@@ -11,7 +11,7 @@ import {
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { CredentialCard } from './CredentialCard';
-import { apiService } from '../api/apiService';
+import * as api from '../api';
 
 interface CredentialFeedProps {
   subjectUri?: string;
@@ -36,14 +36,15 @@ export const CredentialFeed: React.FC<CredentialFeedProps> = ({
       setLoading(true);
       setError(null);
 
-      // For now, fetch claims with HAS predicate that point to credentials
-      // In future, might have dedicated credential feed endpoint
-      const endpoint = subjectUri 
-        ? `/api/claims/subject/${encodeURIComponent(subjectUri)}`
-        : '/api/feed';
-      
-      const response = await apiService.get(endpoint);
-      const claims = response.data.claims || response.data;
+      // Fetch claims based on subject or general feed
+      let claims;
+      if (subjectUri) {
+        const response = await api.getClaimsBySubject(subjectUri);
+        claims = response.data.claims;
+      } else {
+        const response = await api.getFeed();
+        claims = response.data.entries; // FeedResponse has entries, not claims
+      }
 
       // Filter for credential claims and fetch credential details
       const credentialClaims = claims.filter((claim: any) => 
@@ -54,7 +55,7 @@ export const CredentialFeed: React.FC<CredentialFeedProps> = ({
       // Fetch actual credential data for each claim
       const credentialPromises = credentialClaims.slice(0, limit).map(async (claim: any) => {
         try {
-          const credResponse = await apiService.get(`/api/credentials/${encodeURIComponent(claim.object)}`);
+          const credResponse = await api.getCredential(claim.object);
           return credResponse.data.credential;
         } catch (err) {
           console.error(`Failed to fetch credential ${claim.object}:`, err);

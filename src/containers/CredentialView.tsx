@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import CredentialCertificate from '../components/credential/CredentialCertificate';
-import { apiService } from '../api/apiService';
+import * as api from '../api';
 import { useAuth } from '../hooks/useAuth';
 
 interface CredentialData {
@@ -30,7 +30,7 @@ const CredentialView: React.FC = () => {
         setError(null);
 
         // Fetch credential from API
-        const response = await apiService.get(`/api/credentials/${encodeURIComponent(uri)}`);
+        const response = await api.getCredential(uri);
         
         if (!response.data || !response.data.credential) {
           throw new Error('Invalid credential data received');
