@@ -25,6 +25,8 @@ export interface Claim {
   issuerId?: string
   // Keep some legacy fields during migration
   claim_id?: number  // same as id
+  // Image from associated nodes (added by report endpoint)
+  image?: string | null
 }
 
 export interface FeedResponse {

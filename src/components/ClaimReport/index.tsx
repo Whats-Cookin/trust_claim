@@ -144,9 +144,7 @@ const ClaimReport: React.FC = () => {
     )
   }
 
-  console.log('ClaimReport version: 2024-01-09-images-v2');
   const { claim, validations, validationSummary, relatedClaims } = reportData
-  console.log('Validation example:', validations[0])
 
   return (
     <Box sx={{ width: '100%', py: '2rem', px: '8px', pl: isMediumScreen ? '8px' : '60px' }}>
@@ -249,10 +247,10 @@ const ClaimReport: React.FC = () => {
                   handleMenuClose={() => {}}
                 />
                 {/* Show validation image if present */}
-                {(validation as any).image && (
+                {validation.image && (
                   <Box sx={{ mt: 2, ml: 2 }}>
                     <img 
-                      src={(validation as any).image} 
+                      src={validation.image} 
                       alt="Validation" 
                       style={{ 
                         maxWidth: '300px', 
@@ -302,10 +300,10 @@ const ClaimReport: React.FC = () => {
                   handleMenuClose={() => {}}
                 />
                 {/* Show related claim image if present */}
-                {(relatedClaim as any).image && (
+                {relatedClaim.image && (
                   <Box sx={{ mt: 2, ml: 2 }}>
                     <img 
-                      src={(relatedClaim as any).image} 
+                      src={relatedClaim.image} 
                       alt="Related claim" 
                       style={{ 
                         maxWidth: '300px', 
