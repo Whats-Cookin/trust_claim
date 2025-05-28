@@ -1,9 +1,6 @@
 import cytoscape from 'cytoscape'
 import { Theme } from '@mui/material'
-import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
 import { nodeColors, edgeColors, primaryColors } from '../../theme/colors'
-
-cytoscape.use(cytoscapeNodeHtmlLabel)
 
 const truncateLabel = (label: string, maxLength: number) => {
   if (label.length <= maxLength) {
@@ -158,7 +155,8 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
     },
     ready: function (this: cytoscape.Core) {
       const cy = this
-      cy.nodeHtmlLabel([
+      try {
+        cy.nodeHtmlLabel([
         {
           query: 'node',
           halign: 'center',
@@ -213,6 +211,9 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           }
         }
       ])
+      } catch (err) {
+        console.error('Error initializing nodeHtmlLabel:', err)
+      }
     }
   }
 }

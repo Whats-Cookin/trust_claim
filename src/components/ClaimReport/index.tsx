@@ -162,6 +162,20 @@ const ClaimReport: React.FC = () => {
         }}
       >
         {/* Main Claim Details */}
+        {claim.image && (
+          <Box sx={{ mb: 2 }}>
+            <img 
+              src={claim.image} 
+              alt="Claim" 
+              style={{ 
+                maxWidth: '100%', 
+                height: 'auto',
+                borderRadius: '8px'
+              }} 
+            />
+          </Box>
+        )}
+        
         <Box sx={{ mb: 3 }}>
           <RenderClaimInfo 
             claim={claimToStringRecord(claim)} 
@@ -171,47 +185,7 @@ const ClaimReport: React.FC = () => {
           />
         </Box>
 
-        {/* Show image if present */}
-        {claim.image && (
-          <Box sx={{ mb: 3, textAlign: 'center' }}>
-            <img 
-              src={claim.image} 
-              alt="Claim" 
-              style={{ 
-                maxWidth: '100%', 
-                maxHeight: '400px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-              }} 
-            />
-          </Box>
-        )}
 
-        {/* Validation Summary */}
-        {validationSummary.total > 0 && (
-          <Box sx={{ display: 'flex', gap: 1, mb: 3, flexWrap: 'wrap' }}>
-            <Chip 
-              label={`${validationSummary.agrees} Agree`} 
-              color="success" 
-              variant={validationSummary.agrees > 0 ? "filled" : "outlined"}
-            />
-            <Chip 
-              label={`${validationSummary.disagrees} Disagree`} 
-              color="error"
-              variant={validationSummary.disagrees > 0 ? "filled" : "outlined"}
-            />
-            <Chip 
-              label={`${validationSummary.confirms} Confirm`} 
-              color="info"
-              variant={validationSummary.confirms > 0 ? "filled" : "outlined"}
-            />
-            <Chip 
-              label={`${validationSummary.refutes} Refute`} 
-              color="warning"
-              variant={validationSummary.refutes > 0 ? "filled" : "outlined"}
-            />
-          </Box>
-        )}
 
         {/* Validations */}
         {validations.length > 0 && (
@@ -239,28 +213,27 @@ const ClaimReport: React.FC = () => {
             </Box>
 
             {validations.map((validation, index) => (
-              <Box key={validation.id} sx={{ mb: 2 }}>
+              <Box key={validation.id} sx={{ mb: 3 }}>
+                {/* Show validation image if present */}
+                {validation.image && (
+                  <Box sx={{ mb: 2 }}>
+                    <img 
+                      src={validation.image} 
+                      alt="Validation" 
+                      style={{ 
+                        maxWidth: '100%', 
+                        height: 'auto',
+                        borderRadius: '8px'
+                      }} 
+                    />
+                  </Box>
+                )}
                 <RenderClaimInfo 
                   claim={claimToStringRecord(validation)} 
                   index={index}
                   setSelectedIndex={setSelectedIndex}
                   handleMenuClose={() => {}}
                 />
-                {/* Show validation image if present */}
-                {validation.image && (
-                  <Box sx={{ mt: 2, ml: 2 }}>
-                    <img 
-                      src={validation.image} 
-                      alt="Validation" 
-                      style={{ 
-                        maxWidth: '300px', 
-                        maxHeight: '200px',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                      }} 
-                    />
-                  </Box>
-                )}
               </Box>
             ))}
           </>
@@ -292,28 +265,27 @@ const ClaimReport: React.FC = () => {
             </Box>
 
             {relatedClaims.map((relatedClaim, index) => (
-              <Box key={relatedClaim.id} sx={{ mb: 2 }}>
+              <Box key={relatedClaim.id} sx={{ mb: 3 }}>
+                {/* Show related claim image if present */}
+                {relatedClaim.image && (
+                  <Box sx={{ mb: 2 }}>
+                    <img 
+                      src={relatedClaim.image} 
+                      alt="Related claim" 
+                      style={{ 
+                        maxWidth: '100%', 
+                        height: 'auto',
+                        borderRadius: '8px'
+                      }} 
+                    />
+                  </Box>
+                )}
                 <RenderClaimInfo 
                   claim={claimToStringRecord(relatedClaim)} 
                   index={index}
                   setSelectedIndex={setSelectedIndex}
                   handleMenuClose={() => {}}
                 />
-                {/* Show related claim image if present */}
-                {relatedClaim.image && (
-                  <Box sx={{ mt: 2, ml: 2 }}>
-                    <img 
-                      src={relatedClaim.image} 
-                      alt="Related claim" 
-                      style={{ 
-                        maxWidth: '300px', 
-                        maxHeight: '200px',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                      }} 
-                    />
-                  </Box>
-                )}
               </Box>
             ))}
           </>

@@ -6,17 +6,18 @@ import cyConfig from './cyConfig'
 import * as api from '../../api'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { Box, useMediaQuery, useTheme } from '@mui/material'
+import { Box, useMediaQuery, useTheme, Fab, Tooltip } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
 import { parseMultipleNodes, parseSingleNode } from './graph.utils'
-import 'cytoscape-node-html-label'
+import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
-import MainContainer from '../../components/MainContainer'
 import NodeDetails from '../../components/NodeDetails'
-import { s } from 'vitest/dist/types-e3c9754d'
-import { set } from 'lodash'
-import { Fab, Tooltip } from '@mui/material'
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
+
+// Register the extension
+if (typeof cytoscapeNodeHtmlLabel === 'function') {
+  Cytoscape.use(cytoscapeNodeHtmlLabel)
+}
 
 const Explore = (homeProps: IHomeProps) => {
   const { nodeId } = useParams<{ nodeId: string }>()
@@ -225,11 +226,17 @@ const Explore = (homeProps: IHomeProps) => {
     try {
       // First fetch the central node
       const claimRes = await api.getGraph(claimId)
-      if (!cy) return
+      console.log('Graph API response:', claimRes.data)
+      
+      if (!cy) {
+        console.error('Cytoscape instance not initialized')
+        return
+      }
 
       cy.elements().remove() // Clear any existing elements
 
       const { nodes, edges } = parseMultipleNodes(claimRes.data)
+      console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
       
       // Limit initial nodes to 7
       let limitedNodes = nodes
@@ -282,9 +289,15 @@ const Explore = (homeProps: IHomeProps) => {
 
   useEffect(() => {
     if (!cyRef.current && ref.current) {
-      const newCy = Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions))
-      setCy(newCy)
-      cyRef.current = newCy
+      try {
+        console.log('Initializing Cytoscape...')
+        const newCy = Cytoscape(cyConfig(ref.current, theme, layoutName, layoutOptions))
+        setCy(newCy)
+        cyRef.current = newCy
+        console.log('Cytoscape initialized successfully')
+      } catch (err) {
+        console.error('Failed to initialize Cytoscape:', err)
+      }
     }
   }, [theme, layoutName, layoutOptions])
 
@@ -308,8 +321,8 @@ const Explore = (homeProps: IHomeProps) => {
 
   return (
     <>
-      <MainContainer>
-        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />{' '}
+      <Box sx={{ width: '100%', height: '100vh', position: 'relative' }}>
+        <Box ref={ref} sx={{ ...styles.cy, display: showDetails ? 'none' : 'block' }} />
         {showDetails && (
           <NodeDetails
             open={showDetails}
@@ -321,7 +334,7 @@ const Explore = (homeProps: IHomeProps) => {
             endNode={endNode}
           />
         )}
-      </MainContainer>
+      </Box>
       <GraphinfButton />
       <Tooltip title="Fit to Screen" placement="left">
         <Fab
