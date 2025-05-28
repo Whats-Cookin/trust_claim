@@ -41,6 +41,7 @@ const ClaimReport: React.FC = () => {
       setIsLoading(true)
       try {
         const response = await api.getClaimReport(claimId!)
+        console.log('Report data received:', response.data)
         setReportData(response.data as any)
       } catch (err) {
         setError('Failed to fetch report data')
@@ -99,8 +100,8 @@ const ClaimReport: React.FC = () => {
         Back
       </Button>
 
-      {/* Subject Node Info - More prominent display */}
-      {(subjectNode || claim.subjectNode) && (
+      {/* Subject - What this report is about */}
+      {(subjectNode || claim.subjectNode || claim.subject) && (
         <Box sx={{ 
           mb: 4, 
           p: 3, 
@@ -109,45 +110,68 @@ const ClaimReport: React.FC = () => {
           boxShadow: 2,
           border: `1px solid ${theme.palette.divider}`
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
-            {(subjectNode?.image || claim.subjectNode?.image) && (
-              <Box
-                component="img"
-                src={subjectNode?.image || claim.subjectNode?.image}
-                alt="Subject"
-                sx={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  flexShrink: 0,
-                  boxShadow: 1
-                }}
-              />
-            )}
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-                {subjectNode?.name || claim.subjectNode?.name || 'Subject'}
-              </Typography>
-              {(subjectNode?.entType || claim.subjectNode?.entType) && (
-                <Chip 
-                  label={subjectNode?.entType || claim.subjectNode?.entType}
-                  size="small"
-                  sx={{ mb: 2 }}
+          {(subjectNode || claim.subjectNode) ? (
+            // Full subject node info if available
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
+              {(subjectNode?.image || claim.subjectNode?.image) && (
+                <Box
+                  component="img"
+                  src={subjectNode?.image || claim.subjectNode?.image}
+                  alt="Subject"
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    flexShrink: 0,
+                    boxShadow: 1
+                  }}
                 />
               )}
-              {(subjectNode?.descrip || claim.subjectNode?.descrip) && (
-                <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1 }}>
-                  {subjectNode?.descrip || claim.subjectNode?.descrip}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
+                  {subjectNode?.name || claim.subjectNode?.name || 'Subject'}
                 </Typography>
-              )}
-              {(subjectNode?.nodeUri || claim.subjectNode?.nodeUri) && (
-                <Typography variant="caption" sx={{ color: theme.palette.text.secondary, display: 'block' }}>
-                  URI: {subjectNode?.nodeUri || claim.subjectNode?.nodeUri}
-                </Typography>
-              )}
+                {(subjectNode?.entType || claim.subjectNode?.entType) && (
+                  <Chip 
+                    label={subjectNode?.entType || claim.subjectNode?.entType}
+                    size="small"
+                    sx={{ mb: 2 }}
+                  />
+                )}
+                {(subjectNode?.descrip || claim.subjectNode?.descrip) && (
+                  <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1 }}>
+                    {subjectNode?.descrip || claim.subjectNode?.descrip}
+                  </Typography>
+                )}
+                {(subjectNode?.nodeUri || claim.subjectNode?.nodeUri) && (
+                  <Typography variant="caption" sx={{ color: theme.palette.text.secondary, display: 'block' }}>
+                    URI: {subjectNode?.nodeUri || claim.subjectNode?.nodeUri}
+                  </Typography>
+                )}
+              </Box>
             </Box>
-          </Box>
+          ) : (
+            // Just the subject URI if that's all we have
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 500, mb: 1, color: theme.palette.text.secondary }}>
+                Report about:
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                <a 
+                  href={claim.subject} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ 
+                    color: theme.palette.link || theme.palette.primary.main,
+                    textDecoration: 'none'
+                  }}
+                >
+                  {claim.subject}
+                </a>
+              </Typography>
+            </Box>
+          )}
         </Box>
       )}
 
