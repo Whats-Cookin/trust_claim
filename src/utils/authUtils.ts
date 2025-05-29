@@ -44,6 +44,12 @@ export const getAuthHeaders = () => {
     headers['X-DID'] = did
   }
 
+  // Add Ethereum address if available
+  const ethAddress = localStorage.getItem('ethAddress')
+  if (ethAddress) {
+    headers['X-ETH-ADDRESS'] = ethAddress
+  }
+
   return headers
 }
 
@@ -56,6 +62,34 @@ export const clearAuth = () => {
   localStorage.removeItem('refreshToken')
   localStorage.removeItem('ethAddress')
   localStorage.removeItem('did')
+  localStorage.removeItem('userDid')
+  localStorage.removeItem('userIdType')
+}
+
+// Validate token expiration
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    const expirationTime = payload.exp * 1000 // Convert to milliseconds
+    return Date.now() >= expirationTime
+  } catch (e) {
+    return true
+  }
+}
+
+// Check if token needs refresh
+export const needsTokenRefresh = (): boolean => {
+  const accessToken = localStorage.getItem('accessToken')
+  if (!accessToken) return true
+  
+  try {
+    const payload = JSON.parse(atob(accessToken.split('.')[1]))
+    const expirationTime = payload.exp * 1000 // Convert to milliseconds
+    // Refresh if token expires in less than 5 minutes
+    return Date.now() >= (expirationTime - 5 * 60 * 1000)
+  } catch (e) {
+    return true
+  }
 }
 
 // Ceramic-related functions removed

@@ -4,7 +4,10 @@ import { getAuthHeaders, handleAuthSuccess, clearAuth } from '../utils/authUtils
 
 const instance = axios.create({
   baseURL: BACKEND_BASE_URL,
-  timeout: 10000
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 })
 
 instance.interceptors.request.use(config => {
@@ -13,6 +16,12 @@ instance.interceptors.request.use(config => {
     const headers = getAuthHeaders()
     config.headers = { ...config.headers, ...headers }
   }
+  
+  // Don't override Content-Type for FormData
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'] // Let browser set it with boundary
+  }
+  
   return config
 })
 
@@ -36,10 +45,24 @@ instance.interceptors.response.use(
     const originalReq = error.config
     const errorResponse = error.response
 
-    if (errorResponse?.status === 401) {
-      if (errorResponse.data.message === 'jwt expired' && !isRefreshing) {
+    // Handle both 401 and 403 errors
+    if (errorResponse?.status === 401 || errorResponse?.status === 403) {
+      // Don't retry auth endpoints to avoid infinite loops
+      if (originalReq.url?.startsWith('/auth/')) {
+        clearAuth()
+        window.location.href = '/login'
+        return Promise.reject(error)
+      }
+
+      if (!isRefreshing) {
         isRefreshing = true
         const refreshToken = localStorage.getItem('refreshToken')
+
+        if (!refreshToken) {
+          clearAuth()
+          window.location.href = '/login'
+          return Promise.reject(error)
+        }
 
         try {
           const res = await instance.post('/auth/refresh_token', { refreshToken })
@@ -49,6 +72,7 @@ instance.interceptors.response.use(
           isRefreshing = false
           onRefreshed(accessToken)
 
+          // Update the original request headers
           originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
           return instance(originalReq)
         } catch (err) {
@@ -58,14 +82,13 @@ instance.interceptors.response.use(
         }
       }
 
-      if (isRefreshing) {
-        return new Promise(resolve => {
-          subscribeTokenRefresh(accessToken => {
-            originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
-            resolve(instance(originalReq))
-          })
+      // If we're already refreshing, queue this request
+      return new Promise(resolve => {
+        subscribeTokenRefresh(accessToken => {
+          originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
+          resolve(instance(originalReq))
         })
-      }
+      })
     }
 
     return Promise.reject(error)
