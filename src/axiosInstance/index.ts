@@ -18,7 +18,7 @@ instance.interceptors.request.use(config => {
   }
 
   // Don't override Content-Type for FormData
-  if (config.data instanceof FormData) {
+  if (config.data instanceof FormData && config.headers) {
     delete config.headers['Content-Type'] // Let browser set it with boundary
   }
 
@@ -54,6 +54,16 @@ instance.interceptors.response.use(
         return Promise.reject(error)
       }
 
+      // PREVENT INFINITE RETRY LOOPS
+      if (originalReq._retry) {
+        clearAuth()
+        window.location.href = '/login'
+        return Promise.reject(error)
+      }
+
+      // Mark request as retried
+      originalReq._retry = true
+
       if (!isRefreshing) {
         isRefreshing = true
         const refreshToken = localStorage.getItem('refreshToken')
@@ -76,6 +86,7 @@ instance.interceptors.response.use(
           originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
           return instance(originalReq)
         } catch (err) {
+          isRefreshing = false
           clearAuth()
           window.location.href = '/login'
           return Promise.reject(err)
