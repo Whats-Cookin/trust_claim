@@ -13,11 +13,11 @@ const truncateLabel = (label: string, maxLength: number) => {
 const getRatingColor = (stars: number | undefined) => {
   if (!stars && stars !== 0) return nodeColors.default
   const colors = [
-    primaryColors.red,     // 0-1 stars
-    '#FF8C42',            // 1-2 stars (orange)
-    primaryColors.amber,   // 2-3 stars
-    '#7CB518',            // 3-4 stars (yellow-green)
-    primaryColors.green    // 4-5 stars
+    primaryColors.red, // 0-1 stars
+    '#FF8C42', // 1-2 stars (orange)
+    primaryColors.amber, // 2-3 stars
+    '#7CB518', // 3-4 stars (yellow-green)
+    primaryColors.green // 4-5 stars
   ]
   return colors[Math.floor(stars)] || nodeColors.default
 }
@@ -157,42 +157,46 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
       const cy = this
       try {
         cy.nodeHtmlLabel([
-        {
-          query: 'node',
-          halign: 'center',
-          valign: 'center',
-          valignBox: 'center',
-          halignBox: 'center',
-          cssClass: 'custom-node',
-          tpl: (data: any) => {
-            const entType = data.entType || data.entityType || 'UNKNOWN'
-            const isClaim = entType === 'CLAIM'
-            const hasImage = data.image || data.thumbnail
-            const isRating = data.claim === 'rated' || data.stars !== undefined
-            
-            // Get color based on entity type or rating
-            let bgColor: string = nodeColors.default
-            if (isRating && data.stars !== undefined) {
-              bgColor = getRatingColor(data.stars)
-            } else if (isClaim) {
-              if (data.claim === 'impact' || data.label?.toLowerCase().includes('impact')) {
-                bgColor = '#065F46' // Dark green for impact claims
-              } else {
-                bgColor = nodeColors.claim
+          {
+            query: 'node',
+            halign: 'center',
+            valign: 'center',
+            valignBox: 'center',
+            halignBox: 'center',
+            cssClass: 'custom-node',
+            tpl: (data: any) => {
+              const entType = data.entType || data.entityType || 'UNKNOWN'
+              const isClaim = entType === 'CLAIM'
+              const hasImage = data.image || data.thumbnail
+              const isRating = data.claim === 'rated' || data.stars !== undefined
+
+              // Get color based on entity type or rating
+              let bgColor: string = nodeColors.default
+              if (isRating && data.stars !== undefined) {
+                bgColor = getRatingColor(data.stars)
+              } else if (isClaim) {
+                if (data.claim === 'impact' || data.label?.toLowerCase().includes('impact')) {
+                  bgColor = '#065F46' // Dark green for impact claims
+                } else {
+                  bgColor = nodeColors.claim
+                }
+              } else if (entType === 'PERSON') {
+                bgColor = '#C2410C' // Dark burnt orange
+              } else if (entType.toLowerCase() in nodeColors) {
+                bgColor = nodeColors[entType.toLowerCase() as keyof typeof nodeColors]
               }
-            } else if (entType === 'PERSON') {
-              bgColor = '#C2410C' // Dark burnt orange
-            } else if (entType.toLowerCase() in nodeColors) {
-              bgColor = nodeColors[entType.toLowerCase() as keyof typeof nodeColors]
-            }
-            
-            const nodeTypeClass = isClaim ? 'node-claim' : 
-                                entType === 'PERSON' ? 'node-person' : 
-                                entType === 'ORGANIZATION' ? 'node-organization' : ''
-            
-            if (hasImage) {
-              // For nodes with images, show circular image with label below
-              return `
+
+              const nodeTypeClass = isClaim
+                ? 'node-claim'
+                : entType === 'PERSON'
+                ? 'node-person'
+                : entType === 'ORGANIZATION'
+                ? 'node-organization'
+                : ''
+
+              if (hasImage) {
+                // For nodes with images, show circular image with label below
+                return `
                 <div class="custom-node-container ${nodeTypeClass} node-with-image">
                   <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="node-image-circle" style="background-image: url(${data.image || data.thumbnail})"></div>
@@ -200,19 +204,23 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
                   </div>
                 </div>
               `
-            } else {
-              // For nodes without images, use colored shape
-              return `
+              } else {
+                // For nodes without images, use colored shape
+                return `
                 <div class="custom-node-container ${nodeTypeClass}" 
                      style="background-color: ${bgColor};">
                   <div class="node-label">${truncateLabel(data.label, 40)}</div>
-                  ${data.stars !== undefined ? `<div class="node-stars">${'★'.repeat(data.stars)}${'☆'.repeat(5-data.stars)}</div>` : ''}
+                  ${
+                    data.stars !== undefined
+                      ? `<div class="node-stars">${'★'.repeat(data.stars)}${'☆'.repeat(5 - data.stars)}</div>`
+                      : ''
+                  }
                 </div>
               `
+              }
             }
           }
-        }
-      ])
+        ])
       } catch (err) {
         console.error('Error initializing nodeHtmlLabel:', err)
       }

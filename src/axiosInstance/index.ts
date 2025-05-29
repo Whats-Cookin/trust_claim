@@ -16,12 +16,12 @@ instance.interceptors.request.use(config => {
     const headers = getAuthHeaders()
     config.headers = { ...config.headers, ...headers }
   }
-  
+
   // Don't override Content-Type for FormData
   if (config.data instanceof FormData) {
     delete config.headers['Content-Type'] // Let browser set it with boundary
   }
-  
+
   return config
 })
 

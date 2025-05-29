@@ -99,9 +99,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         const res = await api.getClaim(number!)
 
         if (res.data.claim.subject) {
-          const subject = typeof res.data.claim.subject === 'string' 
-            ? res.data.claim.subject 
-            : res.data.claim.subject.uri
+          const subject =
+            typeof res.data.claim.subject === 'string' ? res.data.claim.subject : res.data.claim.subject.uri
           setSubjectValue(subject)
         }
         if (res.data.claim.statement) setStatementValue(res.data.claim.statement)

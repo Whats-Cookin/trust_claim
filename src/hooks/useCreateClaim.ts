@@ -7,7 +7,7 @@ interface ClaimPayload {
   subject: string
   claim: string
   images: MediaI[]
-  [key: string]: any  // Allow additional fields
+  [key: string]: any // Allow additional fields
 }
 
 interface CreateClaimResponse {
@@ -43,7 +43,7 @@ export function useCreateClaim() {
       // Check if user has wallet connected for client-side signing
       const walletAddress = await getCurrentAccount()
       let finalPayload = payload
-      
+
       if (walletAddress) {
         try {
           // Sign the claim with MetaMask
@@ -56,7 +56,7 @@ export function useCreateClaim() {
       }
 
       const { images, dto } = preparePayload(finalPayload)
-      
+
       // Transform field names for new API
       const transformedDto: any = {
         ...dto,
@@ -66,31 +66,33 @@ export function useCreateClaim() {
         score: (dto as any).rating || (dto as any).stars || undefined,
         amt: (dto as any).amount || (dto as any).amt || undefined,
         // Keep the claim type in a different field
-        claimType: dto.claim === 'rated' || dto.claim === 'impact' || dto.claim === 'report' || dto.claim === 'related_to' 
-          ? dto.claim 
-          : undefined
+        claimType:
+          dto.claim === 'rated' || dto.claim === 'impact' || dto.claim === 'report' || dto.claim === 'related_to'
+            ? dto.claim
+            : undefined
       }
-      
+
       // Clean up transformed object
       const fieldsToRemove = ['rating', 'stars', 'amount', 'statement']
       fieldsToRemove.forEach(field => delete transformedDto[field])
-      
+
       // Remove null/undefined values
       Object.keys(transformedDto).forEach(key => {
         if (transformedDto[key] === null || transformedDto[key] === undefined) {
           delete transformedDto[key]
         }
       })
-      
+
       // Development logging
       if (process.env.NODE_ENV === 'development') {
         console.log('Sending payload to backend:', transformedDto)
       }
-      
+
       // Send request - use FormData for images, JSON otherwise
-      const response = images.length > 0
-        ? await api.createClaim(generateFormData(transformedDto, images))
-        : await api.createClaim(transformedDto)
+      const response =
+        images.length > 0
+          ? await api.createClaim(generateFormData(transformedDto, images))
+          : await api.createClaim(transformedDto)
 
       if (process.env.NODE_ENV === 'development') {
         console.log('Response:', { status: response.status, data: response.data })
@@ -103,14 +105,13 @@ export function useCreateClaim() {
           isSuccess: true
         }
       }
-      
+
       // Handle unexpected success status codes
       console.warn('Unexpected status code:', response.status)
       return {
         message: `Claim created with status ${response.status}`,
         isSuccess: true
       }
-      
     } catch (err: any) {
       // Log full error in development
       if (process.env.NODE_ENV === 'development') {
@@ -121,10 +122,10 @@ export function useCreateClaim() {
           data: err.response?.data
         })
       }
-      
+
       // Extract meaningful error message
       let errorMessage = 'Something went wrong'
-      
+
       if (err.response?.data?.errors) {
         // Handle validation errors object
         const errors = err.response.data.errors
@@ -138,7 +139,7 @@ export function useCreateClaim() {
       } else if (err.message) {
         errorMessage = err.message
       }
-      
+
       // Add status-specific context
       if (err.response?.status === 400) {
         errorMessage = `Invalid request: ${errorMessage}`
@@ -149,7 +150,7 @@ export function useCreateClaim() {
       } else if (err.response?.status === 500) {
         errorMessage = 'Server error. Please try again later.'
       }
-      
+
       return {
         message: errorMessage,
         isSuccess: false
@@ -160,22 +161,24 @@ export function useCreateClaim() {
   return { createClaim }
 }
 
-function preparePayload(
-  payload: ClaimPayload
-): { dto: Omit<ClaimPayload, 'images'> & { images: Omit<MediaI, 'file' | 'url'>[] }; images: File[] } {
+function preparePayload(payload: ClaimPayload): {
+  dto: Omit<ClaimPayload, 'images'> & { images: Omit<MediaI, 'file' | 'url'>[] }
+  images: File[]
+} {
   const images: File[] = []
   const did = localStorage.getItem('did')
 
   const dto = {
     ...payload,
     ...(did && { issuerId: did }),
-    images: payload.images?.map(image => {
-      images.push(image.file)
-      return {
-        metadata: image.metadata,
-        effectiveDate: image.effectiveDate
-      } as Omit<MediaI, 'file' | 'url'>
-    }) || []
+    images:
+      payload.images?.map(image => {
+        images.push(image.file)
+        return {
+          metadata: image.metadata,
+          effectiveDate: image.effectiveDate
+        } as Omit<MediaI, 'file' | 'url'>
+      }) || []
   }
 
   return { images, dto }

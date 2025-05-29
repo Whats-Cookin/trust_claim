@@ -128,7 +128,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
       }
 
       const response = await createClaim(payload)
-      
+
       // Development logging
       if (process.env.NODE_ENV === 'development') {
         console.log('Create claim response:', response)
@@ -172,7 +172,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
           <>
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Aspect</InputLabel>
-              <Select {...register('aspect')} defaultValue="">
+              <Select {...register('aspect')} defaultValue=''>
                 {CLAIM_TYPES.rated.aspects.map(aspect => (
                   <MenuItem key={aspect} value={aspect}>
                     {aspect.split(':')[1].replace('-', ' ')}
@@ -192,13 +192,13 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
             />
           </>
         )
-      
+
       case 'impact':
         return (
           <>
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Impact Type</InputLabel>
-              <Select {...register('aspect')} defaultValue="">
+              <Select {...register('aspect')} defaultValue=''>
                 {CLAIM_TYPES.impact.aspects.map(aspect => (
                   <MenuItem key={aspect} value={aspect}>
                     {aspect.split(':')[1].replace('-', ' ')}
@@ -217,12 +217,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
             />
           </>
         )
-      
+
       case 'report':
         return (
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel>Report Type</InputLabel>
-            <Select {...register('aspect')} defaultValue="">
+            <Select {...register('aspect')} defaultValue=''>
               {CLAIM_TYPES.report.aspects.map(aspect => (
                 <MenuItem key={aspect} value={aspect}>
                   {aspect.split(':')[1].replace('-', ' ')}
@@ -231,20 +231,20 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
             </Select>
           </FormControl>
         )
-      
+
       case 'related_to':
         return (
           <>
-            <TextField 
-              {...register('object')} 
-              label='Related To (URL)' 
-              fullWidth 
+            <TextField
+              {...register('object')}
+              label='Related To (URL)'
+              fullWidth
               sx={{ mb: 2 }}
-              placeholder="https://example.com/entity"
+              placeholder='https://example.com/entity'
             />
             <FormControl fullWidth>
               <InputLabel>Relationship Type</InputLabel>
-              <Select {...register('aspect')} defaultValue="">
+              <Select {...register('aspect')} defaultValue=''>
                 {CLAIM_TYPES.related_to.aspects.map(aspect => (
                   <MenuItem key={aspect} value={aspect}>
                     {aspect.split(':')[1].replace('-', ' ')}
@@ -254,7 +254,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
             </FormControl>
           </>
         )
-      
+
       default:
         return null
     }
@@ -275,7 +275,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
           {/* Claim Type Selection */}
           {!selectedClaimType ? (
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>
+              <Typography variant='h6' sx={{ mb: 2 }}>
                 What kind of claim would you like to make?
               </Typography>
               <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
@@ -284,8 +284,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
                     key={type}
                     onClick={() => setSelectedClaimType(type)}
                     variant='outlined'
-                    sx={{ 
-                      justifyContent: 'flex-start', 
+                    sx={{
+                      justifyContent: 'flex-start',
                       p: 2,
                       textTransform: 'none'
                     }}
@@ -314,10 +314,10 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
                   error={Boolean(errors.subject)}
                   helperText={errors.subject?.message || 'Enter a URL (e.g., https://example.com)'}
                   required
-                  placeholder="https://..."
+                  placeholder='https://...'
                 />
                 <TextField
-                  {...register('statement', { 
+                  {...register('statement', {
                     required: 'Claim description is required',
                     minLength: { value: 10, message: 'Please provide more detail (at least 10 characters)' }
                   })}
@@ -328,14 +328,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
                   error={Boolean(errors.statement)}
                   helperText={errors.statement?.message || 'Be specific about your claim'}
                   required
-                  placeholder="Provide details about your experience, observation, or assessment..."
+                  placeholder='Provide details about your experience, observation, or assessment...'
                 />
               </Box>
 
               {/* Claim Type Specific Fields */}
-              <Box sx={{ mb: 4 }}>
-                {renderClaimTypeSpecificFields()}
-              </Box>
+              <Box sx={{ mb: 4 }}>{renderClaimTypeSpecificFields()}</Box>
 
               {/* Evidence and Source */}
               <Box sx={{ mb: 4 }}>
@@ -390,15 +388,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel 
 
               {/* Action Buttons */}
               <DialogActions sx={{ justifyContent: 'space-between', gap: 2 }}>
-                <Button 
-                  onClick={() => setSelectedClaimType('')}
-                  variant="text"
-                >
+                <Button onClick={() => setSelectedClaimType('')} variant='text'>
                   Back
                 </Button>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {onCancel && (
-                    <Button onClick={onCancel} variant="outlined">
+                    <Button onClick={onCancel} variant='outlined'>
                       Cancel
                     </Button>
                   )}
