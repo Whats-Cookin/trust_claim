@@ -15,7 +15,7 @@ instance.interceptors.request.use(config => {
   if (route !== 'auth' && config.headers) {
     const headers = getAuthHeaders()
     config.headers = { ...config.headers, ...headers }
-    
+
     // Debug logging for claim requests
     if (config.url?.includes('/claims')) {
       console.log('Claim request headers:', {
@@ -72,7 +72,7 @@ instance.interceptors.response.use(
         // Don't redirect immediately - let the component show the error message
         return Promise.reject(error)
       }
-      
+
       // For claim endpoints with 401, redirect to feed
       if (isClaimEndpoint && errorResponse?.status === 401) {
         console.log('Claim creation authentication failed. Redirecting to feed...')
