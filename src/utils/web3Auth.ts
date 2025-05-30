@@ -26,8 +26,8 @@ export const connectWallet = async (): Promise<string> => {
   }
 
   try {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts'
+    const accounts = await window.ethereum.request({ 
+      method: 'eth_requestAccounts' 
     })
     return accounts[0]
   } catch (error) {
@@ -43,8 +43,8 @@ export const getCurrentAccount = async (): Promise<string | null> => {
   }
 
   try {
-    const accounts = await window.ethereum.request({
-      method: 'eth_accounts'
+    const accounts = await window.ethereum.request({ 
+      method: 'eth_accounts' 
     })
     return accounts[0] || null
   } catch (error) {
@@ -115,20 +115,20 @@ export const signClaim = async (claim: any): Promise<SignedClaim> => {
   const provider = new ethers.BrowserProvider(window.ethereum)
   const signer = await provider.getSigner()
   const address = await signer.getAddress()
-
+  
   // Get user's identity preference
   const identity = getUserIdentity()
-
+  
   // Create a deterministic message from the claim
   const message = JSON.stringify({
     ...claim,
     timestamp: new Date().toISOString(),
     signer: address
   })
-
+  
   // Sign the message
   const signature = await signer.signMessage(message)
-
+  
   return {
     claim: {
       ...claim,
@@ -143,8 +143,8 @@ export const signClaim = async (claim: any): Promise<SignedClaim> => {
 
 // Verify a signature
 export const verifySignature = async (
-  message: string,
-  signature: string,
+  message: string, 
+  signature: string, 
   expectedAddress: string
 ): Promise<boolean> => {
   try {
@@ -172,10 +172,14 @@ export const generateProof = (signature: string, signerAddress: string, signerId
 // Sign and prepare claim for submission
 export const signAndPrepareClaim = async (claimData: any): Promise<any> => {
   const signedClaim = await signClaim(claimData)
-
+  
   return {
     ...signedClaim.claim,
-    proof: generateProof(signedClaim.signature, signedClaim.signerAddress, signedClaim.claim.issuerId),
+    proof: generateProof(
+      signedClaim.signature, 
+      signedClaim.signerAddress,
+      signedClaim.claim.issuerId
+    ),
     // Optional: include the raw signature for backend verification
     ethereumSignature: {
       signature: signedClaim.signature,
@@ -188,7 +192,7 @@ export const signAndPrepareClaim = async (claimData: any): Promise<any> => {
 // UI Helper: Get display name for current identity
 export const getIdentityDisplayName = (): string => {
   const identity = getUserIdentity()
-
+  
   if (identity.did) {
     // Shorten DIDs for display
     if (identity.did.length > 20) {
@@ -196,11 +200,11 @@ export const getIdentityDisplayName = (): string => {
     }
     return identity.did
   }
-
+  
   if (identity.address) {
     return `${identity.address.slice(0, 6)}...${identity.address.slice(-4)}`
   }
-
+  
   return 'No identity set'
 }
 

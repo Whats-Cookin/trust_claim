@@ -9,9 +9,9 @@ export interface Entity {
 // Claim structure matching backend
 export interface Claim {
   id: number
-  subject: Entity | string // Can be entity object or just URI
+  subject: Entity | string  // Can be entity object or just URI
   claim: string
-  object?: Entity | string // Can be entity object or just URI
+  object?: Entity | string  // Can be entity object or just URI
   statement?: string
   effectiveDate: string
   confidence?: number
@@ -24,7 +24,7 @@ export interface Claim {
   aspect?: string
   issuerId?: string
   // Keep some legacy fields during migration
-  claim_id?: number // same as id
+  claim_id?: number  // same as id
   // Image from associated nodes (added by report endpoint)
   image?: string | null
 }

@@ -215,9 +215,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
   const generateLinkedInShareUrl = (credentialName: string, url: string) => {
     const encodedUrl = encodeURIComponent(url)
     const message = encodeURIComponent(
-      `I'm excited to share my verified ${credentialName} credential from ${
-        issuer.name || 'LinkedTrust'
-      }! Check it out here: ${url}`
+      `I'm excited to share my verified ${credentialName} credential from ${issuer.name || 'LinkedTrust'}! Check it out here: ${url}`
     )
     return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
   }
@@ -231,11 +229,11 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
 
   const handleClaimCredential = async () => {
     if (!currentUser || !userUri) return
-
+    
     try {
       setClaiming(true)
       const token = searchParams.get('claim_token') || searchParams.get('invite_token')
-
+      
       const { createClaim } = await import('../../api')
       const response = await createClaim({
         subject: userUri,
@@ -246,7 +244,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
         confidence: 1.0,
         claimToken: token
       })
-
+      
       // Refresh page to update UI
       window.location.reload()
     } catch (error) {
@@ -263,21 +261,21 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
 
   const handleSendOffer = async () => {
     if (!recipientEmail || !currentUser) return
-
+    
     try {
       setOffering(true)
       // const { apiService } = await import('../../api/apiService')
-
+      
       // await apiService.post('/api/credentials/offer', {
       //   credentialId: credentialUri || credential.id,
       //   recipientEmail,
       //   issuerUri: userUri
       // })
-
+      
       // TODO: Implement offer endpoint
       console.log('Send offer to:', recipientEmail)
       showMessage(`Invitation will be sent to ${recipientEmail}`)
-
+      
       setOfferModalOpen(false)
       setRecipientEmail('')
     } catch (error) {
@@ -294,7 +292,9 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
   }
 
   // Get endorsements from related claims
-  const endorsements = relatedClaims.filter(claim => claim.claim === 'ENDORSES' || claim.claim === 'VALIDATES')
+  const endorsements = relatedClaims.filter(claim => 
+    claim.claim === 'ENDORSES' || claim.claim === 'VALIDATES'
+  )
 
   // Get user URI
   const getUserUri = () => {
@@ -313,26 +313,33 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
   // Check if user has claimed this credential
   const userHasClaimed = useMemo(() => {
     if (!userUri) return false
-    return relatedClaims?.some(
-      claim => claim.subject === userUri && claim.claim === 'HAS' && claim.object === (credentialUri || credential.id)
+    return relatedClaims?.some(claim => 
+      claim.subject === userUri &&
+      claim.claim === 'HAS' &&
+      claim.object === (credentialUri || credential.id)
     )
   }, [relatedClaims, userUri, credentialUri, credential.id])
 
   // Check if credential is already claimed by anyone
   const credentialIsClaimed = useMemo(() => {
-    return relatedClaims?.some(claim => claim.claim === 'HAS' && claim.object === (credentialUri || credential.id))
+    return relatedClaims?.some(claim => 
+      claim.claim === 'HAS' &&
+      claim.object === (credentialUri || credential.id)
+    )
   }, [relatedClaims, credentialUri, credential.id])
 
   // Show claim button logic
   const showClaimButton = useMemo(() => {
     if (!currentUser || credentialIsClaimed) return false
-
+    
     // Check conditions
     return (
       // Magic link from creation
       searchParams.get('claim_token') ||
+      
       // User is the subject
       credential.credentialSubject?.id === userUri ||
+      
       // Invitation link
       searchParams.get('invite_token')
     )
@@ -341,10 +348,11 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
   // Show offer button logic
   const showOfferButton = useMemo(() => {
     if (!currentUser || credentialIsClaimed) return false
-
+    
     return (
       // User is the issuer
       credential.issuer?.id === userUri ||
+      
       // Magic link for offering
       searchParams.get('offer_token')
     )
@@ -370,23 +378,16 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
             >
               {/* Badge */}
               {achievement.image ? (
-                <Box
-                  component='img'
-                  src={achievement.image.id || achievement.image}
-                  alt='Credential Badge'
-                  sx={badgeStyles}
-                />
+                <Box component='img' src={achievement.image.id || achievement.image} alt='Credential Badge' sx={badgeStyles} />
               ) : (
-                <Box
-                  sx={{
-                    ...badgeStyles,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: COLORS.background.hover,
-                    borderRadius: '50%'
-                  }}
-                >
+                <Box sx={{
+                  ...badgeStyles,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: COLORS.background.hover,
+                  borderRadius: '50%'
+                }}>
                   <SchoolIcon sx={{ fontSize: 60, color: COLORS.primary }} />
                 </Box>
               )}
@@ -443,17 +444,16 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
                   padding: { xs: '0 8px', sm: '0 4px', md: 0 }
                 }}
               >
-                {achievement.description ||
-                  credentialSubject.description ||
-                  'This credential validates the skills and expertise demonstrated by the recipient.'}
+                {achievement.description || credentialSubject.description || 
+                 'This credential validates the skills and expertise demonstrated by the recipient.'}
               </Typography>
 
               {/* Achievement Image */}
               {achievement.image && (
                 <Box
-                  component='img'
+                  component="img"
                   src={achievement.image.id || achievement.image}
-                  alt='Achievement'
+                  alt="Achievement"
                   sx={{
                     maxWidth: '100%',
                     maxHeight: 400,
@@ -509,14 +509,12 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
                   >
                     Skills Demonstrated
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 1,
-                      justifyContent: 'center'
-                    }}
-                  >
+                  <Box sx={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: 1, 
+                    justifyContent: 'center' 
+                  }}>
                     {credentialSubject.skills.map((skill: any, index: number) => (
                       <Chip
                         key={index}
@@ -572,14 +570,12 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
               )}
 
               {/* Issuer Section */}
-              <Box
-                sx={{
-                  mt: 4,
-                  pt: 3,
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  textAlign: 'center'
-                }}
-              >
+              <Box sx={{ 
+                mt: 4, 
+                pt: 3, 
+                borderTop: `1px solid ${theme.palette.divider}`,
+                textAlign: 'center'
+              }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
                   <VerifiedIcon sx={{ color: COLORS.primary, fontSize: 20 }} />
                   <Typography
@@ -593,7 +589,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
                     Issued by {issuer.name || issuer.id || 'Issuer'}
                   </Typography>
                 </Box>
-
+                
                 {issuanceDate && (
                   <Typography
                     variant='body2'
@@ -615,8 +611,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
                     fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
                     sx={{ mt: 0.5 }}
                   >
-                    Expires:{' '}
-                    {new Date(expirationDate).toLocaleDateString('en-US', {
+                    Expires: {new Date(expirationDate).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
@@ -660,7 +655,11 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
                         >
                           {endorsement.issuerId}
                         </Typography>
-                        <Typography variant='body2' color={COLORS.text.primary} fontSize={{ xs: 14, sm: 16 }}>
+                        <Typography
+                          variant='body2'
+                          color={COLORS.text.primary}
+                          fontSize={{ xs: 14, sm: 16 }}
+                        >
                           {endorsement.statement || 'Endorsed this credential'}
                         </Typography>
                       </Card>
@@ -711,7 +710,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
           {/* Claim button - for recipients */}
           {showClaimButton && (
             <Button
-              variant='contained'
+              variant="contained"
               onClick={handleClaimCredential}
               disabled={claiming}
               sx={{
@@ -737,12 +736,12 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
           {/* Offer button - for issuers */}
           {showOfferButton && (
             <Button
-              variant='outlined'
+              variant="outlined"
               onClick={handleOfferCredential}
               sx={{
                 borderColor: COLORS.primary,
                 color: COLORS.primary,
-                '&:hover': {
+                '&:hover': { 
                   borderColor: '#1e5a3f',
                   backgroundColor: 'rgba(45, 106, 79, 0.08)'
                 },
@@ -755,7 +754,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
 
           {/* Validation actions */}
           <Button
-            variant='text'
+            variant="text"
             onClick={() => navigate(`/validate/${credentialUri || credential.id}`)}
             sx={{
               color: COLORS.primary,
@@ -766,7 +765,7 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
           </Button>
 
           <Button
-            variant='text'
+            variant="text"
             onClick={handleRequestValidation}
             sx={{
               color: COLORS.primary,
@@ -784,11 +783,11 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
           onClose={handleClose}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           transformOrigin={{
             vertical: 'top',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
         >
           <Box sx={{ p: 2 }}>
@@ -817,23 +816,23 @@ const CredentialCertificate: React.FC<CredentialCertificateProps> = ({
         <Dialog open={offerModalOpen} onClose={() => setOfferModalOpen(false)}>
           <DialogTitle>Send Credential</DialogTitle>
           <DialogContent>
-            <Typography variant='body2' sx={{ mb: 2 }}>
+            <Typography variant="body2" sx={{ mb: 2 }}>
               Enter the recipient's email address. They will receive a link to claim this credential.
             </Typography>
             <TextField
               fullWidth
-              label='Recipient Email'
-              type='email'
+              label="Recipient Email"
+              type="email"
               value={recipientEmail}
-              onChange={e => setRecipientEmail(e.target.value)}
-              placeholder='recipient@example.com'
+              onChange={(e) => setRecipientEmail(e.target.value)}
+              placeholder="recipient@example.com"
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOfferModalOpen(false)}>Cancel</Button>
-            <Button
+            <Button 
               onClick={handleSendOffer}
-              variant='contained'
+              variant="contained"
               disabled={!recipientEmail || offering}
               sx={{
                 backgroundColor: COLORS.primary,

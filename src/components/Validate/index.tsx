@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import Box from '@mui/material/Box'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
   Button,
@@ -28,7 +28,6 @@ import placeholderImage from '../../assets/images/imgplaceholder.svg'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
 import MainContainer from '../MainContainer'
-import { MediaI } from '../Form/imageUploading'
 
 const FIRST_HAND = 'FIRST_HAND'
 const SECOND_HAND = 'SECOND_HAND'
@@ -100,8 +99,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         const res = await api.getClaim(number!)
 
         if (res.data.claim.subject) {
-          const subject =
-            typeof res.data.claim.subject === 'string' ? res.data.claim.subject : res.data.claim.subject.uri
+          const subject = typeof res.data.claim.subject === 'string' 
+            ? res.data.claim.subject 
+            : res.data.claim.subject.uri
           setSubjectValue(subject)
         }
         if (res.data.claim.statement) setStatementValue(res.data.claim.statement)
@@ -170,19 +170,17 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         claim: string
         amt?: string | number
         score?: number
-        images: MediaI[]
+        images?: ImageI[]
       }
 
       const payload: PayloadType = {
-        subject: subjectValue,
-        statement: statementValue,
-        sourceURI: sourceURI || '',
-        howKnown: howKnown,
-        effectiveDate: effectiveDateValue,
+        subject,
+        statement,
+        sourceURI,
+        howKnown,
+        effectiveDate: effectiveDateAsString,
         claim: CLAIM_VALIDATED,
-        amt,
-        score: undefined,
-        images: []
+        images
       }
 
       console.log('In submit, payload is')
@@ -299,7 +297,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
               }}
             >
               <Typography variant='body1'>
-                {`There's a claim that`}
+                {`There’s a claim that`}
                 <Box
                   sx={{
                     height: '5px',
