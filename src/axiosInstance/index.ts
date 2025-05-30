@@ -15,6 +15,16 @@ instance.interceptors.request.use(config => {
   if (route !== 'auth' && config.headers) {
     const headers = getAuthHeaders()
     config.headers = { ...config.headers, ...headers }
+    
+    // Debug logging for claim requests
+    if (config.url?.includes('/claims')) {
+      console.log('Claim request headers:', {
+        url: config.url,
+        method: config.method,
+        headers: config.headers,
+        authHeaders: headers
+      })
+    }
   }
 
   // Don't override Content-Type for FormData
@@ -45,8 +55,33 @@ instance.interceptors.response.use(
     const originalReq = error.config
     const errorResponse = error.response
 
+    // Check if this is a claim-related endpoint
+    const isClaimEndpoint = originalReq.url?.includes('/claim') || originalReq.url?.includes('/claims')
+
     // Handle both 401 and 403 errors
     if (errorResponse?.status === 401 || errorResponse?.status === 403) {
+      // For claim endpoints with 403, let the component handle the error first
+      if (isClaimEndpoint && errorResponse?.status === 403) {
+        console.log('Claim creation permission denied:', {
+          status: errorResponse.status,
+          statusText: errorResponse.statusText,
+          data: errorResponse.data,
+          url: originalReq.url,
+          method: originalReq.method
+        })
+        // Don't redirect immediately - let the component show the error message
+        return Promise.reject(error)
+      }
+      
+      // For claim endpoints with 401, redirect to feed
+      if (isClaimEndpoint && errorResponse?.status === 401) {
+        console.log('Claim creation authentication failed. Redirecting to feed...')
+        setTimeout(() => {
+          window.location.href = '/feed'
+        }, 1000)
+        return Promise.reject(error)
+      }
+
       // Don't retry auth endpoints to avoid infinite loops
       if (originalReq.url?.startsWith('/auth/')) {
         clearAuth()
@@ -56,8 +91,13 @@ instance.interceptors.response.use(
 
       // PREVENT INFINITE RETRY LOOPS
       if (originalReq._retry) {
-        clearAuth()
-        window.location.href = '/login'
+        // For claim endpoints, just redirect to feed without clearing auth
+        if (isClaimEndpoint) {
+          window.location.href = '/feed'
+        } else {
+          clearAuth()
+          window.location.href = '/login'
+        }
         return Promise.reject(error)
       }
 
@@ -69,8 +109,13 @@ instance.interceptors.response.use(
         const refreshToken = localStorage.getItem('refreshToken')
 
         if (!refreshToken) {
-          clearAuth()
-          window.location.href = '/login'
+          // For claim endpoints, just redirect to feed without clearing auth
+          if (isClaimEndpoint) {
+            window.location.href = '/feed'
+          } else {
+            clearAuth()
+            window.location.href = '/login'
+          }
           return Promise.reject(error)
         }
 
@@ -87,8 +132,13 @@ instance.interceptors.response.use(
           return instance(originalReq)
         } catch (err) {
           isRefreshing = false
-          clearAuth()
-          window.location.href = '/login'
+          // For claim endpoints, just redirect to feed without clearing auth
+          if (isClaimEndpoint) {
+            window.location.href = '/feed'
+          } else {
+            clearAuth()
+            window.location.href = '/login'
+          }
           return Promise.reject(err)
         }
       }

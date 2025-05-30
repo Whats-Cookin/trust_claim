@@ -114,7 +114,8 @@ export const Form = ({
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
           amt: amtAsNumber,
-          issuerId: did
+          issuerId: did,
+          images: []
         }
         setLoading(true)
         const { message, isSuccess } = await createClaim(payload)

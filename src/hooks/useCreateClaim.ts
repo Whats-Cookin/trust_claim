@@ -38,6 +38,12 @@ export function useCreateClaim() {
       // Development logging
       if (process.env.NODE_ENV === 'development') {
         console.log('Initial payload:', payload)
+        console.log('Authentication state:', {
+          accessToken: !!localStorage.getItem('accessToken'),
+          refreshToken: !!localStorage.getItem('refreshToken'),
+          did: localStorage.getItem('did'),
+          ethAddress: localStorage.getItem('ethAddress')
+        })
       }
 
       // Check if user has wallet connected for client-side signing
@@ -146,7 +152,7 @@ export function useCreateClaim() {
       } else if (err.response?.status === 401) {
         errorMessage = 'Authentication required. Please log in again.'
       } else if (err.response?.status === 403) {
-        errorMessage = 'Permission denied. Please check your credentials.'
+        errorMessage = 'You do not have permission to create claims. Please contact an administrator.'
       } else if (err.response?.status === 500) {
         errorMessage = 'Server error. Please try again later.'
       }
