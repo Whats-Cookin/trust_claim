@@ -43,7 +43,9 @@ const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
 
 // Helper to get entity data whether it's nested or string
-const getEntityData = (entity: Entity | string | undefined): { uri: string; name?: string; type?: string; image?: string } => {
+const getEntityData = (
+  entity: Entity | string | undefined
+): { uri: string; name?: string; type?: string; image?: string } => {
   if (!entity) return { uri: '' }
   if (typeof entity === 'string') return { uri: entity }
   return entity
@@ -182,7 +184,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
       const { data } = await fetchClaims(currentPage.current, searchTerm)
 
       claimsRef.current = claimsRef.current.concat(data.entries)
-      
+
       if (data.pagination.page >= data.pagination.pages) {
         setIsLastPage(true)
       }
@@ -264,7 +266,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 const subject = getEntityData(claim.subject)
                 const object = getEntityData(claim.object)
                 const claimId = claim.id || claim.claim_id || 0
-                
+
                 return (
                   <Grow in={true} timeout={1000} key={claimId}>
                     <Box sx={{ marginBottom: '15px' }}>
@@ -286,9 +288,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
                             <Badge claim={claim.claim || ''} />
                           </Box>
-                          
+
                           <CardContent>
-                            <Box sx={{ pr: '140px' }}> {/* Add padding to prevent overlap with badge */}
+                            <Box sx={{ pr: '140px' }}>
+                              {' '}
+                              {/* Add padding to prevent overlap with badge */}
                               <Link
                                 to={subject.uri}
                                 onClick={e => handleLinkClick(e, subject.uri)}
@@ -298,13 +302,11 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               >
                                 <ClaimName claim={claim} searchTerm={searchTerm} />
                               </Link>
-                              
                               {/* Show entity badges */}
                               <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                                 {subject.type && <EntityBadge entityType={subject.type} />}
-                                {object?.type && <EntityBadge entityType={object.type} label="Object" />}
+                                {object?.type && <EntityBadge entityType={object.type} label='Object' />}
                               </Box>
-                              
                               <ClaimMetadata claim={claim} />
                             </Box>
                             {claim.statement && (

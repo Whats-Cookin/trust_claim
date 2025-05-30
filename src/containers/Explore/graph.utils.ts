@@ -88,7 +88,7 @@ const parseClaims = (claims: any) => {
 const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
-  
+
   // The backend returns an array of nodes with embedded edges
   if (Array.isArray(data)) {
     console.log('Parsing array of nodes:', data.length)
@@ -100,7 +100,7 @@ const parseMultipleNodes = (data: any) => {
     console.log('Parsing single node')
     parseSingleNode(nodes, edges, data)
   }
-  
+
   console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
   return { nodes, edges }
 }
@@ -109,7 +109,7 @@ const getNodeData = (node: any) => {
   // Handle both old and new node structures
   let uri = node.nodeUri || node.uri || node.id
   let label = node.displayName || node.name || uri
-  
+
   // Handle empty or invalid labels
   if (!label || label === '' || label === 'Not Acceptable!' || label === 'Not Acceptable') {
     // Try to extract a meaningful label from the URI
@@ -184,7 +184,7 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
       ...node.edgesFrom.map((e: any) => {
         const claimType = e.label || e.claim?.claim || ''
         const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
-        
+
         return {
           data: {
             id: e.id.toString(),
@@ -218,7 +218,7 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
       ...node.edgesTo.map((e: any) => {
         const claimType = e.label || e.claim?.claim || ''
         const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
-        
+
         return {
           data: {
             id: e.id.toString(),
