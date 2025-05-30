@@ -428,9 +428,7 @@ const ClaimDetails = memo(({ theme, data }: { theme: Theme; data: any }) => {
 
               {/* Recommendations */}
               <Box>
-                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                  {data.validations.length} Recommendations
-                </Typography>
+                <Typography variant='body2' sx={{ color: theme.palette.texts }}>{data.validations.length} Recommendations</Typography>
               </Box>
             </Box>
           </Box>

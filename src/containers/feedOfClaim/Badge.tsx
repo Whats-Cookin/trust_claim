@@ -8,12 +8,12 @@ const Badge = ({ claim }: { claim: string }) => {
   const impactTypes = ['funds_for_purpose', 'helped', 'impact']
   // Relationship types
   const relationshipTypes = ['same_as', 'related_to', 'owns']
-
+  
   let bgColor = '#c0efd7' // default green
   let color = '#2d6a4f' // default green text
   let icon = <Award size={18} style={{ marginRight: 5 }} /> // default icon
   let label = 'Claim'
-
+  
   if (validationTypes.includes(claim)) {
     bgColor = '#f8e8cc' // amber/yellow
     color = '#e08a00'

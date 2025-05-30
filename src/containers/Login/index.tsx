@@ -73,18 +73,18 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     try {
       const address = await connectWallet()
       const did = createDidFromAddress(address)
-
+      
       // Store wallet info
-      handleAuthSuccess({
+      handleAuthSuccess({ 
         ethAddress: address,
         did: did
       })
-
+      
       // Optional: Send to backend to create/verify account
       try {
-        const res = await axios.post('/auth/wallet', {
+        const res = await axios.post('/auth/wallet', { 
           address,
-          did
+          did 
         })
         if (res.data.accessToken) {
           handleAuthSuccess({
@@ -96,7 +96,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
         // Backend auth is optional - can still use client-side signing
         console.log('Backend wallet auth not available, using client-side only')
       }
-
+      
       navigate(location.state?.from || '/')
     } catch (e) {
       console.error('Wallet auth error:', e)

@@ -31,32 +31,32 @@ import type {
 } from './types'
 
 // Claims API - USE NUMERIC IDs
-export const createClaim = (data: any) => axios.post<{ claim: Claim }>('/api/claims', data)
+export const createClaim = (data: any) => 
+  axios.post<{ claim: Claim }>('/api/claims', data)
 
-export const getClaim = (id: string | number) => axios.get<{ claim: Claim }>(`/api/claims/${id}`)
+export const getClaim = (id: string | number) => 
+  axios.get<{ claim: Claim }>(`/api/claims/${id}`)
 
-export const getClaimsBySubject = (uri: string) =>
+export const getClaimsBySubject = (uri: string) => 
   axios.get<{ claims: Claim[] }>(`/api/claims/subject/${encodeURIComponent(uri)}`)
 
 // Feed API
-export const getFeed = (params?: { limit?: number; search?: string; page?: number }) =>
-  axios.get<FeedResponse>('/api/feed', {
-    params,
-    timeout: 60000
-  })
+export const getFeed = (params?: {
+  limit?: number
+  search?: string
+  page?: number
+}) => axios.get<FeedResponse>('/api/feed', { 
+  params,
+  timeout: 60000 
+})
 
-export const getFeedByEntity = (
-  entityType: string,
-  params?: {
-    limit?: number
-    nextPage?: string
-  }
-) => axios.get<FeedResponse>(`/api/feed/entity/${entityType}`, { params })
+export const getFeedByEntity = (entityType: string, params?: {
+  limit?: number
+  nextPage?: string
+}) => axios.get<FeedResponse>(`/api/feed/entity/${entityType}`, { params })
 
-export const getTrending = (limit: number = 10) =>
-  axios.get<{ topics: Array<{ topic: string; count: number; trend: string }> }>('/api/feed/trending', {
-    params: { limit }
-  })
+export const getTrending = (limit: number = 10) => 
+  axios.get<{ topics: Array<{ topic: string; count: number; trend: string }> }>('/api/feed/trending', { params: { limit } })
 
 // Graph API - USE NUMERIC IDs
 export const getGraph = (claimId: string | number) => {
@@ -72,24 +72,24 @@ export const getNode = (nodeId: string | number, page?: number, limit?: number) 
   return axios.get<any>(`/api/node/${nodeId}`, { params })
 }
 
-export const getNodeNeighbors = (nodeId: string | number, page: number = 1, limit: number = 5) =>
+export const getNodeNeighbors = (nodeId: string | number, page: number = 1, limit: number = 5) => 
   axios.get<any>(`/api/node/${nodeId}/expand`, {
     params: { page, limit }
   })
 
 // Reports API - USE NUMERIC IDs
-export const getClaimReport = (claimId: string | number) =>
+export const getClaimReport = (claimId: string | number) => 
   axios.get<ClaimReportResponse>(`/api/reports/claim/${claimId}`)
 
-export const submitValidation = (claimId: string | number, validation: ValidationRequest) =>
+export const submitValidation = (claimId: string | number, validation: ValidationRequest) => 
   axios.post<{ message: string; validationId: number }>(`/api/reports/claim/${claimId}/validate`, validation)
 
-export const getEntityReport = (uri: string) =>
+export const getEntityReport = (uri: string) => 
   axios.get<EntityReport>(`/api/reports/entity/${encodeURIComponent(uri)}`)
 
 // Credentials API
-export const submitCredential = (credential: any) =>
+export const submitCredential = (credential: any) => 
   axios.post<{ message: string; claimId: number; credentialUri: string }>('/api/credentials', credential)
 
-export const getCredential = (uri: string) =>
+export const getCredential = (uri: string) => 
   axios.get<{ credential: Credential }>(`/api/credentials/${encodeURIComponent(uri)}`)

@@ -13,8 +13,6 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
-    target: 'es2020',
-    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       onwarn(warning, warn) {
         // Ignore "use client" warnings
@@ -24,26 +22,9 @@ export default defineConfig({
         }
         warn(warning)
       },
-      output: {
-        manualChunks(id) {
-          // Create vendor chunks for node_modules
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            if (id.includes('@mui') || id.includes('@emotion')) {
-              return 'mui-vendor';
-            }
-            if (id.includes('cytoscape')) {
-              return 'graph-vendor';
-            }
-            if (id.includes('axios') || id.includes('date-fns') || id.includes('react-hook-form')) {
-              return 'utils-vendor';
-            }
-            // All other vendor deps
-            return 'vendor';
-          }
-        }
+      target: 'es2020',
+      commonjsOptions: {
+        include: [/node_modules/]
       }
     }
   },

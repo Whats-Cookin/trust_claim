@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -14,9 +14,9 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Alert
-} from '@mui/material'
-import { QuickCredentialDialog } from './QuickCredentialDialog'
-import * as api from '../api'
+} from '@mui/material';
+import { QuickCredentialDialog } from './QuickCredentialDialog';
+import * as api from '../api';
 
 const CLAIM_TYPES = [
   { value: 'rated', label: 'Rate/Review' },
@@ -26,11 +26,11 @@ const CLAIM_TYPES = [
   { value: 'endorses', label: 'Endorse' },
   { value: 'validates', label: 'Validate' },
   { value: 'custom', label: 'Custom' }
-]
+];
 
 export const EnhancedClaimCreator: React.FC = () => {
-  const [claimType, setClaimType] = useState('rated')
-  const [showCredentialDialog, setShowCredentialDialog] = useState(false)
+  const [claimType, setClaimType] = useState('rated');
+  const [showCredentialDialog, setShowCredentialDialog] = useState(false);
   const [formData, setFormData] = useState({
     subject: '',
     claim: 'rated',
@@ -41,79 +41,79 @@ export const EnhancedClaimCreator: React.FC = () => {
     amt: '',
     unit: '',
     aspect: ''
-  })
-  const [submitting, setSubmitting] = useState(false)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleClaimTypeChange = (newType: string) => {
-    setClaimType(newType)
+    setClaimType(newType);
     if (newType === 'credential') {
-      setShowCredentialDialog(true)
+      setShowCredentialDialog(true);
     } else {
-      setFormData({ ...formData, claim: newType })
+      setFormData({ ...formData, claim: newType });
     }
-  }
+  };
 
   const handleCreateCredential = async (credentialData: any) => {
     try {
-      setSubmitting(true)
-      setError(null)
-
+      setSubmitting(true);
+      setError(null);
+      
       // TODO: Implement admin credential creation endpoint
       // const response = await api.post('/api/credentials/admin/create', {
       //   recipientEmail: credentialData.recipientEmail,
       //   ...
       // });
-
-      console.log('Create credential:', credentialData)
+      
+      console.log('Create credential:', credentialData);
 
       // if (response.data.inviteLink) {
       //   setSuccess(`Credential created! Invite link: ${response.data.inviteLink}`);
       // } else {
       //   setSuccess('Credential created successfully!');
       // }
-      setSuccess('Credential created successfully!')
-
-      setShowCredentialDialog(false)
+      setSuccess('Credential created successfully!');
+      
+      setShowCredentialDialog(false);
     } catch (err: any) {
-      setError(err.message || 'Failed to create credential')
+      setError(err.message || 'Failed to create credential');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleSubmitClaim = async () => {
     try {
-      setSubmitting(true)
-      setError(null)
-      setSuccess(null)
+      setSubmitting(true);
+      setError(null);
+      setSuccess(null);
 
       const claimData: any = {
         subject: formData.subject,
         claim: formData.claim,
         confidence: formData.confidence
-      }
+      };
 
       // Add type-specific fields
       if (formData.claim === 'rated') {
-        claimData.stars = formData.stars
-        claimData.statement = formData.statement
+        claimData.stars = formData.stars;
+        claimData.statement = formData.statement;
       } else if (formData.claim === 'impact') {
-        claimData.amt = parseFloat(formData.amt)
-        claimData.unit = formData.unit
-        claimData.aspect = formData.aspect
-        claimData.statement = formData.statement
+        claimData.amt = parseFloat(formData.amt);
+        claimData.unit = formData.unit;
+        claimData.aspect = formData.aspect;
+        claimData.statement = formData.statement;
       } else if (formData.claim === 'same_as') {
-        claimData.object = formData.object
+        claimData.object = formData.object;
       } else {
-        claimData.object = formData.object
-        claimData.statement = formData.statement
+        claimData.object = formData.object;
+        claimData.statement = formData.statement;
       }
 
-      const response = await api.createClaim(claimData)
-      setSuccess('Claim created successfully!')
-
+      const response = await api.createClaim(claimData);
+      setSuccess('Claim created successfully!');
+      
       // Reset form
       setFormData({
         ...formData,
@@ -124,36 +124,40 @@ export const EnhancedClaimCreator: React.FC = () => {
         amt: '',
         unit: '',
         aspect: ''
-      })
+      });
     } catch (err: any) {
-      setError(err.message || 'Failed to create claim')
+      setError(err.message || 'Failed to create claim');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <Card>
       <CardContent>
-        <Typography variant='h5' gutterBottom>
+        <Typography variant="h5" gutterBottom>
           Create Claim
         </Typography>
 
         {success && (
-          <Alert severity='success' sx={{ mb: 2 }} onClose={() => setSuccess(null)}>
+          <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(null)}>
             {success}
           </Alert>
         )}
 
         {error && (
-          <Alert severity='error' sx={{ mb: 2 }} onClose={() => setError(null)}>
+          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
             {error}
           </Alert>
         )}
 
         <FormControl fullWidth sx={{ mb: 3 }}>
           <InputLabel>Claim Type</InputLabel>
-          <Select value={claimType} onChange={e => handleClaimTypeChange(e.target.value)} label='Claim Type'>
+          <Select
+            value={claimType}
+            onChange={(e) => handleClaimTypeChange(e.target.value)}
+            label="Claim Type"
+          >
             {CLAIM_TYPES.map(type => (
               <MenuItem key={type.value} value={type.value}>
                 {type.label}
@@ -165,12 +169,12 @@ export const EnhancedClaimCreator: React.FC = () => {
         {claimType !== 'credential' && (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
-              label='Subject (URI)'
+              label="Subject (URI)"
               value={formData.subject}
-              onChange={e => setFormData({ ...formData, subject: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
               fullWidth
               required
-              placeholder='https://example.com or did:example:123'
+              placeholder="https://example.com or did:example:123"
             />
 
             {/* Rating specific fields */}
@@ -188,9 +192,9 @@ export const EnhancedClaimCreator: React.FC = () => {
                   />
                 </Box>
                 <TextField
-                  label='Review'
+                  label="Review"
                   value={formData.statement}
-                  onChange={e => setFormData({ ...formData, statement: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, statement: e.target.value })}
                   fullWidth
                   multiline
                   rows={3}
@@ -203,31 +207,31 @@ export const EnhancedClaimCreator: React.FC = () => {
               <>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <TextField
-                    label='Amount'
-                    type='number'
+                    label="Amount"
+                    type="number"
                     value={formData.amt}
-                    onChange={e => setFormData({ ...formData, amt: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, amt: e.target.value })}
                     sx={{ flex: 1 }}
                   />
                   <TextField
-                    label='Unit'
+                    label="Unit"
                     value={formData.unit}
-                    onChange={e => setFormData({ ...formData, unit: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                     sx={{ flex: 1 }}
-                    placeholder='people, tons CO2, dollars'
+                    placeholder="people, tons CO2, dollars"
                   />
                 </Box>
                 <TextField
-                  label='Aspect'
+                  label="Aspect"
                   value={formData.aspect}
-                  onChange={e => setFormData({ ...formData, aspect: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, aspect: e.target.value })}
                   fullWidth
-                  placeholder='impact:social, impact:environmental'
+                  placeholder="impact:social, impact:environmental"
                 />
                 <TextField
-                  label='Description'
+                  label="Description"
                   value={formData.statement}
-                  onChange={e => setFormData({ ...formData, statement: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, statement: e.target.value })}
                   fullWidth
                   multiline
                   rows={2}
@@ -238,9 +242,9 @@ export const EnhancedClaimCreator: React.FC = () => {
             {/* Same As and other claims */}
             {(claimType === 'same_as' || claimType === 'endorses' || claimType === 'validates') && (
               <TextField
-                label='Object (URI)'
+                label="Object (URI)"
                 value={formData.object}
-                onChange={e => setFormData({ ...formData, object: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, object: e.target.value })}
                 fullWidth
                 required
                 placeholder="URI of the thing you're linking to"
@@ -251,22 +255,22 @@ export const EnhancedClaimCreator: React.FC = () => {
             {claimType === 'custom' && (
               <>
                 <TextField
-                  label='Claim Predicate'
+                  label="Claim Predicate"
                   value={formData.claim}
-                  onChange={e => setFormData({ ...formData, claim: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, claim: e.target.value })}
                   fullWidth
-                  placeholder='e.g., KNOWS, WORKED_AT, CREATED'
+                  placeholder="e.g., KNOWS, WORKED_AT, CREATED"
                 />
                 <TextField
-                  label='Object'
+                  label="Object"
                   value={formData.object}
-                  onChange={e => setFormData({ ...formData, object: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, object: e.target.value })}
                   fullWidth
                 />
                 <TextField
-                  label='Statement'
+                  label="Statement"
                   value={formData.statement}
-                  onChange={e => setFormData({ ...formData, statement: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, statement: e.target.value })}
                   fullWidth
                   multiline
                   rows={2}
@@ -276,7 +280,9 @@ export const EnhancedClaimCreator: React.FC = () => {
 
             {/* Confidence slider */}
             <Box>
-              <Typography gutterBottom>Confidence: {Math.round(formData.confidence * 100)}%</Typography>
+              <Typography gutterBottom>
+                Confidence: {Math.round(formData.confidence * 100)}%
+              </Typography>
               <Slider
                 value={formData.confidence}
                 onChange={(e, value) => setFormData({ ...formData, confidence: value as number })}
@@ -287,7 +293,7 @@ export const EnhancedClaimCreator: React.FC = () => {
             </Box>
 
             <Button
-              variant='contained'
+              variant="contained"
               onClick={handleSubmitClaim}
               disabled={submitting || !formData.subject}
               fullWidth
@@ -304,5 +310,5 @@ export const EnhancedClaimCreator: React.FC = () => {
         />
       </CardContent>
     </Card>
-  )
-}
+  );
+};

@@ -57,8 +57,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
         aspect,
         howKnown,
         effectiveDate: effectiveDateAsString,
-        stars: starsAsNumber,
-        images: []
+        stars: starsAsNumber
       }
 
       setLoading(true)

@@ -13,15 +13,12 @@ export enum EntityType {
 }
 
 // Entity metadata for UI display
-export const EntityMetadata: Record<
-  EntityType,
-  {
-    label: string
-    color: string
-    icon?: string
-    description: string
-  }
-> = {
+export const EntityMetadata: Record<EntityType, {
+  label: string
+  color: string
+  icon?: string
+  description: string
+}> = {
   [EntityType.PERSON]: {
     label: 'Person',
     color: '#4CAF50',
