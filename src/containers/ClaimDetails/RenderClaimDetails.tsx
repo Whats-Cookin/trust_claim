@@ -42,8 +42,9 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
         if (key === 'subject' && typeof value === 'object' && value.uri) {
           displayValue = value.name || value.uri
         }
-        
-        const displayText = key === 'statement' && displayValue && !showFullText[key] ? truncateText(displayValue, 120) : displayValue
+
+        const displayText =
+          key === 'statement' && displayValue && !showFullText[key] ? truncateText(displayValue, 120) : displayValue
 
         return (
           <Box

@@ -21,7 +21,6 @@ const FormDialog = ({
           toggleSnackbar={toggleSnackbar}
           setSnackbarMessage={setSnackbarMessage}
           setLoading={setLoading}
-          selectedClaim={selectedClaim}
           onCancel={handleClose}
         />
       </Dialog>
