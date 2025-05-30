@@ -14,9 +14,10 @@ import './CustomNodeStyles.css'
 import GraphDetailModal from '../../components/GraphDetailModal'
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
 
-// Register the extension
-if (typeof cytoscapeNodeHtmlLabel === 'function') {
+// Register the extension only once
+if (typeof cytoscapeNodeHtmlLabel === 'function' && !(Cytoscape as any)._nodeHtmlLabelRegistered) {
   Cytoscape.use(cytoscapeNodeHtmlLabel)
+  ;(Cytoscape as any)._nodeHtmlLabelRegistered = true
 }
 
 const Explore = (homeProps: IHomeProps) => {

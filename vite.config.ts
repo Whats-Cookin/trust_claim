@@ -61,6 +61,16 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts'
   },
   optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      '@mui/material',
+      '@mui/icons-material',
+      '@mui/system',
+      '@emotion/react',
+      '@emotion/styled'
+    ],
     esbuildOptions: {
       target: 'es2020'
     }
