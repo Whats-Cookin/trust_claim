@@ -11,7 +11,7 @@ export function useCreateClaim() {
       // Check if user has wallet connected for client-side signing
       const walletAddress = await getCurrentAccount()
       let finalPayload = payload
-      
+
       if (walletAddress) {
         try {
           // Sign the claim with MetaMask
@@ -33,7 +33,7 @@ export function useCreateClaim() {
       }
       delete (transformedDto as any).rating
       delete (transformedDto as any).amount
-      
+
       const res = await api.createClaim(generateFormData(transformedDto, images))
 
       if (res.status === 201) {
