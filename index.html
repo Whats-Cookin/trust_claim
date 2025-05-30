@@ -5,6 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="./src/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linked Trust</title>
+    <script>
+      // Prevent shadow DOM conflicts
+      (function() {
+        const originalAttachShadow = Element.prototype.attachShadow;
+        Element.prototype.attachShadow = function(options) {
+          if (this.shadowRoot) {
+            console.warn('Shadow root already exists on element:', this);
+            return this.shadowRoot;
+          }
+          return originalAttachShadow.call(this, options);
+        };
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
