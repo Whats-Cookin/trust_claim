@@ -18,6 +18,7 @@ import ClaimDetails from './containers/ClaimDetails'
 import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
+import { ClaimCredential } from './containers/ClaimCredential'
 import { checkAuth } from './utils/authUtils'
 import './App.css'
 
@@ -160,6 +161,16 @@ const App = () => {
                 element={
                   checkAuth() ? (
                     <Validate {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
+                }
+              />
+              <Route
+                path='claim-credential'
+                element={
+                  checkAuth() ? (
+                    <ClaimCredential />
                   ) : (
                     <Navigate to='/login' replace state={{ from: location }} />
                   )

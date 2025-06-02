@@ -1,5 +1,12 @@
 // Enhanced Web3 Authentication with BYO-DID support
 import { ethers } from 'ethers'
+import { 
+  LinkedClaim, 
+  LinkedClaimProof,
+  toLinkedClaim,
+  prepareDIDSigning,
+  DIDSigningContext 
+} from '../lib/sign-linked-claim'
 
 interface SignedClaim {
   claim: any
@@ -119,12 +126,17 @@ export const signClaim = async (claim: any): Promise<SignedClaim> => {
   // Get user's identity preference
   const identity = getUserIdentity()
   
-  // Create a deterministic message from the claim
-  const message = JSON.stringify({
-    ...claim,
-    timestamp: new Date().toISOString(),
-    signer: address
-  })
+  // Convert to LinkedClaim format
+  const linkedClaim = toLinkedClaim(claim)
+  
+  // Prepare signing context
+  const context: DIDSigningContext = {
+    signerAddress: address,
+    signerDID: identity.did || createDidFromAddress(address)
+  }
+  
+  // Get canonical message
+  const { message } = prepareDIDSigning(linkedClaim, context)
   
   // Sign the message
   const signature = await signer.signMessage(message)
@@ -157,7 +169,7 @@ export const verifySignature = async (
 }
 
 // Generate a proof object for the claim
-export const generateProof = (signature: string, signerAddress: string, signerId?: string) => {
+export const generateProof = (signature: string, signerAddress: string, signerId?: string): LinkedClaimProof => {
   return {
     type: 'EthereumEip712Signature2021',
     created: new Date().toISOString(),
@@ -173,19 +185,15 @@ export const generateProof = (signature: string, signerAddress: string, signerId
 export const signAndPrepareClaim = async (claimData: any): Promise<any> => {
   const signedClaim = await signClaim(claimData)
   
+  // Don't include ethereumSignature in the claim data sent to backend
+  // The proof is sufficient
   return {
     ...signedClaim.claim,
     proof: generateProof(
       signedClaim.signature, 
       signedClaim.signerAddress,
       signedClaim.claim.issuerId
-    ),
-    // Optional: include the raw signature for backend verification
-    ethereumSignature: {
-      signature: signedClaim.signature,
-      signerAddress: signedClaim.signerAddress,
-      signedAt: new Date().toISOString()
-    }
+    )
   }
 }
 
