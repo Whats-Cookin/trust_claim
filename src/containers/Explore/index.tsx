@@ -14,9 +14,10 @@ import './CustomNodeStyles.css'
 import GraphDetailModal from '../../components/GraphDetailModal'
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
 
-// Register the extension
-if (typeof cytoscapeNodeHtmlLabel === 'function') {
+// Register the extension only once
+if (typeof cytoscapeNodeHtmlLabel === 'function' && !(Cytoscape as any)._nodeHtmlLabelRegistered) {
   Cytoscape.use(cytoscapeNodeHtmlLabel)
+  ;(Cytoscape as any)._nodeHtmlLabelRegistered = true
 }
 
 const Explore = (homeProps: IHomeProps) => {
@@ -47,7 +48,7 @@ const Explore = (homeProps: IHomeProps) => {
   const handleFitToScreen = () => {
     if (cy && cy.elements().length > 0) {
       cy.fit(cy.elements(), 50)
-      
+
       // Apply same zoom constraints as initial load
       const nodeCount = cy.nodes().length
       if (nodeCount <= 3 && cy.zoom() > 1) {
@@ -67,11 +68,11 @@ const Explore = (homeProps: IHomeProps) => {
       ...layoutOptions
     })
     layout.run()
-    
+
     // Only fit to viewport on initial load or when explicitly requested
     if (shouldFit) {
       const nodeCount = cyInstance.nodes().length
-      
+
       // For small graphs, don't zoom in too much
       if (nodeCount <= 3) {
         cyInstance.zoom(1) // Keep at default zoom
@@ -79,7 +80,7 @@ const Explore = (homeProps: IHomeProps) => {
       } else {
         // For larger graphs, fit but with constraints
         cyInstance.fit(cyInstance.elements(), 50)
-        
+
         // Limit max zoom to prevent giant nodes
         if (cyInstance.zoom() > 1.5) {
           cyInstance.zoom(1.5)
@@ -91,21 +92,20 @@ const Explore = (homeProps: IHomeProps) => {
       const extent = cyInstance.extent()
       const elements = cyInstance.elements()
       let needsAdjustment = false
-      
+
       // Check if any nodes are outside the current viewport
       elements.nodes().forEach((node: any) => {
         const pos = node.position()
-        if (pos.x < extent.x1 || pos.x > extent.x2 || 
-            pos.y < extent.y1 || pos.y > extent.y2) {
+        if (pos.x < extent.x1 || pos.x > extent.x2 || pos.y < extent.y1 || pos.y > extent.y2) {
           needsAdjustment = true
         }
       })
-      
+
       // If nodes are outside viewport, zoom out just enough to include them
       if (needsAdjustment) {
         const currentZoom = cyInstance.zoom()
         cyInstance.fit(elements, 100) // Fit with padding
-        
+
         // But try to preserve some of the current zoom if possible
         const newZoom = cyInstance.zoom()
         if (newZoom < currentZoom * 0.7) {
@@ -127,7 +127,7 @@ const Explore = (homeProps: IHomeProps) => {
         let newEdges: any[] = []
         parseSingleNode(newNodes, newEdges, res.data)
         if (!cy) return
-        
+
         // Check current node count before adding
         const currentNodeCount = cy.nodes().length
         if (currentNodeCount >= 30) {
@@ -135,30 +135,28 @@ const Explore = (homeProps: IHomeProps) => {
           toggleSnackbar(true)
           return
         }
-        
+
         // Limit new nodes to add
         const maxNodesToAdd = Math.min(5, 30 - currentNodeCount)
         if (newNodes.length > maxNodesToAdd) {
           newNodes = newNodes.slice(0, maxNodesToAdd)
           // Only include edges that connect to included nodes
           const nodeIds = new Set([...cy.nodes().map(n => n.id()), ...newNodes.map(n => n.data.id)])
-          newEdges = newEdges.filter(edge => 
-            nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
-          )
+          newEdges = newEdges.filter(edge => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target))
         }
-        
+
         // Filter out nodes that already exist in the graph
         const existingNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
         const actuallyNewNodes = newNodes.filter((node: any) => !existingNodeIds.has(node.data.id))
-        
+
         // Only add and re-layout if we have truly new nodes to add
         if (actuallyNewNodes.length > 0) {
           // Only include edges that connect to nodes in the graph
           const allNodeIds = new Set([...existingNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
-          const relevantEdges = newEdges.filter((edge: any) => 
-            allNodeIds.has(edge.data.source) && allNodeIds.has(edge.data.target)
+          const relevantEdges = newEdges.filter(
+            (edge: any) => allNodeIds.has(edge.data.source) && allNodeIds.has(edge.data.target)
           )
-          
+
           cy.add({ nodes: actuallyNewNodes, edges: relevantEdges } as any)
           runCy(cy, false) // Re-layout with new nodes
         } else {
@@ -196,7 +194,7 @@ const Explore = (homeProps: IHomeProps) => {
   const handleEdgeClick = (event: any) => {
     event.preventDefault()
     const edgeData = event?.target?.data('raw')
-    
+
     if (edgeData) {
       setModalData(edgeData)
       setStartNode(edgeData.startNode)
@@ -248,14 +246,14 @@ const Explore = (homeProps: IHomeProps) => {
       toggleSnackbar(true)
       return
     }
-    
+
     setLoading(true)
     try {
       // Use claim ID directly - backend expects numeric ID
       console.log('Fetching graph for claim ID:', claimId)
       const claimRes = await api.getGraph(claimId)
       console.log('Graph API response:', claimRes.data)
-      
+
       if (!cy) {
         console.error('Cytoscape instance not initialized')
         return
@@ -265,7 +263,7 @@ const Explore = (homeProps: IHomeProps) => {
 
       const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
       console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
-      
+
       // Limit initial nodes to 7
       let limitedNodes = nodes
       let limitedEdges = edges
@@ -273,11 +271,9 @@ const Explore = (homeProps: IHomeProps) => {
         // Keep the central node and closest 6 nodes
         limitedNodes = nodes.slice(0, 7)
         const nodeIds = new Set(limitedNodes.map((n: any) => n.data.id))
-        limitedEdges = edges.filter((edge: any) => 
-          nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
-        )
+        limitedEdges = edges.filter((edge: any) => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target))
       }
-      
+
       cy.add({ nodes: limitedNodes, edges: limitedEdges } as any)
     } catch (err: any) {
       toggleSnackbar(true)
@@ -361,10 +357,10 @@ const Explore = (homeProps: IHomeProps) => {
         />
       </Box>
       <GraphinfButton />
-      <Tooltip title="Fit to Screen" placement="left">
+      <Tooltip title='Fit to Screen' placement='left'>
         <Fab
-          color="primary"
-          size="small"
+          color='primary'
+          size='small'
           onClick={handleFitToScreen}
           sx={{
             position: 'fixed',

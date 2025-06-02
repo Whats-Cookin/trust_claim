@@ -21,6 +21,10 @@ export default defineConfig({
           return
         }
         warn(warning)
+      },
+      target: 'es2020',
+      commonjsOptions: {
+        include: [/node_modules/]
       }
     }
   },
@@ -36,5 +40,20 @@ export default defineConfig({
     environment: 'jsdom',
     css: true,
     setupFiles: './src/test/setup.ts'
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      '@mui/material',
+      '@mui/icons-material',
+      '@mui/system',
+      '@emotion/react',
+      '@emotion/styled'
+    ],
+    esbuildOptions: {
+      target: 'es2020'
+    }
   }
 })

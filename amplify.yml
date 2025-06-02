@@ -9,7 +9,7 @@ frontend:
         - yarn test
         - yarn build
   artifacts:
-    baseDirectory: build
+    baseDirectory: dist
     files:
       - '**/*'
   cache:
