@@ -69,6 +69,11 @@ export interface Credential {
   credentialSubject: any
   issuanceDate: string
   proof?: any
+  credentialSchema?: string
+  name?: string
+  context?: any
+  expirationDate?: string
+  sameAs?: any
 }
 
 export interface ValidationRequest {
