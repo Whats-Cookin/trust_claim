@@ -1,11 +1,11 @@
 // Enhanced Web3 Authentication with BYO-DID support
 import { ethers } from 'ethers'
-import { 
-  LinkedClaim, 
+import {
+  LinkedClaim,
   LinkedClaimProof,
   toLinkedClaim,
   prepareDIDSigning,
-  DIDSigningContext 
+  DIDSigningContext
 } from '../lib/sign-linked-claim'
 
 interface SignedClaim {
@@ -126,19 +126,17 @@ export const signClaim = async (claim: any): Promise<SignedClaim> => {
   // Get user's identity preference
   const identity = getUserIdentity()
 
-  
   // Convert to LinkedClaim format
   const linkedClaim = toLinkedClaim(claim)
-  
+
   // Prepare signing context
   const context: DIDSigningContext = {
     signerAddress: address,
     signerDID: identity.did || createDidFromAddress(address)
   }
-  
+
   // Get canonical message
   const { message } = prepareDIDSigning(linkedClaim, context)
-  
 
   // Sign the message
   const signature = await signer.signMessage(message)
@@ -191,11 +189,7 @@ export const signAndPrepareClaim = async (claimData: any): Promise<any> => {
   // The proof is sufficient
   return {
     ...signedClaim.claim,
-    proof: generateProof(
-      signedClaim.signature, 
-      signedClaim.signerAddress,
-      signedClaim.claim.issuerId
-    )
+    proof: generateProof(signedClaim.signature, signedClaim.signerAddress, signedClaim.claim.issuerId)
   }
 }
 

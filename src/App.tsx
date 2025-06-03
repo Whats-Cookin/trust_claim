@@ -169,11 +169,7 @@ const App = () => {
               <Route
                 path='claim-credential'
                 element={
-                  checkAuth() ? (
-                    <ClaimCredential />
-                  ) : (
-                    <Navigate to='/login' replace state={{ from: location }} />
-                  )
+                  checkAuth() ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
             </Routes>
