@@ -11,7 +11,8 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-  InputAdornment
+  InputAdornment,
+  Autocomplete
 } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -116,8 +117,14 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
   const onSubmit = async (formData: any) => {
     if (setLoading) setLoading(true)
 
+    // Set the claim field based on the selected type
+    const claimData = {
+      ...formData,
+      claim: selectedClaimType.toUpperCase() // Convert 'rated' to 'RATED', etc.
+    }
+
     try {
-      const response = await timeoutPromise(createClaim(formData), 10_000)
+      const response = await timeoutPromise(createClaim(claimData), 10_000)
 
       if (response.message && setSnackbarMessage && toggleSnackbar) {
         setSnackbarMessage(response.message)
@@ -203,16 +210,38 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               <Box sx={{ mb: 4 }}>
                 {selectedClaimType === 'rated' && (
                   <>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel>Aspect</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.rated.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Controller
+                      name='aspect'
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          freeSolo
+                          options={CLAIM_TYPES.rated.aspects}
+                          getOptionLabel={(option) => {
+                            if (typeof option === 'string' && option.includes(':')) {
+                              return option.split(':')[1]
+                            }
+                            return option
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label='Aspect'
+                              placeholder='Select or type your own'
+                              helperText='Choose from the list or type a custom aspect'
+                              fullWidth
+                              sx={{ mb: 2 }}
+                            />
+                          )}
+                          onChange={(_, value) => field.onChange(value)}
+                          onInputChange={(_, value) => {
+                            // If user types something that doesn't match any option
+                            field.onChange(value)
+                          }}
+                        />
+                      )}
+                    />
                     <Controller
                       name='stars'
                       control={control}
@@ -228,16 +257,37 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
 
                 {selectedClaimType === 'impact' && (
                   <>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel>Impact Type</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.impact.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Controller
+                      name='aspect'
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          freeSolo
+                          options={CLAIM_TYPES.impact.aspects}
+                          getOptionLabel={(option) => {
+                            if (typeof option === 'string' && option.includes(':')) {
+                              return option.split(':')[1]
+                            }
+                            return option
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label='Impact Type'
+                              placeholder='Select or type your own'
+                              helperText='Choose from the list or type a custom impact type'
+                              fullWidth
+                              sx={{ mb: 2 }}
+                            />
+                          )}
+                          onChange={(_, value) => field.onChange(value)}
+                          onInputChange={(_, value) => {
+                            field.onChange(value)
+                          }}
+                        />
+                      )}
+                    />
                     <TextField
                       {...register('amt')}
                       label='Value'
@@ -251,31 +301,72 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                 )}
 
                 {selectedClaimType === 'report' && (
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel>Report Type</InputLabel>
-                    <Select {...register('aspect')}>
-                      {CLAIM_TYPES.report.aspects.map(aspect => (
-                        <MenuItem key={aspect} value={aspect}>
-                          {aspect.split(':')[1]}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Controller
+                    name='aspect'
+                    control={control}
+                    render={({ field }) => (
+                      <Autocomplete
+                        {...field}
+                        freeSolo
+                        options={CLAIM_TYPES.report.aspects}
+                        getOptionLabel={(option) => {
+                          if (typeof option === 'string' && option.includes(':')) {
+                            return option.split(':')[1]
+                          }
+                          return option
+                        }}
+                        renderInput={(params) => (
+                        <TextField
+                        {...params}
+                        label='Report Type'
+                        placeholder='Select or type your own'
+                        helperText='Choose from the list or type a custom report type'
+                        fullWidth
+                          sx={{ mb: 2 }}
+                          />
+                          )}
+                        onChange={(_, value) => field.onChange(value)}
+                        onInputChange={(_, value) => {
+                          field.onChange(value)
+                        }}
+                      />
+                    )}
+                  />
                 )}
 
                 {selectedClaimType === 'related_to' && (
                   <>
                     <TextField {...register('object')} label='Related To (URL)' fullWidth sx={{ mb: 2 }} />
-                    <FormControl fullWidth>
-                      <InputLabel>Relationship Type</InputLabel>
-                      <Select {...register('aspect')}>
-                        {CLAIM_TYPES.related_to.aspects.map(aspect => (
-                          <MenuItem key={aspect} value={aspect}>
-                            {aspect.split(':')[1]}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Controller
+                      name='aspect'
+                      control={control}
+                      render={({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          freeSolo
+                          options={CLAIM_TYPES.related_to.aspects}
+                          getOptionLabel={(option) => {
+                            if (typeof option === 'string' && option.includes(':')) {
+                              return option.split(':')[1]
+                            }
+                            return option
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label='Relationship Type'
+                              placeholder='Select or type your own'
+                              helperText='Choose from the list or type a custom relationship'
+                              fullWidth
+                            />
+                          )}
+                          onChange={(_, value) => field.onChange(value)}
+                          onInputChange={(_, value) => {
+                            field.onChange(value)
+                          }}
+                        />
+                      )}
+                    />
                   </>
                 )}
               </Box>

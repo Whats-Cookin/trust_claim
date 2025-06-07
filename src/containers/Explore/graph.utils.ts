@@ -150,7 +150,9 @@ const getNodeData = (node: any) => {
       confidence: node.confidence,
       stars: node.stars,
       claim: node.claim, // Include claim type for proper coloring
-      uri: uri
+      amt: node.amt, // Include amount for impact nodes
+      uri: uri,
+      nodeUri: uri // Also include as nodeUri for backward compatibility
     }
   }
   return nodeData
