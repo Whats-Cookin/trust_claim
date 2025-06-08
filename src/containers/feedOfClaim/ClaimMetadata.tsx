@@ -13,16 +13,6 @@ interface ClaimMetadataProps {
 }
 
 const ClaimMetadata = memo(({ claim }: ClaimMetadataProps) => {
-  const creatorName = useMemo(() => {
-    // If we have issuer info, use that
-    if (claim.issuerId) {
-      return extractProfileName(claim.issuerId)
-    }
-    // Otherwise use subject as creator
-    const subject = typeof claim.subject === 'string' ? claim.subject : claim.subject.uri
-    return extractProfileName(subject)
-  }, [claim.issuerId, claim.subject])
-
   const formattedDate = useMemo(
     () =>
       new Date(claim.effectiveDate).toLocaleDateString('en-US', {
@@ -43,7 +33,7 @@ const ClaimMetadata = memo(({ claim }: ClaimMetadataProps) => {
         fontFamily: 'Roboto'
       }}
     >
-      {`Created by: ${creatorName}, ${formattedDate}`}
+      {formattedDate}
     </Typography>
   )
 })
