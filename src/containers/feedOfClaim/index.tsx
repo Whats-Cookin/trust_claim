@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { IHomeProps } from './types'
 import type { Claim, Entity } from '../../api/types'
 import {
@@ -17,8 +19,6 @@ import {
   Fab,
   Grow,
   IconButton,
-  Menu,
-  MenuItem,
   Typography,
   Fade,
   useMediaQuery,
@@ -36,8 +36,6 @@ import { checkAuth } from '../../utils/authUtils'
 import Redirection from '../../components/RedirectPage'
 import { sleep } from '../../utils/promise.utils'
 import Badge from './Badge'
-import ClaimMetadata from './ClaimMetadata'
-import EntityBadge from '../../components/EntityBadge'
 
 const CLAIM_ROOT_URL = `${BACKEND_BASE_URL}/claims`
 const PAGE_LIMIT = 50
@@ -116,9 +114,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const location = useLocation()
   const [isLoading, setIsLoading] = useState(true)
   const [loadingNextPage, setLoadingNextPage] = useState(false)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedIndex, setSelectedIndex] = useState<null | number>(null)
   const [searchTerm, setSearchTerm] = useState(getSearchFromParams() || '')
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set())
 
   const [showNotification, setShowNotification] = useState<boolean>(false)
   const [externalLink, setExternalLink] = useState<string>('')
@@ -213,18 +210,41 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     })
   }
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    setAnchorEl(event.currentTarget)
-    setSelectedIndex(index)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-    setSelectedIndex(null)
-  }
 
   const handleCreateClaim = () => {
     navigate('/claim')
+  }
+
+  const toggleCardExpansion = (claimId: number) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(claimId)) {
+        newSet.delete(claimId)
+      } else {
+        newSet.add(claimId)
+      }
+      return newSet
+    })
+  }
+
+  const handleExportClaim = (claim: Claim) => {
+    const exportData = {
+      ...claim,
+      _metadata: {
+        exportedAt: new Date().toISOString(),
+        claimId: claim.id || claim.claim_id
+      }
+    }
+    const jsonString = JSON.stringify(exportData, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `claim_${claim.id || claim.claim_id}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
   }
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
@@ -276,10 +296,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           height: 'fit',
                           borderRadius: '20px',
                           display: isMediumScreen ? 'column' : 'row',
-                          backgroundColor:
-                            selectedIndex === index ? theme.palette.cardBackgroundBlur : theme.palette.cardBackground,
+                          backgroundColor: theme.palette.cardBackground,
                           backgroundImage: 'none',
-                          filter: selectedIndex === index ? 'blur(0.8px)' : 'none',
                           color: theme.palette.texts
                         }}
                       >
@@ -293,21 +311,42 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             <Box sx={{ pr: '140px' }}>
                               {' '}
                               {/* Add padding to prevent overlap with badge */}
-                              <Link
-                                to={subject.uri}
-                                onClick={e => handleLinkClick(e, subject.uri)}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                style={{ textDecoration: 'none' }}
-                              >
-                                <ClaimName claim={claim} searchTerm={searchTerm} />
-                              </Link>
-                              {/* Show entity badges */}
-                              <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-                                {subject.type && <EntityBadge entityType={subject.type} />}
-                                {object?.type && <EntityBadge entityType={object.type} label='Object' />}
+                              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                                <IconButton
+                                  size='small'
+                                  onClick={() => toggleCardExpansion(claimId)}
+                                  sx={{
+                                    p: 0,
+                                    mr: 0.5,
+                                    mt: '4px',
+                                    color: theme.palette.date,
+                                    '&:hover': {
+                                      backgroundColor: 'transparent'
+                                    }
+                                  }}
+                                >
+                                  <Box
+                                    component='span'
+                                    sx={{
+                                      fontSize: '10px',
+                                      display: 'inline-block',
+                                      transform: expandedCards.has(claimId) ? 'rotate(90deg)' : 'rotate(0deg)',
+                                      transition: 'transform 0.2s'
+                                    }}
+                                  >
+                                    ▶
+                                  </Box>
+                                </IconButton>
+                                <Link
+                                  to={subject.uri}
+                                  onClick={e => handleLinkClick(e, subject.uri)}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  style={{ textDecoration: 'none' }}
+                                >
+                                  <ClaimName claim={claim} searchTerm={searchTerm} />
+                                </Link>
                               </Box>
-                              <ClaimMetadata claim={claim} />
                             </Box>
                             {claim.statement && (
                               <Typography
@@ -315,7 +354,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 sx={{
                                   padding: '5px 1 1 5px',
                                   wordBreak: 'break-word',
-                                  marginBottom: '1px',
+                                  marginBottom: '10px',
                                   color: theme.palette.texts
                                 }}
                               >
@@ -332,7 +371,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 />
                               </Typography>
                             )}
-                            {claim.sourceURI && (
+                            {(claim.sourceURI || claim.effectiveDate) && (
                               <Typography
                                 variant='body2'
                                 sx={{
@@ -342,8 +381,51 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   fontFamily: 'Roboto, sans-serif'
                                 }}
                               >
-                                source: {extractSourceName(claim.sourceURI)}
+                                {claim.sourceURI && `source: ${extractSourceName(claim.sourceURI)}`}
+                                {claim.sourceURI && claim.effectiveDate && ' · '}
+                                {claim.effectiveDate && new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                })}
                               </Typography>
+                            )}
+                            
+                            {/* Expanded details */}
+                            {expandedCards.has(claimId) && (
+                              <Box
+                                sx={{
+                                  mt: 2,
+                                  p: '5px 1 1 5px',
+                                  animation: 'fadeIn 0.2s ease-in'
+                                }}
+                              >
+                                {claim.aspect && (
+                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                    Aspect: {claim.aspect}
+                                  </Typography>
+                                )}
+                                {claim.confidence !== undefined && claim.confidence !== null && (
+                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                    Confidence: {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
+                                  </Typography>
+                                )}
+                                {claim.howKnown && (
+                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                    How Known: {claim.howKnown}
+                                  </Typography>
+                                )}
+                                {claim.score !== undefined && claim.score !== null && (
+                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                    Score: {claim.score}
+                                  </Typography>
+                                )}
+                                {claim.amt !== undefined && claim.amt !== null && (
+                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                    Amount: ${claim.amt} {claim.unit || ''}
+                                  </Typography>
+                                )}
+                              </Box>
                             )}
                           </CardContent>
                           <Box
@@ -352,7 +434,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               alignItems: 'center',
                               justifyContent: 'flex-start',
                               position: 'relative',
-                              mt: '10px',
+                              mt: '5px',
                               mb: '10px',
                               pl: '20px',
                               pr: '20px'
@@ -407,6 +489,24 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                             >
                               Graph View
                             </Button>
+                            {expandedCards.has(claimId) && (
+                              <Button
+                                startIcon={<SystemUpdateAltIcon />}
+                                onClick={() => handleExportClaim(claim)}
+                                variant='text'
+                                sx={{
+                                  fontSize: isMediumScreen ? '8px' : '12px',
+                                  marginRight: '10px',
+                                  p: '4px',
+                                  color: theme.palette.sidecolor,
+                                  '&:hover': {
+                                    backgroundColor: theme.palette.cardsbuttons
+                                  }
+                                }}
+                              >
+                                Export
+                              </Button>
+                            )}
                             <Box sx={{ flexGrow: 1 }} />
                             {claim.stars && (
                               <Box
@@ -433,106 +533,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               </Box>
                             )}
                           </Box>
-
-                          <IconButton
-                            sx={{
-                              position: 'absolute',
-                              top: '60px',
-                              right: '16px',
-                              color: theme.palette.texts,
-                              cursor: 'pointer',
-                              zIndex: 2,
-                              backgroundColor: theme.palette.cardBackground,
-                              '&:hover': {
-                                backgroundColor: theme.palette.cardsbuttons
-                              }
-                            }}
-                            onClick={event => handleMenuClick(event, index)}
-                          >
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transform: 'rotate(90deg)',
-                                color: theme.palette.smallButton
-                              }}
-                            >
-                              <MoreVertIcon />
-                            </Box>
-                          </IconButton>
-                          <Menu
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl && selectedIndex === index)}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                              vertical: 'top',
-                              horizontal: 'right'
-                            }}
-                            transformOrigin={{
-                              vertical: 'top',
-                              horizontal: 'right'
-                            }}
-                            TransitionComponent={Grow}
-                            transitionDuration={250}
-                            sx={{
-                              '& .MuiPaper-root': {
-                                backgroundColor: theme.palette.menuBackground,
-                                color: theme.palette.texts
-                              }
-                            }}
-                          >
-                            {claim.sourceURI && (
-                              <MenuItem onClick={() => window.open(claim.sourceURI, '_blank')}>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  <SourceLink claim={claim} searchTerm={searchTerm} />
-                                </Typography>
-                                <OpenInNewIcon sx={{ marginLeft: '5px' }} />
-                              </MenuItem>
-                            )}
-                            {claim.howKnown && (
-                              <MenuItem>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  How Known: {claim.howKnown}
-                                </Typography>
-                              </MenuItem>
-                            )}
-                            {claim.aspect && (
-                              <MenuItem>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  Aspect: {claim.aspect}
-                                </Typography>
-                              </MenuItem>
-                            )}
-                            {claim.confidence !== 0 && (
-                              <MenuItem>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  Confidence: {claim.confidence}
-                                </Typography>
-                              </MenuItem>
-                            )}
-                            {claim.stars && (
-                              <MenuItem>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  Rating as Stars: {claim.stars}
-                                </Typography>
-                              </MenuItem>
-                            )}
-                            {claim.score && (
-                              <MenuItem>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  Rating as Score: {claim.score}
-                                </Typography>
-                              </MenuItem>
-                            )}
-                            {claim.amt && (
-                              <MenuItem>
-                                <Typography variant='body2' sx={{ color: theme.palette.texts }}>
-                                  Amount of claim: $ {claim.amt}
-                                </Typography>
-                              </MenuItem>
-                            )}
-                          </Menu>
                         </Box>
                       </Card>
                     </Box>
