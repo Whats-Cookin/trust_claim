@@ -27,6 +27,7 @@ import IHomeProps from '../../containers/Form/types'
 import styles from './styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 // Ceramic removed
 const tooltips = {
   claim: [
