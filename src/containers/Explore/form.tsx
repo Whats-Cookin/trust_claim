@@ -82,6 +82,9 @@ export const Form = ({
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
   // Ceramic query removed - no longer using ComposeDB
+  
+  // Convert numeric user ID to proper URI
+  const userSourceURI = did && /^\d+$/.test(did) ? `${BACKEND_BASE_URL}/users/${did}` : did
   const onSubmit = handleSubmit(
     async ({
       subject,
@@ -109,7 +112,7 @@ export const Form = ({
           statement,
           aspect,
           howKnown,
-          sourceURI,
+          sourceURI: sourceURI || userSourceURI,
           effectiveDate: effectiveDateAsString,
           confidence: confidenceAsNumber,
           stars: starsAsNumber,
