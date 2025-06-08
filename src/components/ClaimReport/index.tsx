@@ -15,7 +15,6 @@ import {
   Grid
 } from '@mui/material'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import backSvg from '../../assets/images/back.svg'
 import type { Claim } from '../../api/types'
 
 interface ReportData {
@@ -80,38 +79,41 @@ const ClaimReport: React.FC = () => {
   const { claim, validations, relatedClaims, subjectNode } = reportData
 
   return (
-    <Box sx={{ py: 4, px: { xs: 2, sm: 3, md: 4, lg: 6, xl: 8 }, width: '100%' }}>
-      {/* Simple back button */}
-      <Button
-        component={RouterLink}
-        to='/feed'
-        sx={{
-          color: theme.palette.link,
-          mb: 3,
-          p: 0,
-          minWidth: 'auto',
-          '&:hover': {
-            backgroundColor: 'transparent',
-            textDecoration: 'underline'
-          }
-        }}
-      >
-        <img src={backSvg} alt='back' style={{ width: '16px', marginRight: '8px' }} />
-        Back
-      </Button>
+    <Box sx={{ 
+      minHeight: '100vh',
+      backgroundColor: theme.palette.background.default
+    }}>
+      <Box sx={{ maxWidth: '1000px', margin: '0 auto', px: { xs: 2, sm: 3, md: 4 }, py: 3 }}>
+        {/* Simple back button */}
+        <Box sx={{ mb: 3 }}>
+          <Button
+            component={RouterLink}
+            to='/feed'
+            sx={{
+              color: theme.palette.text.secondary,
+              p: 0,
+              minWidth: 'auto',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                color: theme.palette.primary.main
+              }
+            }}
+          >
+            Back
+          </Button>
+        </Box>
 
-      {/* Subject - What this report is about */}
-      {(subjectNode || claim.subjectNode || claim.subject) && (
-        <Box
-          sx={{
-            mb: 4,
-            p: 3,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-            boxShadow: 2,
-            border: `1px solid ${theme.palette.divider}`
-          }}
-        >
+        {/* Subject - What this report is about */}
+        {(subjectNode || claim.subjectNode || claim.subject) && (
+          <Box
+            sx={{
+              mb: 3,
+              backgroundColor: theme.palette.background.paper,
+              borderRadius: 1,
+              border: `1px solid ${theme.palette.divider}`
+            }}
+          >
+            <Box sx={{ p: 2 }}>
           {subjectNode || claim.subjectNode ? (
             // Full subject node info if available
             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
@@ -135,7 +137,15 @@ const ClaimReport: React.FC = () => {
                   {subjectNode?.name || claim.subjectNode?.name || 'Subject'}
                 </Typography>
                 {(subjectNode?.entType || claim.subjectNode?.entType) && (
-                  <Chip label={subjectNode?.entType || claim.subjectNode?.entType} size='small' sx={{ mb: 2 }} />
+                  <Typography variant='body2' sx={{ 
+                    color: theme.palette.text.secondary, 
+                    mb: 2,
+                    textTransform: 'uppercase',
+                    fontSize: '0.75rem',
+                    letterSpacing: 1
+                  }}>
+                    {subjectNode?.entType || claim.subjectNode?.entType}
+                  </Typography>
                 )}
                 {(subjectNode?.descrip || claim.subjectNode?.descrip) && (
                   <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mb: 1 }}>
@@ -150,7 +160,7 @@ const ClaimReport: React.FC = () => {
               </Box>
             </Box>
           ) : (
-            // Just the subject URI if that's all we have
+            // Just the subject URI if that's all we have  
             <Box>
               <Typography variant='h6' sx={{ fontWeight: 500, mb: 1, color: theme.palette.text.secondary }}>
                 Report about:
@@ -170,55 +180,72 @@ const ClaimReport: React.FC = () => {
               </Typography>
             </Box>
           )}
-        </Box>
-      )}
-
-      {/* Main Claim - now secondary to the subject */}
-      <Box sx={{ mb: 6 }}>
-        <Typography variant='h6' gutterBottom sx={{ fontWeight: 500, color: theme.palette.texts }}>
-          Claim: {claim.claim}
-        </Typography>
-
-        {claim.statement && (
-          <Typography
-            variant='body1'
-            sx={{
-              mb: 3,
-              lineHeight: 1.8,
-              color: theme.palette.texts,
-              whiteSpace: 'pre-wrap'
-            }}
-          >
-            {claim.statement}
-          </Typography>
+            </Box>
+          </Box>
         )}
+
+        {/* Main Claim */}
+        <Box sx={{ 
+          mb: 3,
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 1,
+          border: `1px solid ${theme.palette.divider}`
+        }}>
+          <Box sx={{ p: 2 }}>
+          <Typography variant='body1' gutterBottom sx={{ 
+            fontWeight: 500, 
+            color: theme.palette.text.primary,
+            textTransform: 'capitalize',
+            mb: 1
+          }}>
+            Claim: {claim.claim}
+          </Typography>
+
+          {claim.statement && (
+            <Typography
+              variant='body2'
+              sx={{
+                mb: 2,
+                lineHeight: 1.6,
+                color: theme.palette.text.primary,
+                whiteSpace: 'pre-wrap'
+              }}
+            >
+              {claim.statement}
+            </Typography>
+          )}
 
         {/* Main claim image */}
         {claim.image && (
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2, mt: 2 }}>
             <img
               src={claim.image}
               alt='Claim'
               style={{
                 width: '100%',
+                maxWidth: '600px',
                 height: 'auto',
-                borderRadius: '8px',
-                display: 'block'
+                borderRadius: '4px',
+                display: 'block',
+                margin: '0 auto'
               }}
             />
           </Box>
         )}
 
-        {/* Metadata in a subtle way */}
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            flexWrap: 'wrap',
-            fontSize: '0.875rem',
-            color: theme.palette.text.secondary
-          }}
-        >
+          {/* Metadata in a subtle way */}
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              flexWrap: 'wrap',
+              fontSize: '0.875rem',
+              color: theme.palette.text.secondary,
+              borderTop: `1px solid ${theme.palette.divider}`,
+              pt: 1.5,
+              mt: 2
+            }}
+          >
           {claim.effectiveDate && (
             <span>
               {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
@@ -257,17 +284,18 @@ const ClaimReport: React.FC = () => {
             </a>
           </Typography>
         )}
-      </Box>
+          </Box>
+        </Box>
 
       {/* Validations */}
       {validations.length > 0 && (
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 3 }}>
           <Typography
-            variant='body2'
+            variant='body1'
             sx={{
               mb: 2,
               fontWeight: 500,
-              color: theme.palette.texts
+              color: theme.palette.text.primary
             }}
           >
             Validations ({validations.length})
@@ -277,16 +305,17 @@ const ClaimReport: React.FC = () => {
             <Card
               key={validation.id}
               sx={{
-                mb: 3,
+                mb: 2,
                 backgroundColor: theme.palette.background.paper,
-                boxShadow: 1,
-                borderRadius: 2
+                boxShadow: 0,
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: 1
               }}
             >
-              <CardContent>
-                <Grid container spacing={3}>
+              <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                <Grid container spacing={2} alignItems='flex-start'>
                   {validation.image && (
-                    <Grid item xs={12} md={5}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         component='img'
                         src={validation.image}
@@ -300,14 +329,14 @@ const ClaimReport: React.FC = () => {
                       />
                     </Grid>
                   )}
-                  <Grid item xs={12} md={validation.image ? 7 : 12}>
+                  <Grid item xs={12} md={validation.image ? 6 : 12}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                       <Chip
                         label={validation.claim}
                         size='small'
                         sx={{
                           fontSize: '0.75rem',
-                          height: '24px'
+                          height: '22px'
                         }}
                       />
                       <Typography variant='caption' color='text.secondary'>
@@ -316,7 +345,7 @@ const ClaimReport: React.FC = () => {
                     </Box>
 
                     {validation.statement && (
-                      <Typography variant='body2' sx={{ mb: 2, lineHeight: 1.6 }}>
+                      <Typography variant='body2' sx={{ lineHeight: 1.6 }}>
                         {validation.statement}
                       </Typography>
                     )}
@@ -327,6 +356,7 @@ const ClaimReport: React.FC = () => {
                         variant='caption'
                         sx={{
                           display: 'block',
+                          mt: 1,
                           color: theme.palette.text.secondary,
                           wordBreak: 'break-all'
                         }}
@@ -353,79 +383,97 @@ const ClaimReport: React.FC = () => {
         </Box>
       )}
 
-      {/* Related Claims */}
-      {relatedClaims.length > 0 && (
-        <Box sx={{ mb: 6 }}>
-          <Typography
-            variant='h6'
-            sx={{
-              mb: 3,
-              fontWeight: 500,
-              color: theme.palette.texts
-            }}
-          >
-            Other Claims About This Subject
-          </Typography>
-
-          {relatedClaims.map(relatedClaim => (
-            <Box
-              key={relatedClaim.id}
+        {/* Related Claims */}
+        {relatedClaims.length > 0 && (
+          <Box sx={{ mb: 3 }}>
+            <Typography
+              variant='body1'
               sx={{
                 mb: 2,
-                p: 2,
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: 1,
-                '&:hover': {
-                  backgroundColor: theme.palette.action.hover
-                }
+                fontWeight: 500,
+                color: theme.palette.text.primary
               }}
             >
-              <RouterLink
-                to={`/report/${relatedClaim.id}`}
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit'
-                }}
-              >
-                <Typography variant='subtitle2' sx={{ mb: 0.5 }}>
-                  {relatedClaim.claim}
-                </Typography>
-                {relatedClaim.statement && (
-                  <Typography
-                    variant='body2'
-                    color='text.secondary'
-                    sx={{
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical'
+              Other Claims About This Subject
+            </Typography>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {relatedClaims.map(relatedClaim => (
+                <Card
+                  key={relatedClaim.id}
+                  sx={{
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: 1,
+                    boxShadow: 0,
+                    border: `1px solid ${theme.palette.divider}`,
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      borderColor: theme.palette.primary.main,
+                      backgroundColor: theme.palette.action.hover
+                    }
+                  }}
+                >
+                  <RouterLink
+                    to={`/report/${relatedClaim.id}`}
+                    style={{
+                      textDecoration: 'none',
+                      color: 'inherit'
                     }}
                   >
-                    {relatedClaim.statement}
-                  </Typography>
-                )}
-                {/* Source URI for related claims */}
-                {relatedClaim.sourceURI && (
-                  <Typography
-                    variant='caption'
-                    sx={{
-                      display: 'block',
-                      mt: 0.5,
-                      color: theme.palette.text.secondary,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    Source: {relatedClaim.sourceURI}
-                  </Typography>
-                )}
-              </RouterLink>
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <Typography variant='body2' sx={{ 
+                          fontWeight: 500,
+                          textTransform: 'capitalize'
+                        }}>
+                          {relatedClaim.claim}
+                        </Typography>
+                        {relatedClaim.stars && (
+                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+                            {'★'.repeat(relatedClaim.stars)}
+                          </Typography>
+                        )}
+                      </Box>
+                      {relatedClaim.statement && (
+                        <Typography
+                          variant='body2'
+                          color='text.secondary'
+                          sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            mb: 1
+                          }}
+                        >
+                          {relatedClaim.statement}
+                        </Typography>
+                      )}
+                      {/* Source URI for related claims */}
+                      {relatedClaim.sourceURI && (
+                        <Typography
+                          variant='caption'
+                          sx={{
+                            display: 'block',
+                            color: theme.palette.text.secondary,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          Source: {relatedClaim.sourceURI}
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </RouterLink>
+                </Card>
+              ))}
             </Box>
-          ))}
-        </Box>
-      )}
+          </Box>
+        )}
+      </Box>
     </Box>
   )
 }

@@ -11,8 +11,13 @@ import {
   useTheme
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
+import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import Badge from '../../containers/feedOfClaim/Badge'
 
 interface GraphDetailModalProps {
   open: boolean
@@ -74,134 +79,198 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({ open, onClose, type
 
   const renderEdgeDetails = () => {
     const claim = data.claim || data
-    const isSourceEdge = data.label === 'source' || claim.claim === 'source'
+    const claimType = claim.claim || data.label || 'claim'
+    
+    // Helper to extract name from URI
+    const extractName = (uri: string) => {
+      const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
+      const match = regex.exec(uri)
+      return match ? match[1].replace(/-/g, ' ') : uri
+    }
+
+    // Export function
+    const handleExport = () => {
+      const exportData = {
+        ...claim,
+        _metadata: {
+          exportedAt: new Date().toISOString(),
+          claimId: claim.id || data.claimId
+        }
+      }
+      const jsonString = JSON.stringify(exportData, null, 2)
+      const blob = new Blob([jsonString], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `claim_${claim.id || data.claimId}.json`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    }
 
     return (
       <>
         <Box sx={{ mb: 3 }}>
-          <Typography variant='h6' gutterBottom align='center'>
-            {claim.claim || data.label || 'Relationship'}
-          </Typography>
-
-          {/* Source URL at top ONLY if this is a 'source' edge */}
-          {isSourceEdge && claim.sourceURI && (
-            <Box
-              sx={{
-                mb: 2,
-                p: 1.5,
-                backgroundColor: theme.palette.action.hover,
-                borderRadius: 1,
-                textAlign: 'center'
-              }}
-            >
-              <Typography variant='caption' color='text.secondary' display='block'>
-                Source URL
-              </Typography>
-              <Typography
-                variant='body2'
-                component='a'
-                href={claim.sourceURI}
-                target='_blank'
-                rel='noopener noreferrer'
-                sx={{
-                  color: theme.palette.primary.main,
-                  textDecoration: 'none',
-                  '&:hover': { textDecoration: 'underline' }
-                }}
-              >
-                {claim.sourceURI}
-              </Typography>
-            </Box>
-          )}
-
-          {claim.aspect && (
-            <Typography variant='subtitle2' color='text.secondary' align='center' sx={{ mb: 2 }}>
-              Aspect: {claim.aspect}
-            </Typography>
-          )}
-
-          {claim.statement && (
-            <Typography variant='body1' sx={{ mb: 2 }}>
-              {claim.statement}
-            </Typography>
-          )}
-
-          {/* Rating information */}
-          {(claim.stars !== undefined || claim.score !== undefined) && (
-            <Box sx={{ textAlign: 'center', my: 2 }}>
-              {claim.stars !== undefined && (
-                <Typography variant='h6' sx={{ color: '#FCD34D', mb: 1 }}>
-                  {'★'.repeat(claim.stars)}
-                  {'☆'.repeat(5 - claim.stars)}
-                </Typography>
-              )}
-              {claim.score !== undefined && claim.score !== null && (
-                <Typography variant='body2' color='text.secondary'>
-                  Score: {claim.score.toFixed(2)} / 1.00
-                </Typography>
-              )}
-            </Box>
-          )}
-
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
-            <Box sx={{ flex: 1, textAlign: 'center' }}>
-              <Typography variant='caption' color='text.secondary'>
-                From
-              </Typography>
-              <Typography variant='body2'>{startNode?.name || 'Unknown'}</Typography>
-            </Box>
-            <Typography variant='h6' sx={{ mx: 2 }}>
-              →
-            </Typography>
-            <Box sx={{ flex: 1, textAlign: 'center' }}>
-              <Typography variant='caption' color='text.secondary'>
-                To
-              </Typography>
-              <Typography variant='body2'>{endNode?.name || 'Unknown'}</Typography>
-            </Box>
+          {/* Claim Type Badge */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <Badge claim={claimType} />
           </Box>
 
-          {claim.confidence !== undefined && (
-            <Typography variant='body2' sx={{ mt: 2 }} align='center'>
-              Confidence: {Math.round(claim.confidence * 100)}%
+          {/* Subject */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant='caption' color='text.secondary'>
+              Subject
+            </Typography>
+            <Typography variant='body1'>
+              {startNode?.name || extractName(claim.subject || '')}
+            </Typography>
+          </Box>
+
+          {/* Statement */}
+          {claim.statement && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant='body1' sx={{ fontStyle: 'italic' }}>
+                "{claim.statement}"
+              </Typography>
+            </Box>
+          )}
+
+          {/* Rating stars if applicable */}
+          {claim.stars !== undefined && (
+            <Box sx={{ textAlign: 'center', my: 2 }}>
+              <Typography variant='h6' sx={{ color: theme.palette.stars || '#FCD34D' }}>
+                {'★'.repeat(claim.stars)}
+                {'☆'.repeat(5 - claim.stars)}
+              </Typography>
+            </Box>
+          )}
+
+          {/* Source - subtle style like in feed */}
+          {claim.sourceURI && (
+            <Typography
+              variant='body2'
+              sx={{
+                fontSize: '12px',
+                color: theme.palette.date || '#666',
+                fontFamily: 'Roboto, sans-serif',
+                mb: 2
+              }}
+            >
+              source: {extractName(claim.sourceURI)}
             </Typography>
           )}
 
-          {claim.effectiveDate && (
-            <Typography variant='body2' sx={{ mt: 1 }} align='center'>
-              Date: {new Date(claim.effectiveDate).toLocaleDateString()}
-            </Typography>
-          )}
+          <Divider sx={{ my: 2 }} />
 
-          {/* Source URL at bottom for non-source edges */}
-          {!isSourceEdge && claim.sourceURI && (
-            <Typography variant='body2' sx={{ mt: 1 }} align='center'>
-              Source:{' '}
-              <a
-                href={claim.sourceURI}
-                target='_blank'
-                rel='noopener noreferrer'
-                style={{ color: theme.palette.primary?.main || '#1976d2' }}
-              >
-                {claim.sourceURI}
-              </a>
-            </Typography>
-          )}
+          {/* Metadata section */}
+          <Box sx={{ mb: 2 }}>
+            {claim.aspect && (
+              <Typography variant='body2' sx={{ mb: 0.5 }}>
+                Aspect: {claim.aspect}
+              </Typography>
+            )}
+            {claim.confidence !== undefined && claim.confidence !== null && (
+              <Typography variant='body2' sx={{ mb: 0.5 }}>
+                Confidence: {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
+              </Typography>
+            )}
+            {claim.effectiveDate && (
+              <Typography variant='body2' sx={{ mb: 0.5 }}>
+                Date: {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </Typography>
+            )}
+            {claim.howKnown && (
+              <Typography variant='body2' sx={{ mb: 0.5 }}>
+                How Known: {claim.howKnown}
+              </Typography>
+            )}
+            {claim.score !== undefined && claim.score !== null && (
+              <Typography variant='body2' sx={{ mb: 0.5 }}>
+                Score: {claim.score}
+              </Typography>
+            )}
+            {claim.amt !== undefined && claim.amt !== null && (
+              <Typography variant='body2' sx={{ mb: 0.5 }}>
+                Amount: ${claim.amt} {claim.unit || ''}
+              </Typography>
+            )}
+          </Box>
         </Box>
 
         <Divider sx={{ my: 2 }} />
 
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+        {/* Action buttons - same style as feed */}
+        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Button
             component={Link}
             to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id || data.claimId}`}
-            variant='outlined'
+            startIcon={<VerifiedOutlinedIcon />}
+            variant='text'
             onClick={onClose}
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
           >
             Validate
           </Button>
-          <Button component={Link} to={`/report/${claim.id || data.claimId}`} variant='contained' onClick={onClose}>
-            View Evidence
+          <Button
+            component={Link}
+            to={`/report/${claim.id || data.claimId}`}
+            startIcon={<FeedOutlinedIcon />}
+            variant='text'
+            onClick={onClose}
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
+          >
+            Evidence
+          </Button>
+          <Button
+            component={Link}
+            to={`/explore/${claim.id || data.claimId}`}
+            startIcon={<ShareOutlinedIcon />}
+            variant='text'
+            onClick={onClose}
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
+          >
+            Graph View
+          </Button>
+          <Button
+            startIcon={<SystemUpdateAltIcon />}
+            variant='text'
+            onClick={handleExport}
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
+          >
+            Export
           </Button>
         </Box>
       </>
@@ -233,7 +302,7 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({ open, onClose, type
         <CloseIcon />
       </IconButton>
 
-      <DialogTitle sx={{ pr: 6 }}>{type === 'node' ? 'Node Details' : 'Claim Details'}</DialogTitle>
+      <DialogTitle sx={{ pr: 6 }}>{type === 'node' ? 'Node Details' : 'Claim'}</DialogTitle>
 
       <DialogContent>{type === 'node' ? renderNodeDetails() : renderEdgeDetails()}</DialogContent>
     </Dialog>
