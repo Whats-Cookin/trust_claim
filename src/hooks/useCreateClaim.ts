@@ -47,8 +47,19 @@ export function useCreateClaim() {
         isSuccess = true
       }
     } catch (err: any) {
-      message = err.response?.data.message || 'Something went wrong'
-      console.error(err.response?.data)
+      console.error('Full error:', err)
+      console.error('Error response:', err.response)
+      
+      // Check if it's our custom error message from the interceptor
+      if (err.message === 'Please login again') {
+        message = 'Please login again'
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        message = 'Please login again'
+      } else {
+        message = err.response?.data?.error || err.response?.data?.message || err.message || 'Something went wrong'
+      }
+      
+      console.error('Error details:', err.response?.data)
     }
     return { message, isSuccess }
   }, [])
