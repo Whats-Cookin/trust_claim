@@ -104,20 +104,20 @@ export const uiColors = {
   shadowHover: 'rgba(0, 0, 0, 0.12)'
 } as const
 
-// Node colors for graph
+// Node colors for graph - darker, more professional palette
 export const nodeColors = {
-  claim: primaryColors.purple,
-  default: primaryColors.green,
-  person: primaryColors.cyan,
-  organization: primaryColors.indigo,
-  impact: primaryColors.amber,
-  event: primaryColors.red,
-  document: neutralColors.gray[600],
-  product: primaryColors.teal,
-  place: primaryColors.pink
+  claim: '#7C3AED', // Violet-600
+  default: '#059669', // Emerald-600
+  person: '#0891B2', // Cyan-600
+  organization: '#4F46E5', // Indigo-600
+  impact: '#D97706', // Amber-600
+  event: '#DC2626', // Red-600
+  document: '#4B5563', // Gray-600
+  product: '#0D9488', // Teal-600
+  place: '#DB2777' // Pink-600
 } as const
 
-// Edge colors by claim type
+// Edge colors by claim type - restore original colors
 export const edgeColors = {
   is_vouched_for: primaryColors.green,
   rated: primaryColors.cyan,

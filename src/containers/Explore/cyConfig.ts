@@ -9,17 +9,56 @@ const truncateLabel = (label: string, maxLength: number) => {
   return label.slice(0, maxLength) + '...'
 }
 
-// Get color for rating nodes (red to green gradient)
-const getRatingColor = (stars: number | undefined) => {
-  if (!stars && stars !== 0) return nodeColors.default
-  const colors = [
-    primaryColors.red, // 0-1 stars
-    '#FF8C42', // 1-2 stars (orange)
-    primaryColors.amber, // 2-3 stars
-    '#7CB518', // 3-4 stars (yellow-green)
-    primaryColors.green // 4-5 stars
-  ]
-  return colors[Math.floor(stars)] || nodeColors.default
+// Centralized color picker function
+export const getNodeColor = (data: any): string => {
+  const entType = data.entType || data.entityType || 'UNKNOWN'
+  const isRating = data.claim === 'rated' || data.stars !== undefined
+  const isImpact = data.claim === 'impact' || data.label?.toLowerCase().includes('impact')
+  
+  // Rating nodes - vivid green to red gradient
+  if (isRating && data.stars !== undefined) {
+    const colors = [
+      '#DC2626', // Vivid red for 0-1 stars
+      '#F87171', // Light red for 1-2 stars  
+      '#FCD34D', // Yellow for 2-3 stars
+      '#84CC16', // Light green for 3-4 stars
+      '#22C55E'  // Vivid green for 4-5 stars
+    ]
+    return colors[Math.floor(data.stars)] || '#6B7280'
+  }
+  
+  // Impact nodes - purple gradient based on amount
+  if (isImpact) {
+    // If we have an amount, use darker purple for larger impacts
+    if (data.amt !== undefined && data.amt !== null) {
+      const amt = parseFloat(data.amt)
+      if (amt >= 1000000) return '#581C87' // Purple-900 for 1M+
+      if (amt >= 100000) return '#6B21A8'  // Purple-800 for 100K+
+      if (amt >= 10000) return '#7C3AED'   // Purple-700 for 10K+
+      if (amt >= 1000) return '#8B5CF6'    // Purple-600 for 1K+
+      return '#A78BFA' // Purple-400 for smaller amounts
+    }
+    // Default purple for impact without amount
+    return '#7C3AED'
+  }
+  
+  // Entity type colors - professional palette
+  switch (entType) {
+    case 'PERSON':
+      return '#52525B' // Gray-600 with slight purple tint
+    case 'ORGANIZATION':
+      return '#3F3F46' // Gray-700 with slight blue tint
+    case 'CLAIM':
+      return '#6B7280' // Neutral gray for claims
+    case 'EVENT':
+      return '#991B1B' // Dark red
+    case 'PRODUCT':
+      return '#065F46' // Dark teal
+    case 'PLACE':
+      return '#831843' // Dark pink
+    default:
+      return '#4B5563' // Default gray
+  }
 }
 
 // Edge styles configuration using theme colors
@@ -120,12 +159,15 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
           curveStyle: 'bezier',
           color: 'data(color)' as any,
           textRotation: 'autorotate',
-          textMarginY: -10,
+          textMarginY: -15,
           content: 'data(relation)',
-          'text-background-color': theme.palette.background.default,
-          'text-background-opacity': 0.8,
-          'text-background-padding': 2,
+          'text-background-color': '#ffffff',
+          'text-background-opacity': 0.9,
+          'text-background-padding': 4,
           'text-background-shape': 'roundrectangle',
+          'text-border-color': 'data(color)' as any,
+          'text-border-width': 1,
+          'text-border-opacity': 0.3,
           'line-cap': 'round' as 'round',
           'source-endpoint': 'outside-to-node',
           'target-endpoint': 'outside-to-node',
@@ -170,21 +212,8 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
               const hasImage = data.image || data.thumbnail
               const isRating = data.claim === 'rated' || data.stars !== undefined
 
-              // Get color based on entity type or rating
-              let bgColor: string = nodeColors.default
-              if (isRating && data.stars !== undefined) {
-                bgColor = getRatingColor(data.stars)
-              } else if (isClaim) {
-                if (data.claim === 'impact' || data.label?.toLowerCase().includes('impact')) {
-                  bgColor = '#065F46' // Dark green for impact claims
-                } else {
-                  bgColor = nodeColors.claim
-                }
-              } else if (entType === 'PERSON') {
-                bgColor = '#C2410C' // Dark burnt orange
-              } else if (entType.toLowerCase() in nodeColors) {
-                bgColor = nodeColors[entType.toLowerCase() as keyof typeof nodeColors]
-              }
+              // Get color based on entity type or rating - using centralized color picker
+              const bgColor = getNodeColor(data)
 
               const nodeTypeClass = isClaim
                 ? 'node-claim'
@@ -206,10 +235,14 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
               `
               } else {
                 // For nodes without images, use colored shape
+                const shapeStyle = isClaim 
+                  ? `width: 140px; height: 70px; border-radius: 8px; background-color: ${bgColor};`
+                  : `width: 80px; height: 80px; border-radius: 50%; background-color: ${bgColor};`
+                  
                 return `
                 <div class="custom-node-container ${nodeTypeClass}" 
-                     style="background-color: ${bgColor};">
-                  <div class="node-label">${truncateLabel(data.label, 40)}</div>
+                     style="${shapeStyle} display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                  <div class="node-label" style="color: #ffffff; padding: 8px; text-align: center;">${truncateLabel(data.label, isClaim ? 40 : 20)}</div>
                   ${
                     data.stars !== undefined
                       ? `<div class="node-stars">${'★'.repeat(data.stars)}${'☆'.repeat(5 - data.stars)}</div>`
