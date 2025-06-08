@@ -332,6 +332,19 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 />
                               </Typography>
                             )}
+                            {claim.sourceURI && (
+                              <Typography
+                                variant='body2'
+                                sx={{
+                                  padding: '5px 1 1 5px',
+                                  fontSize: '12px',
+                                  color: theme.palette.date,
+                                  fontFamily: 'Roboto, sans-serif'
+                                }}
+                              >
+                                source: {extractSourceName(claim.sourceURI)}
+                              </Typography>
+                            )}
                           </CardContent>
                           <Box
                             sx={{
