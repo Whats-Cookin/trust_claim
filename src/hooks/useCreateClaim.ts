@@ -34,15 +34,32 @@ export function useCreateClaim() {
       delete (transformedDto as any).rating
       delete (transformedDto as any).amount
 
-      const res = await api.createClaim(generateFormData(transformedDto, images))
+      // If no images, send as JSON directly, otherwise use FormData
+      let res;
+      if (images.length === 0) {
+        res = await api.createClaim(transformedDto)
+      } else {
+        res = await api.createClaim(generateFormData(transformedDto, images))
+      }
 
-      if (res.status === 201) {
+      if (res.status === 200 || res.status === 201) {
         message = 'Claim submitted successfully!'
         isSuccess = true
       }
     } catch (err: any) {
-      message = err.response?.data.message || 'Something went wrong'
-      console.error(err.response?.data)
+      console.error('Full error:', err)
+      console.error('Error response:', err.response)
+      
+      // Check if it's our custom error message from the interceptor
+      if (err.message === 'Please login again') {
+        message = 'Please login again'
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        message = 'Please login again'
+      } else {
+        message = err.response?.data?.error || err.response?.data?.message || err.message || 'Something went wrong'
+      }
+      
+      console.error('Error details:', err.response?.data)
     }
     return { message, isSuccess }
   }, [])
@@ -67,6 +84,11 @@ function preparePayload<T extends { images: MediaI[] }>(
         effectiveDate: image.effectiveDate
       } as Omit<MediaI, 'file' | 'url'>
     })
+  }
+  
+  // Remove images array if empty to avoid sending unnecessary data
+  if (dto.images.length === 0) {
+    delete (dto as any).images
   }
 
   return { images, dto }

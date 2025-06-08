@@ -37,7 +37,11 @@ instance.interceptors.response.use(
     const errorResponse = error.response
 
     if (errorResponse?.status === 401) {
-      if (errorResponse.data.message === 'jwt expired' && !isRefreshing) {
+      // Check for various JWT error messages
+      const errorMessage = errorResponse.data?.message || errorResponse.data?.error || ''
+      const isJwtError = errorMessage.includes('jwt') || errorMessage.includes('token') || errorMessage.includes('unauthorized')
+      
+      if ((errorMessage === 'jwt expired' || isJwtError) && !isRefreshing) {
         isRefreshing = true
         const refreshToken = localStorage.getItem('refreshToken')
 
@@ -52,9 +56,10 @@ instance.interceptors.response.use(
           originalReq.headers = { ...originalReq.headers, ...getAuthHeaders() }
           return instance(originalReq)
         } catch (err) {
+          isRefreshing = false
           clearAuth()
-          window.location.href = '/login'
-          return Promise.reject(err)
+          // Don't redirect immediately, let the component handle it
+          return Promise.reject(new Error('Please login again'))
         }
       }
 
@@ -66,6 +71,10 @@ instance.interceptors.response.use(
           })
         })
       }
+      
+      // If we get here, it's a 401 but not a JWT issue
+      clearAuth()
+      return Promise.reject(new Error('Please login again'))
     }
 
     return Promise.reject(error)
