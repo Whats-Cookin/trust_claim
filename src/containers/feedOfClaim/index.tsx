@@ -437,10 +437,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                           <IconButton
                             sx={{
                               position: 'absolute',
-                              top: '10px',
-                              right: '10px',
+                              top: '60px',
+                              right: '16px',
                               color: theme.palette.texts,
-                              cursor: 'pointer'
+                              cursor: 'pointer',
+                              zIndex: 2,
+                              backgroundColor: theme.palette.cardBackground,
+                              '&:hover': {
+                                backgroundColor: theme.palette.cardsbuttons
+                              }
                             }}
                             onClick={event => handleMenuClick(event, index)}
                           >
