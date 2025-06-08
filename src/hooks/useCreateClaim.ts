@@ -34,9 +34,15 @@ export function useCreateClaim() {
       delete (transformedDto as any).rating
       delete (transformedDto as any).amount
 
-      const res = await api.createClaim(generateFormData(transformedDto, images))
+      // If no images, send as JSON directly, otherwise use FormData
+      let res;
+      if (images.length === 0) {
+        res = await api.createClaim(transformedDto)
+      } else {
+        res = await api.createClaim(generateFormData(transformedDto, images))
+      }
 
-      if (res.status === 201) {
+      if (res.status === 200 || res.status === 201) {
         message = 'Claim submitted successfully!'
         isSuccess = true
       }
@@ -67,6 +73,11 @@ function preparePayload<T extends { images: MediaI[] }>(
         effectiveDate: image.effectiveDate
       } as Omit<MediaI, 'file' | 'url'>
     })
+  }
+  
+  // Remove images array if empty to avoid sending unnecessary data
+  if (dto.images.length === 0) {
+    delete (dto as any).images
   }
 
   return { images, dto }
