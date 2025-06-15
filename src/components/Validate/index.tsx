@@ -599,7 +599,10 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             How Known:
                           </Typography>
                           <Typography variant='body2' sx={{ color: theme.palette.text.primary }}>
-                            {howKnownValue.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+                            {howKnownValue
+                              .replace(/_/g, ' ')
+                              .toLowerCase()
+                              .replace(/\b\w/g, l => l.toUpperCase())}
                           </Typography>
                         </Box>
                       )}
