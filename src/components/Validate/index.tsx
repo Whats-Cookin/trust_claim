@@ -457,7 +457,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       mb: { xs: 1, sm: 2 }
                     }}
                   >
-                    Validate the Credential
+                    {claim === 'credential' ? 'Validate the Credential' : 'Validate the Claim'}
                   </Typography>
                   <Box
                     sx={{
