@@ -17,7 +17,9 @@ import {
   Divider,
   styled,
   Container,
-  IconButton
+  IconButton,
+  Alert,
+  AlertTitle
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import VerifiedIcon from '@mui/icons-material/Verified'
@@ -79,47 +81,79 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   gap: theme.spacing(1)
 }))
 
-const BackButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  textTransform: 'none',
-  fontWeight: 500,
-  marginBottom: theme.spacing(3),
-  '&:hover': {
-    backgroundColor: 'transparent',
-    color: theme.palette.primary.main
-  }
-}))
+interface SubjectNode {
+  name: string
+  nodeUri?: string
+  entType?: string
+  descrip?: string
+  image?: string
+}
 
-interface ReportData {
-  claim: any
-  validations: any[]
-  validationSummary: {
-    total: number
-  }
-  relatedClaims: any[]
-  subjectNode?: any
+interface ValidationItem {
+  id: string | number
+  statement?: string
+  effectiveDate?: string
+  source_link?: string
+  sourceURI?: string
+  image?: string
+  claim?: string
+}
+
+interface RelatedClaim {
+  id: string | number
+  claim: string
+  statement?: string
+  source_link?: string
+  sourceURI?: string
+  stars?: number
+}
+
+interface ExtendedClaim extends Claim {
+  subjectNode?: SubjectNode
+}
+
+interface ClaimReportData {
+  claim: ExtendedClaim
+  image?: string
+  subjectNode?: SubjectNode
+  validations: ValidationItem[]
+  attestations: ValidationItem[]
+  relatedClaims?: RelatedClaim[]
 }
 
 const ClaimReport: React.FC = () => {
   const theme = useTheme()
   const { claimId } = useParams<{ claimId: string }>()
-  const [reportData, setReportData] = useState<ReportData | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [reportData, setReportData] = useState<ClaimReportData | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   useEffect(() => {
     const fetchReportData = async () => {
-      setIsLoading(true)
+      if (!claimId) {
+        setError('No claim ID provided')
+        setIsLoading(false)
+        return
+      }
+
       try {
-        const response = await api.getClaimReport(claimId!)
-        setReportData(response.data as any)
+        setIsLoading(true)
+        const response = await api.getClaimReport(claimId)
+        
+        if (!response?.data) {
+          throw new Error('No data received from server')
+        }
+
+        setReportData(response.data as unknown as ClaimReportData)
       } catch (err) {
-        setError('Failed to fetch report data')
+        console.error('Error fetching report data:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch report data')
       } finally {
         setIsLoading(false)
       }
     }
+
     fetchReportData()
   }, [claimId])
 
@@ -144,47 +178,51 @@ const ClaimReport: React.FC = () => {
     return (
       <PageContainer maxWidth="lg">
         <Box sx={{ textAlign: 'center', py: 8 }}>
-          <Typography variant='h6' sx={{ color: theme.palette.error.main, mb: 2 }}>
+          <Alert 
+            severity="error"
+            sx={{ mb: 3 }}
+          >
+            <AlertTitle>Error</AlertTitle>
             {error || 'Report data is not available.'}
-          </Typography>
-                     <RouterLink to='/feed' style={{ textDecoration: 'none' }}>
-             <Button
-               variant='outlined'
-               startIcon={<ArrowBackIcon />}
-             >
-               Back to Feed
-             </Button>
-           </RouterLink>
+          </Alert>
+          <RouterLink to="/feed" style={{ textDecoration: 'none' }}>
+            <Button
+              variant="outlined"
+              startIcon={<ArrowBackIcon />}
+            >
+              Back to Feed
+            </Button>
+          </RouterLink>
         </Box>
       </PageContainer>
     )
   }
 
-  const { claim, validations, relatedClaims, subjectNode } = reportData
+  const { claim, validations, attestations, relatedClaims, subjectNode } = reportData
 
   return (
     <PageContainer maxWidth="lg">
       {/* Back Button */}
-                     <RouterLink to='/feed' style={{ textDecoration: 'none' }}>
-          <Button
-            startIcon={<ArrowBackIcon />}
-            sx={{
-              color: theme.palette.text.secondary,
-              textTransform: 'none',
-              fontWeight: 500,
-              marginBottom: 3,
-              '&:hover': {
-                backgroundColor: 'transparent',
-                color: theme.palette.primary.main
-              }
-            }}
-          >
-            Back to Feed
-          </Button>
-        </RouterLink>
+      <RouterLink to="/feed" style={{ textDecoration: 'none' }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          sx={{
+            color: theme.palette.text.secondary,
+            textTransform: 'none',
+            fontWeight: 500,
+            marginBottom: 3,
+            '&:hover': {
+              backgroundColor: 'transparent',
+              color: theme.palette.primary.main
+            }
+          }}
+        >
+          Back to Feed
+        </Button>
+      </RouterLink>
 
       {/* Subject Information Header */}
-      {(subjectNode || claim.subjectNode || claim.subject) && (
+      {(subjectNode || claim.subjectNode || (claim.subject && typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)) && (
         <HeaderCard elevation={0}>
           <CardContent sx={{ p: 4 }}>
             {subjectNode || claim.subjectNode ? (
@@ -235,7 +273,7 @@ const ClaimReport: React.FC = () => {
                     <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
                     <Typography
                       component='a'
-                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || claim.subject}
+                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
                       target='_blank'
                       rel='noopener noreferrer'
                       variant='body2'
@@ -245,12 +283,12 @@ const ClaimReport: React.FC = () => {
                         '&:hover': { textDecoration: 'underline' }
                       }}
                     >
-                      {subjectNode?.nodeUri || claim.subjectNode?.nodeUri || claim.subject}
+                      {subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
                     </Typography>
                     <IconButton
                       size='small'
                       component='a'
-                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || claim.subject}
+                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
                       target='_blank'
                       rel='noopener noreferrer'
                     >
@@ -271,7 +309,7 @@ const ClaimReport: React.FC = () => {
                   <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
                   <Typography
                     component='a'
-                    href={claim.subject}
+                    href={typeof claim.subject === 'object' ? claim.subject.uri : claim.subject}
                     target='_blank'
                     rel='noopener noreferrer'
                     variant='body1'
@@ -281,12 +319,12 @@ const ClaimReport: React.FC = () => {
                       '&:hover': { textDecoration: 'underline' }
                     }}
                   >
-                    {claim.subject}
+                    {typeof claim.subject === 'object' ? claim.subject.uri : claim.subject}
                   </Typography>
                   <IconButton
                     size='small'
                     component='a'
-                    href={claim.subject}
+                    href={typeof claim.subject === 'object' ? claim.subject.uri : claim.subject}
                     target='_blank'
                     rel='noopener noreferrer'
                   >
@@ -358,10 +396,10 @@ const ClaimReport: React.FC = () => {
               </Box>
             )}
 
-            {claim.image && (
+            {reportData.image && (
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                 <img
-                  src={claim.image}
+                  src={reportData.image}
                   alt='Claim'
                   style={{
                     width: '100%',
@@ -420,8 +458,8 @@ const ClaimReport: React.FC = () => {
           </SectionTitle>
 
           <Stack spacing={2}>
-            {validations.map(validation => (
-              <ClaimCard key={validation.id} elevation={0}>
+            {validations.map((validation, index) => (
+              <ClaimCard key={validation.id || `validation-${index}`} elevation={0}>
                 <CardContent sx={{ p: 3 }}>
                   <Grid container spacing={3} alignItems='flex-start'>
                     {validation.image && (
@@ -463,14 +501,14 @@ const ClaimReport: React.FC = () => {
                           </Typography>
                         )}
 
-                        {validation.sourceURI && (
+                        {(validation.sourceURI || validation.source_link) && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
                               Source:
                             </Typography>
                             <Typography
                               component='a'
-                              href={validation.sourceURI}
+                              href={validation.sourceURI || validation.source_link}
                               target='_blank'
                               rel='noopener noreferrer'
                               variant='caption'
@@ -480,12 +518,103 @@ const ClaimReport: React.FC = () => {
                                 '&:hover': { textDecoration: 'underline' }
                               }}
                             >
-                              {validation.sourceURI}
+                              {validation.sourceURI || validation.source_link}
                             </Typography>
                             <IconButton
                               size='small'
                               component='a'
-                              href={validation.sourceURI}
+                              href={validation.sourceURI || validation.source_link}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
+                              <OpenInNewIcon fontSize='inherit' />
+                            </IconButton>
+                          </Box>
+                        )}
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </ClaimCard>
+            ))}
+          </Stack>
+        </Box>
+      )}
+
+      {/* Attestations */}
+      {attestations && attestations.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <SectionTitle>
+            Attestations ({attestations.length})
+          </SectionTitle>
+
+          <Stack spacing={2}>
+            {attestations.map((attestation, index) => (
+              <ClaimCard key={attestation.id || `attestation-${index}`} elevation={0}>
+                <CardContent sx={{ p: 3 }}>
+                  <Grid container spacing={3} alignItems='flex-start'>
+                    {attestation.image && (
+                      <Grid item xs={12} md={4}>
+                        <Box
+                          component='img'
+                          src={attestation.image}
+                          alt='Attestation'
+                          sx={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: 2,
+                            objectFit: 'cover',
+                            maxHeight: '200px'
+                          }}
+                        />
+                      </Grid>
+                    )}
+                    <Grid item xs={12} md={attestation.image ? 8 : 12}>
+                      <Stack spacing={2}>
+                        <Box>
+                          <Chip
+                            label={attestation.claim || 'Attestation'}
+                            sx={{
+                              backgroundColor: theme.palette.success.main,
+                              color: theme.palette.success.contrastText,
+                              fontWeight: 600,
+                              mb: 1
+                            }}
+                          />
+                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
+                            {attestation.effectiveDate && new Date(attestation.effectiveDate).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+
+                        {attestation.statement && (
+                          <Typography variant='body1' sx={{ lineHeight: 1.6 }}>
+                            {attestation.statement}
+                          </Typography>
+                        )}
+
+                        {(attestation.sourceURI || attestation.source_link) && (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+                              Source:
+                            </Typography>
+                            <Typography
+                              component='a'
+                              href={attestation.sourceURI || attestation.source_link}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              variant='caption'
+                              sx={{
+                                color: theme.palette.primary.main,
+                                textDecoration: 'none',
+                                '&:hover': { textDecoration: 'underline' }
+                              }}
+                            >
+                              {attestation.sourceURI || attestation.source_link}
+                            </Typography>
+                            <IconButton
+                              size='small'
+                              component='a'
+                              href={attestation.sourceURI || attestation.source_link}
                               target='_blank'
                               rel='noopener noreferrer'
                             >
@@ -511,8 +640,8 @@ const ClaimReport: React.FC = () => {
           </SectionTitle>
 
           <Grid container spacing={3}>
-            {relatedClaims.map(relatedClaim => (
-              <Grid item xs={12} md={6} key={relatedClaim.id}>
+            {relatedClaims.map((relatedClaim, index) => (
+              <Grid item xs={12} md={6} key={relatedClaim.id || `related-${index}`}>
                 <RelatedClaimCard elevation={0}>
                   <RouterLink
                     to={`/report/${relatedClaim.id}`}
