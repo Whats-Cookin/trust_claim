@@ -140,7 +140,7 @@ const ClaimReport: React.FC = () => {
       try {
         setIsLoading(true)
         const response = await api.getClaimReport(claimId)
-        
+
         if (!response?.data) {
           throw new Error('No data received from server')
         }
@@ -159,7 +159,7 @@ const ClaimReport: React.FC = () => {
 
   if (isLoading) {
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
         <Box
           sx={{
             display: 'flex',
@@ -176,20 +176,14 @@ const ClaimReport: React.FC = () => {
 
   if (error || !reportData) {
     return (
-      <PageContainer maxWidth="lg">
+      <PageContainer maxWidth='lg'>
         <Box sx={{ textAlign: 'center', py: 8 }}>
-          <Alert 
-            severity="error"
-            sx={{ mb: 3 }}
-          >
+          <Alert severity='error' sx={{ mb: 3 }}>
             <AlertTitle>Error</AlertTitle>
             {error || 'Report data is not available.'}
           </Alert>
-          <RouterLink to="/feed" style={{ textDecoration: 'none' }}>
-            <Button
-              variant="outlined"
-              startIcon={<ArrowBackIcon />}
-            >
+          <RouterLink to='/feed' style={{ textDecoration: 'none' }}>
+            <Button variant='outlined' startIcon={<ArrowBackIcon />}>
               Back to Feed
             </Button>
           </RouterLink>
@@ -201,9 +195,9 @@ const ClaimReport: React.FC = () => {
   const { claim, validations, attestations, relatedClaims, subjectNode } = reportData
 
   return (
-    <PageContainer maxWidth="lg">
+    <PageContainer maxWidth='lg'>
       {/* Back Button */}
-      <RouterLink to="/feed" style={{ textDecoration: 'none' }}>
+      <RouterLink to='/feed' style={{ textDecoration: 'none' }}>
         <Button
           startIcon={<ArrowBackIcon />}
           sx={{
@@ -222,12 +216,18 @@ const ClaimReport: React.FC = () => {
       </RouterLink>
 
       {/* Subject Information Header */}
-      {(subjectNode || claim.subjectNode || (claim.subject && typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)) && (
+      {(subjectNode ||
+        claim.subjectNode ||
+        (claim.subject && typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)) && (
         <HeaderCard elevation={0}>
           <CardContent sx={{ p: 4 }}>
             {subjectNode || claim.subjectNode ? (
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems={{ xs: 'center', md: 'flex-start' }}>
-                {(subjectNode?.image || claim.subjectNode?.image) ? (
+              <Stack
+                direction={{ xs: 'column', md: 'row' }}
+                spacing={3}
+                alignItems={{ xs: 'center', md: 'flex-start' }}
+              >
+                {subjectNode?.image || claim.subjectNode?.image ? (
                   <Avatar
                     src={subjectNode?.image || claim.subjectNode?.image}
                     alt='Subject'
@@ -269,11 +269,22 @@ const ClaimReport: React.FC = () => {
                       {subjectNode?.descrip || claim.subjectNode?.descrip}
                     </Typography>
                   )}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      justifyContent: { xs: 'center', md: 'flex-start' }
+                    }}
+                  >
                     <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
                     <Typography
                       component='a'
-                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
+                      href={
+                        subjectNode?.nodeUri ||
+                        claim.subjectNode?.nodeUri ||
+                        (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)
+                      }
                       target='_blank'
                       rel='noopener noreferrer'
                       variant='body2'
@@ -283,12 +294,18 @@ const ClaimReport: React.FC = () => {
                         '&:hover': { textDecoration: 'underline' }
                       }}
                     >
-                      {subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
+                      {subjectNode?.nodeUri ||
+                        claim.subjectNode?.nodeUri ||
+                        (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
                     </Typography>
                     <IconButton
                       size='small'
                       component='a'
-                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
+                      href={
+                        subjectNode?.nodeUri ||
+                        claim.subjectNode?.nodeUri ||
+                        (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)
+                      }
                       target='_blank'
                       rel='noopener noreferrer'
                     >
@@ -345,7 +362,7 @@ const ClaimReport: React.FC = () => {
               <Typography variant='h5' sx={{ fontWeight: 600, mb: 2, textTransform: 'capitalize' }}>
                 {claim.claim || 'Professional Assessment'}
               </Typography>
-              
+
               <Stack direction='row' spacing={1} sx={{ mb: 3, flexWrap: 'wrap', gap: 1 }}>
                 {claim.effectiveDate && (
                   <Chip
@@ -360,11 +377,7 @@ const ClaimReport: React.FC = () => {
                   />
                 )}
                 {claim.howKnown && (
-                  <Chip
-                    label={claim.howKnown.replace(/_/g, ' ').toLowerCase()}
-                    variant='outlined'
-                    color='info'
-                  />
+                  <Chip label={claim.howKnown.replace(/_/g, ' ').toLowerCase()} variant='outlined' color='info' />
                 )}
                 {claim.confidence && (
                   <Chip
@@ -544,9 +557,7 @@ const ClaimReport: React.FC = () => {
       {/* Attestations */}
       {attestations && attestations.length > 0 && (
         <Box sx={{ mb: 4 }}>
-          <SectionTitle>
-            Attestations ({attestations.length})
-          </SectionTitle>
+          <SectionTitle>Attestations ({attestations.length})</SectionTitle>
 
           <Stack spacing={2}>
             {attestations.map((attestation, index) => (
@@ -635,9 +646,7 @@ const ClaimReport: React.FC = () => {
       {/* Related Claims */}
       {relatedClaims && relatedClaims.length > 0 && (
         <Box sx={{ mb: 4 }}>
-          <SectionTitle>
-            Related Claims About This Subject
-          </SectionTitle>
+          <SectionTitle>Related Claims About This Subject</SectionTitle>
 
           <Grid container spacing={3}>
             {relatedClaims.map((relatedClaim, index) => (
@@ -654,11 +663,14 @@ const ClaimReport: React.FC = () => {
                   >
                     <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                        <Typography variant='h6' sx={{ 
-                          fontWeight: 600,
-                          textTransform: 'capitalize',
-                          flex: 1
-                        }}>
+                        <Typography
+                          variant='h6'
+                          sx={{
+                            fontWeight: 600,
+                            textTransform: 'capitalize',
+                            flex: 1
+                          }}
+                        >
                           {relatedClaim.claim || 'Related Claim'}
                         </Typography>
                         {relatedClaim.stars && (
@@ -670,7 +682,7 @@ const ClaimReport: React.FC = () => {
                           </Box>
                         )}
                       </Box>
-                      
+
                       {relatedClaim.statement && (
                         <Typography
                           variant='body2'
@@ -689,7 +701,7 @@ const ClaimReport: React.FC = () => {
                           {relatedClaim.statement}
                         </Typography>
                       )}
-                      
+
                       {relatedClaim.sourceURI && (
                         <Box sx={{ pt: 1, borderTop: `1px solid ${theme.palette.divider}` }}>
                           <Typography

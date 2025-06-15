@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { 
-  Typography, 
-  Box, 
-  Link as MuiLink, 
-  Dialog, 
-  DialogContent, 
+import {
+  Typography,
+  Box,
+  Link as MuiLink,
+  Dialog,
+  DialogContent,
   Card,
   CardContent,
   Chip,
@@ -101,7 +101,7 @@ const RenderClaimInfo = ({
 
   const excludedKeys = [
     'id',
-    'issuerId', 
+    'issuerId',
     'issuerIdType',
     'subject',
     'claimAddress',
@@ -112,26 +112,13 @@ const RenderClaimInfo = ({
     'image'
   ]
 
-  const displayedKeys = [
-    'effectiveDate',
-    'claim',
-    'statement'
-  ]
+  const displayedKeys = ['effectiveDate', 'claim', 'statement']
 
-  const metadataKeys = [
-    'aspect',
-    'howKnown',
-    'amt',
-    'confidence',
-    'stars'
-  ]
+  const metadataKeys = ['aspect', 'howKnown', 'amt', 'confidence', 'stars']
 
   const otherEntries = Object.entries(claim).filter(
-    ([key, value]) => 
-      value && 
-      !excludedKeys.includes(key) && 
-      !displayedKeys.includes(key) && 
-      !metadataKeys.includes(key)
+    ([key, value]) =>
+      value && !excludedKeys.includes(key) && !displayedKeys.includes(key) && !metadataKeys.includes(key)
   )
 
   const hasExtraDetails = otherEntries.length > 0
@@ -149,7 +136,7 @@ const RenderClaimInfo = ({
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long', 
+      month: 'long',
       day: 'numeric'
     })
   }
@@ -192,27 +179,10 @@ const RenderClaimInfo = ({
           {/* Metadata chips */}
           <MetadataContainer>
             {claim.effectiveDate && (
-              <Chip
-                icon={<CalendarToday />}
-                label={formatDate(claim.effectiveDate)}
-                variant='outlined'
-                size='small'
-              />
+              <Chip icon={<CalendarToday />} label={formatDate(claim.effectiveDate)} variant='outlined' size='small' />
             )}
-            {claim.claim && (
-              <Chip
-                label={claim.claim}
-                color='primary'
-                size='small'
-              />
-            )}
-            {claim.howKnown && (
-              <Chip
-                label={claim.howKnown.replace(/_/g, ' ')}
-                variant='outlined'
-                size='small'
-              />
-            )}
+            {claim.claim && <Chip label={claim.claim} color='primary' size='small' />}
+            {claim.howKnown && <Chip label={claim.howKnown.replace(/_/g, ' ')} variant='outlined' size='small' />}
             {claim.confidence && (
               <Chip
                 label={`${Math.round(Number(claim.confidence) * 100)}% confidence`}
@@ -234,10 +204,7 @@ const RenderClaimInfo = ({
           {/* Statement */}
           {claim.statement && (
             <StatementText>
-              {isExpanded || !isStatementLong 
-                ? claim.statement 
-                : truncateText(claim.statement, 300)
-              }
+              {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 300)}
               {(isStatementLong || hasExtraDetails) && (
                 <ExpandButton onClick={handleToggleExpand} sx={{ ml: 1 }}>
                   {isExpanded ? 'Show Less' : 'Show More'}
@@ -272,12 +239,7 @@ const RenderClaimInfo = ({
 
       {/* Image Dialog */}
       {imageDialogOpen && claim.image && (
-        <Dialog 
-          open={imageDialogOpen} 
-          onClose={() => setImageDialogOpen(false)}
-          maxWidth='md'
-          fullWidth
-        >
+        <Dialog open={imageDialogOpen} onClose={() => setImageDialogOpen(false)} maxWidth='md' fullWidth>
           <DialogContent sx={{ p: 0, position: 'relative' }}>
             <IconButton
               onClick={() => setImageDialogOpen(false)}
