@@ -1,4 +1,3 @@
-// ClaimReport.tsx - Clean, minimal design focused on content
 import React, { useEffect, useState } from 'react'
 import * as api from '../../api'
 import { Link as RouterLink, useParams } from 'react-router-dom'
@@ -12,429 +11,666 @@ import {
   Chip,
   Card,
   CardContent,
-  Grid
+  Grid,
+  Stack,
+  Avatar,
+  Divider,
+  styled,
+  Container,
+  IconButton,
+  Alert,
+  AlertTitle
 } from '@mui/material'
-import { BACKEND_BASE_URL } from '../../utils/settings'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import VerifiedIcon from '@mui/icons-material/Verified'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import LinkIcon from '@mui/icons-material/Link'
+import StarIcon from '@mui/icons-material/Star'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import BusinessIcon from '@mui/icons-material/Business'
 import type { Claim } from '../../api/types'
 
-interface ReportData {
-  claim: any
-  validations: any[]
-  validationSummary: {
-    total: number
+// Styled Components
+const PageContainer = styled(Container)(({ theme }) => ({
+  minHeight: '100vh',
+  backgroundColor: theme.palette.background.default,
+  paddingTop: theme.spacing(3),
+  paddingBottom: theme.spacing(6)
+}))
+
+const HeaderCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+  borderRadius: '20px',
+  boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)',
+  border: `1px solid ${theme.palette.divider}`,
+  overflow: 'visible'
+}))
+
+const ClaimCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+  borderRadius: '16px',
+  boxShadow: '0px 2px 12px rgba(0, 0, 0, 0.06)',
+  border: `1px solid ${theme.palette.divider}`,
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0px 8px 25px rgba(0, 0, 0, 0.12)'
   }
-  relatedClaims: any[]
-  subjectNode?: any
+}))
+
+const RelatedClaimCard = styled(Card)(({ theme }) => ({
+  borderRadius: '12px',
+  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.04)',
+  border: `1px solid ${theme.palette.divider}`,
+  transition: 'all 0.3s ease',
+  cursor: 'pointer',
+  '&:hover': {
+    borderColor: theme.palette.primary.main,
+    transform: 'translateY(-2px)',
+    boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.1)'
+  }
+}))
+
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '1.5rem',
+  fontWeight: 600,
+  color: theme.palette.text.primary,
+  marginBottom: theme.spacing(3),
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1)
+}))
+
+interface SubjectNode {
+  name: string
+  nodeUri?: string
+  entType?: string
+  descrip?: string
+  image?: string
+}
+
+interface ValidationItem {
+  id: string | number
+  statement?: string
+  effectiveDate?: string
+  source_link?: string
+  sourceURI?: string
+  image?: string
+  claim?: string
+}
+
+interface RelatedClaim {
+  id: string | number
+  claim: string
+  statement?: string
+  source_link?: string
+  sourceURI?: string
+  stars?: number
+}
+
+interface ExtendedClaim extends Claim {
+  subjectNode?: SubjectNode
+}
+
+interface ClaimReportData {
+  claim: ExtendedClaim
+  image?: string
+  subjectNode?: SubjectNode
+  validations: ValidationItem[]
+  attestations: ValidationItem[]
+  relatedClaims?: RelatedClaim[]
 }
 
 const ClaimReport: React.FC = () => {
   const theme = useTheme()
   const { claimId } = useParams<{ claimId: string }>()
-  const [reportData, setReportData] = useState<ReportData | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [reportData, setReportData] = useState<ClaimReportData | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   useEffect(() => {
     const fetchReportData = async () => {
-      setIsLoading(true)
+      if (!claimId) {
+        setError('No claim ID provided')
+        setIsLoading(false)
+        return
+      }
+
       try {
-        const response = await api.getClaimReport(claimId!)
-        console.log('Report data received:', response.data)
-        setReportData(response.data as any)
+        setIsLoading(true)
+        const response = await api.getClaimReport(claimId)
+        
+        if (!response?.data) {
+          throw new Error('No data received from server')
+        }
+
+        setReportData(response.data as unknown as ClaimReportData)
       } catch (err) {
-        setError('Failed to fetch report data')
+        console.error('Error fetching report data:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch report data')
       } finally {
         setIsLoading(false)
       }
     }
+
     fetchReportData()
   }, [claimId])
 
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh'
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <PageContainer maxWidth="lg">
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '50vh'
+          }}
+        >
+          <CircularProgress size={60} />
+        </Box>
+      </PageContainer>
     )
   }
 
   if (error || !reportData) {
     return (
-      <Box sx={{ mt: 4, px: 4 }}>
-        <Typography variant='body1' sx={{ color: theme.palette.texts }}>
-          {error || 'Report data is not available.'}
-        </Typography>
-      </Box>
+      <PageContainer maxWidth="lg">
+        <Box sx={{ textAlign: 'center', py: 8 }}>
+          <Alert 
+            severity="error"
+            sx={{ mb: 3 }}
+          >
+            <AlertTitle>Error</AlertTitle>
+            {error || 'Report data is not available.'}
+          </Alert>
+          <RouterLink to="/feed" style={{ textDecoration: 'none' }}>
+            <Button
+              variant="outlined"
+              startIcon={<ArrowBackIcon />}
+            >
+              Back to Feed
+            </Button>
+          </RouterLink>
+        </Box>
+      </PageContainer>
     )
   }
 
-  const { claim, validations, relatedClaims, subjectNode } = reportData
+  const { claim, validations, attestations, relatedClaims, subjectNode } = reportData
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh',
-      backgroundColor: theme.palette.background.default
-    }}>
-      <Box sx={{ maxWidth: '1000px', margin: '0 auto', px: { xs: 2, sm: 3, md: 4 }, py: 3 }}>
-        {/* Simple back button */}
-        <Box sx={{ mb: 3 }}>
-          <Button
-            component={RouterLink}
-            to='/feed'
-            sx={{
-              color: theme.palette.text.secondary,
-              p: 0,
-              minWidth: 'auto',
-              '&:hover': {
-                backgroundColor: 'transparent',
-                color: theme.palette.primary.main
-              }
-            }}
-          >
-            Back
-          </Button>
-        </Box>
+    <PageContainer maxWidth="lg">
+      {/* Back Button */}
+      <RouterLink to="/feed" style={{ textDecoration: 'none' }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          sx={{
+            color: theme.palette.text.secondary,
+            textTransform: 'none',
+            fontWeight: 500,
+            marginBottom: 3,
+            '&:hover': {
+              backgroundColor: 'transparent',
+              color: theme.palette.primary.main
+            }
+          }}
+        >
+          Back to Feed
+        </Button>
+      </RouterLink>
 
-        {/* Subject - What this report is about */}
-        {(subjectNode || claim.subjectNode || claim.subject) && (
-          <Box
-            sx={{
-              mb: 3,
-              backgroundColor: theme.palette.background.paper,
-              borderRadius: 1,
-              border: `1px solid ${theme.palette.divider}`
-            }}
-          >
-            <Box sx={{ p: 2 }}>
-          {subjectNode || claim.subjectNode ? (
-            // Full subject node info if available
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
-              {(subjectNode?.image || claim.subjectNode?.image) && (
-                <Box
-                  component='img'
-                  src={subjectNode?.image || claim.subjectNode?.image}
-                  alt='Subject'
-                  sx={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    flexShrink: 0,
-                    boxShadow: 1
-                  }}
-                />
-              )}
-              <Box sx={{ flex: 1 }}>
-                <Typography variant='h5' sx={{ fontWeight: 600, mb: 1 }}>
-                  {subjectNode?.name || claim.subjectNode?.name || 'Subject'}
+      {/* Subject Information Header */}
+      {(subjectNode || claim.subjectNode || (claim.subject && typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)) && (
+        <HeaderCard elevation={0}>
+          <CardContent sx={{ p: 4 }}>
+            {subjectNode || claim.subjectNode ? (
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} alignItems={{ xs: 'center', md: 'flex-start' }}>
+                {(subjectNode?.image || claim.subjectNode?.image) ? (
+                  <Avatar
+                    src={subjectNode?.image || claim.subjectNode?.image}
+                    alt='Subject'
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  />
+                ) : (
+                  <Avatar
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      bgcolor: theme.palette.primary.main,
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+                    }}
+                  >
+                    <BusinessIcon sx={{ fontSize: 40 }} />
+                  </Avatar>
+                )}
+                <Box flex={1} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+                  <Typography variant='h4' sx={{ fontWeight: 700, mb: 1 }}>
+                    {subjectNode?.name || claim.subjectNode?.name || 'Professional Profile'}
+                  </Typography>
+                  {(subjectNode?.entType || claim.subjectNode?.entType) && (
+                    <Chip
+                      label={subjectNode?.entType || claim.subjectNode?.entType}
+                      sx={{
+                        backgroundColor: theme.palette.primary.main,
+                        color: theme.palette.primary.contrastText,
+                        fontWeight: 600,
+                        mb: 2
+                      }}
+                    />
+                  )}
+                  {(subjectNode?.descrip || claim.subjectNode?.descrip) && (
+                    <Typography variant='body1' sx={{ color: theme.palette.text.secondary, mb: 2 }}>
+                      {subjectNode?.descrip || claim.subjectNode?.descrip}
+                    </Typography>
+                  )}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                    <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
+                    <Typography
+                      component='a'
+                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      variant='body2'
+                      sx={{
+                        color: theme.palette.primary.main,
+                        textDecoration: 'none',
+                        '&:hover': { textDecoration: 'underline' }
+                      }}
+                    >
+                      {subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
+                    </Typography>
+                    <IconButton
+                      size='small'
+                      component='a'
+                      href={subjectNode?.nodeUri || claim.subjectNode?.nodeUri || (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      <OpenInNewIcon fontSize='small' />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </Stack>
+            ) : (
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant='h6' sx={{ fontWeight: 500, mb: 1, color: theme.palette.text.secondary }}>
+                  Report about:
                 </Typography>
-                {(subjectNode?.entType || claim.subjectNode?.entType) && (
-                  <Typography variant='body2' sx={{ 
-                    color: theme.palette.text.secondary, 
-                    mb: 2,
-                    textTransform: 'uppercase',
-                    fontSize: '0.75rem',
-                    letterSpacing: 1
-                  }}>
-                    {subjectNode?.entType || claim.subjectNode?.entType}
+                <Typography variant='h4' sx={{ fontWeight: 700, mb: 2 }}>
+                  Professional Profile
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
+                  <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
+                  <Typography
+                    component='a'
+                    href={typeof claim.subject === 'object' ? claim.subject.uri : claim.subject}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    variant='body1'
+                    sx={{
+                      color: theme.palette.primary.main,
+                      textDecoration: 'none',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    {typeof claim.subject === 'object' ? claim.subject.uri : claim.subject}
                   </Typography>
-                )}
-                {(subjectNode?.descrip || claim.subjectNode?.descrip) && (
-                  <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mb: 1 }}>
-                    {subjectNode?.descrip || claim.subjectNode?.descrip}
-                  </Typography>
-                )}
-                {(subjectNode?.nodeUri || claim.subjectNode?.nodeUri) && (
-                  <Typography variant='caption' sx={{ color: theme.palette.text.secondary, display: 'block' }}>
-                    URI: {subjectNode?.nodeUri || claim.subjectNode?.nodeUri}
-                  </Typography>
-                )}
+                  <IconButton
+                    size='small'
+                    component='a'
+                    href={typeof claim.subject === 'object' ? claim.subject.uri : claim.subject}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <OpenInNewIcon fontSize='small' />
+                  </IconButton>
+                </Box>
               </Box>
-            </Box>
-          ) : (
-            // Just the subject URI if that's all we have  
+            )}
+          </CardContent>
+        </HeaderCard>
+      )}
+
+      {/* Main Claim */}
+      <ClaimCard elevation={0}>
+        <CardContent sx={{ p: 4 }}>
+          <Stack spacing={3}>
             <Box>
-              <Typography variant='h6' sx={{ fontWeight: 500, mb: 1, color: theme.palette.text.secondary }}>
-                Report about:
+              <Typography variant='h5' sx={{ fontWeight: 600, mb: 2, textTransform: 'capitalize' }}>
+                {claim.claim || 'Professional Assessment'}
               </Typography>
-              <Typography variant='h5' sx={{ fontWeight: 600 }}>
-                <a
-                  href={claim.subject}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  style={{
-                    color: theme.palette.link || theme.palette.primary.main,
-                    textDecoration: 'none'
+              
+              <Stack direction='row' spacing={1} sx={{ mb: 3, flexWrap: 'wrap', gap: 1 }}>
+                {claim.effectiveDate && (
+                  <Chip
+                    icon={<CalendarTodayIcon />}
+                    label={new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                    variant='outlined'
+                    color='primary'
+                  />
+                )}
+                {claim.howKnown && (
+                  <Chip
+                    label={claim.howKnown.replace(/_/g, ' ').toLowerCase()}
+                    variant='outlined'
+                    color='info'
+                  />
+                )}
+                {claim.confidence && (
+                  <Chip
+                    icon={<VerifiedIcon />}
+                    label={`${Math.round(claim.confidence * 100)}% confidence`}
+                    variant='filled'
+                    color='success'
+                  />
+                )}
+              </Stack>
+            </Box>
+
+            {claim.statement && (
+              <Box>
+                <Typography
+                  variant='body1'
+                  sx={{
+                    lineHeight: 1.7,
+                    color: theme.palette.text.primary,
+                    fontSize: '1.1rem',
+                    backgroundColor: theme.palette.action.hover,
+                    padding: 3,
+                    borderRadius: 2,
+                    borderLeft: `4px solid ${theme.palette.primary.main}`
                   }}
                 >
-                  {claim.subject}
-                </a>
-              </Typography>
-            </Box>
-          )}
-            </Box>
-          </Box>
-        )}
+                  {claim.statement}
+                </Typography>
+              </Box>
+            )}
 
-        {/* Main Claim */}
-        <Box sx={{ 
-          mb: 3,
-          backgroundColor: theme.palette.background.paper,
-          borderRadius: 1,
-          border: `1px solid ${theme.palette.divider}`
-        }}>
-          <Box sx={{ p: 2 }}>
-          <Typography variant='body1' gutterBottom sx={{ 
-            fontWeight: 500, 
-            color: theme.palette.text.primary,
-            textTransform: 'capitalize',
-            mb: 1
-          }}>
-            Claim: {claim.claim}
-          </Typography>
+            {reportData.image && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                <img
+                  src={reportData.image}
+                  alt='Claim'
+                  style={{
+                    width: '100%',
+                    maxWidth: '600px',
+                    height: 'auto',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
+              </Box>
+            )}
 
-          {claim.statement && (
-            <Typography
-              variant='body2'
-              sx={{
-                mb: 2,
-                lineHeight: 1.6,
-                color: theme.palette.text.primary,
-                whiteSpace: 'pre-wrap'
-              }}
-            >
-              {claim.statement}
-            </Typography>
-          )}
-
-        {/* Main claim image */}
-        {claim.image && (
-          <Box sx={{ mb: 2, mt: 2 }}>
-            <img
-              src={claim.image}
-              alt='Claim'
-              style={{
-                width: '100%',
-                maxWidth: '600px',
-                height: 'auto',
-                borderRadius: '4px',
-                display: 'block',
-                margin: '0 auto'
-              }}
-            />
-          </Box>
-        )}
-
-          {/* Metadata in a subtle way */}
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 2,
-              flexWrap: 'wrap',
-              fontSize: '0.875rem',
-              color: theme.palette.text.secondary,
-              borderTop: `1px solid ${theme.palette.divider}`,
-              pt: 1.5,
-              mt: 2
-            }}
-          >
-          {claim.effectiveDate && (
-            <span>
-              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </span>
-          )}
-          {claim.howKnown && <span>• {claim.howKnown.replace(/_/g, ' ').toLowerCase()}</span>}
-          {claim.confidence && <span>• {Math.round(claim.confidence * 100)}% confidence</span>}
-        </Box>
-
-        {/* Source URI */}
-        {claim.sourceURI && (
-          <Typography
-            variant='caption'
-            sx={{
-              display: 'block',
-              mt: 1,
-              color: theme.palette.text.secondary,
-              wordBreak: 'break-all'
-            }}
-          >
-            Source:{' '}
-            <a
-              href={claim.sourceURI}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{
-                color: theme.palette.text.secondary,
-                textDecoration: 'underline'
-              }}
-            >
-              {claim.sourceURI}
-            </a>
-          </Typography>
-        )}
-          </Box>
-        </Box>
+            {claim.sourceURI && (
+              <Box sx={{ pt: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
+                <Typography variant='subtitle2' sx={{ color: theme.palette.text.secondary, mb: 1 }}>
+                  Source Information:
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
+                  <Typography
+                    component='a'
+                    href={claim.sourceURI}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    variant='body2'
+                    sx={{
+                      color: theme.palette.primary.main,
+                      textDecoration: 'none',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    {claim.sourceURI}
+                  </Typography>
+                  <IconButton
+                    size='small'
+                    component='a'
+                    href={claim.sourceURI}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <OpenInNewIcon fontSize='small' />
+                  </IconButton>
+                </Box>
+              </Box>
+            )}
+          </Stack>
+        </CardContent>
+      </ClaimCard>
 
       {/* Validations */}
-      {validations.length > 0 && (
-        <Box sx={{ mb: 3 }}>
-          <Typography
-            variant='body1'
-            sx={{
-              mb: 2,
-              fontWeight: 500,
-              color: theme.palette.text.primary
-            }}
-          >
+      {validations && validations.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <SectionTitle>
+            <VerifiedIcon />
             Validations ({validations.length})
-          </Typography>
+          </SectionTitle>
 
-          {validations.map(validation => (
-            <Card
-              key={validation.id}
-              sx={{
-                mb: 2,
-                backgroundColor: theme.palette.background.paper,
-                boxShadow: 0,
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: 1
-              }}
-            >
-              <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                <Grid container spacing={2} alignItems='flex-start'>
-                  {validation.image && (
-                    <Grid item xs={12} md={6}>
-                      <Box
-                        component='img'
-                        src={validation.image}
-                        alt='Validation'
-                        sx={{
-                          width: '100%',
-                          height: 'auto',
-                          borderRadius: 1,
-                          objectFit: 'cover'
-                        }}
-                      />
-                    </Grid>
-                  )}
-                  <Grid item xs={12} md={validation.image ? 6 : 12}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <Chip
-                        label={validation.claim}
-                        size='small'
-                        sx={{
-                          fontSize: '0.75rem',
-                          height: '22px'
-                        }}
-                      />
-                      <Typography variant='caption' color='text.secondary'>
-                        {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-
-                    {validation.statement && (
-                      <Typography variant='body2' sx={{ lineHeight: 1.6 }}>
-                        {validation.statement}
-                      </Typography>
-                    )}
-
-                    {/* Source URI for validation */}
-                    {validation.sourceURI && (
-                      <Typography
-                        variant='caption'
-                        sx={{
-                          display: 'block',
-                          mt: 1,
-                          color: theme.palette.text.secondary,
-                          wordBreak: 'break-all'
-                        }}
-                      >
-                        Source:{' '}
-                        <a
-                          href={validation.sourceURI}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          style={{
-                            color: theme.palette.text.secondary,
-                            textDecoration: 'underline'
+          <Stack spacing={2}>
+            {validations.map((validation, index) => (
+              <ClaimCard key={validation.id || `validation-${index}`} elevation={0}>
+                <CardContent sx={{ p: 3 }}>
+                  <Grid container spacing={3} alignItems='flex-start'>
+                    {validation.image && (
+                      <Grid item xs={12} md={4}>
+                        <Box
+                          component='img'
+                          src={validation.image}
+                          alt='Validation'
+                          sx={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: 2,
+                            objectFit: 'cover',
+                            maxHeight: '200px'
                           }}
-                        >
-                          {validation.sourceURI}
-                        </a>
-                      </Typography>
+                        />
+                      </Grid>
                     )}
+                    <Grid item xs={12} md={validation.image ? 8 : 12}>
+                      <Stack spacing={2}>
+                        <Box>
+                          <Chip
+                            label={validation.claim || 'Validation'}
+                            sx={{
+                              backgroundColor: theme.palette.success.main,
+                              color: theme.palette.success.contrastText,
+                              fontWeight: 600,
+                              mb: 1
+                            }}
+                          />
+                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
+                            {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+
+                        {validation.statement && (
+                          <Typography variant='body1' sx={{ lineHeight: 1.6 }}>
+                            {validation.statement}
+                          </Typography>
+                        )}
+
+                        {(validation.sourceURI || validation.source_link) && (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+                              Source:
+                            </Typography>
+                            <Typography
+                              component='a'
+                              href={validation.sourceURI || validation.source_link}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              variant='caption'
+                              sx={{
+                                color: theme.palette.primary.main,
+                                textDecoration: 'none',
+                                '&:hover': { textDecoration: 'underline' }
+                              }}
+                            >
+                              {validation.sourceURI || validation.source_link}
+                            </Typography>
+                            <IconButton
+                              size='small'
+                              component='a'
+                              href={validation.sourceURI || validation.source_link}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
+                              <OpenInNewIcon fontSize='inherit' />
+                            </IconButton>
+                          </Box>
+                        )}
+                      </Stack>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </ClaimCard>
+            ))}
+          </Stack>
         </Box>
       )}
 
-        {/* Related Claims */}
-        {relatedClaims.length > 0 && (
-          <Box sx={{ mb: 3 }}>
-            <Typography
-              variant='body1'
-              sx={{
-                mb: 2,
-                fontWeight: 500,
-                color: theme.palette.text.primary
-              }}
-            >
-              Other Claims About This Subject
-            </Typography>
+      {/* Attestations */}
+      {attestations && attestations.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <SectionTitle>
+            Attestations ({attestations.length})
+          </SectionTitle>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {relatedClaims.map(relatedClaim => (
-                <Card
-                  key={relatedClaim.id}
-                  sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    borderRadius: 1,
-                    boxShadow: 0,
-                    border: `1px solid ${theme.palette.divider}`,
-                    transition: 'all 0.2s ease',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      borderColor: theme.palette.primary.main,
-                      backgroundColor: theme.palette.action.hover
-                    }
-                  }}
-                >
+          <Stack spacing={2}>
+            {attestations.map((attestation, index) => (
+              <ClaimCard key={attestation.id || `attestation-${index}`} elevation={0}>
+                <CardContent sx={{ p: 3 }}>
+                  <Grid container spacing={3} alignItems='flex-start'>
+                    {attestation.image && (
+                      <Grid item xs={12} md={4}>
+                        <Box
+                          component='img'
+                          src={attestation.image}
+                          alt='Attestation'
+                          sx={{
+                            width: '100%',
+                            height: 'auto',
+                            borderRadius: 2,
+                            objectFit: 'cover',
+                            maxHeight: '200px'
+                          }}
+                        />
+                      </Grid>
+                    )}
+                    <Grid item xs={12} md={attestation.image ? 8 : 12}>
+                      <Stack spacing={2}>
+                        <Box>
+                          <Chip
+                            label={attestation.claim || 'Attestation'}
+                            sx={{
+                              backgroundColor: theme.palette.success.main,
+                              color: theme.palette.success.contrastText,
+                              fontWeight: 600,
+                              mb: 1
+                            }}
+                          />
+                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
+                            {attestation.effectiveDate && new Date(attestation.effectiveDate).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+
+                        {attestation.statement && (
+                          <Typography variant='body1' sx={{ lineHeight: 1.6 }}>
+                            {attestation.statement}
+                          </Typography>
+                        )}
+
+                        {(attestation.sourceURI || attestation.source_link) && (
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+                              Source:
+                            </Typography>
+                            <Typography
+                              component='a'
+                              href={attestation.sourceURI || attestation.source_link}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              variant='caption'
+                              sx={{
+                                color: theme.palette.primary.main,
+                                textDecoration: 'none',
+                                '&:hover': { textDecoration: 'underline' }
+                              }}
+                            >
+                              {attestation.sourceURI || attestation.source_link}
+                            </Typography>
+                            <IconButton
+                              size='small'
+                              component='a'
+                              href={attestation.sourceURI || attestation.source_link}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                            >
+                              <OpenInNewIcon fontSize='inherit' />
+                            </IconButton>
+                          </Box>
+                        )}
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </ClaimCard>
+            ))}
+          </Stack>
+        </Box>
+      )}
+
+      {/* Related Claims */}
+      {relatedClaims && relatedClaims.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <SectionTitle>
+            Related Claims About This Subject
+          </SectionTitle>
+
+          <Grid container spacing={3}>
+            {relatedClaims.map((relatedClaim, index) => (
+              <Grid item xs={12} md={6} key={relatedClaim.id || `related-${index}`}>
+                <RelatedClaimCard elevation={0}>
                   <RouterLink
                     to={`/report/${relatedClaim.id}`}
                     style={{
                       textDecoration: 'none',
-                      color: 'inherit'
+                      color: 'inherit',
+                      height: '100%',
+                      display: 'block'
                     }}
                   >
-                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                        <Typography variant='body2' sx={{ 
-                          fontWeight: 500,
-                          textTransform: 'capitalize'
+                    <CardContent sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                        <Typography variant='h6' sx={{ 
+                          fontWeight: 600,
+                          textTransform: 'capitalize',
+                          flex: 1
                         }}>
-                          {relatedClaim.claim}
+                          {relatedClaim.claim || 'Related Claim'}
                         </Typography>
                         {relatedClaim.stars && (
-                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
-                            {'★'.repeat(relatedClaim.stars)}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <StarIcon sx={{ color: theme.palette.warning.main, fontSize: '1rem' }} />
+                            <Typography variant='caption' sx={{ fontWeight: 600 }}>
+                              {relatedClaim.stars}
+                            </Typography>
+                          </Box>
                         )}
                       </Box>
+                      
                       {relatedClaim.statement && (
                         <Typography
                           variant='body2'
@@ -443,38 +679,42 @@ const ClaimReport: React.FC = () => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             display: '-webkit-box',
-                            WebkitLineClamp: 2,
+                            WebkitLineClamp: 3,
                             WebkitBoxOrient: 'vertical',
-                            mb: 1
+                            mb: 2,
+                            flex: 1,
+                            lineHeight: 1.5
                           }}
                         >
                           {relatedClaim.statement}
                         </Typography>
                       )}
-                      {/* Source URI for related claims */}
+                      
                       {relatedClaim.sourceURI && (
-                        <Typography
-                          variant='caption'
-                          sx={{
-                            display: 'block',
-                            color: theme.palette.text.secondary,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap'
-                          }}
-                        >
-                          Source: {relatedClaim.sourceURI}
-                        </Typography>
+                        <Box sx={{ pt: 1, borderTop: `1px solid ${theme.palette.divider}` }}>
+                          <Typography
+                            variant='caption'
+                            sx={{
+                              color: theme.palette.text.secondary,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              display: 'block'
+                            }}
+                          >
+                            Source: {relatedClaim.sourceURI}
+                          </Typography>
+                        </Box>
                       )}
                     </CardContent>
                   </RouterLink>
-                </Card>
-              ))}
-            </Box>
-          </Box>
-        )}
-      </Box>
-    </Box>
+                </RelatedClaimCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
+    </PageContainer>
   )
 }
 

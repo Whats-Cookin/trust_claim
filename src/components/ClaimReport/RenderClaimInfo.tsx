@@ -1,9 +1,90 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Typography, Box, Link as MuiLink, Dialog, DialogContent, DialogTitle, Grid } from '@mui/material'
-
-import { Close } from '@mui/icons-material'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import { 
+  Typography, 
+  Box, 
+  Link as MuiLink, 
+  Dialog, 
+  DialogContent, 
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+  styled,
+  IconButton
+} from '@mui/material'
+import { Close, OpenInNew, CalendarToday, Info } from '@mui/icons-material'
 import { useTheme } from '@mui/system'
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  borderRadius: '16px',
+  backgroundColor: theme.palette.cardBackground,
+  color: theme.palette.texts,
+  transition: 'all 0.3s ease',
+  boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.08)',
+  border: `1px solid ${theme.palette.divider}`,
+  marginBottom: theme.spacing(2),
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0px 8px 25px rgba(0, 0, 0, 0.15)'
+  }
+}))
+
+const SubjectLink = styled(MuiLink)(({ theme }) => ({
+  color: theme.palette.texts,
+  fontSize: '1.25rem',
+  fontWeight: 600,
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  textDecoration: 'none',
+  marginBottom: theme.spacing(1),
+  transition: 'color 0.2s ease',
+  '&:hover': {
+    color: theme.palette.primary.main,
+    textDecoration: 'underline'
+  }
+}))
+
+const StatementText = styled(Typography)(({ theme }) => ({
+  lineHeight: 1.6,
+  marginBottom: theme.spacing(2),
+  fontWeight: 400,
+  fontSize: '1rem',
+  color: theme.palette.texts
+}))
+
+const MetadataContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(1),
+  marginBottom: theme.spacing(2)
+}))
+
+const DetailRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  marginBottom: theme.spacing(1),
+  '& .label': {
+    minWidth: '120px',
+    fontWeight: 600,
+    color: theme.palette.text.secondary
+  },
+  '& .value': {
+    flex: 1,
+    wordBreak: 'break-word'
+  }
+}))
+
+const ExpandButton = styled(MuiLink)(({ theme }) => ({
+  cursor: 'pointer',
+  color: theme.palette.primary.main,
+  textDecoration: 'none',
+  fontWeight: 600,
+  fontSize: '0.9rem',
+  '&:hover': {
+    textDecoration: 'underline'
+  }
+}))
 
 const RenderClaimInfo = ({
   claim
@@ -14,9 +95,13 @@ const RenderClaimInfo = ({
   handleMenuClose: () => void
 }) => {
   const theme = useTheme()
+  const [imageDialogOpen, setImageDialogOpen] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const cardRef = useRef<HTMLDivElement | null>(null)
+
   const excludedKeys = [
     'id',
-    'issuerId',
+    'issuerId', 
     'issuerIdType',
     'subject',
     'claimAddress',
@@ -26,26 +111,31 @@ const RenderClaimInfo = ({
     'thumbnail',
     'image'
   ]
-  const chipKeys = [
+
+  const displayedKeys = [
+    'effectiveDate',
+    'claim',
+    'statement'
+  ]
+
+  const metadataKeys = [
     'aspect',
     'howKnown',
     'amt',
     'confidence',
-    'claim',
-    'effectiveDate',
-    'effective_date',
-    'link',
-    'name',
     'stars'
-  ] // Keys to display as chips
-  const claimEntries = Object.entries(claim).filter(([key]) => !excludedKeys.includes(key))
-  const [openD, setOpenD] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [detailsOpen, setDetailsOpen] = useState(false)
-  const cardRef = useRef<HTMLDivElement | null>(null)
+  ]
 
-  const otherEntries = claimEntries.filter(([key]) => !chipKeys.includes(key) && key !== 'statement' && claim[key])
+  const otherEntries = Object.entries(claim).filter(
+    ([key, value]) => 
+      value && 
+      !excludedKeys.includes(key) && 
+      !displayedKeys.includes(key) && 
+      !metadataKeys.includes(key)
+  )
+
   const hasExtraDetails = otherEntries.length > 0
+  const isStatementLong = claim.statement && claim.statement.length > 300
 
   const truncateText = (text: string, length: number) => {
     if (text.length <= length) return text
@@ -56,221 +146,166 @@ const RenderClaimInfo = ({
     setIsExpanded(!isExpanded)
   }
 
-  useEffect(() => {
-    if (cardRef.current) {
-      cardRef.current.style.minHeight = isExpanded ? `${cardRef.current.scrollHeight}px` : '200px'
-    }
-  }, [isExpanded])
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric'
+    })
+  }
 
-  const claimImage = claim.image ? claim.image : null
-  const isStatementLong = claim.statement && claim.statement.length > 1000
+  const renderValue = (value: string) => {
+    if (typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'))) {
+      return (
+        <MuiLink
+          href={value}
+          target='_blank'
+          sx={{
+            color: theme.palette.primary.main,
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 0.5,
+            '&:hover': { textDecoration: 'underline' }
+          }}
+        >
+          {value}
+          <OpenInNew fontSize='small' />
+        </MuiLink>
+      )
+    }
+    return value
+  }
 
   return (
     <>
-      <Box
-        ref={cardRef}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: theme.palette.cardBackground,
-          borderRadius: '20px',
-          color: theme.palette.texts,
-          transition: 'min-height 0.3s ease-in-out',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-word'
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'revert',
-            justifyContent: 'flex-start',
-            flexWrap: 'wrap'
-          }}
-        >
-          <Box
-            sx={{
-              paddingInline: '10px',
-              flexGrow: 1,
-              order: {
-                xs: 3,
-                sm: 0
+      <StyledCard ref={cardRef}>
+        <CardContent sx={{ p: 3 }}>
+          {/* Header with subject link */}
+          {claim.subject && (
+            <SubjectLink href={claim.subject} target='_blank'>
+              {claim.subject}
+              <OpenInNew fontSize='small' />
+            </SubjectLink>
+          )}
+
+          {/* Metadata chips */}
+          <MetadataContainer>
+            {claim.effectiveDate && (
+              <Chip
+                icon={<CalendarToday />}
+                label={formatDate(claim.effectiveDate)}
+                variant='outlined'
+                size='small'
+              />
+            )}
+            {claim.claim && (
+              <Chip
+                label={claim.claim}
+                color='primary'
+                size='small'
+              />
+            )}
+            {claim.howKnown && (
+              <Chip
+                label={claim.howKnown.replace(/_/g, ' ')}
+                variant='outlined'
+                size='small'
+              />
+            )}
+            {claim.confidence && (
+              <Chip
+                label={`${Math.round(Number(claim.confidence) * 100)}% confidence`}
+                color='success'
+                variant='outlined'
+                size='small'
+              />
+            )}
+            {claim.stars && (
+              <Chip
+                label={`${'★'.repeat(Number(claim.stars))} (${claim.stars})`}
+                color='warning'
+                variant='outlined'
+                size='small'
+              />
+            )}
+          </MetadataContainer>
+
+          {/* Statement */}
+          {claim.statement && (
+            <StatementText>
+              {isExpanded || !isStatementLong 
+                ? claim.statement 
+                : truncateText(claim.statement, 300)
               }
-            }}
-          >
-            {claim.subject && (
-              <MuiLink
-                href={claim.subject}
-                target='_blank'
-                sx={{
-                  color: theme.palette.texts,
-                  fontSize: 20,
-                  fontWeight: 500,
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  textDecoration: 'none',
-                  marginBottom: '5px'
-                }}
-              >
-                {claim.subject}
-                <OpenInNewIcon
-                  sx={{
-                    marginLeft: '5px',
-                    color: theme.palette.texts,
-                    fontSize: '1.5rem'
-                  }}
-                />
-              </MuiLink>
-            )}
+              {(isStatementLong || hasExtraDetails) && (
+                <ExpandButton onClick={handleToggleExpand} sx={{ ml: 1 }}>
+                  {isExpanded ? 'Show Less' : 'Show More'}
+                </ExpandButton>
+              )}
+            </StatementText>
+          )}
 
-            {claim.statement && (
-              <Typography
-                variant='body2'
-                sx={{
-                  padding: '5px 1 1 5px',
-                  wordBreak: 'break-word',
-                  overflowWrap: 'break-word',
-                  marginBottom: '12px',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  color: theme.palette.texts,
-                  mt: '10px'
-                }}
-              >
-                {isExpanded || !isStatementLong ? claim.statement : truncateText(claim.statement, 1000)}
-                {(isStatementLong || hasExtraDetails) && (
-                  <MuiLink
-                    onClick={handleToggleExpand}
-                    sx={{ cursor: 'pointer', marginLeft: '5px', color: theme.palette.link, textDecoration: 'none' }}
-                  >
-                    {isExpanded ? 'Show Less' : 'See More'}
-                  </MuiLink>
-                )}
+          {/* Additional details when expanded */}
+          {isExpanded && hasExtraDetails && (
+            <Box sx={{ mt: 2, pt: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
+              <Typography variant='subtitle2' sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Info fontSize='small' />
+                Additional Details
               </Typography>
-            )}
-          </Box>
-        </Box>
+              <Stack spacing={1}>
+                {otherEntries.map(([key, value]) => (
+                  <DetailRow key={key}>
+                    <Typography className='label' variant='body2'>
+                      {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:
+                    </Typography>
+                    <Typography className='value' variant='body2'>
+                      {renderValue(value)}
+                    </Typography>
+                  </DetailRow>
+                ))}
+              </Stack>
+            </Box>
+          )}
+        </CardContent>
+      </StyledCard>
 
-        {hasExtraDetails && (
-          <Box sx={{ paddingLeft: '10px' }}>
-            <Typography
-              variant='body2'
-              marginBottom={2}
-              marginTop={2}
+      {/* Image Dialog */}
+      {imageDialogOpen && claim.image && (
+        <Dialog 
+          open={imageDialogOpen} 
+          onClose={() => setImageDialogOpen(false)}
+          maxWidth='md'
+          fullWidth
+        >
+          <DialogContent sx={{ p: 0, position: 'relative' }}>
+            <IconButton
+              onClick={() => setImageDialogOpen(false)}
               sx={{
-                color: theme.palette.texts,
-                fontWeight: 400,
-                fontSize: '16px'
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                bgcolor: 'rgba(0, 0, 0, 0.5)',
+                color: 'white',
+                '&:hover': {
+                  bgcolor: 'rgba(0, 0, 0, 0.7)'
+                }
               }}
             >
-              Issued on:{' '}
-              {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
-            </Typography>
-            {otherEntries.map(([key, value]) => (
-              <Typography
-                key={key}
-                variant='body2'
-                sx={{
-                  color: theme.palette.texts,
-                  fontWeight: 400,
-                  fontSize: '16px'
-                }}
-              >
-                <span
-                  style={{
-                    minWidth: '150px',
-                    display: 'inline-block',
-                    fontWeight: 500
-                  }}
-                >
-                  {key}:
-                </span>
-                {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
-                  <MuiLink
-                    href={value}
-                    target='_blank'
-                    sx={{
-                      color: theme.palette.link,
-                      textDecoration: 'none',
-                      display: 'inline-flex',
-                      alignItems: 'center'
-                    }}
-                  >
-                    {value}
-                  </MuiLink>
-                ) : typeof value === 'object' ? (
-                  JSON.stringify(value)
-                ) : typeof value === 'object' ? (
-                  JSON.stringify(value)
-                ) : (
-                  value
-                )}
-              </Typography>
-            ))}
-          </Box>
-        )}
-      </Box>
-
-      {openD && claimImage && (
-        <Dialog open={openD} onClose={() => setOpenD(false)}>
-          <Close
-            sx={{
-              position: 'absolute',
-              top: '0px',
-              right: '0px',
-              cursor: 'pointer',
-              color: theme.palette.texts,
-              backgroundColor: theme.palette.dialogBackground,
-              borderRadius: '50%',
-              padding: '0.2rem',
-              margin: '0.2rem'
-            }}
-            onClick={() => setOpenD(false)}
-          />
-          <img
-            src={claimImage}
-            style={{
-              width: '100%',
-              maxHeight: '100%'
-            }}
-            alt='claim'
-          />
+              <Close />
+            </IconButton>
+            <img
+              src={claim.image}
+              alt='Claim'
+              style={{
+                width: '100%',
+                height: 'auto',
+                display: 'block'
+              }}
+            />
+          </DialogContent>
         </Dialog>
       )}
-
-      <Dialog open={detailsOpen} onClose={() => setDetailsOpen(false)} fullWidth>
-        <DialogTitle>Claim Details</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1rem' }}>
-          {Object.entries(claim)
-            .filter(
-              ([key, value]) => value && !excludedKeys.includes(key) && !chipKeys.includes(key) && key !== 'statement'
-            )
-            .map(([key, value]) => (
-              <Typography key={key} variant='body2' sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-                <strong>{key}:</strong>&nbsp;
-                {typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://')) ? (
-                  <MuiLink
-                    href={value}
-                    target='_blank'
-                    sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: theme.palette.link }}
-                  >
-                    {value}
-                    <OpenInNewIcon sx={{ marginLeft: '5px' }} />
-                  </MuiLink>
-                ) : typeof value === 'object' ? (
-                  JSON.stringify(value)
-                ) : (
-                  value
-                )}
-              </Typography>
-            ))}
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
