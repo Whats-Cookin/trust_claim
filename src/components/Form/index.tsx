@@ -218,13 +218,13 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                           {...field}
                           freeSolo
                           options={CLAIM_TYPES.rated.aspects}
-                          getOptionLabel={(option) => {
+                          getOptionLabel={option => {
                             if (typeof option === 'string' && option.includes(':')) {
                               return option.split(':')[1]
                             }
                             return option
                           }}
-                          renderInput={(params) => (
+                          renderInput={params => (
                             <TextField
                               {...params}
                               label='Aspect'
@@ -265,13 +265,13 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                           {...field}
                           freeSolo
                           options={CLAIM_TYPES.impact.aspects}
-                          getOptionLabel={(option) => {
+                          getOptionLabel={option => {
                             if (typeof option === 'string' && option.includes(':')) {
                               return option.split(':')[1]
                             }
                             return option
                           }}
-                          renderInput={(params) => (
+                          renderInput={params => (
                             <TextField
                               {...params}
                               label='Impact Type'
@@ -309,22 +309,22 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                         {...field}
                         freeSolo
                         options={CLAIM_TYPES.report.aspects}
-                        getOptionLabel={(option) => {
+                        getOptionLabel={option => {
                           if (typeof option === 'string' && option.includes(':')) {
                             return option.split(':')[1]
                           }
                           return option
                         }}
-                        renderInput={(params) => (
-                        <TextField
-                        {...params}
-                        label='Report Type'
-                        placeholder='Select or type your own'
-                        helperText='Choose from the list or type a custom report type'
-                        fullWidth
-                          sx={{ mb: 2 }}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            label='Report Type'
+                            placeholder='Select or type your own'
+                            helperText='Choose from the list or type a custom report type'
+                            fullWidth
+                            sx={{ mb: 2 }}
                           />
-                          )}
+                        )}
                         onChange={(_, value) => field.onChange(value)}
                         onInputChange={(_, value) => {
                           field.onChange(value)
@@ -345,13 +345,13 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                           {...field}
                           freeSolo
                           options={CLAIM_TYPES.related_to.aspects}
-                          getOptionLabel={(option) => {
+                          getOptionLabel={option => {
                             if (typeof option === 'string' && option.includes(':')) {
                               return option.split(':')[1]
                             }
                             return option
                           }}
-                          renderInput={(params) => (
+                          renderInput={params => (
                             <TextField
                               {...params}
                               label='Relationship Type'

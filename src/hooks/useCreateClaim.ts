@@ -35,7 +35,7 @@ export function useCreateClaim() {
       delete (transformedDto as any).amount
 
       // If no images, send as JSON directly, otherwise use FormData
-      let res;
+      let res
       if (images.length === 0) {
         res = await api.createClaim(transformedDto)
       } else {
@@ -49,7 +49,7 @@ export function useCreateClaim() {
     } catch (err: any) {
       console.error('Full error:', err)
       console.error('Error response:', err.response)
-      
+
       // Check if it's our custom error message from the interceptor
       if (err.message === 'Please login again') {
         message = 'Please login again'
@@ -58,7 +58,7 @@ export function useCreateClaim() {
       } else {
         message = err.response?.data?.error || err.response?.data?.message || err.message || 'Something went wrong'
       }
-      
+
       console.error('Error details:', err.response?.data)
     }
     return { message, isSuccess }
@@ -85,7 +85,7 @@ function preparePayload<T extends { images: MediaI[] }>(
       } as Omit<MediaI, 'file' | 'url'>
     })
   }
-  
+
   // Remove images array if empty to avoid sending unnecessary data
   if (dto.images.length === 0) {
     delete (dto as any).images
