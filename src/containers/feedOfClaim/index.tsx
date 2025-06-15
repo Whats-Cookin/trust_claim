@@ -210,7 +210,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
     })
   }
 
-
   const handleCreateClaim = () => {
     navigate('/claim')
   }
@@ -383,14 +382,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               >
                                 {claim.sourceURI && `source: ${extractSourceName(claim.sourceURI)}`}
                                 {claim.sourceURI && claim.effectiveDate && ' · '}
-                                {claim.effectiveDate && new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric'
-                                })}
+                                {claim.effectiveDate &&
+                                  new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                  })}
                               </Typography>
                             )}
-                            
+
                             {/* Expanded details */}
                             {expandedCards.has(claimId) && (
                               <Box
@@ -401,27 +401,68 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 }}
                               >
                                 {claim.aspect && (
-                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                  <Typography
+                                    variant='body2'
+                                    sx={{
+                                      mb: 0.5,
+                                      fontSize: '12px',
+                                      color: theme.palette.date,
+                                      fontFamily: 'Roboto, sans-serif'
+                                    }}
+                                  >
                                     Aspect: {claim.aspect}
                                   </Typography>
                                 )}
                                 {claim.confidence !== undefined && claim.confidence !== null && (
-                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
-                                    Confidence: {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
+                                  <Typography
+                                    variant='body2'
+                                    sx={{
+                                      mb: 0.5,
+                                      fontSize: '12px',
+                                      color: theme.palette.date,
+                                      fontFamily: 'Roboto, sans-serif'
+                                    }}
+                                  >
+                                    Confidence:{' '}
+                                    {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
                                   </Typography>
                                 )}
                                 {claim.howKnown && (
-                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                  <Typography
+                                    variant='body2'
+                                    sx={{
+                                      mb: 0.5,
+                                      fontSize: '12px',
+                                      color: theme.palette.date,
+                                      fontFamily: 'Roboto, sans-serif'
+                                    }}
+                                  >
                                     How Known: {claim.howKnown}
                                   </Typography>
                                 )}
                                 {claim.score !== undefined && claim.score !== null && (
-                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                  <Typography
+                                    variant='body2'
+                                    sx={{
+                                      mb: 0.5,
+                                      fontSize: '12px',
+                                      color: theme.palette.date,
+                                      fontFamily: 'Roboto, sans-serif'
+                                    }}
+                                  >
                                     Score: {claim.score}
                                   </Typography>
                                 )}
                                 {claim.amt !== undefined && claim.amt !== null && (
-                                  <Typography variant='body2' sx={{ mb: 0.5, fontSize: '12px', color: theme.palette.date, fontFamily: 'Roboto, sans-serif' }}>
+                                  <Typography
+                                    variant='body2'
+                                    sx={{
+                                      mb: 0.5,
+                                      fontSize: '12px',
+                                      color: theme.palette.date,
+                                      fontFamily: 'Roboto, sans-serif'
+                                    }}
+                                  >
                                     Amount: ${claim.amt} {claim.unit || ''}
                                   </Typography>
                                 )}
