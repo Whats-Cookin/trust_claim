@@ -80,7 +80,7 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({ open, onClose, type
   const renderEdgeDetails = () => {
     const claim = data.claim || data
     const claimType = claim.claim || data.label || 'claim'
-    
+
     // Helper to extract name from URI
     const extractName = (uri: string) => {
       const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
@@ -122,9 +122,7 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({ open, onClose, type
             <Typography variant='caption' color='text.secondary'>
               Subject
             </Typography>
-            <Typography variant='body1'>
-              {startNode?.name || extractName(claim.subject || '')}
-            </Typography>
+            <Typography variant='body1'>{startNode?.name || extractName(claim.subject || '')}</Typography>
           </Box>
 
           {/* Statement */}
@@ -177,7 +175,8 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({ open, onClose, type
             )}
             {claim.effectiveDate && (
               <Typography variant='body2' sx={{ mb: 0.5 }}>
-                Date: {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                Date:{' '}
+                {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'

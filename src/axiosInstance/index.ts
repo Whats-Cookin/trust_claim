@@ -39,8 +39,9 @@ instance.interceptors.response.use(
     if (errorResponse?.status === 401) {
       // Check for various JWT error messages
       const errorMessage = errorResponse.data?.message || errorResponse.data?.error || ''
-      const isJwtError = errorMessage.includes('jwt') || errorMessage.includes('token') || errorMessage.includes('unauthorized')
-      
+      const isJwtError =
+        errorMessage.includes('jwt') || errorMessage.includes('token') || errorMessage.includes('unauthorized')
+
       if ((errorMessage === 'jwt expired' || isJwtError) && !isRefreshing) {
         isRefreshing = true
         const refreshToken = localStorage.getItem('refreshToken')
@@ -71,7 +72,7 @@ instance.interceptors.response.use(
           })
         })
       }
-      
+
       // If we get here, it's a 401 but not a JWT issue
       clearAuth()
       return Promise.reject(new Error('Please login again'))
