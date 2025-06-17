@@ -640,317 +640,319 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                   </CardContent>
                 </Card>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3, md: 4 } }}>
-                {/* Header */}
-                <Box>
-                  <Typography
-                    variant={isMobile ? 'h6' : 'h5'}
+                  {/* Header */}
+                  <Box>
+                    <Typography
+                      variant={isMobile ? 'h6' : 'h5'}
+                      sx={{
+                        fontWeight: 700,
+                        textAlign: 'center',
+                        color: theme.palette.text.primary,
+                        mb: { xs: 1, sm: 2 }
+                      }}
+                    >
+                      What do you have to say about this claim?
+                    </Typography>
+                    <Box
+                      sx={{
+                        height: '2px',
+                        backgroundColor: theme.palette.divider,
+                        borderRadius: 1,
+                        width: '100%'
+                      }}
+                    />
+                  </Box>
+                  {/* Validation Form Card */}
+                  <Card
                     sx={{
-                      fontWeight: 700,
-                      textAlign: 'center',
-                      color: theme.palette.text.primary,
-                      mb: { xs: 1, sm: 2 }
+                      backgroundColor: theme.palette.background.paper,
+                      borderRadius: { xs: 2, sm: 3 },
+                      boxShadow: { xs: 1, sm: 2 },
+                      border: `1px solid ${theme.palette.divider}`
                     }}
                   >
-                    What do you have to say about this claim?
-                  </Typography>
-                  <Box
-                    sx={{
-                      height: '2px',
-                      backgroundColor: theme.palette.divider,
-                      borderRadius: 1,
-                      width: '100%'
-                    }}
-                  />
-                </Box>
-                {/* Validation Form Card */}
-                <Card
-                  sx={{
-                    backgroundColor: theme.palette.background.paper,
-                    borderRadius: { xs: 2, sm: 3 },
-                    boxShadow: { xs: 1, sm: 2 },
-                    border: `1px solid ${theme.palette.divider}`
-                  }}
-                >
-                  <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-                    <Box sx={{ width: '100%' }}>
-                      {/* How Known Select Field */}
-                      <Box sx={{ mb: { xs: 2, sm: 3 } }}>
-                        <Typography
-                          variant='body2'
-                          sx={{
-                            mb: 1,
-                            fontWeight: 600,
-                            fontSize: { xs: '0.85rem', sm: '0.875rem' }
-                          }}
-                        >
-                          How Known (Required)
-                        </Typography>
-                        <FormControl fullWidth>
-                          <Controller
-                            name='howKnown'
-                            control={control}
-                            defaultValue=''
-                            rules={{
-                              required: 'This field is required'
+                    <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+                      <Box sx={{ width: '100%' }}>
+                        {/* How Known Select Field */}
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <Typography
+                            variant='body2'
+                            sx={{
+                              mb: 1,
+                              fontWeight: 600,
+                              fontSize: { xs: '0.85rem', sm: '0.875rem' }
                             }}
-                            render={({ field, fieldState: { error } }) => (
-                              <>
-                                <Select
-                                  {...field}
-                                  size={isMobile ? 'small' : 'medium'}
-                                  sx={{
-                                    backgroundColor: '#FFFFFF',
-                                    fontSize: { xs: '0.9rem', sm: '1rem' },
-                                    '& .MuiSelect-icon': {
-                                      color: theme.palette.text.secondary
-                                    },
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: theme.palette.divider
-                                    },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: theme.palette.primary.main
-                                    },
-                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: theme.palette.primary.main
-                                    }
-                                  }}
-                                  error={Boolean(error)}
-                                >
-                                  {inputOptions.howKnown.map((option, index: number) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                      onClick={handleItemSelect}
-                                      sx={{
-                                        fontSize: { xs: '0.9rem', sm: '1rem' },
-                                        py: { xs: 1, sm: 1.5 },
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
-                                      }}
-                                    >
-                                      <Tooltip
-                                        title={tooltips.howKnown[index]}
-                                        placement={isTouchDevice ? 'top' : 'right'}
-                                        arrow
-                                        TransitionComponent={Fade}
-                                        open={isTouchDevice ? openTooltipIndex === index : undefined}
-                                        onClose={() => setOpenTooltipIndex(null)}
-                                        disableFocusListener={isTouchDevice}
-                                        disableHoverListener={isTouchDevice}
-                                        disableTouchListener={isTouchDevice}
-                                      >
-                                        <Box
-                                          sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            width: '100%',
-                                            justifyContent: 'space-between'
-                                          }}
-                                        >
-                                          <span>{option.text}</span>
-                                          {isTouchDevice && (
-                                            <IconButton
-                                              size='small'
-                                              onClick={e => {
-                                                e.stopPropagation()
-                                                handleTooltipToggle(index)
-                                              }}
-                                              sx={{ ml: 1 }}
-                                            >
-                                              <HelpIcon sx={{ color: theme.palette.primary.main, fontSize: '1rem' }} />
-                                            </IconButton>
-                                          )}
-                                        </Box>
-                                      </Tooltip>
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                {error && <FormHelperText error>{error.message}</FormHelperText>}
-                              </>
-                            )}
-                          />
-                        </FormControl>
-                      </Box>
-
-                      {/* URL Input Field */}
-                      {(watchHowKnown === FIRST_HAND ||
-                        watchHowKnown === SECOND_HAND ||
-                        watchHowKnown === FIRST_HAND_BENEFIT ||
-                        watchHowKnown === FIRST_HAND_REJECTED) && (
-                        <URLInputField control={control} label='Your Website (Required)' />
-                      )}
-                      {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
-                        <URLInputField control={control} label='Source URL (Required)' />
-                      )}
-
-                      <Typography
-                        variant={isMobile ? 'h6' : 'h5'}
-                        sx={{
-                          mt: { xs: 2, sm: 3 },
-                          mb: { xs: 2, sm: 3 },
-                          fontWeight: 700,
-                          fontSize: { xs: '1.1rem', sm: '1.25rem' }
-                        }}
-                      >
-                        Claim Validation Details
-                      </Typography>
-
-                      {/* Effective Date Field */}
-                      <Box sx={{ mb: { xs: 2, sm: 3 } }}>
-                        <Typography
-                          variant='body2'
-                          sx={{
-                            mb: 1,
-                            fontWeight: 600,
-                            fontSize: { xs: '0.85rem', sm: '0.875rem' }
-                          }}
-                        >
-                          Effective Date
-                        </Typography>
-                        <Controller
-                          name='effectiveDate'
-                          control={control}
-                          render={({ field }) => (
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                              <DatePicker
-                                value={field.value}
-                                onChange={date => field.onChange(date)}
-                                renderInput={params => (
-                                  <TextField
-                                    {...params}
-                                    fullWidth
+                          >
+                            How Known (Required)
+                          </Typography>
+                          <FormControl fullWidth>
+                            <Controller
+                              name='howKnown'
+                              control={control}
+                              defaultValue=''
+                              rules={{
+                                required: 'This field is required'
+                              }}
+                              render={({ field, fieldState: { error } }) => (
+                                <>
+                                  <Select
+                                    {...field}
                                     size={isMobile ? 'small' : 'medium'}
                                     sx={{
                                       backgroundColor: '#FFFFFF',
-                                      '& .MuiOutlinedInput-root': {
-                                        fontSize: { xs: '0.9rem', sm: '1rem' },
-                                        '& fieldset': {
-                                          borderColor: theme.palette.divider
-                                        },
-                                        '&:hover fieldset': {
-                                          borderColor: theme.palette.primary.main
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                          borderColor: theme.palette.primary.main
-                                        }
+                                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                                      '& .MuiSelect-icon': {
+                                        color: theme.palette.text.secondary
+                                      },
+                                      '& .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.divider
+                                      },
+                                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.primary.main
+                                      },
+                                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.primary.main
                                       }
                                     }}
-                                  />
-                                )}
-                              />
-                            </LocalizationProvider>
-                          )}
-                        />
-                      </Box>
-
-                      {/* Statement Field */}
-                      <Box sx={{ mb: { xs: 2, sm: 3 } }}>
-                        <Typography
-                          variant='body2'
-                          sx={{
-                            mb: 1,
-                            fontWeight: 600,
-                            fontSize: { xs: '0.85rem', sm: '0.875rem' }
-                          }}
-                        >
-                          Validation Statement (Required)
-                        </Typography>
-                        <Controller
-                          name='statement'
-                          control={control}
-                          defaultValue=''
-                          rules={{ required: 'This field is required' }}
-                          render={({ field, fieldState: { error } }) => (
-                            <TextField
-                              {...field}
-                              multiline
-                              rows={isMobile ? 3 : 4}
-                              fullWidth
-                              size={isMobile ? 'small' : 'medium'}
-                              sx={{
-                                backgroundColor: '#FFFFFF',
-                                '& .MuiOutlinedInput-root': {
-                                  fontSize: { xs: '0.9rem', sm: '1rem' },
-                                  '& fieldset': {
-                                    borderColor: theme.palette.divider
-                                  },
-                                  '&:hover fieldset': {
-                                    borderColor: theme.palette.primary.main
-                                  },
-                                  '&.Mui-focused fieldset': {
-                                    borderColor: theme.palette.primary.main
-                                  }
-                                }
-                              }}
-                              error={Boolean(error)}
-                              helperText={error ? error.message : ''}
+                                    error={Boolean(error)}
+                                  >
+                                    {inputOptions.howKnown.map((option, index: number) => (
+                                      <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                        onClick={handleItemSelect}
+                                        sx={{
+                                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                                          py: { xs: 1, sm: 1.5 },
+                                          display: 'flex',
+                                          justifyContent: 'space-between',
+                                          alignItems: 'center'
+                                        }}
+                                      >
+                                        <Tooltip
+                                          title={tooltips.howKnown[index]}
+                                          placement={isTouchDevice ? 'top' : 'right'}
+                                          arrow
+                                          TransitionComponent={Fade}
+                                          open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                          onClose={() => setOpenTooltipIndex(null)}
+                                          disableFocusListener={isTouchDevice}
+                                          disableHoverListener={isTouchDevice}
+                                          disableTouchListener={isTouchDevice}
+                                        >
+                                          <Box
+                                            sx={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              width: '100%',
+                                              justifyContent: 'space-between'
+                                            }}
+                                          >
+                                            <span>{option.text}</span>
+                                            {isTouchDevice && (
+                                              <IconButton
+                                                size='small'
+                                                onClick={e => {
+                                                  e.stopPropagation()
+                                                  handleTooltipToggle(index)
+                                                }}
+                                                sx={{ ml: 1 }}
+                                              >
+                                                <HelpIcon
+                                                  sx={{ color: theme.palette.primary.main, fontSize: '1rem' }}
+                                                />
+                                              </IconButton>
+                                            )}
+                                          </Box>
+                                        </Tooltip>
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                  {error && <FormHelperText error>{error.message}</FormHelperText>}
+                                </>
+                              )}
                             />
-                          )}
-                        />
-                      </Box>
+                          </FormControl>
+                        </Box>
 
-                      {/* Image Uploader */}
-                      <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                        {/* URL Input Field */}
+                        {(watchHowKnown === FIRST_HAND ||
+                          watchHowKnown === SECOND_HAND ||
+                          watchHowKnown === FIRST_HAND_BENEFIT ||
+                          watchHowKnown === FIRST_HAND_REJECTED) && (
+                          <URLInputField control={control} label='Your Website (Required)' />
+                        )}
+                        {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
+                          <URLInputField control={control} label='Source URL (Required)' />
+                        )}
+
                         <Typography
-                          variant='body2'
+                          variant={isMobile ? 'h6' : 'h5'}
                           sx={{
-                            mb: 2,
-                            fontWeight: 600,
-                            fontSize: { xs: '0.85rem', sm: '0.875rem' }
+                            mt: { xs: 2, sm: 3 },
+                            mb: { xs: 2, sm: 3 },
+                            fontWeight: 700,
+                            fontSize: { xs: '1.1rem', sm: '1.25rem' }
                           }}
                         >
-                          Upload Supporting Evidence (Optional)
+                          Claim Validation Details
                         </Typography>
-                        <ImageUploader
-                          fieldArray={{
-                            fields: imageFields,
-                            append: appendImage,
-                            remove: removeImage,
-                            swap,
-                            move,
-                            insert,
-                            prepend,
-                            update,
-                            replace
-                          }}
-                          control={control}
-                          register={register}
-                        />
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
 
-                {/* Submit Button */}
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 2, sm: 3 } }}>
-                  <Button
-                    onClick={onSubmit}
-                    variant='contained'
-                    size={isMobile ? 'medium' : 'large'}
-                    disabled={loading}
-                    sx={{
-                      fontSize: { xs: '1rem', sm: '1.1rem' },
-                      fontWeight: 600,
-                      minHeight: { xs: 44, sm: 48 },
-                      minWidth: { xs: 140, sm: 180 },
-                      px: { xs: 3, sm: 4 },
-                      borderRadius: { xs: 2, sm: 3 },
-                      textTransform: 'none',
-                      boxShadow: 2,
-                      '&:hover': {
-                        boxShadow: 4
-                      },
-                      '&:disabled': {
-                        opacity: 0.6
-                      }
-                    }}
-                  >
-                                         {loading ? 'Submitting...' : 'Submit Validation'}
-                   </Button>
-                 </Box>
-               </Box>
-             </Box>
+                        {/* Effective Date Field */}
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <Typography
+                            variant='body2'
+                            sx={{
+                              mb: 1,
+                              fontWeight: 600,
+                              fontSize: { xs: '0.85rem', sm: '0.875rem' }
+                            }}
+                          >
+                            Effective Date
+                          </Typography>
+                          <Controller
+                            name='effectiveDate'
+                            control={control}
+                            render={({ field }) => (
+                              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                  value={field.value}
+                                  onChange={date => field.onChange(date)}
+                                  renderInput={params => (
+                                    <TextField
+                                      {...params}
+                                      fullWidth
+                                      size={isMobile ? 'small' : 'medium'}
+                                      sx={{
+                                        backgroundColor: '#FFFFFF',
+                                        '& .MuiOutlinedInput-root': {
+                                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                                          '& fieldset': {
+                                            borderColor: theme.palette.divider
+                                          },
+                                          '&:hover fieldset': {
+                                            borderColor: theme.palette.primary.main
+                                          },
+                                          '&.Mui-focused fieldset': {
+                                            borderColor: theme.palette.primary.main
+                                          }
+                                        }
+                                      }}
+                                    />
+                                  )}
+                                />
+                              </LocalizationProvider>
+                            )}
+                          />
+                        </Box>
+
+                        {/* Statement Field */}
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <Typography
+                            variant='body2'
+                            sx={{
+                              mb: 1,
+                              fontWeight: 600,
+                              fontSize: { xs: '0.85rem', sm: '0.875rem' }
+                            }}
+                          >
+                            Validation Statement (Required)
+                          </Typography>
+                          <Controller
+                            name='statement'
+                            control={control}
+                            defaultValue=''
+                            rules={{ required: 'This field is required' }}
+                            render={({ field, fieldState: { error } }) => (
+                              <TextField
+                                {...field}
+                                multiline
+                                rows={isMobile ? 3 : 4}
+                                fullWidth
+                                size={isMobile ? 'small' : 'medium'}
+                                sx={{
+                                  backgroundColor: '#FFFFFF',
+                                  '& .MuiOutlinedInput-root': {
+                                    fontSize: { xs: '0.9rem', sm: '1rem' },
+                                    '& fieldset': {
+                                      borderColor: theme.palette.divider
+                                    },
+                                    '&:hover fieldset': {
+                                      borderColor: theme.palette.primary.main
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                      borderColor: theme.palette.primary.main
+                                    }
+                                  }
+                                }}
+                                error={Boolean(error)}
+                                helperText={error ? error.message : ''}
+                              />
+                            )}
+                          />
+                        </Box>
+
+                        {/* Image Uploader */}
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <Typography
+                            variant='body2'
+                            sx={{
+                              mb: 2,
+                              fontWeight: 600,
+                              fontSize: { xs: '0.85rem', sm: '0.875rem' }
+                            }}
+                          >
+                            Upload Supporting Evidence (Optional)
+                          </Typography>
+                          <ImageUploader
+                            fieldArray={{
+                              fields: imageFields,
+                              append: appendImage,
+                              remove: removeImage,
+                              swap,
+                              move,
+                              insert,
+                              prepend,
+                              update,
+                              replace
+                            }}
+                            control={control}
+                            register={register}
+                          />
+                        </Box>
+                      </Box>
+                    </CardContent>
+                  </Card>
+
+                  {/* Submit Button */}
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 2, sm: 3 } }}>
+                    <Button
+                      onClick={onSubmit}
+                      variant='contained'
+                      size={isMobile ? 'medium' : 'large'}
+                      disabled={loading}
+                      sx={{
+                        fontSize: { xs: '1rem', sm: '1.1rem' },
+                        fontWeight: 600,
+                        minHeight: { xs: 44, sm: 48 },
+                        minWidth: { xs: 140, sm: 180 },
+                        px: { xs: 3, sm: 4 },
+                        borderRadius: { xs: 2, sm: 3 },
+                        textTransform: 'none',
+                        boxShadow: 2,
+                        '&:hover': {
+                          boxShadow: 4
+                        },
+                        '&:disabled': {
+                          opacity: 0.6
+                        }
+                      }}
+                    >
+                      {loading ? 'Submitting...' : 'Submit Validation'}
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
             </Box>
           </Box>
         </form>
