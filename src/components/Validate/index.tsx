@@ -639,7 +639,29 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     </Box>
                   </CardContent>
                 </Card>
-
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3, md: 4 } }}>
+                {/* Header */}
+                <Box>
+                  <Typography
+                    variant={isMobile ? 'h6' : 'h5'}
+                    sx={{
+                      fontWeight: 700,
+                      textAlign: 'center',
+                      color: theme.palette.text.primary,
+                      mb: { xs: 1, sm: 2 }
+                    }}
+                  >
+                    What do you have to say about this claim?
+                  </Typography>
+                  <Box
+                    sx={{
+                      height: '2px',
+                      backgroundColor: theme.palette.divider,
+                      borderRadius: 1,
+                      width: '100%'
+                    }}
+                  />
+                </Box>
                 {/* Validation Form Card */}
                 <Card
                   sx={{
@@ -924,10 +946,11 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                       }
                     }}
                   >
-                    {loading ? 'Submitting...' : 'Submit Validation'}
-                  </Button>
-                </Box>
-              </Box>
+                                         {loading ? 'Submitting...' : 'Submit Validation'}
+                   </Button>
+                 </Box>
+               </Box>
+             </Box>
             </Box>
           </Box>
         </form>
