@@ -18,7 +18,11 @@ import {
   FormHelperText,
   CardContent,
   Alert,
-  Skeleton
+  Skeleton,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel
 } from '@mui/material'
 import { Controller, useForm, useFieldArray, Control } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
@@ -41,6 +45,8 @@ const WEB_DOCUMENT = 'WEB_DOCUMENT'
 const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
 const FIRST_HAND_REJECTED = 'FIRST_HAND_REJECTED'
 const WEB_DOCUMENT_REJECTED = 'WEB_DOCUMENT_REJECTED'
+const NOT_RELEVANT = 'NOT_RELEVANT'
+const OTHER_REJECT = 'OTHER_REJECT'
 
 const CLAIM_RATED = 'rated'
 const CLAIM_VALIDATED = 'validated'
@@ -53,7 +59,9 @@ const HOW_KNOWN = {
   WebDocument: 'WEB_DOCUMENT',
   FirstHandBenefit: 'FIRST_HAND_BENEFIT',
   FirstHandRejected: 'FIRST_HAND_REJECTED',
-  WebDocumentRejected: 'WEB_DOCUMENT_REJECTED'
+  WebDocumentRejected: 'WEB_DOCUMENT_REJECTED',
+  NotRelevant: 'NOT_RELEVANT',
+  OtherReject: 'OTHER_REJECT'
 } as const
 
 type HowKnown = (typeof HOW_KNOWN)[keyof typeof HOW_KNOWN]
@@ -76,6 +84,8 @@ interface FormData {
   howKnown: string
   effectiveDate: Date
   images: ImageI[]
+  decision: 'validate' | 'reject' | ''
+  otherRejectReason: string
 }
 
 // Reusable URL Input Field Component
@@ -231,11 +241,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     amt: '',
     howKnown: '',
     effectiveDate: new Date(),
-    images: []
+    images: [],
+    decision: '' as 'validate' | 'reject' | '',
+    otherRejectReason: ''
   }
 
   const { handleSubmit, reset, control, register, watch } = useForm<FormData>({ defaultValues })
   const watchHowKnown = watch('howKnown') as HowKnown
+  const watchDecision = watch('decision')
+  const watchOtherRejectReason = watch('otherRejectReason')
 
   const {
     fields: imageFields,
@@ -254,7 +268,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   const { createClaim } = useCreateClaim()
 
-  const onSubmit = handleSubmit(async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI, images }) => {
+  const onSubmit = handleSubmit(async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI, images, decision, otherRejectReason }) => {
     if (!subject) {
       setSnackbarMessage('Subject is required')
       toggleSnackbar(true)
@@ -289,14 +303,15 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       payload.claim = CLAIM_IMPACT
       payload.amt = amt
       payload.howKnown = FIRST_HAND
-    } else if (howKnown === FIRST_HAND_REJECTED) {
+    } else if (howKnown === FIRST_HAND_REJECTED || howKnown === WEB_DOCUMENT_REJECTED || howKnown === NOT_RELEVANT) {
       payload.claim = CLAIM_REJECTED
       payload.score = -1
-      payload.howKnown = FIRST_HAND
-    } else if (howKnown === WEB_DOCUMENT_REJECTED) {
-      payload.claim = CLAIM_REJECTED
-      payload.score = -1
-      payload.howKnown = WEB_DOCUMENT
+      // Map the rejection reasons to appropriate howKnown values
+      if (howKnown === FIRST_HAND_REJECTED) {
+        payload.howKnown = FIRST_HAND
+      } else if (howKnown === WEB_DOCUMENT_REJECTED || howKnown === NOT_RELEVANT) {
+        payload.howKnown = WEB_DOCUMENT
+      }
     }
 
     setLoading(true)
@@ -334,25 +349,31 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     setIsExpanded(prev => !prev)
   }, [])
 
-  const inputOptions = {
-    howKnown: [
-      { value: FIRST_HAND, text: 'validate first hand' },
-      { value: SECOND_HAND, text: 'validate second hand' },
-      { value: WEB_DOCUMENT, text: 'validate from source' },
-      { value: FIRST_HAND_BENEFIT, text: 'received direct benefit' },
-      { value: FIRST_HAND_REJECTED, text: 'reject first hand' },
-      { value: WEB_DOCUMENT_REJECTED, text: 'reject from source' }
-    ]
-  }
+  // Options for the dropdowns based on decision
+  const validateOptions = [
+    { value: FIRST_HAND, text: 'First-hand (I saw it / did it myself)' },
+    { value: SECOND_HAND, text: 'Second-hand (Someone told me)' },
+    { value: WEB_DOCUMENT, text: 'From source (I read about it)' },
+    { value: FIRST_HAND_BENEFIT, text: 'Direct benefit (I personally benefited)' }
+  ]
+
+  const rejectOptions = [
+    { value: FIRST_HAND_REJECTED, text: 'I know this is false' },
+    { value: WEB_DOCUMENT_REJECTED, text: 'Contradicts what I know' },
+    { value: NOT_RELEVANT, text: 'Not relevant / spam' }
+  ]
 
   const tooltips = {
-    howKnown: [
+    validate: [
       'I can validate this claim from personal experience or firsthand knowledge.',
       'Validate this claim based on information from someone else who has firsthand knowledge or experience.',
       'Validate this claim based on information known from a website or other source.',
-      'I personally benefited directly from the claim described',
+      'I personally benefited directly from the claim described'
+    ],
+    reject: [
       'I do NOT validate this claim, I reject it based on personal experience or firsthand knowledge.',
-      'I do NOT validate this claim, I reject it based on information from a website or source'
+      'I do NOT validate this claim, I reject it based on information from a website or source.',
+      'This claim is not relevant to the topic or appears to be spam.'
     ]
   }
 
@@ -673,105 +694,198 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                 >
                   <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                     <Box sx={{ width: '100%' }}>
-                      {/* How Known Select Field */}
-                      <Box sx={{ mb: { xs: 2, sm: 3 } }}>
-                        <Typography
-                          variant='body2'
-                          sx={{
-                            mb: 1,
-                            fontWeight: 600,
-                            fontSize: { xs: '0.85rem', sm: '0.875rem' }
+                      {/* Decision Radio Buttons */}
+                      <FormControl 
+                        component="fieldset" 
+                        sx={{ mb: 3 }}
+                      >
+                        <Controller
+                          name='decision'
+                          control={control}
+                          defaultValue=''
+                          rules={{
+                            required: 'Please select either Validate or Reject'
                           }}
-                        >
-                          How Known (Required)
-                        </Typography>
-                        <FormControl fullWidth>
-                          <Controller
-                            name='howKnown'
-                            control={control}
-                            defaultValue=''
-                            rules={{
-                              required: 'This field is required'
-                            }}
-                            render={({ field, fieldState: { error } }) => (
-                              <>
-                                <Select
-                                  {...field}
-                                  size={isMobile ? 'small' : 'medium'}
-                                  sx={{
-                                    backgroundColor: '#FFFFFF',
-                                    fontSize: { xs: '0.9rem', sm: '1rem' },
-                                    '& .MuiSelect-icon': {
-                                      color: theme.palette.text.secondary
-                                    },
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: theme.palette.divider
-                                    },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: theme.palette.primary.main
-                                    },
-                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: theme.palette.primary.main
-                                    }
-                                  }}
-                                  error={Boolean(error)}
-                                >
-                                  {inputOptions.howKnown.map((option, index: number) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                      onClick={handleItemSelect}
+                          render={({ field, fieldState: { error } }) => (
+                            <>
+                              <FormLabel 
+                                component="legend" 
+                                sx={{ 
+                                  mb: 2,
+                                  fontSize: { xs: '1rem', sm: '1.1rem' },
+                                  fontWeight: 600,
+                                  color: theme.palette.text.primary,
+                                  '&.Mui-focused': {
+                                    color: theme.palette.text.primary
+                                  }
+                                }}
+                              >
+                                What is your decision? *
+                              </FormLabel>
+                              <RadioGroup
+                                {...field}
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  gap: { xs: 2, sm: 4 },
+                                  justifyContent: 'center'
+                                }}
+                              >
+                                <FormControlLabel
+                                  value="validate"
+                                  control={
+                                    <Radio 
                                       sx={{
-                                        fontSize: { xs: '0.9rem', sm: '1rem' },
-                                        py: { xs: 1, sm: 1.5 },
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
+                                        '&.Mui-checked': {
+                                          color: theme.palette.success.main
+                                        }
                                       }}
-                                    >
-                                      <Tooltip
-                                        title={tooltips.howKnown[index]}
-                                        placement={isTouchDevice ? 'top' : 'right'}
-                                        arrow
-                                        TransitionComponent={Fade}
-                                        open={isTouchDevice ? openTooltipIndex === index : undefined}
-                                        onClose={() => setOpenTooltipIndex(null)}
-                                        disableFocusListener={isTouchDevice}
-                                        disableHoverListener={isTouchDevice}
-                                        disableTouchListener={isTouchDevice}
-                                      >
-                                        <Box
-                                          sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            width: '100%',
-                                            justifyContent: 'space-between'
-                                          }}
-                                        >
-                                          <span>{option.text}</span>
-                                          {isTouchDevice && (
-                                            <IconButton
-                                              size='small'
-                                              onClick={e => {
-                                                e.stopPropagation()
-                                                handleTooltipToggle(index)
-                                              }}
-                                              sx={{ ml: 1 }}
-                                            >
-                                              <HelpIcon sx={{ color: theme.palette.primary.main, fontSize: '1rem' }} />
-                                            </IconButton>
-                                          )}
-                                        </Box>
-                                      </Tooltip>
+                                    />
+                                  }
+                                  label={
+                                    <Typography sx={{ fontSize: { xs: '0.95rem', sm: '1rem' }, fontWeight: 500 }}>
+                                      Validate
+                                    </Typography>
+                                  }
+                                />
+                                <FormControlLabel
+                                  value="reject"
+                                  control={
+                                    <Radio 
+                                      sx={{
+                                        '&.Mui-checked': {
+                                          color: theme.palette.error.main
+                                        }
+                                      }}
+                                    />
+                                  }
+                                  label={
+                                    <Typography sx={{ fontSize: { xs: '0.95rem', sm: '1rem' }, fontWeight: 500 }}>
+                                      Reject
+                                    </Typography>
+                                  }
+                                />
+                              </RadioGroup>
+                              {error && (
+                                <FormHelperText sx={{ textAlign: 'center', mt: 1 }} error>
+                                  {error.message}
+                                </FormHelperText>
+                              )}
+                            </>
+                          )}
+                        />
+                      </FormControl>
+
+                      {/* How Known Dropdown - only shown when decision is made */}
+                      {watchDecision && (
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              mb: 1, 
+                              fontSize: { xs: '0.9rem', sm: '1rem' },
+                              fontWeight: 600,
+                              color: theme.palette.text.primary
+                            }}
+                          >
+                            {watchDecision === 'validate' ? 'How do you know?' : 'Why do you reject?'} *
+                          </Typography>
+                          <FormControl fullWidth>
+                            <Controller
+                              name='howKnown'
+                              control={control}
+                              defaultValue=''
+                              rules={{
+                                required: 'This field is required'
+                              }}
+                              render={({ field, fieldState: { error } }) => (
+                                <>
+                                  <Select
+                                    {...field}
+                                    size={isMobile ? 'small' : 'medium'}
+                                    displayEmpty
+                                    sx={{
+                                      backgroundColor: '#FFFFFF',
+                                      fontSize: { xs: '0.9rem', sm: '1rem' },
+                                      '& .MuiSelect-icon': {
+                                        color: theme.palette.text.secondary
+                                      },
+                                      '& .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.divider
+                                      },
+                                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.primary.main
+                                      },
+                                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: theme.palette.primary.main
+                                      }
+                                    }}
+                                    error={Boolean(error)}
+                                  >
+                                    <MenuItem value="" disabled>
+                                      <Typography sx={{ color: theme.palette.text.secondary }}>
+                                        Select a reason...
+                                      </Typography>
                                     </MenuItem>
-                                  ))}
-                                </Select>
-                                {error && <FormHelperText error>{error.message}</FormHelperText>}
-                              </>
-                            )}
-                          />
-                        </FormControl>
-                      </Box>
+                                    {(watchDecision === 'validate' ? validateOptions : rejectOptions).map((option, index: number) => (
+                                      <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                        onClick={handleItemSelect}
+                                        sx={{
+                                          fontSize: { xs: '0.9rem', sm: '1rem' },
+                                          py: { xs: 1, sm: 1.5 },
+                                          display: 'flex',
+                                          justifyContent: 'space-between',
+                                          alignItems: 'center'
+                                        }}
+                                      >
+                                        <Tooltip
+                                          title={watchDecision === 'validate' ? tooltips.validate[index] : tooltips.reject[index]}
+                                          placement={isTouchDevice ? 'top' : 'right'}
+                                          arrow
+                                          TransitionComponent={Fade}
+                                          open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                          onClose={() => setOpenTooltipIndex(null)}
+                                          disableFocusListener={isTouchDevice}
+                                          disableHoverListener={isTouchDevice}
+                                          disableTouchListener={isTouchDevice}
+                                        >
+                                          <Box
+                                            sx={{
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              width: '100%',
+                                              justifyContent: 'space-between'
+                                            }}
+                                          >
+                                            <span>{option.text}</span>
+                                            {isTouchDevice && (
+                                              <IconButton
+                                                size='small'
+                                                onClick={e => {
+                                                  e.stopPropagation()
+                                                  handleTooltipToggle(index)
+                                                }}
+                                                sx={{ ml: 1 }}
+                                              >
+                                                <HelpIcon sx={{ color: theme.palette.primary.main, fontSize: '1rem' }} />
+                                              </IconButton>
+                                            )}
+                                          </Box>
+                                        </Tooltip>
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                  {error && <FormHelperText error>{error.message}</FormHelperText>}
+                                </>
+                              )}
+                            />
+                          </FormControl>
+                        </Box>
+                      )}
+
+
 
                       {/* URL Input Field */}
                       {(watchHowKnown === FIRST_HAND ||
@@ -780,21 +894,13 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         watchHowKnown === FIRST_HAND_REJECTED) && (
                         <URLInputField control={control} label='Your Website (Required)' />
                       )}
-                      {(watchHowKnown === WEB_DOCUMENT || watchHowKnown === WEB_DOCUMENT_REJECTED) && (
+                      {(watchHowKnown === WEB_DOCUMENT || 
+                        watchHowKnown === WEB_DOCUMENT_REJECTED ||
+                        watchHowKnown === NOT_RELEVANT) && (
                         <URLInputField control={control} label='Source URL (Required)' />
                       )}
 
-                      <Typography
-                        variant={isMobile ? 'h6' : 'h5'}
-                        sx={{
-                          mt: { xs: 2, sm: 3 },
-                          mb: { xs: 2, sm: 3 },
-                          fontWeight: 700,
-                          fontSize: { xs: '1.1rem', sm: '1.25rem' }
-                        }}
-                      >
-                        Claim Validation Details
-                      </Typography>
+                  
 
                       {/* Effective Date Field */}
                       <Box sx={{ mb: { xs: 2, sm: 3 } }}>
