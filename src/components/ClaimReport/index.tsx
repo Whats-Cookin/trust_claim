@@ -417,7 +417,9 @@ const ClaimReport: React.FC = () => {
                   style={{
                     width: '100%',
                     maxWidth: '600px',
-                    height: 'auto',
+                    height: '100%',
+                    minHeight: '100%',
+                    objectFit: 'cover',
                     borderRadius: '12px',
                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
                   }}
@@ -473,8 +475,8 @@ const ClaimReport: React.FC = () => {
           <Stack spacing={2}>
             {validations.map((validation, index) => (
               <ClaimCard key={validation.id || `validation-${index}`} elevation={0}>
-                <CardContent sx={{ p: 3 }}>
-                  <Grid container spacing={3} alignItems='flex-start'>
+                <CardContent sx={{ p: 0 }}>
+                  <Grid container spacing={0} alignItems='stretch'>
                     {validation.image && (
                       <Grid item xs={12} md={4}>
                         <Box
@@ -483,68 +485,70 @@ const ClaimReport: React.FC = () => {
                           alt='Validation'
                           sx={{
                             width: '100%',
-                            height: 'auto',
-                            borderRadius: 2,
+                            height: '100%',
+                            minHeight: '250px',
                             objectFit: 'cover',
-                            maxHeight: '200px'
+                            borderRadius: { xs: '16px 16px 0 0', md: '16px 0 0 16px' }
                           }}
                         />
                       </Grid>
                     )}
                     <Grid item xs={12} md={validation.image ? 8 : 12}>
-                      <Stack spacing={2}>
-                        <Box>
-                          <Chip
-                            label={validation.claim || 'Validation'}
-                            sx={{
-                              backgroundColor: theme.palette.success.main,
-                              color: theme.palette.success.contrastText,
-                              fontWeight: 600,
-                              mb: 1
-                            }}
-                          />
-                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
-                            {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
-                          </Typography>
-                        </Box>
-
-                        {validation.statement && (
-                          <Typography variant='body1' sx={{ lineHeight: 1.6 }}>
-                            {validation.statement}
-                          </Typography>
-                        )}
-
-                        {(validation.sourceURI || validation.source_link) && (
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
-                              Source:
-                            </Typography>
-                            <Typography
-                              component='a'
-                              href={validation.sourceURI || validation.source_link}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              variant='caption'
+                      <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <Stack spacing={2} sx={{ height: '100%' }}>
+                          <Box>
+                            <Chip
+                              label={validation.claim || 'Validation'}
                               sx={{
-                                color: theme.palette.primary.main,
-                                textDecoration: 'none',
-                                '&:hover': { textDecoration: 'underline' }
+                                backgroundColor: theme.palette.success.main,
+                                color: theme.palette.success.contrastText,
+                                fontWeight: 600,
+                                mb: 1
                               }}
-                            >
-                              {validation.sourceURI || validation.source_link}
+                            />
+                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
+                              {validation.effectiveDate && new Date(validation.effectiveDate).toLocaleDateString()}
                             </Typography>
-                            <IconButton
-                              size='small'
-                              component='a'
-                              href={validation.sourceURI || validation.source_link}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                            >
-                              <OpenInNewIcon fontSize='inherit' />
-                            </IconButton>
                           </Box>
-                        )}
-                      </Stack>
+
+                          {validation.statement && (
+                            <Typography variant='body1' sx={{ lineHeight: 1.6, flex: 1 }}>
+                              {validation.statement}
+                            </Typography>
+                          )}
+
+                          {(validation.sourceURI || validation.source_link) && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+                                Source:
+                              </Typography>
+                              <Typography
+                                component='a'
+                                href={validation.sourceURI || validation.source_link}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                variant='caption'
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  textDecoration: 'none',
+                                  '&:hover': { textDecoration: 'underline' }
+                                }}
+                              >
+                                {validation.sourceURI || validation.source_link}
+                              </Typography>
+                              <IconButton
+                                size='small'
+                                component='a'
+                                href={validation.sourceURI || validation.source_link}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                              >
+                                <OpenInNewIcon fontSize='inherit' />
+                              </IconButton>
+                            </Box>
+                          )}
+                        </Stack>
+                      </Box>
                     </Grid>
                   </Grid>
                 </CardContent>
@@ -562,8 +566,8 @@ const ClaimReport: React.FC = () => {
           <Stack spacing={2}>
             {attestations.map((attestation, index) => (
               <ClaimCard key={attestation.id || `attestation-${index}`} elevation={0}>
-                <CardContent sx={{ p: 3 }}>
-                  <Grid container spacing={3} alignItems='flex-start'>
+                <CardContent sx={{ p: 0 }}>
+                  <Grid container spacing={0} alignItems='stretch'>
                     {attestation.image && (
                       <Grid item xs={12} md={4}>
                         <Box
@@ -572,68 +576,70 @@ const ClaimReport: React.FC = () => {
                           alt='Attestation'
                           sx={{
                             width: '100%',
-                            height: 'auto',
-                            borderRadius: 2,
+                            height: '100%',
+                            minHeight: '250px',
                             objectFit: 'cover',
-                            maxHeight: '200px'
+                            borderRadius: { xs: '16px 16px 0 0', md: '16px 0 0 16px' }
                           }}
                         />
                       </Grid>
                     )}
                     <Grid item xs={12} md={attestation.image ? 8 : 12}>
-                      <Stack spacing={2}>
-                        <Box>
-                          <Chip
-                            label={attestation.claim || 'Attestation'}
-                            sx={{
-                              backgroundColor: theme.palette.success.main,
-                              color: theme.palette.success.contrastText,
-                              fontWeight: 600,
-                              mb: 1
-                            }}
-                          />
-                          <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
-                            {attestation.effectiveDate && new Date(attestation.effectiveDate).toLocaleDateString()}
-                          </Typography>
-                        </Box>
-
-                        {attestation.statement && (
-                          <Typography variant='body1' sx={{ lineHeight: 1.6 }}>
-                            {attestation.statement}
-                          </Typography>
-                        )}
-
-                        {(attestation.sourceURI || attestation.source_link) && (
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
-                              Source:
-                            </Typography>
-                            <Typography
-                              component='a'
-                              href={attestation.sourceURI || attestation.source_link}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                              variant='caption'
+                      <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <Stack spacing={2} sx={{ height: '100%' }}>
+                          <Box>
+                            <Chip
+                              label={attestation.claim || 'Attestation'}
                               sx={{
-                                color: theme.palette.primary.main,
-                                textDecoration: 'none',
-                                '&:hover': { textDecoration: 'underline' }
+                                backgroundColor: theme.palette.success.main,
+                                color: theme.palette.success.contrastText,
+                                fontWeight: 600,
+                                mb: 1
                               }}
-                            >
-                              {attestation.sourceURI || attestation.source_link}
+                            />
+                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary, ml: 2 }}>
+                              {attestation.effectiveDate && new Date(attestation.effectiveDate).toLocaleDateString()}
                             </Typography>
-                            <IconButton
-                              size='small'
-                              component='a'
-                              href={attestation.sourceURI || attestation.source_link}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                            >
-                              <OpenInNewIcon fontSize='inherit' />
-                            </IconButton>
                           </Box>
-                        )}
-                      </Stack>
+
+                          {attestation.statement && (
+                            <Typography variant='body1' sx={{ lineHeight: 1.6, flex: 1 }}>
+                              {attestation.statement}
+                            </Typography>
+                          )}
+
+                          {(attestation.sourceURI || attestation.source_link) && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                              <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
+                                Source:
+                              </Typography>
+                              <Typography
+                                component='a'
+                                href={attestation.sourceURI || attestation.source_link}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                variant='caption'
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  textDecoration: 'none',
+                                  '&:hover': { textDecoration: 'underline' }
+                                }}
+                              >
+                                {attestation.sourceURI || attestation.source_link}
+                              </Typography>
+                              <IconButton
+                                size='small'
+                                component='a'
+                                href={attestation.sourceURI || attestation.source_link}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                              >
+                                <OpenInNewIcon fontSize='inherit' />
+                              </IconButton>
+                            </Box>
+                          )}
+                        </Stack>
+                      </Box>
                     </Grid>
                   </Grid>
                 </CardContent>
