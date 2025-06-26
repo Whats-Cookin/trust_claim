@@ -248,7 +248,10 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                       render={({ field }) => (
                         <Box sx={{ mb: 2 }}>
                           <Typography>Rating</Typography>
-                          <Rating {...field} />
+                          <Rating 
+                            value={field.value}
+                            onChange={(_, newValue) => field.onChange(newValue)}
+                          />
                         </Box>
                       )}
                     />

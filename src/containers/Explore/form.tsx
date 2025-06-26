@@ -631,7 +631,7 @@ export const Form = ({
                               <Typography sx={{ mb: 1, color: theme.palette.texts }}>Review Rating</Typography>
                               <Rating
                                 name='stars'
-                                value={value}
+                                value={value || 0}
                                 onChange={(e, newValue) => onChange(newValue)}
                                 precision={1}
                                 sx={{
