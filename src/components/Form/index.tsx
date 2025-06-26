@@ -117,10 +117,30 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
   const onSubmit = async (formData: any) => {
     if (setLoading) setLoading(true)
 
+    // Ensure a claim type is selected
+    if (!selectedClaimType) {
+      if (setSnackbarMessage && toggleSnackbar) {
+        setSnackbarMessage('Please select a claim type first')
+        toggleSnackbar(true)
+      }
+      if (setLoading) setLoading(false)
+      return
+    }
+
     // Set the claim field based on the selected type
     const claimData = {
       ...formData,
       claim: selectedClaimType.toUpperCase() // Convert 'rated' to 'RATED', etc.
+    }
+
+    // Additional validation for required fields
+    if (!claimData.subject || !claimData.claim) {
+      if (setSnackbarMessage && toggleSnackbar) {
+        setSnackbarMessage('Subject and claim type are required')
+        toggleSnackbar(true)
+      }
+      if (setLoading) setLoading(false)
+      return
     }
 
     try {
@@ -179,6 +199,21 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
             </Box>
           ) : (
             <>
+              {/* Header with claim type selection and back button */}
+              <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>
+                  {CLAIM_TYPES[selectedClaimType as keyof typeof CLAIM_TYPES].label}
+                </Typography>
+                <Button 
+                  variant="outlined" 
+                  size="small" 
+                  onClick={() => setSelectedClaimType('')}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Change Type
+                </Button>
+              </Box>
+
               {/* Basic Information */}
               <Box sx={{ mb: 4 }}>
                 <TextField
