@@ -187,7 +187,7 @@ const Rate = ({ toggleSnackbar, setSnackbarMessage, setLoading }: IHomeProps) =>
                         <Typography>Your Rating</Typography>
                         <Rating
                           name='stars'
-                          value={value}
+                          value={value || 0}
                           onChange={(e, newValue) => onChange(newValue)}
                           precision={1}
                           sx={{
