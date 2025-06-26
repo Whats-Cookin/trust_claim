@@ -84,10 +84,11 @@ const MediaUploader = <TFieldValues extends FieldValues>({
       const reader = new FileReader()
       reader.onloadend = () => {
         // Compress image if it's too large
-        if (file.type.startsWith('image/') && file.size > 500 * 1024) { // 500KB threshold
+        if (file.type.startsWith('image/') && file.size > 500 * 1024) {
+          // 500KB threshold
           setIsCompressing(true)
           console.log(`📸 Compressing large image: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`)
-          
+
           compressImage(file, reader.result as string, (compressedFile, compressedUrl) => {
             setIsCompressing(false)
             const newMedia: MediaI = {
@@ -122,17 +123,21 @@ const MediaUploader = <TFieldValues extends FieldValues>({
     })
   }
 
-  const compressImage = (originalFile: File, originalDataUrl: string, callback: (compressedFile: File, compressedUrl: string) => void) => {
+  const compressImage = (
+    originalFile: File,
+    originalDataUrl: string,
+    callback: (compressedFile: File, compressedUrl: string) => void
+  ) => {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
     const img = new Image()
-    
+
     img.onload = () => {
       try {
         // Calculate new dimensions (max 1200px width/height)
         const maxDimension = 1200
         let { width, height } = img
-        
+
         if (width > maxDimension || height > maxDimension) {
           if (width > height) {
             height = (height * maxDimension) / width
@@ -142,24 +147,30 @@ const MediaUploader = <TFieldValues extends FieldValues>({
             height = maxDimension
           }
         }
-        
+
         canvas.width = width
         canvas.height = height
-        
+
         // Draw and compress
         ctx?.drawImage(img, 0, 0, width, height)
-        
+
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               const compressedFile = new File([blob], originalFile.name, {
                 type: originalFile.type,
                 lastModified: Date.now()
               })
-              
+
               const reader = new FileReader()
               reader.onload = () => {
-                console.log(`📸 Image compressed: ${(originalFile.size / 1024 / 1024).toFixed(2)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`)
+                console.log(
+                  `📸 Image compressed: ${(originalFile.size / 1024 / 1024).toFixed(2)}MB → ${(
+                    compressedFile.size /
+                    1024 /
+                    1024
+                  ).toFixed(2)}MB`
+                )
                 callback(compressedFile, reader.result as string)
               }
               reader.onerror = () => {
@@ -183,13 +194,13 @@ const MediaUploader = <TFieldValues extends FieldValues>({
         callback(originalFile, originalDataUrl)
       }
     }
-    
+
     img.onerror = () => {
       console.error('Failed to load image for compression, using original')
       setIsCompressing(false)
       callback(originalFile, originalDataUrl)
     }
-    
+
     img.src = originalDataUrl
   }
 
@@ -245,11 +256,7 @@ const MediaUploader = <TFieldValues extends FieldValues>({
           >
             <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
-              {isCompressing ? (
-                <strong>Compressing image...</strong>
-              ) : (
-                <strong>Click to upload</strong>
-              )}
+              {isCompressing ? <strong>Compressing image...</strong> : <strong>Click to upload</strong>}
               {!isCompressing && ' or drag and drop'}
             </Typography>
             <Typography variant='caption' color='textSecondary' sx={{ textAlign: 'center' }}>

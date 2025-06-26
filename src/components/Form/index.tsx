@@ -201,12 +201,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
             <>
               {/* Header with claim type selection and back button */}
               <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography variant="h6" sx={{ color: theme.palette.text.primary }}>
+                <Typography variant='h6' sx={{ color: theme.palette.text.primary }}>
                   {CLAIM_TYPES[selectedClaimType as keyof typeof CLAIM_TYPES].label}
                 </Typography>
-                <Button 
-                  variant="outlined" 
-                  size="small" 
+                <Button
+                  variant='outlined'
+                  size='small'
                   onClick={() => setSelectedClaimType('')}
                   sx={{ textTransform: 'none' }}
                 >

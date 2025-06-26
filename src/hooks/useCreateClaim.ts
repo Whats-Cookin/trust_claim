@@ -79,7 +79,7 @@ export function useCreateClaim() {
         res = await api.createClaim(transformedDto)
       } else {
         console.log('📤 Converting images to base64 for JSON payload')
-        
+
         try {
           // Convert images to base64 and include in JSON payload
           const imagesAsBase64 = await Promise.all(
@@ -93,7 +93,10 @@ export function useCreateClaim() {
                     filename: file.name,
                     type: file.type,
                     size: file.size,
-                    metadata: transformedDto.images?.[index] || { metadata: { caption: null, description: null }, effectiveDate: new Date().toISOString() }
+                    metadata: transformedDto.images?.[index] || {
+                      metadata: { caption: null, description: null },
+                      effectiveDate: new Date().toISOString()
+                    }
                   }
                   console.log(`📸 Converted image ${index}: ${file.name} (${file.size} bytes) to base64`)
                   resolve(imageData)
@@ -103,26 +106,25 @@ export function useCreateClaim() {
               })
             })
           )
-          
+
           // Create payload with base64 images
           const payloadWithImages = {
             ...transformedDto,
             images: imagesAsBase64
           }
-          
+
           console.log('📤 Sending JSON with base64 images:', imagesAsBase64.length, 'images')
           res = await api.createClaim(payloadWithImages)
-          
         } catch (imageConversionError: any) {
           console.error('❌ Image conversion failed:', imageConversionError)
           console.log('🔄 Falling back to JSON without images')
-          
+
           // Fallback: Create claim without images
           const claimWithoutImages = { ...transformedDto }
           delete claimWithoutImages.images
-          
+
           res = await api.createClaim(claimWithoutImages)
-          
+
           // Notify user about the fallback
           console.warn('⚠️ Images could not be processed, but claim was created successfully')
           message = 'Claim created successfully, but images could not be processed. Please try adding images later.'
@@ -172,7 +174,7 @@ function preparePayload<T extends { images: MediaI[] }>(
       } else {
         console.warn('⚠️ Invalid image file found:', image)
       }
-      
+
       return {
         metadata: image.metadata,
         effectiveDate: image.effectiveDate
@@ -191,26 +193,26 @@ function preparePayload<T extends { images: MediaI[] }>(
 
 function generateFormData(dto: unknown, images: File[]): FormData {
   const form = new FormData()
-  
+
   console.log('🔍 Generating FormData for dto:', dto)
   const dataObj = dto as Record<string, any>
-  
+
   // Try the original dto blob approach - this is what backend might expect
   const dtoBlob = new Blob([JSON.stringify(dataObj)], { type: 'application/json' })
   form.append('dto', dtoBlob)
   console.log('📋 FormData: dto blob =', JSON.stringify(dataObj, null, 2))
-  
+
   // Append image files with proper names
   for (let i = 0; i < images.length; i++) {
     const img = images[i]
     form.append('images', img, img.name) // Include filename
     console.log(`📋 FormData: images[${i}] = ${img.name} (${img.size} bytes, ${img.type})`)
   }
-  
+
   // Debug: Check if dto blob is correct
   console.log('🔍 DTO Blob size:', dtoBlob.size, 'bytes')
   console.log('🔍 DTO Blob type:', dtoBlob.type)
-  
+
   // Debug: Log all FormData entries
   console.log('📋 All FormData entries:')
   const allEntries: string[] = []
@@ -221,12 +223,14 @@ function generateFormData(dto: unknown, images: File[]): FormData {
       console.log(`  ${entry}`)
     } else {
       // Handle Blob and string values
-      const entry = `${key}: ${typeof value} - ${String(value).substring(0, 50)}${String(value).length > 50 ? '...' : ''}`
+      const entry = `${key}: ${typeof value} - ${String(value).substring(0, 50)}${
+        String(value).length > 50 ? '...' : ''
+      }`
       allEntries.push(entry)
       console.log(`  ${entry}`)
     }
   }
   console.log(`📋 Total entries: ${allEntries.length}`)
-  
+
   return form
 }
