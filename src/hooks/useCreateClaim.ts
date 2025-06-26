@@ -25,33 +25,33 @@ export function useCreateClaim() {
 
       const { images, dto } = preparePayload(finalPayload)
       console.log('Sending payload:', dto, images)
-      
+
       // Ensure numeric fields are properly typed
       const transformedDto: any = { ...dto }
-      
+
       // Convert stars to number if it exists
       if (transformedDto.stars !== undefined && transformedDto.stars !== null) {
         const starsNum = Number(transformedDto.stars)
         transformedDto.stars = isNaN(starsNum) ? null : starsNum
       }
-      
+
       // Convert amt to number if it exists
       if (transformedDto.amt !== undefined && transformedDto.amt !== null) {
         const amtNum = Number(transformedDto.amt)
         transformedDto.amt = isNaN(amtNum) ? null : amtNum
       }
-      
+
       // Convert confidence to number if it exists
       if (transformedDto.confidence !== undefined && transformedDto.confidence !== null) {
         const confidenceNum = Number(transformedDto.confidence)
         transformedDto.confidence = isNaN(confidenceNum) ? null : confidenceNum
       }
-      
+
       // Set score to stars value for backwards compatibility
       if (transformedDto.stars !== undefined && transformedDto.stars !== null && !isNaN(transformedDto.stars)) {
         transformedDto.score = transformedDto.stars
       }
-      
+
       // Handle legacy field mappings
       if ((dto as any).rating !== undefined) {
         const ratingNum = Number((dto as any).rating)
