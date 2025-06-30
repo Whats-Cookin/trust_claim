@@ -50,6 +50,14 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
 
   const queryParams = useQueryParams()
   const githubAuthCode = queryParams.get('code')
+  const accessToken = queryParams.get('accessToken')
+  const refreshToken = queryParams.get('refreshToken')
+
+  useEffect(() => {
+    if (accessToken && refreshToken) {
+      handleAuth(accessToken, refreshToken)
+    }
+  }, [])
 
   useEffect(() => {
     if (githubAuthCode) {
