@@ -16,7 +16,6 @@ import {
   Avatar,
   Divider,
   styled,
-  Container,
   IconButton,
   Alert,
   AlertTitle
@@ -31,11 +30,22 @@ import BusinessIcon from '@mui/icons-material/Business'
 import type { Claim } from '../../api/types'
 
 // Styled Components
-const PageContainer = styled(Container)(({ theme }) => ({
-  minHeight: '100vh',
+const PageContainer = styled(Box)(({ theme }) => ({
+  minHeight: 'calc(100vh - 64px)',
   backgroundColor: theme.palette.background.default,
-  paddingTop: theme.spacing(3),
-  paddingBottom: theme.spacing(6)
+  paddingTop: theme.spacing(2),
+  paddingBottom: theme.spacing(6),
+  paddingLeft: theme.spacing(3),
+  paddingRight: theme.spacing(3),
+  width: '100%',
+  [theme.breakpoints.down('sm')]: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  [theme.breakpoints.up('lg')]: {
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+  }
 }))
 
 const HeaderCard = styled(Card)(({ theme }) => ({
@@ -159,7 +169,7 @@ const ClaimReport: React.FC = () => {
 
   if (isLoading) {
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer>
         <Box
           sx={{
             display: 'flex',
@@ -176,7 +186,7 @@ const ClaimReport: React.FC = () => {
 
   if (error || !reportData) {
     return (
-      <PageContainer maxWidth='lg'>
+      <PageContainer>
         <Box sx={{ textAlign: 'center', py: 8 }}>
           <Alert severity='error' sx={{ mb: 3 }}>
             <AlertTitle>Error</AlertTitle>
@@ -195,7 +205,7 @@ const ClaimReport: React.FC = () => {
   const { claim, validations, attestations, relatedClaims, subjectNode } = reportData
 
   return (
-    <PageContainer maxWidth='lg'>
+    <PageContainer>
       {/* Back Button */}
       <RouterLink to='/feed' style={{ textDecoration: 'none' }}>
         <Button
