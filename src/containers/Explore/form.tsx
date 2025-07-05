@@ -83,7 +83,7 @@ export const Form = ({
   const navigate = useNavigate()
   const did = localStorage.getItem('did')
   // Ceramic query removed - no longer using ComposeDB
-  
+
   // Convert numeric user ID to proper URI
   const userSourceURI = did && /^\d+$/.test(did) ? `${BACKEND_BASE_URL}/users/${did}` : did
   const onSubmit = handleSubmit(
@@ -631,7 +631,7 @@ export const Form = ({
                               <Typography sx={{ mb: 1, color: theme.palette.texts }}>Review Rating</Typography>
                               <Rating
                                 name='stars'
-                                value={value}
+                                value={value || 0}
                                 onChange={(e, newValue) => onChange(newValue)}
                                 precision={1}
                                 sx={{

@@ -14,34 +14,34 @@ export const getNodeColor = (data: any): string => {
   const entType = data.entType || data.entityType || 'UNKNOWN'
   const isRating = data.claim === 'rated' || data.stars !== undefined
   const isImpact = data.claim === 'impact' || data.label?.toLowerCase().includes('impact')
-  
+
   // Rating nodes - vivid green to red gradient
   if (isRating && data.stars !== undefined) {
     const colors = [
       '#DC2626', // Vivid red for 0-1 stars
-      '#F87171', // Light red for 1-2 stars  
+      '#F87171', // Light red for 1-2 stars
       '#FCD34D', // Yellow for 2-3 stars
       '#84CC16', // Light green for 3-4 stars
-      '#22C55E'  // Vivid green for 4-5 stars
+      '#22C55E' // Vivid green for 4-5 stars
     ]
     return colors[Math.floor(data.stars)] || '#6B7280'
   }
-  
+
   // Impact nodes - purple gradient based on amount
   if (isImpact) {
     // If we have an amount, use darker purple for larger impacts
     if (data.amt !== undefined && data.amt !== null) {
       const amt = parseFloat(data.amt)
       if (amt >= 1000000) return '#581C87' // Purple-900 for 1M+
-      if (amt >= 100000) return '#6B21A8'  // Purple-800 for 100K+
-      if (amt >= 10000) return '#7C3AED'   // Purple-700 for 10K+
-      if (amt >= 1000) return '#8B5CF6'    // Purple-600 for 1K+
+      if (amt >= 100000) return '#6B21A8' // Purple-800 for 100K+
+      if (amt >= 10000) return '#7C3AED' // Purple-700 for 10K+
+      if (amt >= 1000) return '#8B5CF6' // Purple-600 for 1K+
       return '#A78BFA' // Purple-400 for smaller amounts
     }
     // Default purple for impact without amount
     return '#7C3AED'
   }
-  
+
   // Entity type colors - professional palette
   switch (entType) {
     case 'PERSON':
@@ -235,14 +235,17 @@ const cyConfig = (containerRef: any, theme: Theme, layoutName: string, layoutOpt
               `
               } else {
                 // For nodes without images, use colored shape
-                const shapeStyle = isClaim 
+                const shapeStyle = isClaim
                   ? `width: 140px; height: 70px; border-radius: 8px; background-color: ${bgColor};`
                   : `width: 80px; height: 80px; border-radius: 50%; background-color: ${bgColor};`
-                  
+
                 return `
                 <div class="custom-node-container ${nodeTypeClass}" 
                      style="${shapeStyle} display: flex; align-items: center; justify-content: center; flex-direction: column;">
-                  <div class="node-label" style="color: #ffffff; padding: 8px; text-align: center;">${truncateLabel(data.label, isClaim ? 40 : 20)}</div>
+                  <div class="node-label" style="color: #ffffff; padding: 8px; text-align: center;">${truncateLabel(
+                    data.label,
+                    isClaim ? 40 : 20
+                  )}</div>
                   ${
                     data.stars !== undefined
                       ? `<div class="node-stars">${'★'.repeat(data.stars)}${'☆'.repeat(5 - data.stars)}</div>`

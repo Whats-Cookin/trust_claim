@@ -45,8 +45,8 @@ const MediaUploader = <TFieldValues extends FieldValues>({
   const [open, setOpen] = useState(false)
   const [currentMedia, setCurrentMedia] = useState<MediaI | null>(null)
   const [hiddenMedia, setHiddenMedia] = useState<MediaI[]>([])
-
   const [isDragging, setIsDragging] = useState<boolean>(false)
+  const [isCompressing, setIsCompressing] = useState<boolean>(false)
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>): void => {
     e.preventDefault()
@@ -74,23 +74,134 @@ const MediaUploader = <TFieldValues extends FieldValues>({
 
   const readFiles = (files: FileList | File[]) => {
     Array.from(files).forEach(file => {
+      // Check file size (limit to 2MB)
+      const maxSize = 2 * 1024 * 1024 // 2MB in bytes
+      if (file.size > maxSize) {
+        alert(`File "${file.name}" is too large. Please choose an image smaller than 2MB.`)
+        return
+      }
+
       const reader = new FileReader()
       reader.onloadend = () => {
-        const newMedia: MediaI = {
-          file: file,
-          url: reader.result as string,
-          metadata: {
-            caption: null,
-            description: null
-          },
-          effectiveDate: new Date(),
-          type: file.type.startsWith('image/') ? 'image' : 'video'
+        // Compress image if it's too large
+        if (file.type.startsWith('image/') && file.size > 500 * 1024) {
+          // 500KB threshold
+          setIsCompressing(true)
+          console.log(`📸 Compressing large image: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`)
+
+          compressImage(file, reader.result as string, (compressedFile, compressedUrl) => {
+            setIsCompressing(false)
+            const newMedia: MediaI = {
+              file: compressedFile,
+              url: compressedUrl,
+              metadata: {
+                caption: null,
+                description: null
+              },
+              effectiveDate: new Date(),
+              type: file.type.startsWith('image/') ? 'image' : 'video'
+            }
+            setCurrentMedia(newMedia)
+            setOpen(true)
+          })
+        } else {
+          const newMedia: MediaI = {
+            file: file,
+            url: reader.result as string,
+            metadata: {
+              caption: null,
+              description: null
+            },
+            effectiveDate: new Date(),
+            type: file.type.startsWith('image/') ? 'image' : 'video'
+          }
+          setCurrentMedia(newMedia)
+          setOpen(true)
         }
-        setCurrentMedia(newMedia)
-        setOpen(true)
       }
       reader.readAsDataURL(file)
     })
+  }
+
+  const compressImage = (
+    originalFile: File,
+    originalDataUrl: string,
+    callback: (compressedFile: File, compressedUrl: string) => void
+  ) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+
+    img.onload = () => {
+      try {
+        // Calculate new dimensions (max 1200px width/height)
+        const maxDimension = 1200
+        let { width, height } = img
+
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = (height * maxDimension) / width
+            width = maxDimension
+          } else {
+            width = (width * maxDimension) / height
+            height = maxDimension
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+
+        // Draw and compress
+        ctx?.drawImage(img, 0, 0, width, height)
+
+        canvas.toBlob(
+          blob => {
+            if (blob) {
+              const compressedFile = new File([blob], originalFile.name, {
+                type: originalFile.type,
+                lastModified: Date.now()
+              })
+
+              const reader = new FileReader()
+              reader.onload = () => {
+                console.log(
+                  `📸 Image compressed: ${(originalFile.size / 1024 / 1024).toFixed(2)}MB → ${(
+                    compressedFile.size /
+                    1024 /
+                    1024
+                  ).toFixed(2)}MB`
+                )
+                callback(compressedFile, reader.result as string)
+              }
+              reader.onerror = () => {
+                console.error('Failed to read compressed image, using original')
+                setIsCompressing(false)
+                callback(originalFile, originalDataUrl)
+              }
+              reader.readAsDataURL(compressedFile)
+            } else {
+              console.error('Failed to compress image, using original')
+              setIsCompressing(false)
+              callback(originalFile, originalDataUrl)
+            }
+          },
+          originalFile.type,
+          0.8 // 80% quality
+        )
+      } catch (error) {
+        console.error('Error during image compression:', error)
+        setIsCompressing(false)
+        callback(originalFile, originalDataUrl)
+      }
+    }
+
+    img.onerror = () => {
+      console.error('Failed to load image for compression, using original')
+      setIsCompressing(false)
+      callback(originalFile, originalDataUrl)
+    }
+
+    img.src = originalDataUrl
   }
 
   const handleSaveMedia = () => {
@@ -132,6 +243,7 @@ const MediaUploader = <TFieldValues extends FieldValues>({
               borderRadius: 2,
               cursor: 'pointer',
               transition: 'border-color 0.3s',
+              opacity: isCompressing ? 0.6 : 1,
               '&:hover': {
                 borderColor: theme.palette.borderColor
               }
@@ -144,10 +256,11 @@ const MediaUploader = <TFieldValues extends FieldValues>({
           >
             <CloudUploadIcon style={{ width: 40, height: 40, marginBottom: 10, color: theme.palette.input }} />
             <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'center' }}>
-              <strong>Click to upload</strong> or drag and drop
+              {isCompressing ? <strong>Compressing image...</strong> : <strong>Click to upload</strong>}
+              {!isCompressing && ' or drag and drop'}
             </Typography>
             <Typography variant='caption' color='textSecondary' sx={{ textAlign: 'center' }}>
-              SVG, PNG, JPG, GIF, or MP4 (MAX. 800x400px)
+              {isCompressing ? 'Please wait while we optimize your image' : 'SVG, PNG, JPG, GIF, or MP4 (MAX. 2MB)'}
             </Typography>
           </Box>
           <input
@@ -157,6 +270,7 @@ const MediaUploader = <TFieldValues extends FieldValues>({
             onChange={handleFileChange}
             accept='image/*, video/*'
             multiple
+            disabled={isCompressing}
           />
         </label>
       </Box>
