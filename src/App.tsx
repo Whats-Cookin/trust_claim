@@ -81,6 +81,10 @@ const App = () => {
     />
   )
 
+  // Define sidebar widths
+  const SIDEBAR_WIDTH_OPEN = 200
+  const SIDEBAR_WIDTH_CLOSED = 40
+
   return (
     <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
       <CssBaseline />
@@ -114,11 +118,11 @@ const App = () => {
             backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? '14.4vw' : '1.0vw',
+            marginLeft: isMediumScreen || isLoginPage || isRegisterPage ? '0' : isSidebarOpen ? `${SIDEBAR_WIDTH_OPEN}px` : `${SIDEBAR_WIDTH_CLOSED}px`,
             width:
               isMediumScreen || isLoginPage || isRegisterPage
                 ? '100%'
-                : `calc(100% - ${isSidebarOpen ? '14.4vw' : '1.0vw'})`,
+                : `calc(100% - ${isSidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED}px)`,
             transition: 'margin-left 0.3s, width 0.3s'
           }}
         >
@@ -132,7 +136,7 @@ const App = () => {
               alignItems: isMediumScreen || isLoginPage || isRegisterPage ? 'center' : 'stretch',
               justifyContent: 'flex-start',
               width: '100%',
-              paddingTop: isNavbarVisible ? '64px' : '0'
+              paddingTop: isNavbarVisible && !isLoginPage && !isRegisterPage ? '64px' : '0'
             }}
           >
             <Routes>
