@@ -129,9 +129,10 @@ const App = () => {
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: isMediumScreen || isLoginPage || isRegisterPage ? 'center' : 'flex-end',
-              justifyContent: 'center',
-              width: '100%'
+              alignItems: isMediumScreen || isLoginPage || isRegisterPage ? 'center' : 'stretch',
+              justifyContent: 'flex-start',
+              width: '100%',
+              paddingTop: isNavbarVisible ? '64px' : '0'
             }}
           >
             <Routes>
