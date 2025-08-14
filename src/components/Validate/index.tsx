@@ -38,31 +38,22 @@ import ImageUploader from '../Form/imageUploading'
 import MainContainer from '../MainContainer'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
-// Constants for How Known options
-const FIRST_HAND = 'FIRST_HAND'
-const SECOND_HAND = 'SECOND_HAND'
-const WEB_DOCUMENT = 'WEB_DOCUMENT'
-const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT'
-const FIRST_HAND_REJECTED = 'FIRST_HAND_REJECTED'
-const WEB_DOCUMENT_REJECTED = 'WEB_DOCUMENT_REJECTED'
-const NOT_RELEVANT = 'NOT_RELEVANT'
-const OTHER_REJECT = 'OTHER_REJECT'
+// Constants for How Known options (subset of backend enum)
+const HOW_KNOWN = {
+  FirstHand: 'FIRST_HAND',
+  SecondHand: 'SECOND_HAND',
+  WebDocument: 'WEB_DOCUMENT'
+} as const
+
+// Special internal UI values - NOT backend enum values
+// These get mapped to proper backend values in onSubmit
+const FIRST_HAND_BENEFIT = 'FIRST_HAND_BENEFIT_UI' // UI only: maps to FIRST_HAND + claim=impact
+const NOT_RELEVANT = 'NOT_RELEVANT_UI' // UI only: maps to FIRST_HAND + claim=spam
 
 const CLAIM_RATED = 'rated'
 const CLAIM_VALIDATED = 'validated'
 const CLAIM_REJECTED = 'rejected'
 const CLAIM_IMPACT = 'impact'
-
-const HOW_KNOWN = {
-  SecondHand: 'SECOND_HAND',
-  FirstHand: 'FIRST_HAND',
-  WebDocument: 'WEB_DOCUMENT',
-  FirstHandBenefit: 'FIRST_HAND_BENEFIT',
-  FirstHandRejected: 'FIRST_HAND_REJECTED',
-  WebDocumentRejected: 'WEB_DOCUMENT_REJECTED',
-  NotRelevant: 'NOT_RELEVANT',
-  OtherReject: 'OTHER_REJECT'
-} as const
 
 type HowKnown = (typeof HOW_KNOWN)[keyof typeof HOW_KNOWN]
 
@@ -300,18 +291,20 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         images
       }
 
+      // Handle special cases
       if (howKnown === FIRST_HAND_BENEFIT) {
         payload.claim = CLAIM_IMPACT
         payload.amt = amt
-        payload.howKnown = FIRST_HAND
-      } else if (howKnown === FIRST_HAND_REJECTED || howKnown === WEB_DOCUMENT_REJECTED || howKnown === NOT_RELEVANT) {
-        payload.claim = CLAIM_REJECTED
-        payload.score = -1
-        // Map the rejection reasons to appropriate howKnown values
-        if (howKnown === FIRST_HAND_REJECTED) {
-          payload.howKnown = FIRST_HAND
-        } else if (howKnown === WEB_DOCUMENT_REJECTED || howKnown === NOT_RELEVANT) {
-          payload.howKnown = WEB_DOCUMENT
+        payload.howKnown = HOW_KNOWN.FirstHand
+      } else if (decision === 'reject') {
+        if (howKnown === NOT_RELEVANT) {
+          // Spam case: set claim to SPAM and howKnown to FIRST_HAND
+          payload.claim = 'spam'
+          payload.howKnown = HOW_KNOWN.FirstHand
+        } else {
+          // Regular rejection: set claim to rejected, keep howKnown as selected
+          payload.claim = CLAIM_REJECTED
+          payload.score = -1
         }
       }
 
@@ -353,15 +346,16 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   // Options for the dropdowns based on decision
   const validateOptions = [
-    { value: FIRST_HAND, text: 'First-hand (I saw it / did it myself)' },
-    { value: SECOND_HAND, text: 'Second-hand (Someone told me)' },
-    { value: WEB_DOCUMENT, text: 'From source (I read about it)' },
+    { value: HOW_KNOWN.FirstHand, text: 'First-hand (I saw it / did it myself)' },
+    { value: HOW_KNOWN.SecondHand, text: 'Second-hand (Someone told me)' },
+    { value: HOW_KNOWN.WebDocument, text: 'From source (I read about it)' },
     { value: FIRST_HAND_BENEFIT, text: 'Direct benefit (I personally benefited)' }
   ]
 
   const rejectOptions = [
-    { value: FIRST_HAND_REJECTED, text: 'I know this is false' },
-    { value: WEB_DOCUMENT_REJECTED, text: 'Contradicts what I know' },
+    { value: HOW_KNOWN.FirstHand, text: 'I know this is false from direct experience' },
+    { value: HOW_KNOWN.SecondHand, text: 'I believe this is false from what someone told me, who had experience' },
+    { value: HOW_KNOWN.WebDocument, text: 'I believe this is false from a source I read' },
     { value: NOT_RELEVANT, text: 'Not relevant / spam' }
   ]
 
@@ -373,8 +367,9 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       'I personally benefited directly from the claim described'
     ],
     reject: [
-      'I do NOT validate this claim, I reject it based on personal experience or firsthand knowledge.',
-      'I do NOT validate this claim, I reject it based on information from a website or source.',
+      'I have direct personal experience that contradicts this claim.',
+      'Someone with direct experience told me information that contradicts this claim.',
+      'I have read credible sources that contradict this claim.',
       'This claim is not relevant to the topic or appears to be spam.'
     ]
   }
@@ -893,15 +888,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         )}
 
                         {/* URL Input Field */}
-                        {(watchHowKnown === FIRST_HAND ||
-                          watchHowKnown === SECOND_HAND ||
-                          watchHowKnown === FIRST_HAND_BENEFIT ||
-                          watchHowKnown === FIRST_HAND_REJECTED) && (
+                        {(watchHowKnown === HOW_KNOWN.FirstHand ||
+                          watchHowKnown === HOW_KNOWN.SecondHand ||
+                          watchHowKnown === FIRST_HAND_BENEFIT) && (
                           <URLInputField control={control} label='Your Website (Required)' />
                         )}
-                        {(watchHowKnown === WEB_DOCUMENT ||
-                          watchHowKnown === WEB_DOCUMENT_REJECTED ||
-                          watchHowKnown === NOT_RELEVANT) && (
+                        {watchHowKnown === HOW_KNOWN.WebDocument && (
                           <URLInputField control={control} label='Source URL (Required)' />
                         )}
 
