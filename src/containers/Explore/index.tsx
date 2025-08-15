@@ -185,8 +185,16 @@ const Explore = (homeProps: IHomeProps) => {
       const nodeId = event.target.data('id')
 
       if (nodeData && nodeId) {
-        // Expand the graph on left click
-        fetchRelatedClaims(nodeId, page.current)
+        // Check if ctrl key or cmd key (Mac) is pressed
+        if (originalEvent.ctrlKey || originalEvent.metaKey) {
+          // Show node details modal on ctrl/cmd+click
+          setModalData(nodeData)
+          setModalType('node')
+          setModalOpen(true)
+        } else {
+          // Expand the graph on regular left click
+          fetchRelatedClaims(nodeId, page.current)
+        }
       }
     }
   }
