@@ -185,11 +185,15 @@ export const generateProof = (signature: string, signerAddress: string, signerId
 export const signAndPrepareClaim = async (claimData: any): Promise<any> => {
   const signedClaim = await signClaim(claimData)
 
-  // Don't include ethereumSignature in the claim data sent to backend
-  // The proof is sufficient
+  // Prepare the proof object
+  const proof = generateProof(signedClaim.signature, signedClaim.signerAddress, signedClaim.signerDid)
+  
+  // Return claim data with proof and proper issuer fields
   return {
-    ...signedClaim.claim,
-    proof: generateProof(signedClaim.signature, signedClaim.signerAddress, signedClaim.claim.issuerId)
+    ...claimData, // Keep original claim data
+    issuerId: signedClaim.signerDid || `did:ethr:${signedClaim.signerAddress.toLowerCase()}`,
+    issuerIdType: 'DID', // When signing with MetaMask, it's always a DID
+    proof: proof // This will be the proof object with signature
   }
 }
 
