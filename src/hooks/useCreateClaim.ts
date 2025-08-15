@@ -14,13 +14,29 @@ export function useCreateClaim() {
 
       if (walletAddress) {
         try {
-          // Sign the claim with MetaMask
+          console.log('🔐 MetaMask wallet detected:', walletAddress)
+          console.log('📝 Requesting signature for claim...')
+          
+          // Sign the claim with MetaMask - this will trigger the MetaMask popup
           finalPayload = await signAndPrepareClaim(payload)
-          console.log('Claim signed with wallet:', walletAddress)
-        } catch (signError) {
-          console.warn('Failed to sign claim with wallet:', signError)
-          // Continue without signature - backend will sign
+          
+          console.log('✅ Claim signed successfully!')
+          console.log('📦 Signed payload includes:', {
+            issuerId: finalPayload.issuerId,
+            issuerIdType: finalPayload.issuerIdType,
+            proofType: finalPayload.proof?.type,
+            hasSignature: !!finalPayload.proof?.proofValue
+          })
+        } catch (signError: any) {
+          console.warn('⚠️ MetaMask signing failed:', signError.message)
+          if (signError.message.includes('User rejected')) {
+            console.log('👤 User rejected the signature request')
+          }
+          console.log('📤 Continuing without client signature - claim will be unsigned')
+          // Continue without signature - claim creation should not fail
         }
+      } else {
+        console.log('📤 No MetaMask wallet connected - creating unsigned claim')
       }
 
       const { images, dto } = preparePayload(finalPayload)

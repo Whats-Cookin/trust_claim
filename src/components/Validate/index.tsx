@@ -72,7 +72,7 @@ interface FormData {
   statement: string
   sourceURI: string
   amt: string
-  howKnown: string
+  basis: string  // Changed from howKnown to basis - represents the basis for validation/rejection
   effectiveDate: Date
   images: ImageI[]
   decision: 'validate' | 'reject' | ''
@@ -230,7 +230,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     statement: '',
     sourceURI: '',
     amt: '',
-    howKnown: '',
+    basis: '',  // Changed from howKnown to basis
     effectiveDate: new Date(),
     images: [],
     decision: '' as 'validate' | 'reject' | '',
@@ -238,7 +238,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   }
 
   const { handleSubmit, reset, control, register, watch } = useForm<FormData>({ defaultValues })
-  const watchHowKnown = watch('howKnown') as HowKnown
+  const watchBasis = watch('basis')  // Changed from watchHowKnown, no type cast needed
   const watchDecision = watch('decision')
   const watchOtherRejectReason = watch('otherRejectReason')
 
@@ -260,7 +260,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const { createClaim } = useCreateClaim()
 
   const onSubmit = handleSubmit(
-    async ({ subject, statement, howKnown, effectiveDate, amt, sourceURI, images, decision, otherRejectReason }) => {
+    async ({ subject, statement, basis, effectiveDate, amt, sourceURI, images, decision, otherRejectReason }) => {
       if (!subject) {
         setSnackbarMessage('Subject is required')
         toggleSnackbar(true)
@@ -285,27 +285,31 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         subject,
         statement,
         sourceURI,
-        howKnown,
+        howKnown: basis,  // Start with basis, will be mapped below
         effectiveDate: effectiveDateAsString,
         claim: CLAIM_VALIDATED,
         images
       }
 
-      // Handle special cases
-      if (howKnown === FIRST_HAND_BENEFIT) {
+      // Handle special cases - map basis to actual howKnown
+      if (basis === FIRST_HAND_BENEFIT) {
         payload.claim = CLAIM_IMPACT
-        payload.amt = amt
+        // Do not set amt since we don't have an amount field for user input
         payload.howKnown = HOW_KNOWN.FirstHand
       } else if (decision === 'reject') {
-        if (howKnown === NOT_RELEVANT) {
+        if (basis === NOT_RELEVANT) {
           // Spam case: set claim to SPAM and howKnown to FIRST_HAND
           payload.claim = 'spam'
           payload.howKnown = HOW_KNOWN.FirstHand
         } else {
-          // Regular rejection: set claim to rejected, keep howKnown as selected
+          // Regular rejection: set claim to rejected, keep basis as howKnown
           payload.claim = CLAIM_REJECTED
           payload.score = -1
+          payload.howKnown = basis
         }
+      } else {
+        // For validation, use basis directly as howKnown
+        payload.howKnown = basis
       }
 
       setLoading(true)
@@ -786,7 +790,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                             </Typography>
                             <FormControl fullWidth>
                               <Controller
-                                name='howKnown'
+                                name='basis'
                                 control={control}
                                 defaultValue=''
                                 rules={{
@@ -888,12 +892,12 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         )}
 
                         {/* URL Input Field */}
-                        {(watchHowKnown === HOW_KNOWN.FirstHand ||
-                          watchHowKnown === HOW_KNOWN.SecondHand ||
-                          watchHowKnown === FIRST_HAND_BENEFIT) && (
+                        {(watchBasis === HOW_KNOWN.FirstHand ||
+                          watchBasis === HOW_KNOWN.SecondHand ||
+                          watchBasis === FIRST_HAND_BENEFIT) && (
                           <URLInputField control={control} label='Your Website (Required)' />
                         )}
-                        {watchHowKnown === HOW_KNOWN.WebDocument && (
+                        {watchBasis === HOW_KNOWN.WebDocument && (
                           <URLInputField control={control} label='Source URL (Required)' />
                         )}
 
