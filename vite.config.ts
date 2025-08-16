@@ -35,10 +35,22 @@ export default defineConfig({
         warn(warning)
       },
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'mui-vendor': ['@mui/material', '@mui/icons-material', '@mui/system'],
-          'emotion-vendor': ['@emotion/react', '@emotion/styled']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@mui/icons-material')) {
+              const iconName = id.split('/').pop()?.replace('.js', '')
+              return `icons/${iconName}`
+            }
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor'
+            }
+            if (id.includes('@mui/material') || id.includes('@mui/system')) {
+              return 'mui-vendor'
+            }
+            if (id.includes('@emotion')) {
+              return 'emotion-vendor'
+            }
+          }
         }
       },
       maxParallelFileOps: 2
@@ -63,13 +75,14 @@ export default defineConfig({
       'react-dom',
       'react/jsx-runtime',
       '@mui/material',
-      '@mui/icons-material',
       '@mui/system',
       '@emotion/react',
       '@emotion/styled'
     ],
+    exclude: ['@mui/icons-material'],
     esbuildOptions: {
-      target: 'es2020'
+      target: 'es2020',
+      keepNames: true
     }
   }
 })
