@@ -72,7 +72,7 @@ interface FormData {
   statement: string
   sourceURI: string
   amt: string
-  basis: string  // Changed from howKnown to basis - represents the basis for validation/rejection
+  basis: string // Changed from howKnown to basis - represents the basis for validation/rejection
   effectiveDate: Date
   images: ImageI[]
   decision: 'validate' | 'reject' | ''
@@ -230,7 +230,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
     statement: '',
     sourceURI: '',
     amt: '',
-    basis: '',  // Changed from howKnown to basis
+    basis: '', // Changed from howKnown to basis
     effectiveDate: new Date(),
     images: [],
     decision: '' as 'validate' | 'reject' | '',
@@ -238,7 +238,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   }
 
   const { handleSubmit, reset, control, register, watch } = useForm<FormData>({ defaultValues })
-  const watchBasis = watch('basis')  // Changed from watchHowKnown, no type cast needed
+  const watchBasis = watch('basis') // Changed from watchHowKnown, no type cast needed
   const watchDecision = watch('decision')
   const watchOtherRejectReason = watch('otherRejectReason')
 
@@ -285,7 +285,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         subject,
         statement,
         sourceURI,
-        howKnown: basis,  // Start with basis, will be mapped below
+        howKnown: basis, // Start with basis, will be mapped below
         effectiveDate: effectiveDateAsString,
         claim: CLAIM_VALIDATED,
         images

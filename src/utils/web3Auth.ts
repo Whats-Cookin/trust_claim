@@ -187,7 +187,7 @@ export const signAndPrepareClaim = async (claimData: any): Promise<any> => {
 
   // Prepare the proof object
   const proof = generateProof(signedClaim.signature, signedClaim.signerAddress, signedClaim.signerDid)
-  
+
   // Return claim data with proof and proper issuer fields
   return {
     ...claimData, // Keep original claim data

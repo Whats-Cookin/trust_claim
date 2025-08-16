@@ -14,8 +14,8 @@ import {
   InputAdornment,
   Autocomplete
 } from '@mui/material'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
@@ -79,20 +79,26 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { createClaim } = useCreateClaim()
 
   const [selectedClaimType, setSelectedClaimType] = useState<string>('')
+
+  // Get subject and name from URL params if present
+  const subjectFromUrl = searchParams.get('subject') || ''
+  const nameFromUrl = searchParams.get('name') || ''
 
   const {
     register,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
-      name: null,
-      subject: '',
+      name: nameFromUrl || null,
+      subject: subjectFromUrl || '',
       claim: '',
       object: null,
       statement: null,
@@ -106,6 +112,16 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       images: []
     }
   })
+
+  // Set subject and name when URL params change
+  useEffect(() => {
+    if (subjectFromUrl) {
+      setValue('subject', subjectFromUrl)
+    }
+    if (nameFromUrl) {
+      setValue('name', nameFromUrl)
+    }
+  }, [subjectFromUrl, nameFromUrl, setValue])
 
   const imageFieldArray = useFieldArray({
     control,
@@ -130,8 +146,17 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
     // Set the claim field based on the selected type
     const claimData = {
       ...formData,
-      claim: selectedClaimType.toUpperCase() // Convert 'rated' to 'RATED', etc.
+      claim: selectedClaimType.toUpperCase(), // Convert 'rated' to 'RATED', etc.
+      // Ensure sourceURI is null if empty, not defaulting to subject
+      sourceURI: formData.sourceURI || null
     }
+
+    // Debug logging to track the sourceURI issue
+    console.log('Form submission data:', {
+      subject: claimData.subject,
+      sourceURI: claimData.sourceURI,
+      claim: claimData.claim
+    })
 
     // Additional validation for required fields
     if (!claimData.subject || !claimData.claim) {
