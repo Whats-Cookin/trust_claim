@@ -13,6 +13,10 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
+    target: 'es2020',
+    commonjsOptions: {
+      include: [/node_modules/]
+    },
     rollupOptions: {
       onwarn(warning, warn) {
         // Ignore "use client" warnings
@@ -21,10 +25,6 @@ export default defineConfig({
           return
         }
         warn(warning)
-      },
-      target: 'es2020',
-      commonjsOptions: {
-        include: [/node_modules/]
       }
     }
   },
