@@ -9,11 +9,19 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    open: true
+    open: true,
+    proxy: {
+      // Proxy image requests to avoid CORS issues
+      '/api/uploads': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/uploads/, '/uploads')
+      }
+    }
   },
   build: {
     sourcemap: false,
-    rollupOptions: {
+        rollupOptions: {
       onwarn(warning, warn) {
         // Ignore "use client" warnings
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && 
@@ -21,11 +29,11 @@ export default defineConfig({
           return
         }
         warn(warning)
-      },
-      target: 'es2020',
-      commonjsOptions: {
-        include: [/node_modules/]
       }
+    },
+    target: 'es2020',
+    commonjsOptions: {
+      include: [/node_modules/]
     }
   },
   define: {
