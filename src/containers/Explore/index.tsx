@@ -247,7 +247,61 @@ const Explore = (homeProps: IHomeProps) => {
     }
   }
 
-  const initializeGraph = async (claimId: string) => {
+  // New function to center graph on any node (not just claims)
+  const centerGraphOnNode = async (nodeId: string) => {
+    if (!nodeId || !cy) return
+
+    console.log('Centering graph on node:', nodeId)
+    console.log('Modal data:', modalData)
+    
+    setLoading(true)
+    try {
+      // Clear existing graph
+      cy.elements().remove()
+
+      // Check if this is a CLAIM node - if so, we can use the graph endpoint
+      if (modalData && (modalData.entType === 'CLAIM' || modalData.entityType === 'CLAIM')) {
+        // For claim nodes, use the graph endpoint which gives a better 2-hop view
+        const claimRes = await api.getGraph(nodeId)
+        const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+        
+        // Limit to reasonable size
+        let limitedNodes = nodes
+        let limitedEdges = edges
+        if (nodes.length > 15) {
+          limitedNodes = nodes.slice(0, 15)
+          const nodeIds = new Set(limitedNodes.map((n: any) => n.data.id))
+          limitedEdges = edges.filter((edge: any) => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target))
+        }
+        
+        cy.add({ nodes: limitedNodes, edges: limitedEdges } as any)
+      } else {
+        // For other nodes, fetch the node and its neighbors
+        const nodeRes = await api.getNode(nodeId, 1, 10)
+        
+        if (nodeRes.data) {
+          let allNodes: any[] = []
+          let allEdges: any[] = []
+          
+          // Parse the central node and its neighbors
+          parseSingleNode(allNodes, allEdges, nodeRes.data)
+          
+          cy.add({ nodes: allNodes, edges: allEdges } as any)
+        }
+      }
+      
+      // Run layout and fit
+      runCy(cy, true)
+    } catch (err: any) {
+      console.error('Failed to center graph on node:', err)
+      setSnackbarMessage('Failed to load graph for this node')
+      toggleSnackbar(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const initializeGraph = async (claimId: string, isRetry: boolean = false) => {
     if (!claimId || claimId === 'undefined') {
       console.error('Invalid claim ID:', claimId)
       setSnackbarMessage('Invalid claim ID')
@@ -271,6 +325,21 @@ const Explore = (homeProps: IHomeProps) => {
 
       const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
       console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
+
+      // Check if graph is empty and this is not a retry
+      if (nodes.length === 0 && !isRetry) {
+        setSnackbarMessage('Graph is being generated...')
+        toggleSnackbar(true)
+        
+        // Retry once after 30 seconds
+        setTimeout(() => {
+          console.log('Retrying graph fetch after 30 seconds...')
+          initializeGraph(claimId, true)
+        }, 30000)
+        
+        setLoading(false)
+        return
+      }
 
       // Limit initial nodes to 7
       let limitedNodes = nodes
@@ -362,6 +431,10 @@ const Explore = (homeProps: IHomeProps) => {
           data={modalData}
           startNode={startNode}
           endNode={endNode}
+          onCenterNode={nodeId => {
+            // Load a fresh graph centered on this node
+            centerGraphOnNode(nodeId)
+          }}
         />
       </Box>
       <GraphinfButton />

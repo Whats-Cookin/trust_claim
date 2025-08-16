@@ -16,10 +16,10 @@ export function useCreateClaim() {
         try {
           console.log('🔐 MetaMask wallet detected:', walletAddress)
           console.log('📝 Requesting signature for claim...')
-          
+
           // Sign the claim with MetaMask - this will trigger the MetaMask popup
           finalPayload = await signAndPrepareClaim(payload)
-          
+
           console.log('✅ Claim signed successfully!')
           console.log('📦 Signed payload includes:', {
             issuerId: finalPayload.issuerId,
