@@ -18,6 +18,7 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 import Badge from '../../containers/feedOfClaim/Badge'
+import { EntityType } from '../../types/entities'
 
 interface GraphDetailModalProps {
   open: boolean
@@ -26,56 +27,140 @@ interface GraphDetailModalProps {
   data: any
   startNode?: any
   endNode?: any
+  onCenterNode?: (nodeId: string) => void
 }
 
-const GraphDetailModal: React.FC<GraphDetailModalProps> = ({ open, onClose, type, data, startNode, endNode }) => {
+const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
+  open,
+  onClose,
+  type,
+  data,
+  startNode,
+  endNode,
+  onCenterNode
+}) => {
   const theme = useTheme()
 
   if (!data) return null
 
-  const renderNodeDetails = () => (
-    <>
-      <Box sx={{ mb: 3 }}>
-        {data.image && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <Box
-              component='img'
-              src={data.image}
-              alt={data.name}
+  const renderNodeDetails = () => {
+    // Clean image URL by removing query parameters
+    const imageUrl = (data.image || data.thumbnail || '').replace(/\?.+$/, '')
+
+    return (
+      <>
+        <Box sx={{ mb: 3 }}>
+          {imageUrl && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Box
+                component='img'
+                src={imageUrl}
+                alt={data.name}
+                sx={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  boxShadow: 2
+                }}
+              />
+            </Box>
+          )}
+          <Typography variant='h6' align='center' gutterBottom>
+            {data.name || data.label || 'Unknown'}
+          </Typography>
+          {data.entType && (
+            <Typography variant='body2' color='text.secondary' align='center'>
+              Type: {data.entType}
+            </Typography>
+          )}
+          {data.nodeUri && (
+            <Typography
+              variant='body2'
+              align='center'
               sx={{
-                width: 120,
-                height: 120,
-                borderRadius: '50%',
-                objectFit: 'cover',
-                boxShadow: 2
+                mt: 1,
+                '& a': {
+                  color: theme.palette.primary.main,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }
               }}
-            />
-          </Box>
-        )}
-        <Typography variant='h6' align='center' gutterBottom>
-          {data.name || data.label || 'Unknown'}
-        </Typography>
-        {data.entType && (
-          <Typography variant='body2' color='text.secondary' align='center'>
-            Type: {data.entType}
-          </Typography>
-        )}
-        {data.nodeUri && (
-          <Typography variant='body2' color='text.secondary' align='center' sx={{ mt: 1 }}>
-            URI: {data.nodeUri}
-          </Typography>
-        )}
-      </Box>
+            >
+              URI:{' '}
+              <a href={data.nodeUri} target='_blank' rel='noopener noreferrer'>
+                {data.nodeUri}
+              </a>
+            </Typography>
+          )}
+        </Box>
 
-      <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 2 }} />
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-        <Button component={Link} to={`/claim`} variant='outlined' onClick={onClose}>
-          View Details
-        </Button>
-      </Box>
-    </>
-  )
+        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Button
+            onClick={() => {
+              if (onCenterNode && data.id) {
+                onCenterNode(data.id)
+              }
+              onClose()
+            }}
+            variant='text'
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
+          >
+            Center this Node
+          </Button>
+          <Button
+            onClick={onClose}
+            variant='text'
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
+          >
+            Return to Graph
+          </Button>
+          <Button
+            component={Link}
+            to={
+              data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
+                ? `/validate?subject=${encodeURIComponent(data.nodeUri || '')}`
+                : `/claim?subject=${encodeURIComponent(data.nodeUri || '')}&name=${encodeURIComponent(
+                    data.name || data.label || ''
+                  )}`
+            }
+            onClick={onClose}
+            variant='text'
+            sx={{
+              fontSize: '12px',
+              p: '4px 8px',
+              color: theme.palette.sidecolor || '#666',
+              '&:hover': {
+                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+              }
+            }}
+          >
+            {data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
+              ? 'Validate/Reject'
+              : 'Add Attestation'}
+          </Button>
+        </Box>
+      </>
+    )
+  }
 
   const renderEdgeDetails = () => {
     const claim = data.claim || data
