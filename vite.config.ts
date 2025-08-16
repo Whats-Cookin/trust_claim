@@ -14,6 +14,14 @@ export default defineConfig({
   build: {
     sourcemap: false,
     target: 'es2020',
+    chunkSizeWarningLimit: 1000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
     commonjsOptions: {
       include: [/node_modules/]
     },
@@ -25,7 +33,15 @@ export default defineConfig({
           return
         }
         warn(warning)
-      }
+      },
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'mui-vendor': ['@mui/material', '@mui/icons-material', '@mui/system'],
+          'emotion-vendor': ['@emotion/react', '@emotion/styled']
+        }
+      },
+      maxParallelFileOps: 2
     }
   },
   define: {
