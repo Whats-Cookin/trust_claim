@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import * as api from '../../api'
 import { Link as RouterLink, useParams } from 'react-router-dom'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 import {
   Typography,
   CircularProgress,
@@ -129,6 +130,12 @@ interface ClaimReportData {
   validations: ValidationItem[]
   attestations: ValidationItem[]
   relatedClaims?: RelatedClaim[]
+  images?: Array<{
+    id: number
+    url: string
+    metadata: any
+    effectiveDate: string
+  }>
 }
 
 const ClaimReport: React.FC = () => {
@@ -155,7 +162,44 @@ const ClaimReport: React.FC = () => {
           throw new Error('No data received from server')
         }
 
-        setReportData(response.data as unknown as ClaimReportData)
+        const rawData = response.data as unknown as ClaimReportData
+        
+        // Debug: Log the complete API response structure
+        console.log('📋 Complete ClaimReport API response:', JSON.stringify(response.data, null, 2))
+        console.log('📋 Response keys:', Object.keys(response.data))
+        
+        // Check if images exist in the response
+        console.log('📋 Images in response:', (response.data as any).images)
+        console.log('📋 Claim in response:', (response.data as any).claim)
+        
+        // Extract first image URL if images exist and add to claim and reportData
+        let firstImageUrl: string | undefined = undefined
+        if (rawData.images && rawData.images.length > 0) {
+          const imageUrl = rawData.images[0].url
+          
+          // For now, just use the direct backend URL and we'll handle CORS separately
+          firstImageUrl = imageUrl.startsWith('http') ? imageUrl : `${BACKEND_BASE_URL}${imageUrl}`
+          
+          console.log('🖼️ Raw image URL from backend:', imageUrl)
+          console.log('🖼️ Final image URL to use:', firstImageUrl)
+          
+          // Add the image ID for debugging
+          console.log('🖼️ Image ID:', rawData.images[0].id)
+        } else {
+          console.log('🖼️ No images found in response')
+          console.log('🖼️ rawData.images:', rawData.images)
+        }
+        
+        const processedData: ClaimReportData = {
+          ...rawData,
+          claim: {
+            ...rawData.claim,
+            image: firstImageUrl
+          },
+          image: firstImageUrl
+        }
+        
+        setReportData(processedData)
       } catch (err) {
         console.error('Error fetching report data:', err)
         setError(err instanceof Error ? err.message : 'Failed to fetch report data')
