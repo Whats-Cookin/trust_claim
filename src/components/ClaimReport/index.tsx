@@ -304,9 +304,10 @@ const ClaimReport: React.FC = () => {
                   </Avatar>
                 )}
                 <Box flex={1} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-                  <Typography variant='h4' sx={{ fontWeight: 700, mb: 1 }}>
-                    {subjectNode?.name || claim.subjectNode?.name || 'Professional Profile'}
-                  </Typography>
+                <Typography variant='h4' sx={{ fontWeight: 700, mb: 1 }}>
+  {(reportData as any)?.subject?.name || subjectNode?.name || claim.subjectNode?.name || 'Professional Profile'}
+</Typography>
+
                   {(subjectNode?.entType || claim.subjectNode?.entType) && (
                     <Chip
                       label={subjectNode?.entType || claim.subjectNode?.entType}
@@ -374,8 +375,8 @@ const ClaimReport: React.FC = () => {
                   Report about:
                 </Typography>
                 <Typography variant='h4' sx={{ fontWeight: 700, mb: 2 }}>
-                  Professional Profile
-                </Typography>
+  {(reportData as any)?.subject?.name || 'Professional Profile'}
+</Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center' }}>
                   <LinkIcon fontSize='small' sx={{ color: theme.palette.text.secondary }} />
                   <Typography
