@@ -40,6 +40,7 @@ import {
   COLORS,
   getVisibleValidationCount
 } from '../../constants/certificateStyles'
+import { extractProfileName, isValidUrl } from '../../utils/string.utils'
 import ValidationDialog from './ValidationDialog'
 import ValidationDetailsDialog from './ValidationDetailsDialog'
 import SharePopover from './SharePopover'
@@ -200,7 +201,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   color: COLORS.primary
                 }}
               >
-                {subject_name}
+                {name || claim?.name}
               </Typography>
 
               <Typography
@@ -214,7 +215,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   color: COLORS.text.primary
                 }}
               >
-                {getDisplayText()}
+                 {subject_name || extractProfileName(subject || '')}
               </Typography>
 
               <Typography
