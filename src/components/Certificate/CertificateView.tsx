@@ -92,7 +92,7 @@ const CertificateView: React.FC = () => {
   const claim = data.claim
 
   return (
-    <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
+    <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '1200px', mx: 'auto' }}>
       <Certificate
   subject={claim.subject || ''}               // keep the URL as-is (string)
   subject_name={data.subject?.name}           // <-- pass the normalized name from the report

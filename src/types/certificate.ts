@@ -9,6 +9,7 @@ export interface CertificateProps {
   image?: string
   name?: string
   claim?: {
+    claimData: any
     type?: string
     name?: string
   }
