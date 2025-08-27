@@ -154,6 +154,12 @@ const Certificate: React.FC<CertificateProps> = ({
   }
 
   const visibleValidationCount = getVisibleValidationCount(isXs, isSm, isMd)
+   // Resolve the subject's display name (prefer object.name like the report)
+const subjectDisplayName =
+(subject as any)?.name?.toString().trim() ||
+(subject_name ? String(subject_name).trim() : '') ||
+extractProfileName(((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()) ||
+(((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim());
 
   return (
     <Container
@@ -189,6 +195,7 @@ const Certificate: React.FC<CertificateProps> = ({
               <Typography variant='h6' sx={subtitleStyles}>
                 OF SKILL VALIDATION
               </Typography>
+              
 
               <Typography
                 variant='h3'
@@ -201,8 +208,8 @@ const Certificate: React.FC<CertificateProps> = ({
                   color: COLORS.primary
                 }}
               >
-                {name || claim?.name}
-              </Typography>
+{(subject as any)?.name || subject_name || name || claim?.name}
+</Typography>
 
               <Typography
                 variant='h3'
@@ -215,8 +222,9 @@ const Certificate: React.FC<CertificateProps> = ({
                   color: COLORS.text.primary
                 }}
               >
-                 {subject_name || extractProfileName(subject || '')}
-              </Typography>
+                                 { extractProfileName(subject || '')}
+
+    </Typography>
 
               <Typography
                 sx={{

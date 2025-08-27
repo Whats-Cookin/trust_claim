@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import { Box, Typography, CircularProgress } from '@mui/material'
-import Certificate from '../components/Certificate'
-import { BACKEND_BASE_URL } from '../utils/settings'
+import Certificate from '.'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 const CertificateView: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -94,18 +94,19 @@ const CertificateView: React.FC = () => {
   return (
     <Box sx={{ p: 3, maxWidth: '1200px', margin: '0 auto' }}>
       <Certificate
-        subject_name={data.claim?.claimData?.subject_name || ''}
-        issuer_name={data.claim?.claimData?.issuer_name || ''}
-        subject={claim.subject || ''}
-        statement={claim.statement || ''}
-        effectiveDate={claim.effectiveDate}
-        sourceURI={claim.sourceURI}
-        validations={data.validations || []}
-        claimId={id}
-        image={(data.images && data.images[0]) || claim.image}
-        name={data.claim?.claimData?.name || ''}
-        claim={data.claim}
-      />
+  subject={claim.subject || ''}               // keep the URL as-is (string)
+  subject_name={data.subject?.name}           // <-- pass the normalized name from the report
+  issuer_name={data.claim?.claimData?.issuer_name || ''}
+  statement={claim.statement || ''}
+  effectiveDate={claim.effectiveDate}
+  sourceURI={claim.sourceURI}
+  validations={data.validations || []}
+  claimId={id}
+  image={(data.images && data.images[0]) || claim.image}
+  name={data.claim?.claimData?.name || ''}
+  claim={data.claim}
+/>
+
     </Box>
   )
 }

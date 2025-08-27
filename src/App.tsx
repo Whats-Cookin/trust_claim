@@ -20,7 +20,7 @@ import Terms from './containers/Terms'
 import Privacy from './containers/Privacy'
 import { ClaimCredential } from './containers/ClaimCredential'
 import { checkAuth } from './utils/authUtils'
-import CertificateView from './pages/CertificateView'
+import CertificateView from './components/Certificate/CertificateView'
 import './App.css'
 
 const App = () => {
