@@ -32,7 +32,6 @@ import { extractProfileName, isValidUrl } from '../../utils/string.utils'
 import ValidationDialog from './ValidationDialog'
 import ValidationDetailsDialog from './ValidationDetailsDialog'
 import SharePopover from './SharePopover'
-import CertificateMedia from './CertificateMedia'
 
 interface Claim {
   type?: string
@@ -440,7 +439,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Typography>
               )}
 
-              <CertificateMedia image={image} />
+              {/* <CertificateMedia image={image} /> */}
 
               {validations && validations.length > 0 && (
                 <Box sx={{ width: '100%', mt: { xs: 2, sm: 3, md: 4 } }}>
