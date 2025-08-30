@@ -49,9 +49,9 @@ const toTitleCase = (s: string) =>
 const humanizeSlug = (s: string) =>
   toTitleCase(
     decodeURIComponent(s)
-      .replace(/[@]/g, '')           // remove @handles
-      .replace(/[-_.]+/g, ' ')       // hyphens/underscores/dots -> space
-      .replace(/\s+/g, ' ')          // collapse spaces
+      .replace(/[@]/g, '') // remove @handles
+      .replace(/[-_.]+/g, ' ') // hyphens/underscores/dots -> space
+      .replace(/\s+/g, ' ') // collapse spaces
       .trim()
   )
 
@@ -251,16 +251,13 @@ const Certificate: React.FC<CertificateProps> = ({
     ((claim as any)?.name && String((claim as any)?.name).trim()) ||
     deriveDisplayNameFromAny(subject) ||
     extractProfileName(((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()) ||
-    (((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim())
+    ((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()
 
   const containerMaxWidth = isXl ? 'xl' : 'lg'
   const visibleValidationCount = getVisibleValidationCount(isXs, isSm, isMd)
 
   return (
-    <Container
-      maxWidth={containerMaxWidth}
-      sx={{ py: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2, md: 3 } }}
-    >
+    <Container maxWidth={containerMaxWidth} sx={{ py: { xs: 2, sm: 3, md: 4 }, px: { xs: 1, sm: 2, md: 3 } }}>
       <Card
         sx={{
           ...cardStyles,
@@ -281,7 +278,7 @@ const Certificate: React.FC<CertificateProps> = ({
       >
         <CardContent sx={{ p: { xs: 1.5, sm: 2, md: 3, lg: 4 } }}>
           <Box
-            id="certificate-content"
+            id='certificate-content'
             sx={{
               position: 'relative',
               px: { xs: 1, sm: 2, md: 3, lg: 4 },
@@ -304,9 +301,9 @@ const Certificate: React.FC<CertificateProps> = ({
               }}
             >
               <Box
-                component="img"
+                component='img'
                 src={badge}
-                alt=""
+                alt=''
                 sx={{
                   width: { xs: '65%', sm: '50%', md: '42%' },
                   maxWidth: 420,
@@ -318,9 +315,9 @@ const Certificate: React.FC<CertificateProps> = ({
             {/* content layer */}
             <Box sx={{ position: 'relative', zIndex: 1 }}>
               <Box
-                component="img"
+                component='img'
                 src={badge}
-                alt="Certificate Badge"
+                alt='Certificate Badge'
                 sx={{
                   ...badgeStyles,
                   display: 'block',
@@ -330,12 +327,12 @@ const Certificate: React.FC<CertificateProps> = ({
                 }}
               />
 
-              <Typography variant="h4" sx={{ ...titleStyles, fontWeight: 800 }}>
+              <Typography variant='h4' sx={{ ...titleStyles, fontWeight: 800 }}>
                 Certificate
               </Typography>
 
               <Typography
-                variant="h6"
+                variant='h6'
                 sx={{
                   ...subtitleStyles,
                   letterSpacing: '0.18em',
@@ -346,7 +343,7 @@ const Certificate: React.FC<CertificateProps> = ({
               </Typography>
 
               <Typography
-                variant="body2"
+                variant='body2'
                 sx={{
                   textAlign: 'center',
                   mt: { xs: 1, sm: 1.5 },
@@ -360,7 +357,7 @@ const Certificate: React.FC<CertificateProps> = ({
               </Typography>
               {recipientName && (
                 <Typography
-                  variant="h4"
+                  variant='h4'
                   sx={{
                     textAlign: 'center',
                     fontFamily: 'Allison, cursive',
@@ -374,9 +371,8 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Typography>
               )}
 
-              
               <Typography
-                variant="subtitle1"
+                variant='subtitle1'
                 sx={{
                   textAlign: 'center',
                   fontStyle: 'italic',
@@ -387,7 +383,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 has been validated in
               </Typography>
               <Typography
-                variant="h3"
+                variant='h3'
                 sx={{
                   fontSize: { xs: '24px', sm: '28px', md: '32px', lg: '36px' },
                   fontFamily: 'Allison, cursive',
@@ -400,11 +396,9 @@ const Certificate: React.FC<CertificateProps> = ({
                 {skillName}
               </Typography>
 
-             
-
               {issuer_name && (
                 <Typography
-                  variant="body2"
+                  variant='body2'
                   sx={{ textAlign: 'center', color: COLORS.text.secondary, mb: { xs: 1.5, sm: 2 } }}
                 >
                   Issued by <strong>{issuer_name}</strong>
@@ -429,11 +423,11 @@ const Certificate: React.FC<CertificateProps> = ({
 
               {isValidUrl(sourceURI || '') && (
                 <Typography
-                  variant="body2"
+                  variant='body2'
                   sx={{ textAlign: 'center', color: COLORS.text.secondary, mb: { xs: 2, sm: 2.5 } }}
                 >
                   Source:{' '}
-                  <MuiLink href={sourceURI as string} target="_blank" rel="noopener" sx={{ color: COLORS.primary }}>
+                  <MuiLink href={sourceURI as string} target='_blank' rel='noopener' sx={{ color: COLORS.primary }}>
                     {sourceURI}
                   </MuiLink>
                 </Typography>
@@ -444,9 +438,9 @@ const Certificate: React.FC<CertificateProps> = ({
               {validations && validations.length > 0 && (
                 <Box sx={{ width: '100%', mt: { xs: 2, sm: 3, md: 4 } }}>
                   <Typography
-                    variant="h6"
+                    variant='h6'
                     color={COLORS.text.primary}
-                    textAlign="center"
+                    textAlign='center'
                     mb={{ xs: 2, sm: 2.5, md: 3 }}
                     fontSize={{ xs: '18px', sm: '20px', md: '22px' }}
                   >
@@ -468,7 +462,7 @@ const Certificate: React.FC<CertificateProps> = ({
                     {validations.slice(0, visibleValidationCount).map((validation: Validation, index: number) => (
                       <Card key={index} sx={validationCardStyles} onClick={() => handleClaimClick(validation)}>
                         <Typography
-                          variant="body2"
+                          variant='body2'
                           color={COLORS.primary}
                           fontSize={{ xs: 18, sm: 20 }}
                           mb={1.5}
@@ -483,7 +477,7 @@ const Certificate: React.FC<CertificateProps> = ({
                           {validation.issuer_name}
                         </Typography>
                         <Typography
-                          variant="body2"
+                          variant='body2'
                           color={COLORS.text.primary}
                           fontSize={{ xs: 14, sm: 16 }}
                           sx={{
@@ -552,7 +546,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 >
                   {effectiveDate && (
                     <Typography
-                      variant="body2"
+                      variant='body2'
                       color={COLORS.text.secondary}
                       fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
                     >
@@ -567,7 +561,7 @@ const Certificate: React.FC<CertificateProps> = ({
 
                   {claimId && (
                     <Typography
-                      variant="body2"
+                      variant='body2'
                       color={COLORS.text.secondary}
                       fontSize={{ xs: '12px', sm: '13px', md: '14px' }}
                       sx={{ ml: { xs: 0, sm: 'auto' } }}
@@ -613,14 +607,14 @@ const Certificate: React.FC<CertificateProps> = ({
         >
           <Box onClick={handleExport} sx={actionButtonStyles}>
             <SystemUpdateAltIcon sx={{ color: COLORS.primary }} />
-            <Typography variant="body2" sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+            <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
               Export Certificate
             </Typography>
           </Box>
 
           <Box onClick={handleShareClick} sx={actionButtonStyles}>
             <ShareIcon sx={{ color: COLORS.primary }} />
-            <Typography variant="body2" sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+            <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
               Share
             </Typography>
           </Box>
@@ -637,7 +631,7 @@ const Certificate: React.FC<CertificateProps> = ({
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={() => setSnackbarOpen(false)}
-          message="Link copied to clipboard!"
+          message='Link copied to clipboard!'
           sx={{
             '& .MuiSnackbarContent-root': {
               backgroundColor: COLORS.primary

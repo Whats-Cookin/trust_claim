@@ -48,4 +48,4 @@ export interface ValidationDetailsDialogProps {
   open: boolean
   onClose: () => void
   validation: Validation | null
-} 
+}

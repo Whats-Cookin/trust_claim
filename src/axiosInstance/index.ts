@@ -12,23 +12,23 @@ const instance = axios.create({
 
 instance.interceptors.request.use(config => {
   const route = config.url?.split('/')[1]
-  
+
   // Ensure headers object exists
   if (!config.headers) {
     config.headers = {}
   }
-  
+
   // Always ensure Content-Type is set for JSON requests
   if (!config.headers['Content-Type'] && config.data && typeof config.data === 'object') {
     config.headers['Content-Type'] = 'application/json'
   }
-  
+
   // Add authentication headers (except for auth route)
   if (route !== 'auth') {
     const headers = getAuthHeaders()
     config.headers = { ...config.headers, ...headers }
   }
-  
+
   // Log request details for debugging
   console.log('📡 === AXIOS REQUEST ===')
   console.log('📡 Method:', config.method?.toUpperCase())
@@ -38,12 +38,18 @@ instance.interceptors.request.use(config => {
   console.log('📡 Headers:', config.headers)
   if (config.data) {
     if (typeof config.data === 'string') {
-      console.log('📡 Data (string):', config.data.length > 1000 ? `${config.data.substring(0, 1000)}... (truncated)` : config.data)
+      console.log(
+        '📡 Data (string):',
+        config.data.length > 1000 ? `${config.data.substring(0, 1000)}... (truncated)` : config.data
+      )
     } else {
-      console.log('📡 Data (object):', JSON.stringify(config.data, null, 2).length > 1000 ? 'Large object (>1000 chars)' : config.data)
+      console.log(
+        '📡 Data (object):',
+        JSON.stringify(config.data, null, 2).length > 1000 ? 'Large object (>1000 chars)' : config.data
+      )
     }
   }
-  
+
   return config
 })
 
@@ -82,7 +88,7 @@ instance.interceptors.response.use(
     } else if (error.request) {
       console.log('📡 Request made but no response received:', error.request)
     }
-    
+
     const originalReq = error.config
     const errorResponse = error.response
 
