@@ -94,19 +94,18 @@ const CertificateView: React.FC = () => {
   return (
     <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '1200px', mx: 'auto' }}>
       <Certificate
-  subject={claim.subject || ''}               // keep the URL as-is (string)
-  subject_name={data.subject?.name}           // <-- pass the normalized name from the report
-  issuer_name={data.claim?.claimData?.issuer_name || ''}
-  statement={claim.statement || ''}
-  effectiveDate={claim.effectiveDate}
-  sourceURI={claim.sourceURI}
-  validations={data.validations || []}
-  claimId={id}
-  image={(data.images && data.images[0]) || claim.image}
-  name={data.claim?.claimData?.name || ''}
-  claim={data.claim}
-/>
-
+        subject={claim.subject || ''} // keep the URL as-is (string)
+        subject_name={data.subject?.name} // <-- pass the normalized name from the report
+        issuer_name={data.claim?.claimData?.issuer_name || ''}
+        statement={claim.statement || ''}
+        effectiveDate={claim.effectiveDate}
+        sourceURI={claim.sourceURI}
+        validations={data.validations || []}
+        claimId={id}
+        image={(data.images && data.images[0]) || claim.image}
+        name={data.claim?.claimData?.name || ''}
+        claim={data.claim}
+      />
     </Box>
   )
 }

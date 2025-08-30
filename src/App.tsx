@@ -183,12 +183,10 @@ const App = () => {
                   checkAuth() ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
-              <Route path='/certificate/:id' element={<CertificateView />} />{' '}
-              {/* Alias for common typo */}
+              <Route path='/certificate/:id' element={<CertificateView />} /> {/* Alias for common typo */}
               <Route path='/certificatet/:id' element={<CertificateView />} />
               {/* Catch-all to avoid blank pages */}
               <Route path='*' element={<Navigate to='/feed' replace />} />
-
             </Routes>
           </Box>
         </Box>

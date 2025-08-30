@@ -391,9 +391,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
                             {/* Expanded details */}
                             {expandedCards.has(claimId) && (
-                              <Box
-                                sx={{ mt: 2, p: '5px 1 1 5px', animation: 'fadeIn 0.2s ease-in' }}
-                              >
+                              <Box sx={{ mt: 2, p: '5px 1 1 5px', animation: 'fadeIn 0.2s ease-in' }}>
                                 {claim.aspect && (
                                   <Typography
                                     variant='body2'

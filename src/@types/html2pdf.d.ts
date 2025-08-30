@@ -39,4 +39,4 @@ declare module 'html2pdf.js' {
   function html2pdf(element: HTMLElement | string, options?: Html2PdfOptions): Html2Pdf
 
   export = html2pdf
-} 
+}

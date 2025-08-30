@@ -7,12 +7,15 @@ export function useCreateClaim() {
   const createClaim = useCallback(async (payload: any): Promise<{ message: string; isSuccess: boolean }> => {
     let message = 'Something went wrong!'
     let isSuccess = false
-    
+
     console.log('🔍 === useCreateClaim DEBUG SESSION START ===')
     console.log('🔍 Original payload received:', JSON.stringify(payload, null, 2))
     console.log('🔍 Payload keys:', Object.keys(payload))
-    console.log('🔍 Payload types:', Object.keys(payload).map(key => `${key}: ${typeof payload[key]}`))
-    
+    console.log(
+      '🔍 Payload types:',
+      Object.keys(payload).map(key => `${key}: ${typeof payload[key]}`)
+    )
+
     try {
       // Check if user has wallet connected for client-side signing
       const walletAddress = await getCurrentAccount()
@@ -51,7 +54,7 @@ export function useCreateClaim() {
 
       // Ensure numeric fields are properly typed and validate for null/undefined issues
       const transformedDto: any = { ...dto }
-      
+
       console.log('🔧 === FIELD TRANSFORMATION & VALIDATION ===')
 
       // Convert stars to number if it exists and validate
@@ -75,10 +78,16 @@ export function useCreateClaim() {
       }
 
       // Convert confidence to number if it exists and validate
-      if (transformedDto.confidence !== undefined && transformedDto.confidence !== null && transformedDto.confidence !== '') {
+      if (
+        transformedDto.confidence !== undefined &&
+        transformedDto.confidence !== null &&
+        transformedDto.confidence !== ''
+      ) {
         const confidenceNum = Number(transformedDto.confidence)
         transformedDto.confidence = isNaN(confidenceNum) ? null : confidenceNum
-        console.log(`🔧 confidence: ${payload.confidence} → ${transformedDto.confidence} (${typeof transformedDto.confidence})`)
+        console.log(
+          `🔧 confidence: ${payload.confidence} → ${transformedDto.confidence} (${typeof transformedDto.confidence})`
+        )
       } else {
         transformedDto.confidence = null
         console.log('🔧 confidence: set to null (was undefined/null/empty)')
@@ -135,7 +144,7 @@ export function useCreateClaim() {
       if (images.length === 0) {
         console.log('📤 === SENDING JSON REQUEST (NO IMAGES) ===')
         console.log('📤 Request will be sent with Content-Type: application/json')
-        
+
         try {
           res = await api.createClaim(transformedDto)
           console.log('✅ API call successful (no images)')
@@ -158,9 +167,9 @@ export function useCreateClaim() {
             console.log('📤 No images to convert')
             throw new Error('No images to convert')
           }
-          
+
           console.log('📤 Starting conversion of', images.length, 'images')
-          
+
           // Convert images to base64 and include in JSON payload
           const imagesAsBase64 = await Promise.all(
             images.map(async (file, index) => {
@@ -171,19 +180,19 @@ export function useCreateClaim() {
                   reject(new Error(`Invalid file at index ${index}`))
                   return
                 }
-                
+
                 const reader = new FileReader()
                 reader.onload = () => {
                   try {
                     const base64 = reader.result as string
-                    
+
                     // Validate base64 data
                     if (!base64 || !base64.startsWith('data:')) {
                       console.error(`❌ Invalid base64 data for image ${index}: ${file.name}`)
                       reject(new Error(`Invalid base64 data for image ${index}`))
                       return
                     }
-                    
+
                     // Split and validate base64 content
                     const base64Parts = base64.split(',')
                     if (base64Parts.length !== 2) {
@@ -191,34 +200,34 @@ export function useCreateClaim() {
                       reject(new Error(`Invalid base64 format for image ${index}`))
                       return
                     }
-                    
+
                     const imageData = {
                       base64: base64Parts[1], // Remove data URL prefix
                       filename: file.name,
                       contentType: file.type,
                       size: file.size,
                       metadata: transformedDto.images?.[index]?.metadata || { caption: '', description: '' },
-                      effectiveDate: transformedDto.images?.[index]?.effectiveDate ? 
-                        (transformedDto.images[index].effectiveDate instanceof Date ? 
-                          transformedDto.images[index].effectiveDate.toISOString() : 
-                          transformedDto.images[index].effectiveDate) : 
-                        new Date().toISOString()
+                      effectiveDate: transformedDto.images?.[index]?.effectiveDate
+                        ? transformedDto.images[index].effectiveDate instanceof Date
+                          ? transformedDto.images[index].effectiveDate.toISOString()
+                          : transformedDto.images[index].effectiveDate
+                        : new Date().toISOString()
                     }
-                    
+
                     console.log(`📸 Image ${index} converted:`)
                     console.log(`   - Filename: ${file.name}`)
                     console.log(`   - Type: ${file.type}`)
                     console.log(`   - Size: ${file.size} bytes`)
                     console.log(`   - Base64 length: ${base64.length} characters`)
                     console.log(`   - Base64 starts with: ${base64.substring(0, 50)}...`)
-                    
+
                     resolve(imageData)
                   } catch (conversionError) {
                     console.error(`❌ Error processing image ${index}:`, conversionError)
                     reject(conversionError)
                   }
                 }
-                reader.onerror = (error) => {
+                reader.onerror = error => {
                   console.error(`❌ Failed to read image ${index}: ${file.name}`, error)
                   reject(error)
                 }
@@ -236,7 +245,7 @@ export function useCreateClaim() {
           console.log('📤 === FINAL PAYLOAD WITH IMAGES ===')
           console.log('📤 Images included:', imagesAsBase64.length)
           console.log('📤 Total payload size:', JSON.stringify(payloadWithImages).length, 'characters')
-          
+
           // Enhanced image data analysis
           console.log('📤 === DETAILED IMAGE ANALYSIS ===')
           imagesAsBase64.forEach((img, index) => {
@@ -248,28 +257,28 @@ export function useCreateClaim() {
             console.log(`   - base64 prefix: "${img.base64.substring(0, 30)}..."`)
             console.log(`   - base64 suffix: "...${img.base64.substring(img.base64.length - 30)}"`)
             console.log(`   - metadata structure:`, img.metadata)
-            
+
             // Check if base64 is valid (no data URL prefix)
             const base64ValidityTest = /^[A-Za-z0-9+/]*={0,2}$/.test(img.base64)
             console.log(`   - Base64 validity test:`, base64ValidityTest)
-            
+
             if (!base64ValidityTest) {
               console.error(`   - ❌ Invalid base64 format for image ${index}`)
             }
-            
+
             // Size analysis
             const sizeInKB = Math.round(img.base64.length / 1024)
             const estimatedFileSizeKB = Math.round(img.size / 1024)
             console.log(`   - Base64 size: ${sizeInKB}KB (original file: ${estimatedFileSizeKB}KB)`)
-            
+
             if (sizeInKB > 500) {
               console.warn(`   - ⚠️ Large image detected: ${sizeInKB}KB - this might cause 400 errors`)
             }
           })
-          
+
           // Test different image payload structures
           console.log('📤 === TESTING DIFFERENT IMAGE STRUCTURES ===')
-          
+
           // Structure 1: Current structure (base64 field)
           if (imagesAsBase64.length > 0) {
             const currentStructure = imagesAsBase64[0]
@@ -283,7 +292,7 @@ export function useCreateClaim() {
           } else {
             console.log('📤 No images to analyze structure')
           }
-          
+
           // Structure 2: Alternative structure (data field)
           const alternativeImagesDataField = imagesAsBase64.map(img => ({
             filename: img.filename,
@@ -293,7 +302,7 @@ export function useCreateClaim() {
             metadata: img.metadata,
             effectiveDate: img.effectiveDate
           }))
-          
+
           // Structure 3: Alternative structure (content field)
           const alternativeImagesContentField = imagesAsBase64.map(img => ({
             filename: img.filename,
@@ -303,7 +312,7 @@ export function useCreateClaim() {
             metadata: img.metadata,
             effectiveDate: img.effectiveDate
           }))
-          
+
           console.log('📤 Alternative structure samples:')
           if (alternativeImagesDataField.length > 0) {
             console.log('   - With data field:', {
@@ -317,34 +326,38 @@ export function useCreateClaim() {
               contentLength: alternativeImagesContentField[0].content.length
             })
           }
-          
+
           // Create small test image for size testing
-          const smallTestImageBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          const smallTestImageBase64 =
+            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
           console.log('📤 Small test image (1x1 pixel):', {
             length: smallTestImageBase64.length,
             sizeKB: Math.round(smallTestImageBase64.length / 1024)
           })
-          
+
           console.log('📤 === ACTUAL PAYLOAD STRUCTURE ===')
           console.log('📤 Payload keys:', Object.keys(payloadWithImages))
           console.log('📤 Images array structure:')
           console.log('   - Array length:', payloadWithImages.images.length)
           console.log('   - First image keys:', Object.keys(payloadWithImages.images[0]))
-          console.log('   - Full structure sample:', JSON.stringify(payloadWithImages.images[0], null, 2).substring(0, 500) + '...')
-          
-                     // Log complete payload structure (without full base64 content)
-           const payloadForLogging = {
-             ...payloadWithImages,
-             images: payloadWithImages.images.map((img: any, idx: number) => ({
-               ...img,
-               base64: `[BASE64_DATA_${img.base64.length}_CHARS]`
-             }))
-           }
+          console.log(
+            '   - Full structure sample:',
+            JSON.stringify(payloadWithImages.images[0], null, 2).substring(0, 500) + '...'
+          )
+
+          // Log complete payload structure (without full base64 content)
+          const payloadForLogging = {
+            ...payloadWithImages,
+            images: payloadWithImages.images.map((img: any, idx: number) => ({
+              ...img,
+              base64: `[BASE64_DATA_${img.base64.length}_CHARS]`
+            }))
+          }
           console.log('📤 Complete payload structure (base64 truncated):', JSON.stringify(payloadForLogging, null, 2))
-          
+
           console.log('📤 Request will be sent with Content-Type: application/json')
           console.log('📤 About to call api.createClaim with payload...')
-          
+
           try {
             console.log('📤 Making API call to createClaim...')
             res = await api.createClaim(payloadWithImages)
@@ -358,7 +371,7 @@ export function useCreateClaim() {
             console.error('❌ Error response data:', apiError.response?.data)
             console.error('❌ Error status:', apiError.response?.status)
             console.error('❌ Error headers:', apiError.response?.headers)
-            
+
             // Enhanced error analysis for 400 errors
             if (apiError.response?.status === 400) {
               console.error('❌ === 400 BAD REQUEST ANALYSIS ===')
@@ -368,11 +381,11 @@ export function useCreateClaim() {
               console.error('   - Payload too large')
               console.error('   - Missing required fields')
               console.error('   - Incorrect metadata structure')
-              
+
               const backendError = apiError.response?.data?.error || apiError.response?.data?.message
               if (backendError) {
                 console.error('❌ Backend error message:', backendError)
-                
+
                 // Check for specific error patterns
                 if (backendError.includes('base64')) {
                   console.error('❌ Base64 related error detected')
@@ -382,10 +395,10 @@ export function useCreateClaim() {
                   console.error('❌ Field validation error detected')
                 }
               }
-              
+
               // Try alternative payload structures if main one fails
               console.log('🔄 === TRYING ALTERNATIVE IMAGE STRUCTURES ===')
-              
+
               // Try with data field instead of base64 field
               try {
                 console.log('🔄 Trying with data field...')
@@ -393,24 +406,35 @@ export function useCreateClaim() {
                   ...transformedDto,
                   images: alternativeImagesDataField
                 }
-                                                                 console.log('🔄 Alternative payload 1 structure:', JSON.stringify({
-                  ...alternativePayload1,
-                  images: alternativePayload1.images.map((img: any) => ({
-                    ...img,
-                    data: `[DATA_${img.data.length}_CHARS]`
-                  }))
-                }, null, 2))
-                
-                                 const altRes1 = await api.createClaim(alternativePayload1)
-                 console.log('✅ Alternative structure 1 (data field) worked!', altRes1.status)
-                 res = altRes1
-                 message = 'Claim submitted successfully with alternative image structure!'
-                 isSuccess = true
-                 return { message, isSuccess } // Success with alternative structure
+                console.log(
+                  '🔄 Alternative payload 1 structure:',
+                  JSON.stringify(
+                    {
+                      ...alternativePayload1,
+                      images: alternativePayload1.images.map((img: any) => ({
+                        ...img,
+                        data: `[DATA_${img.data.length}_CHARS]`
+                      }))
+                    },
+                    null,
+                    2
+                  )
+                )
+
+                const altRes1 = await api.createClaim(alternativePayload1)
+                console.log('✅ Alternative structure 1 (data field) worked!', altRes1.status)
+                res = altRes1
+                message = 'Claim submitted successfully with alternative image structure!'
+                isSuccess = true
+                return { message, isSuccess } // Success with alternative structure
               } catch (altError1: any) {
-                console.error('❌ Alternative structure 1 (data field) also failed:', altError1.response?.status, altError1.response?.data)
+                console.error(
+                  '❌ Alternative structure 1 (data field) also failed:',
+                  altError1.response?.status,
+                  altError1.response?.data
+                )
               }
-              
+
               // Try with content field instead
               try {
                 console.log('🔄 Trying with content field...')
@@ -418,52 +442,65 @@ export function useCreateClaim() {
                   ...transformedDto,
                   images: alternativeImagesContentField
                 }
-                                 console.log('🔄 Alternative payload 2 structure:', JSON.stringify({
-                   ...alternativePayload2,
-                   images: alternativePayload2.images.map((img: any) => ({
-                     ...img,
-                     content: `[BASE64_${img.content.length}_CHARS]`
-                   }))
-                 }, null, 2))
-                
-                                 const altRes2 = await api.createClaim(alternativePayload2)
-                 console.log('✅ Alternative structure 2 (content field) worked!', altRes2.status)
-                 res = altRes2
-                 message = 'Claim submitted successfully with alternative image structure!'
-                 isSuccess = true
-                 return { message, isSuccess } // Success with alternative structure
+                console.log(
+                  '🔄 Alternative payload 2 structure:',
+                  JSON.stringify(
+                    {
+                      ...alternativePayload2,
+                      images: alternativePayload2.images.map((img: any) => ({
+                        ...img,
+                        content: `[BASE64_${img.content.length}_CHARS]`
+                      }))
+                    },
+                    null,
+                    2
+                  )
+                )
+
+                const altRes2 = await api.createClaim(alternativePayload2)
+                console.log('✅ Alternative structure 2 (content field) worked!', altRes2.status)
+                res = altRes2
+                message = 'Claim submitted successfully with alternative image structure!'
+                isSuccess = true
+                return { message, isSuccess } // Success with alternative structure
               } catch (altError2: any) {
-                console.error('❌ Alternative structure 2 (content field) also failed:', altError2.response?.status, altError2.response?.data)
+                console.error(
+                  '❌ Alternative structure 2 (content field) also failed:',
+                  altError2.response?.status,
+                  altError2.response?.data
+                )
               }
-              
+
               // Try with very small test image to check size limits
               try {
                 console.log('🔄 Trying with tiny test image to check size limits...')
                 const tinyImagePayload = {
                   ...transformedDto,
-                  images: [{
-                    base64: smallTestImageBase64.split(',')[1],
-                    filename: "tiny-test.png",
-                    contentType: "image/png",
-                    size: 68,
-                    metadata: { caption: "Test tiny image", description: "Size test" },
-                    effectiveDate: new Date().toISOString()
-                  }]
+                  images: [
+                    {
+                      base64: smallTestImageBase64.split(',')[1],
+                      filename: 'tiny-test.png',
+                      contentType: 'image/png',
+                      size: 68,
+                      metadata: { caption: 'Test tiny image', description: 'Size test' },
+                      effectiveDate: new Date().toISOString()
+                    }
+                  ]
                 }
-                
-                                 const tinyRes = await api.createClaim(tinyImagePayload)
-                 console.log('✅ Tiny image worked! Issue is likely payload size. Status:', tinyRes.status)
-                 console.log('💡 Recommendation: Implement image compression or size limits')
-                 res = tinyRes
-                 message = 'Claim submitted successfully with tiny test image! Original images may be too large.'
-                 isSuccess = true
-                 return { message, isSuccess } // Success with tiny image
+
+                const tinyRes = await api.createClaim(tinyImagePayload)
+                console.log('✅ Tiny image worked! Issue is likely payload size. Status:', tinyRes.status)
+                console.log('💡 Recommendation: Implement image compression or size limits')
+                res = tinyRes
+                message = 'Claim submitted successfully with tiny test image! Original images may be too large.'
+                isSuccess = true
+                return { message, isSuccess } // Success with tiny image
               } catch (tinyError: any) {
                 console.error('❌ Even tiny image failed:', tinyError.response?.status, tinyError.response?.data)
                 console.error('❌ This suggests the issue is not payload size but structure/format')
               }
             }
-            
+
             throw apiError
           }
         } catch (imageConversionError: any) {
@@ -476,7 +513,7 @@ export function useCreateClaim() {
           delete claimWithoutImages.images
 
           console.log('🔄 Fallback payload:', JSON.stringify(claimWithoutImages, null, 2))
-          
+
           try {
             res = await api.createClaim(claimWithoutImages)
             console.log('✅ Fallback API call successful')
@@ -525,7 +562,7 @@ export function useCreateClaim() {
         // Enhanced error message extraction
         const backendError = err.response?.data?.error || err.response?.data?.message
         const statusCode = err.response?.status
-        
+
         if (backendError) {
           message = `${backendError}${statusCode ? ` (Status: ${statusCode})` : ''}`
         } else {
@@ -535,10 +572,10 @@ export function useCreateClaim() {
 
       console.error('💥 Final error message to user:', message)
     }
-    
+
     console.log('🔍 === useCreateClaim DEBUG SESSION END ===')
     console.log('🔍 Final result:', { message, isSuccess })
-    
+
     return { message, isSuccess }
   }, [])
 

@@ -10,36 +10,40 @@ const camelCaseToSimpleString = (str: string) => {
  */
 const extractProfileName = (url: string): string => {
   if (!url) return ''
-  
+
   try {
     // Handle LinkedIn URLs
     const linkedinMatch = url.match(/linkedin\.com\/(?:in|company)\/([^\/\?]+)/)
     if (linkedinMatch) {
       return linkedinMatch[1].replace(/-/g, ' ').replace(/\./g, ' ')
     }
-    
+
     // Handle GitHub URLs
     const githubMatch = url.match(/github\.com\/([^\/\?]+)/)
     if (githubMatch) {
       return githubMatch[1].replace(/-/g, ' ').replace(/\./g, ' ')
     }
-    
+
     // Handle Google account URLs (various formats)
-    const googleMatch = url.match(/(?:accounts\.google\.com|plus\.google\.com)\/(?:u\/\d+\/)?(?:\+|profile\/)?([^\/\?]+)/)
+    const googleMatch = url.match(
+      /(?:accounts\.google\.com|plus\.google\.com)\/(?:u\/\d+\/)?(?:\+|profile\/)?([^\/\?]+)/
+    )
     if (googleMatch) {
       return googleMatch[1].replace(/\+/g, ' ').replace(/\./g, ' ')
     }
-    
+
     // Handle email addresses (extract name before @)
-    const emailMatch = url.match(/^mailto:([^@]+)@/ ) || url.match(/^([^@]+)@[\w.-]+\.[a-zA-Z]{2,}$/)
+    const emailMatch = url.match(/^mailto:([^@]+)@/) || url.match(/^([^@]+)@[\w.-]+\.[a-zA-Z]{2,}$/)
     if (emailMatch) {
       return emailMatch[1].replace(/[._-]/g, ' ')
     }
-    
+
     // Handle generic URLs - extract domain or path
     try {
       const urlObj = new URL(url)
-      const pathSegments = urlObj.pathname.split('/').filter(segment => segment && segment !== 'profile' && segment !== 'user')
+      const pathSegments = urlObj.pathname
+        .split('/')
+        .filter(segment => segment && segment !== 'profile' && segment !== 'user')
       if (pathSegments.length > 0) {
         return pathSegments[0].replace(/[-_.]/g, ' ')
       }
