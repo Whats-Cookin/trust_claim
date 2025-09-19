@@ -21,10 +21,7 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
-    target: 'es2020',
-    chunkSizeWarningLimit: 2000,
-    minify: 'esbuild',
-    rollupOptions: {
+        rollupOptions: {
       onwarn(warning, warn) {
         // Ignore "use client" warnings
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE' && 
@@ -37,13 +34,6 @@ export default defineConfig({
     target: 'es2020',
     commonjsOptions: {
       include: [/node_modules/]
-      },
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom']
-        }
-      },
-      maxParallelFileOps: 1
     }
   },
   define: {
@@ -60,6 +50,18 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts'
   },
   optimizeDeps: {
-    exclude: ['@mui/icons-material']
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      '@mui/material',
+      '@mui/icons-material',
+      '@mui/system',
+      '@emotion/react',
+      '@emotion/styled'
+    ],
+    esbuildOptions: {
+      target: 'es2020'
+    }
   }
 })
