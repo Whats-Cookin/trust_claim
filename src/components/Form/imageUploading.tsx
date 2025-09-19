@@ -23,8 +23,8 @@ export interface MediaI {
   file: File
   url: string
   metadata: {
-    caption: string | null
-    description: string | null
+    caption: string
+    description: string
   }
   effectiveDate: Date
   type: 'image' | 'video'
@@ -95,8 +95,8 @@ const MediaUploader = <TFieldValues extends FieldValues>({
               file: compressedFile,
               url: compressedUrl,
               metadata: {
-                caption: null,
-                description: null
+                caption: '',
+                description: ''
               },
               effectiveDate: new Date(),
               type: file.type.startsWith('image/') ? 'image' : 'video'
@@ -109,8 +109,8 @@ const MediaUploader = <TFieldValues extends FieldValues>({
             file: file,
             url: reader.result as string,
             metadata: {
-              caption: null,
-              description: null
+              caption: '',
+              description: ''
             },
             effectiveDate: new Date(),
             type: file.type.startsWith('image/') ? 'image' : 'video'

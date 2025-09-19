@@ -9,11 +9,19 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true,
-    open: true
+    open: true,
+    proxy: {
+      // Proxy image requests to avoid CORS issues
+      '/api/uploads': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/uploads/, '/uploads')
+      }
+    }
   },
   build: {
     sourcemap: false,
-    target: 'es2015',
+    target: 'es2020',
     chunkSizeWarningLimit: 2000,
     minify: 'esbuild',
     rollupOptions: {
@@ -24,6 +32,11 @@ export default defineConfig({
           return
         }
         warn(warning)
+      }
+    },
+    target: 'es2020',
+    commonjsOptions: {
+      include: [/node_modules/]
       },
       output: {
         manualChunks: {

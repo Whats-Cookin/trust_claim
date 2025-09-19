@@ -253,7 +253,7 @@ const Explore = (homeProps: IHomeProps) => {
 
     console.log('Centering graph on node:', nodeId)
     console.log('Modal data:', modalData)
-    
+
     setLoading(true)
     try {
       // Clear existing graph
@@ -264,7 +264,7 @@ const Explore = (homeProps: IHomeProps) => {
         // For claim nodes, use the graph endpoint which gives a better 2-hop view
         const claimRes = await api.getGraph(nodeId)
         const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
-        
+
         // Limit to reasonable size
         let limitedNodes = nodes
         let limitedEdges = edges
@@ -273,23 +273,23 @@ const Explore = (homeProps: IHomeProps) => {
           const nodeIds = new Set(limitedNodes.map((n: any) => n.data.id))
           limitedEdges = edges.filter((edge: any) => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target))
         }
-        
+
         cy.add({ nodes: limitedNodes, edges: limitedEdges } as any)
       } else {
         // For other nodes, fetch the node and its neighbors
         const nodeRes = await api.getNode(nodeId, 1, 10)
-        
+
         if (nodeRes.data) {
           let allNodes: any[] = []
           let allEdges: any[] = []
-          
+
           // Parse the central node and its neighbors
           parseSingleNode(allNodes, allEdges, nodeRes.data)
-          
+
           cy.add({ nodes: allNodes, edges: allEdges } as any)
         }
       }
-      
+
       // Run layout and fit
       runCy(cy, true)
     } catch (err: any) {
@@ -330,13 +330,13 @@ const Explore = (homeProps: IHomeProps) => {
       if (nodes.length === 0 && !isRetry) {
         setSnackbarMessage('Graph is being generated...')
         toggleSnackbar(true)
-        
+
         // Retry once after 30 seconds
         setTimeout(() => {
           console.log('Retrying graph fetch after 30 seconds...')
           initializeGraph(claimId, true)
         }, 30000)
-        
+
         setLoading(false)
         return
       }

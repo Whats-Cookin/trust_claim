@@ -9,6 +9,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined' // <-- NEW
 import { IHomeProps } from './types'
 import type { Claim, Entity } from '../../api/types'
 import {
@@ -308,7 +309,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
                           <CardContent>
                             <Box sx={{ pr: '140px' }}>
-                              {' '}
                               {/* Add padding to prevent overlap with badge */}
                               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                                 <IconButton
@@ -319,9 +319,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     mr: 0.5,
                                     mt: '4px',
                                     color: theme.palette.date,
-                                    '&:hover': {
-                                      backgroundColor: 'transparent'
-                                    }
+                                    '&:hover': { backgroundColor: 'transparent' }
                                   }}
                                 >
                                   <Box
@@ -393,13 +391,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
 
                             {/* Expanded details */}
                             {expandedCards.has(claimId) && (
-                              <Box
-                                sx={{
-                                  mt: 2,
-                                  p: '5px 1 1 5px',
-                                  animation: 'fadeIn 0.2s ease-in'
-                                }}
-                              >
+                              <Box sx={{ mt: 2, p: '5px 1 1 5px', animation: 'fadeIn 0.2s ease-in' }}>
                                 {claim.aspect && (
                                   <Typography
                                     variant='body2'
@@ -469,6 +461,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               </Box>
                             )}
                           </CardContent>
+
+                          {/* Actions row */}
                           <Box
                             sx={{
                               display: 'flex',
@@ -490,13 +484,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 marginRight: '10px',
                                 p: '4px',
                                 color: theme.palette.sidecolor,
-                                '&:hover': {
-                                  backgroundColor: theme.palette.cardsbuttons
-                                }
+                                '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                               }}
                             >
                               Validate
                             </Button>
+
                             <Link to={'/report/' + claimId}>
                               <Button
                                 startIcon={<FeedOutlinedIcon />}
@@ -506,14 +499,32 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   marginRight: '10px',
                                   p: '4px',
                                   color: theme.palette.sidecolor,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.cardsbuttons
-                                  }
+                                  '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                                 }}
                               >
                                 Evidence
                               </Button>
                             </Link>
+
+                            {/* NEW: Certificate button */}
+                            {!!claimId && (
+                              <Link to={`/certificate/${claimId}`}>
+                                <Button
+                                  startIcon={<WorkspacePremiumOutlinedIcon />}
+                                  variant='text'
+                                  sx={{
+                                    fontSize: isMediumScreen ? '8px' : '12px',
+                                    marginRight: '10px',
+                                    p: '4px',
+                                    color: theme.palette.sidecolor,
+                                    '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                                  }}
+                                >
+                                  Certificate
+                                </Button>
+                              </Link>
+                            )}
+
                             <Button
                               startIcon={<ShareOutlinedIcon />}
                               onClick={() => handleSchema(claim)}
@@ -523,13 +534,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                 marginRight: '10px',
                                 p: '4px',
                                 color: theme.palette.sidecolor,
-                                '&:hover': {
-                                  backgroundColor: theme.palette.cardsbuttons
-                                }
+                                '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                               }}
                             >
                               Graph View
                             </Button>
+
                             {expandedCards.has(claimId) && (
                               <Button
                                 startIcon={<SystemUpdateAltIcon />}
@@ -540,15 +550,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   marginRight: '10px',
                                   p: '4px',
                                   color: theme.palette.sidecolor,
-                                  '&:hover': {
-                                    backgroundColor: theme.palette.cardsbuttons
-                                  }
+                                  '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                                 }}
                               >
                                 Export
                               </Button>
                             )}
+
                             <Box sx={{ flexGrow: 1 }} />
+
                             {claim.stars && (
                               <Box
                                 sx={{
@@ -601,9 +611,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                     maxWidth: '79px',
                     maxHeight: '79px',
                     backgroundColor: theme.palette.buttons,
-                    '&:hover': {
-                      backgroundColor: theme.palette.buttonHover
-                    }
+                    '&:hover': { backgroundColor: theme.palette.buttonHover }
                   }}
                 >
                   <ArrowUpwardIcon />
@@ -650,9 +658,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 maxWidth: '79px',
                 maxHeight: '79px',
                 backgroundColor: theme.palette.buttons,
-                '&:hover': {
-                  backgroundColor: theme.palette.buttonHover
-                }
+                '&:hover': { backgroundColor: theme.palette.buttonHover }
               }}
             >
               <AddCircleOutlineOutlined />

@@ -20,6 +20,7 @@ import Terms from './containers/Terms'
 import Privacy from './containers/Privacy'
 import { ClaimCredential } from './containers/ClaimCredential'
 import { checkAuth } from './utils/authUtils'
+import CertificateView from './components/Certificate/CertificateView'
 import './App.css'
 
 const App = () => {
@@ -182,6 +183,10 @@ const App = () => {
                   checkAuth() ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
+              <Route path='/certificate/:id' element={<CertificateView />} /> {/* Alias for common typo */}
+              <Route path='/certificatet/:id' element={<CertificateView />} />
+              {/* Catch-all to avoid blank pages */}
+              <Route path='*' element={<Navigate to='/feed' replace />} />
             </Routes>
           </Box>
         </Box>

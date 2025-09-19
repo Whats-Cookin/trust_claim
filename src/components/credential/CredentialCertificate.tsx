@@ -22,7 +22,7 @@ import {
   Popover
 } from '@mui/material'
 import { BASE_URL } from '../../utils/settings'
-// import badge from '../../assets/images/badge.svg'
+import badge from '../../assets/images/badge.png'
 import ShareIcon from '@mui/icons-material/Share'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import VerifiedIcon from '@mui/icons-material/Verified'
