@@ -106,8 +106,8 @@ const parseMultipleNodes = (data: any) => {
 }
 
 const getNodeData = (node: any) => {
-  // Handle both old and new node structures
-  let uri = node.nodeUri || node.uri || node.id
+  // Use the nodeUri from the database - don't fall back to ID
+  let uri = node.nodeUri
   let label = node.displayName || node.name || uri
 
   // Handle empty or invalid labels
