@@ -447,11 +447,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   {...register('sourceURI')}
                   label={
                     watchHowKnown === HowKnown.FIRST_HAND
-                      ? 'Your home page or social media link'
-                      : 'Where did you find the information'
+                      ? 'Your home page or social media link (URI)'
+                      : 'Where did you find the information (URI)'
                   }
                   fullWidth
                   sx={{ mb: 2 }}
+                  helperText="Leave blank if unknown. Examples: https://example.com, did:ethr:0x123..."
                 />
 
                 <LocalizationProvider dateAdapter={AdapterDateFns}>

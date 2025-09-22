@@ -3,7 +3,8 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { useMediaQuery, useTheme } from '@mui/material'
+import { useMediaQuery, useTheme, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import SearchBar from '../searchbar'
 import Logo from '../../assets/logolinkedtrust.svg'
 import { IdentityButton } from '../IdentityManager'
@@ -19,6 +20,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSidebarOpen, setIsNavbarVisible }) => {
   const theme = useTheme()
+  const navigate = useNavigate()
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollTop, setLastScrollTop] = useState(0)
@@ -86,7 +88,25 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', gap: 2 }}>
           <SearchBar />
-          {isAuth && hasIdentity() && <IdentityButton />}
+          {isAuth && hasIdentity() ? (
+            <IdentityButton />
+          ) : (
+            <Button
+              onClick={() => navigate('/login')}
+              sx={{
+                color: theme.palette.sidecolor || theme.palette.text.secondary,
+                fontSize: '14px',
+                textTransform: 'none',
+                minWidth: 'auto',
+                padding: '4px 12px',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                }
+              }}
+            >
+              Login
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
