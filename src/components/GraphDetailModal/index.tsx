@@ -17,6 +17,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { Link } from 'react-router-dom'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+import { checkAuth } from '../../utils/authUtils'
 import Badge from '../../containers/feedOfClaim/Badge'
 import { EntityType } from '../../types/entities'
 
@@ -133,30 +134,32 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
           >
             Return to Graph
           </Button>
-          <Button
-            component={Link}
-            to={
-              data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
-                ? `/validate?subject=${encodeURIComponent(data.nodeUri || '')}`
-                : `/claim?subject=${encodeURIComponent(data.nodeUri || '')}&name=${encodeURIComponent(
-                    data.name || data.label || ''
-                  )}`
-            }
-            onClick={onClose}
-            variant='text'
-            sx={{
-              fontSize: '12px',
-              p: '4px 8px',
-              color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+          {checkAuth() && (
+            <Button
+              component={Link}
+              to={
+                data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
+                  ? `/validate?subject=${encodeURIComponent(data.nodeUri || '')}`
+                  : `/claim?subject=${encodeURIComponent(data.nodeUri || '')}&name=${encodeURIComponent(
+                      data.name || data.label || ''
+                    )}`
               }
-            }}
-          >
-            {data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
-              ? 'Validate/Reject'
-              : 'Add Attestation'}
-          </Button>
+              onClick={onClose}
+              variant='text'
+              sx={{
+                fontSize: '12px',
+                p: '4px 8px',
+                color: theme.palette.sidecolor || '#666',
+                '&:hover': {
+                  backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+                }
+              }}
+            >
+              {data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
+                ? 'Validate/Reject'
+                : 'Add Attestation'}
+            </Button>
+          )}
         </Box>
       </>
     )
@@ -290,23 +293,25 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
 
         {/* Action buttons - same style as feed */}
         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Button
-            component={Link}
-            to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id || data.claimId}`}
-            startIcon={<VerifiedOutlinedIcon />}
-            variant='text'
-            onClick={onClose}
-            sx={{
-              fontSize: '12px',
-              p: '4px 8px',
-              color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-              }
-            }}
-          >
-            Validate
-          </Button>
+          {checkAuth() && (
+            <Button
+              component={Link}
+              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id || data.claimId}`}
+              startIcon={<VerifiedOutlinedIcon />}
+              variant='text'
+              onClick={onClose}
+              sx={{
+                fontSize: '12px',
+                p: '4px 8px',
+                color: theme.palette.sidecolor || '#666',
+                '&:hover': {
+                  backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+                }
+              }}
+            >
+              Validate
+            </Button>
+          )}
           <Button
             component={Link}
             to={`/report/${claim.id || data.claimId}`}

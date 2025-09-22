@@ -31,11 +31,17 @@ const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isNavbarVisible, setIsNavbarVisible] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(checkAuth())
 
   const location = useLocation()
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
+
+  // Check auth status when location changes
+  useEffect(() => {
+    setIsAuthenticated(checkAuth())
+  }, [location])
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -93,7 +99,7 @@ const App = () => {
 
       {!isLoginPage && !isRegisterPage && (
         <Navbar
-          isAuth={checkAuth()}
+          isAuth={isAuthenticated}
           toggleTheme={toggleTheme}
           isDarkMode={isDarkMode}
           isSidebarOpen={isSidebarOpen}
@@ -103,7 +109,7 @@ const App = () => {
       <Box sx={{ display: 'flex' }}>
         {!isLoginPage && !isRegisterPage && (
           <Sidebar
-            isAuth={checkAuth()}
+            isAuth={isAuthenticated}
             isOpen={isSidebarOpen}
             toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             toggleTheme={toggleTheme}
@@ -158,19 +164,19 @@ const App = () => {
               <Route
                 path='claim'
                 element={
-                  checkAuth() ? <Form {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? <Form {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
               <Route
                 path='/rate'
                 element={
-                  checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
               <Route
                 path='/validate'
                 element={
-                  checkAuth() ? (
+                  isAuthenticated ? (
                     <Validate {...commonProps} />
                   ) : (
                     <Navigate to='/login' replace state={{ from: location }} />
@@ -180,7 +186,7 @@ const App = () => {
               <Route
                 path='claim-credential'
                 element={
-                  checkAuth() ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
               <Route path='/certificate/:id' element={<CertificateView />} /> {/* Alias for common typo */}

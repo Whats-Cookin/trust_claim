@@ -93,10 +93,11 @@ export function useCreateClaim() {
         console.log('🔧 confidence: set to null (was undefined/null/empty)')
       }
 
-      // Set score to stars value for backwards compatibility
+      // Convert stars to normalized score (0-5 stars -> -1 to 1 score)
+      // 0 stars = -1, 2.5 stars = 0, 5 stars = 1
       if (transformedDto.stars !== null && !isNaN(transformedDto.stars)) {
-        transformedDto.score = transformedDto.stars
-        console.log(`🔧 score: set to stars value (${transformedDto.score})`)
+        transformedDto.score = (transformedDto.stars - 2.5) / 2.5
+        console.log(`🔧 score: normalized from stars (${transformedDto.stars} stars → ${transformedDto.score} score)`)
       }
 
       // Handle legacy field mappings
