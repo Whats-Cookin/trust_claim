@@ -170,6 +170,9 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
   // Check for node duplication to prevent duplicate nodes
   const existingNodeIds = new Set(nodes.map((n: any) => n.data.id))
 
+  // Track edge IDs to prevent duplicates (same edge can appear in edgesFrom and edgesTo)
+  const existingEdgeIds = new Set(edges.map((e: any) => e.data.id))
+
   // adding edges from this node
   if (node.edgesFrom) {
     node.edgesFrom.forEach((e: any) => {
@@ -182,26 +185,31 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
       }
     })
 
-    edges.push(
-      ...node.edgesFrom.map((e: any) => {
-        const claimType = e.label || e.claim?.claim || ''
-        const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+    node.edgesFrom.forEach((e: any) => {
+      const edgeId = e.id.toString()
+      // Skip if this edge already exists
+      if (existingEdgeIds.has(edgeId)) {
+        return
+      }
 
-        return {
-          data: {
-            id: e.id.toString(),
-            source: e.startNodeId.toString(),
-            target: e.endNodeId.toString(),
-            relation: claimType,
-            raw: e,
-            color: edgeStyle.color,
-            width: edgeStyle.width,
-            arrow: edgeStyle.arrow,
-            lineStyle: edgeStyle.style
-          }
+      const claimType = e.label || e.claim?.claim || ''
+      const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+
+      edges.push({
+        data: {
+          id: edgeId,
+          source: e.startNodeId.toString(),
+          target: e.endNodeId.toString(),
+          relation: claimType,
+          raw: e,
+          color: edgeStyle.color,
+          width: edgeStyle.width,
+          arrow: edgeStyle.arrow,
+          lineStyle: edgeStyle.style
         }
       })
-    )
+      existingEdgeIds.add(edgeId)
+    })
   }
 
   // adding edges to this node
@@ -216,26 +224,31 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
       }
     })
 
-    edges.push(
-      ...node.edgesTo.map((e: any) => {
-        const claimType = e.label || e.claim?.claim || ''
-        const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+    node.edgesTo.forEach((e: any) => {
+      const edgeId = e.id.toString()
+      // Skip if this edge already exists
+      if (existingEdgeIds.has(edgeId)) {
+        return
+      }
 
-        return {
-          data: {
-            id: e.id.toString(),
-            source: e.startNodeId.toString(),
-            target: e.endNodeId.toString(),
-            relation: claimType,
-            raw: e,
-            color: edgeStyle.color,
-            width: edgeStyle.width,
-            arrow: edgeStyle.arrow,
-            lineStyle: edgeStyle.style
-          }
+      const claimType = e.label || e.claim?.claim || ''
+      const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+
+      edges.push({
+        data: {
+          id: edgeId,
+          source: e.startNodeId.toString(),
+          target: e.endNodeId.toString(),
+          relation: claimType,
+          raw: e,
+          color: edgeStyle.color,
+          width: edgeStyle.width,
+          arrow: edgeStyle.arrow,
+          lineStyle: edgeStyle.style
         }
       })
-    )
+      existingEdgeIds.add(edgeId)
+    })
   }
 
   return { nodes, edges }
