@@ -29,6 +29,7 @@ import {
   getVisibleValidationCount
 } from '../../constants/certificateStyles'
 import { extractProfileName, isValidUrl } from '../../utils/string.utils'
+import { inferCertificateType, extractCertificationTopic } from '../../utils/certificate/certificateTypeInference'
 import ValidationDialog from './ValidationDialog'
 import ValidationDetailsDialog from './ValidationDetailsDialog'
 import SharePopover from './SharePopover'
@@ -153,7 +154,8 @@ const Certificate: React.FC<CertificateProps> = ({
   image,
   name,
   claim,
-  subject_name
+  subject_name,
+  subjectType
 }) => {
   const navigate = useNavigate()
   const theme = useTheme()
@@ -232,26 +234,19 @@ const Certificate: React.FC<CertificateProps> = ({
     handleClose()
   }
 
-  const getDisplayText = () => {
-    if ((claim as Claim)?.type === 'credential') {
-      return subject
-    }
-    return name || subject
-  }
+  // Get certificate type info
+  const certificateInfo = inferCertificateType({
+    aspect: claim?.aspect,
+    claim: claim?.claim,
+    statement: statement,
+    subjectType: subjectType
+  });
 
-  /** UPDATED: robust extraction for the field/skill line */
-  const recipientNameRaw = getDisplayText()
-  const recipientName = deriveDisplayNameFromAny(recipientNameRaw)
+  // Use the name from backend node resolution
+  const recipientName = subject_name || 'Certificate Holder';
 
-  /** Recipient name with improved fallback (keeps your original preferences first) */
-  const skillName =
-    ((subject as any)?.name && String((subject as any)?.name).trim()) ||
-    (subject_name ? String(subject_name).trim() : '') ||
-    (name && String(name).trim()) ||
-    ((claim as any)?.name && String((claim as any)?.name).trim()) ||
-    deriveDisplayNameFromAny(subject) ||
-    extractProfileName(((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()) ||
-    ((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()
+  // Extract what is being certified (not WHO but WHAT)
+  const certificationTopic = extractCertificationTopic(statement, claim?.aspect);
 
   const containerMaxWidth = isXl ? 'xl' : 'lg'
   const visibleValidationCount = getVisibleValidationCount(isXs, isSm, isMd)
@@ -328,7 +323,7 @@ const Certificate: React.FC<CertificateProps> = ({
               />
 
               <Typography variant='h4' sx={{ ...titleStyles, fontWeight: 800 }}>
-                Certificate
+                {certificateInfo.title}
               </Typography>
 
               <Typography
@@ -339,7 +334,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   opacity: 0.9
                 }}
               >
-                OF SKILL VALIDATION
+                {certificateInfo.subtitle}
               </Typography>
 
               <Typography
@@ -380,7 +375,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   mb: { xs: 0.5, sm: 1 }
                 }}
               >
-                has been validated in
+                {certificateInfo.verbPhrase}
               </Typography>
               <Typography
                 variant='h3'
@@ -393,7 +388,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   mb: { xs: 1, sm: 1.5 }
                 }}
               >
-                {skillName}
+                {certificationTopic}
               </Typography>
 
               {issuer_name && (

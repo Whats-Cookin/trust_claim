@@ -12,8 +12,11 @@ export interface CertificateProps {
     claimData: any
     type?: string
     name?: string
+    aspect?: string
+    claim?: string
   }
   subject_name?: string
+  subjectType?: string
 }
 
 export interface Validation {
