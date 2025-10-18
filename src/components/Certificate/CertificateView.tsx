@@ -91,12 +91,17 @@ const CertificateView: React.FC = () => {
 
   const claim = data.claim
 
+  // Get names from nodes directly
+  const subjectNode = data.nodes?.find((n: any) => n.nodeUri === claim.subject);
+  const sourceNode = data.nodes?.find((n: any) => n.nodeUri === claim.sourceURI);
+
   return (
     <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '1200px', mx: 'auto' }}>
       <Certificate
         subject={claim.subject || ''} // keep the URL as-is (string)
-        subject_name={data.subject?.name} // <-- pass the normalized name from the report
-        issuer_name={data.claim?.claimData?.issuer_name || ''}
+        subject_name={subjectNode?.name || ''} // Use node name directly
+        issuer_name={sourceNode?.name || ''} // Use source node name directly
+        subjectType={subjectNode?.entType} // Pass node type for certificate inference
         statement={claim.statement || ''}
         effectiveDate={claim.effectiveDate}
         sourceURI={claim.sourceURI}
