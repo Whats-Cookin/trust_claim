@@ -91,17 +91,20 @@ const CertificateView: React.FC = () => {
 
   const claim = data.claim
 
-  // Get names from nodes directly
-  const subjectNode = data.nodes?.find((n: any) => n.nodeUri === claim.subject);
-  const sourceNode = data.nodes?.find((n: any) => n.nodeUri === claim.sourceURI);
+  // Backend provides subjectNode directly with the correct name
+  const personName = data.subjectNode?.name || '';
+  
+  // Find issuer from edges - the source edge endNode is the issuer
+  const sourceEdge = data.claim?.edges?.find((e: any) => e.label === 'source');
+  const issuerName = sourceEdge?.endNode?.name || '';
 
   return (
     <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '1200px', mx: 'auto' }}>
       <Certificate
         subject={claim.subject || ''} // keep the URL as-is (string)
-        subject_name={subjectNode?.name || ''} // Use node name directly
-        issuer_name={sourceNode?.name || ''} // Use source node name directly
-        subjectType={subjectNode?.entType} // Pass node type for certificate inference
+        subject_name={personName} // Use subject node name
+        issuer_name={issuerName} // Use source node name
+        subjectType={data.subjectNode?.entType} // Pass node type for certificate inference
         statement={claim.statement || ''}
         effectiveDate={claim.effectiveDate}
         sourceURI={claim.sourceURI}
