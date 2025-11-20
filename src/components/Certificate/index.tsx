@@ -16,6 +16,8 @@ import { useNavigate } from 'react-router-dom'
 import badge from '../../assets/images/badge.png'
 import ShareIcon from '@mui/icons-material/Share'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import html2pdf from 'html2pdf.js'
 import { CertificateProps, Validation } from '../../types/certificate'
 import {
@@ -30,6 +32,8 @@ import {
 } from '../../constants/certificateStyles'
 import { extractProfileName, isValidUrl } from '../../utils/string.utils'
 import { inferCertificateType, extractCertificationTopic } from '../../utils/certificate/certificateTypeInference'
+import { useAuth } from '../../hooks/useAuth'
+import { BASE_URL } from '../../utils/settings'
 import ValidationDialog from './ValidationDialog'
 import ValidationDetailsDialog from './ValidationDetailsDialog'
 import SharePopover from './SharePopover'
@@ -159,6 +163,7 @@ const Certificate: React.FC<CertificateProps> = ({
 }) => {
   const navigate = useNavigate()
   const theme = useTheme()
+  const { currentUser } = useAuth()
   const isXs = useMediaQuery(theme.breakpoints.down('sm'))
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'))
@@ -169,11 +174,27 @@ const Certificate: React.FC<CertificateProps> = ({
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
   const [currentUrl, setCurrentUrl] = useState('')
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
   }, [])
+
+  // Get user URI based on login type
+  const getUserUri = () => {
+    if (!currentUser) return null
+    if (currentUser.metamaskAddress) {
+      return `did:pkh:eip155:1:${currentUser.metamaskAddress}`
+    }
+    if (currentUser.googleId) {
+      return `${BASE_URL}/userids/google/${currentUser.googleId}`
+    }
+    return `${BASE_URL}/users/${currentUser.id}`
+  }
+
+  const userUri = getUserUri()
+  const isOwner = userUri && subject === userUri
 
   const handleExport = () => {
     const element = document.getElementById('certificate-content')
@@ -209,10 +230,13 @@ const Certificate: React.FC<CertificateProps> = ({
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(currentUrl)
+      setSnackbarMessage('Link copied to clipboard!')
       setSnackbarOpen(true)
       handleClose()
     } catch (err) {
       console.error('Failed to copy link:', err)
+      setSnackbarMessage('Failed to copy link')
+      setSnackbarOpen(true)
     }
   }
 
@@ -232,6 +256,34 @@ const Certificate: React.FC<CertificateProps> = ({
     const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
     window.open(linkedInShareUrl, '_blank')
     handleClose()
+  }
+
+  const handleThisIsMe = async () => {
+    if (!userUri || !subject) return
+    
+    try {
+      // Create SAME_AS claim
+      const { createClaim } = await import('../../api')
+      const response = await createClaim({
+        subject: userUri,
+        claim: 'SAME_AS',
+        object: subject,
+        statement: `${userUri} is the same person as ${subject}`,
+        howKnown: 'VERIFIED_LOGIN',
+        confidence: 1.0
+      })
+      
+      // Show success message
+      setSnackbarMessage('Identity link created! You can now share this certificate.')
+      setSnackbarOpen(true)
+      
+      // Refresh to update UI
+      setTimeout(() => window.location.reload(), 2000)
+    } catch (error) {
+      console.error('Failed to create SAME_AS claim:', error)
+      setSnackbarMessage('Failed to link identity. Please try again.')
+      setSnackbarOpen(true)
+    }
   }
 
   // Get certificate type info
@@ -600,6 +652,7 @@ const Certificate: React.FC<CertificateProps> = ({
             p: { xs: 2, sm: 2.5, md: 3 }
           }}
         >
+          {/* Export - always available */}
           <Box onClick={handleExport} sx={actionButtonStyles}>
             <SystemUpdateAltIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
@@ -607,12 +660,33 @@ const Certificate: React.FC<CertificateProps> = ({
             </Typography>
           </Box>
 
-          <Box onClick={handleShareClick} sx={actionButtonStyles}>
-            <ShareIcon sx={{ color: COLORS.primary }} />
+          {/* Copy Link - always available */}
+          <Box onClick={handleCopyLink} sx={actionButtonStyles}>
+            <ContentCopyIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
-              Share
+              Copy Link
             </Typography>
           </Box>
+
+          {/* LinkedIn Share - only for owner */}
+          {isOwner && (
+            <Box onClick={handleLinkedInPost} sx={actionButtonStyles}>
+              <ShareIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                Share to LinkedIn
+              </Typography>
+            </Box>
+          )}
+
+          {/* This is Me - for logged in non-owners */}
+          {currentUser && !isOwner && (
+            <Box onClick={handleThisIsMe} sx={actionButtonStyles}>
+              <PersonAddIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                This is Me
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <SharePopover
@@ -626,7 +700,7 @@ const Certificate: React.FC<CertificateProps> = ({
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={() => setSnackbarOpen(false)}
-          message='Link copied to clipboard!'
+          message={snackbarMessage}
           sx={{
             '& .MuiSnackbarContent-root': {
               backgroundColor: COLORS.primary
