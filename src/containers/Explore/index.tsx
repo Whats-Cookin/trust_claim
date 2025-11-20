@@ -142,20 +142,18 @@ const Explore = (homeProps: IHomeProps) => {
           return
         }
 
-        // Limit new nodes to add
+        // IMPORTANT: Filter out nodes that already exist in the graph FIRST
+        // before limiting, otherwise we might keep duplicates and discard unique nodes
+        const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
+        let actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
+
+        // Now limit the actually new nodes
         const maxNodesToAdd = Math.min(5, 30 - currentNodeCount)
-        if (newNodes.length > maxNodesToAdd) {
-          newNodes = newNodes.slice(0, maxNodesToAdd)
-          // Only include edges that connect to included nodes
-          const nodeIds = new Set([...cy.nodes().map(n => n.id()), ...newNodes.map(n => n.data.id)])
-          newEdges = newEdges.filter(edge => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target))
+        if (actuallyNewNodes.length > maxNodesToAdd) {
+          actuallyNewNodes = actuallyNewNodes.slice(0, maxNodesToAdd)
         }
 
-        // Filter out nodes that already exist in the graph
-        const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
-        const actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
-
-        // Filter out edges that already exist in the graph
+        // Filter out edges that already exist in the graph and only include edges connecting to valid nodes
         const currentGraphEdgeIds = new Set(cy.edges().map((e: any) => e.id()))
         const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
 
