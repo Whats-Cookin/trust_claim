@@ -148,13 +148,13 @@ const Explore = (homeProps: IHomeProps) => {
         }
 
         // Filter out nodes that already exist in the graph
-        const existingNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
-        const actuallyNewNodes = newNodes.filter((node: any) => !existingNodeIds.has(node.data.id))
+        const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
+        const actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
 
         // Only add and re-layout if we have truly new nodes to add
         if (actuallyNewNodes.length > 0) {
           // Only include edges that connect to nodes in the graph
-          const allNodeIds = new Set([...existingNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
+          const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
           const relevantEdges = newEdges.filter(
             (edge: any) => allNodeIds.has(edge.data.source) && allNodeIds.has(edge.data.target)
           )
