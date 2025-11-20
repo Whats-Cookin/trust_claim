@@ -125,6 +125,10 @@ const Explore = (homeProps: IHomeProps) => {
       if (res.data) {
         let newNodes: any[] = []
         let newEdges: any[] = []
+        // Two-level deduplication strategy:
+        // 1. First level: dedupe within the API response (existingNodeIds/existingEdgeIds)
+        // 2. Second level: dedupe against the Cytoscape graph (currentGraphNodeIds/currentGraphEdgeIds)
+        // This is necessary because the API doesn't know what's already in the graph
         const existingNodeIds = new Set<string>()
         const existingEdgeIds = new Set<string>()
         parseSingleNode(newNodes, newEdges, res.data, existingNodeIds, existingEdgeIds)
@@ -151,15 +155,23 @@ const Explore = (homeProps: IHomeProps) => {
         const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
         const actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
 
-        // Only add and re-layout if we have truly new nodes to add
-        if (actuallyNewNodes.length > 0) {
-          // Only include edges that connect to nodes in the graph
-          const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
-          const relevantEdges = newEdges.filter(
-            (edge: any) => allNodeIds.has(edge.data.source) && allNodeIds.has(edge.data.target)
-          )
+        // Filter out edges that already exist in the graph
+        const currentGraphEdgeIds = new Set(cy.edges().map((e: any) => e.id()))
+        const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
 
-          cy.add({ nodes: actuallyNewNodes, edges: relevantEdges } as any)
+        // Only include edges that:
+        // 1. Connect to nodes in the graph (existing or new)
+        // 2. Don't already exist in the graph
+        const actuallyNewEdges = newEdges.filter(
+          (edge: any) =>
+            allNodeIds.has(edge.data.source) &&
+            allNodeIds.has(edge.data.target) &&
+            !currentGraphEdgeIds.has(edge.data.id)
+        )
+
+        // Only add and re-layout if we have truly new elements to add
+        if (actuallyNewNodes.length > 0 || actuallyNewEdges.length > 0) {
+          cy.add({ nodes: actuallyNewNodes, edges: actuallyNewEdges } as any)
           runCy(cy, false) // Re-layout with new nodes
         } else {
           setSnackbarMessage('No new connections found')

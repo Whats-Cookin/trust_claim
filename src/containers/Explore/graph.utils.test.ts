@@ -313,4 +313,104 @@ describe('graph.utils deduplication', () => {
       expect(nodes[0].data.entityType).toBe('CLAIM')
     })
   })
+
+  describe('two-level deduplication strategy', () => {
+    it('demonstrates why front-end deduplication is necessary', () => {
+      // This test documents the two-level deduplication approach:
+      // Level 1: parseSingleNode deduplicates within an API response
+      // Level 2: Explore component must also dedupe against the Cytoscape graph
+      //
+      // Why? The API doesn't know what nodes/edges are already displayed in the graph.
+      // When expanding a node, we might get nodes that are already rendered.
+
+      // Simulate first API call
+      const firstCallNodes: any[] = []
+      const firstCallEdges: any[] = []
+      const firstCallNodeIds = new Set<string>()
+      const firstCallEdgeIds = new Set<string>()
+
+      const node1 = {
+        id: 1,
+        name: 'Node 1',
+        nodeUri: 'https://example.com/node/1',
+        displayName: 'Node 1',
+        edgesFrom: [
+          {
+            id: 100,
+            startNodeId: 1,
+            endNodeId: 2,
+            label: 'rated',
+            endNode: {
+              id: 2,
+              name: 'Node 2',
+              nodeUri: 'https://example.com/node/2',
+              displayName: 'Node 2'
+            }
+          }
+        ],
+        edgesTo: []
+      }
+
+      parseSingleNode(firstCallNodes, firstCallEdges, node1, firstCallNodeIds, firstCallEdgeIds)
+
+      // First call gives us 2 nodes (1 and 2) and 1 edge
+      expect(firstCallNodes).toHaveLength(2)
+      expect(firstCallEdges).toHaveLength(1)
+
+      // Simulate second API call expanding Node 2
+      // This will return Node 2 again with its connections, including back to Node 1
+      const secondCallNodes: any[] = []
+      const secondCallEdges: any[] = []
+      const secondCallNodeIds = new Set<string>()
+      const secondCallEdgeIds = new Set<string>()
+
+      const node2 = {
+        id: 2,
+        name: 'Node 2',
+        nodeUri: 'https://example.com/node/2',
+        displayName: 'Node 2',
+        edgesFrom: [],
+        edgesTo: [
+          {
+            id: 100, // Same edge as before!
+            startNodeId: 1,
+            endNodeId: 2,
+            label: 'rated',
+            startNode: {
+              id: 1, // Node 1 is already in the graph!
+              name: 'Node 1',
+              nodeUri: 'https://example.com/node/1',
+              displayName: 'Node 1'
+            }
+          }
+        ]
+      }
+
+      parseSingleNode(secondCallNodes, secondCallEdges, node2, secondCallNodeIds, secondCallEdgeIds)
+
+      // Second call returns 2 nodes (1 and 2) and 1 edge
+      expect(secondCallNodes).toHaveLength(2)
+      expect(secondCallEdges).toHaveLength(1)
+
+      // PROBLEM: Without front-end deduplication, we would try to add nodes 1 and 2 again!
+      // The Explore component must filter these against cy.nodes() and cy.edges()
+      //
+      // Solution in Explore/index.tsx:fetchRelatedClaims():
+      // const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
+      // const actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
+      // const currentGraphEdgeIds = new Set(cy.edges().map((e: any) => e.id()))
+      // const actuallyNewEdges = newEdges.filter((edge: any) => !currentGraphEdgeIds.has(edge.data.id))
+
+      // Simulate what the front-end should do:
+      const graphNodeIds = new Set(firstCallNodes.map((n: any) => n.data.id))
+      const graphEdgeIds = new Set(firstCallEdges.map((e: any) => e.data.id))
+
+      const actuallyNewNodes = secondCallNodes.filter((n: any) => !graphNodeIds.has(n.data.id))
+      const actuallyNewEdges = secondCallEdges.filter((e: any) => !graphEdgeIds.has(e.data.id))
+
+      // After filtering, we should have no new nodes or edges to add
+      expect(actuallyNewNodes).toHaveLength(0)
+      expect(actuallyNewEdges).toHaveLength(0)
+    })
+  })
 })
