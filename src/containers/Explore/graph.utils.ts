@@ -88,17 +88,19 @@ const parseClaims = (claims: any) => {
 const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
+  const existingNodeIds = new Set<string>()
+  const existingEdgeIds = new Set<string>()
 
   // The backend returns an array of nodes with embedded edges
   if (Array.isArray(data)) {
     console.log('Parsing array of nodes:', data.length)
     data.forEach((node: any) => {
-      parseSingleNode(nodes, edges, node)
+      parseSingleNode(nodes, edges, node, existingNodeIds, existingEdgeIds)
     })
   } else if (data && typeof data === 'object') {
     // Single node with edges
     console.log('Parsing single node')
-    parseSingleNode(nodes, edges, data)
+    parseSingleNode(nodes, edges, data, existingNodeIds, existingEdgeIds)
   }
 
   console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
@@ -158,20 +160,18 @@ const getNodeData = (node: any) => {
   return nodeData
 }
 
-const parseSingleNode = (nodes: {}[], edges: {}[], node: any) => {
+const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: Set<string>, existingEdgeIds: Set<string>) => {
   // adding subject node
   if (node.name && node.nodeUri) {
-    const nodeData = getNodeData(node)
-    if (nodeData) {
-      nodes.push(nodeData)
+    const nodeId = node.id.toString()
+    if (!existingNodeIds.has(nodeId)) {
+      const nodeData = getNodeData(node)
+      if (nodeData) {
+        nodes.push(nodeData)
+        existingNodeIds.add(nodeId)
+      }
     }
   }
-
-  // Check for node duplication to prevent duplicate nodes
-  const existingNodeIds = new Set(nodes.map((n: any) => n.data.id))
-
-  // Track edge IDs to prevent duplicates (same edge can appear in edgesFrom and edgesTo)
-  const existingEdgeIds = new Set(edges.map((e: any) => e.data.id))
 
   // adding edges from this node
   if (node.edgesFrom) {
