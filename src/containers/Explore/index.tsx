@@ -125,7 +125,9 @@ const Explore = (homeProps: IHomeProps) => {
       if (res.data) {
         let newNodes: any[] = []
         let newEdges: any[] = []
-        parseSingleNode(newNodes, newEdges, res.data)
+        const existingNodeIds = new Set<string>()
+        const existingEdgeIds = new Set<string>()
+        parseSingleNode(newNodes, newEdges, res.data, existingNodeIds, existingEdgeIds)
         if (!cy) return
 
         // Check current node count before adding
@@ -282,9 +284,11 @@ const Explore = (homeProps: IHomeProps) => {
         if (nodeRes.data) {
           let allNodes: any[] = []
           let allEdges: any[] = []
+          const existingNodeIds = new Set<string>()
+          const existingEdgeIds = new Set<string>()
 
           // Parse the central node and its neighbors
-          parseSingleNode(allNodes, allEdges, nodeRes.data)
+          parseSingleNode(allNodes, allEdges, nodeRes.data, existingNodeIds, existingEdgeIds)
 
           cy.add({ nodes: allNodes, edges: allEdges } as any)
         }
