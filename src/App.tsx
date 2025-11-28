@@ -29,7 +29,6 @@ const App = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isNavbarVisible, setIsNavbarVisible] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(checkAuth())
 
@@ -46,15 +45,6 @@ const App = () => {
   useEffect(() => {
     if (location.pathname === '/') {
       navigate('/feed') // Redirect to /feed
-    }
-
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth)
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
     }
   }, [location.pathname, navigate])
 
@@ -88,10 +78,6 @@ const App = () => {
     />
   )
 
-  // Define sidebar widths
-  const SIDEBAR_WIDTH_OPEN = 200
-  const SIDEBAR_WIDTH_CLOSED = 40
-
   return (
     <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
       <CssBaseline />
@@ -121,21 +107,13 @@ const App = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            flex: 1,
             minHeight: '100vh',
             backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft:
-              isMediumScreen || isLoginPage || isRegisterPage
-                ? '0'
-                : isSidebarOpen
-                ? `${SIDEBAR_WIDTH_OPEN}px`
-                : `${SIDEBAR_WIDTH_CLOSED}px`,
-            width:
-              isMediumScreen || isLoginPage || isRegisterPage
-                ? '100%'
-                : `calc(100% - ${isSidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED}px)`,
-            transition: 'margin-left 0.3s, width 0.3s'
+            width: '100%',
+            boxSizing: 'border-box'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />

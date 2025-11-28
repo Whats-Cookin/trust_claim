@@ -99,7 +99,7 @@ const CertificateView: React.FC = () => {
   const issuerName = sourceEdge?.endNode?.name || '';
 
   return (
-    <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '1200px', mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '100%', width: '100%', boxSizing: 'border-box', mx: 'auto' }}>
       <Certificate
         subject={claim.subject || ''} // keep the URL as-is (string)
         subject_name={personName} // Use subject node name

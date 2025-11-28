@@ -250,8 +250,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
     e.preventDefault()
 
-    const allowedDomains = ['https://live.linkedtrust.us', 'https://dev.linkedtrust.us', 'https://linkedtrust.us']
-    const isInternal = allowedDomains.some(domain => url.startsWith(domain))
+    // Check if link is internal to current LinkedTrust instance
+    const isInternal = url.startsWith(BACKEND_BASE_URL) || url.startsWith(window.location.origin)
 
     if (!isInternal) {
       setShowNotification(true)

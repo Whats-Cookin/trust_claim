@@ -401,7 +401,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <MainContainer
         sx={{
           width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-          maxWidth: '1200px',
+          maxWidth: '100%',
           mx: 'auto',
           p: { xs: 2, sm: 3, md: 4 }
         }}
@@ -420,7 +420,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <MainContainer
         sx={{
           width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-          maxWidth: '1200px',
+          maxWidth: '100%',
           mx: 'auto',
           p: { xs: 2, sm: 3, md: 4 }
         }}
@@ -449,7 +449,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <MainContainer
         sx={{
           width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-          maxWidth: '1200px',
+          maxWidth: '100%',
           mx: 'auto',
           p: { xs: 1, sm: 2, md: 3, lg: 4 }
         }}
