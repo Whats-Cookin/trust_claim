@@ -54,8 +54,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     <Drawer
       variant='permanent'
       sx={{
+        width: isOpen ? 200 : 40,
+        flexShrink: 0,
         '& .MuiDrawer-paper': {
-          minWidth: isOpen ? 200 : 40,
+          width: isOpen ? 200 : 40,
+          position: 'relative',
           boxSizing: 'border-box',
           backgroundColor: theme.palette.menuBackground,
           color: theme.palette.sidecolor,
@@ -67,7 +70,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           borderRight: 'none',
           borderRadius: '0 20px 40px 0',
           marginTop: isNavbarVisible && !isAuthPage ? '64px' : '0',
-          height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 64px)' : '100vh'
+          height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 64px)' : '100vh',
+          overflowX: 'hidden'
         }
       }}
     >

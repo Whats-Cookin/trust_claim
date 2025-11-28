@@ -38,7 +38,8 @@ const PageContainer = styled(Box)(({ theme }) => ({
   paddingBottom: theme.spacing(6),
   paddingLeft: theme.spacing(3),
   paddingRight: theme.spacing(3),
-  width: '100%',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
   [theme.breakpoints.down('sm')]: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2)
