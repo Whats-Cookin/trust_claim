@@ -8,11 +8,14 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme, Fab, Tooltip } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
-import { parseMultipleNodes, parseSingleNode } from './graph.utils'
+import { parseMultipleNodes, parseSingleNode, mergeSameAsNodes } from './graph.utils'
 import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import GraphDetailModal from '../../components/GraphDetailModal'
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
+
+// Toggle SAME_AS node merging (set to false to see all nodes separately)
+const MERGE_SAME_AS_NODES = true
 
 // Register the extension only once
 if (typeof cytoscapeNodeHtmlLabel === 'function' && !(Cytoscape as any)._nodeHtmlLabelRegistered) {
@@ -155,6 +158,8 @@ const Explore = (homeProps: IHomeProps) => {
 
         // Filter out edges that already exist in the graph and only include edges connecting to valid nodes
         const currentGraphEdgeIds = new Set(cy.edges().map((e: any) => e.id()))
+        // Note: edges use database IDs for source/target, not URIs
+        const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
         const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
 
         // Only include edges that:
@@ -275,7 +280,10 @@ const Explore = (homeProps: IHomeProps) => {
       if (modalData && (modalData.entType === 'CLAIM' || modalData.entityType === 'CLAIM')) {
         // For claim nodes, use the graph endpoint which gives a better 2-hop view
         const claimRes = await api.getGraph(nodeId)
-        const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+        let { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+
+        // Merge SAME_AS connected nodes for cleaner visualization
+        ;({ nodes, edges } = mergeSameAsNodes(nodes, edges, MERGE_SAME_AS_NODES))
 
         // Limit to reasonable size
         let limitedNodes = nodes
@@ -337,8 +345,11 @@ const Explore = (homeProps: IHomeProps) => {
 
       cy.elements().remove() // Clear any existing elements
 
-      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+      let { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
       console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
+
+      // Merge SAME_AS connected nodes for cleaner visualization
+      ;({ nodes, edges } = mergeSameAsNodes(nodes, edges, MERGE_SAME_AS_NODES))
 
       // Check if graph is empty and this is not a retry
       if (nodes.length === 0 && !isRetry) {

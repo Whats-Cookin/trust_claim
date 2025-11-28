@@ -254,4 +254,150 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
   return { nodes, edges }
 }
 
-export { parseClaims, parseMultipleNodes, parseSingleNode }
+/**
+ * Merges nodes connected by SAME_AS edges into single visual nodes.
+ * The merged node contains aliases array with all original node data for inspection.
+ * 
+ * @param nodes - Array of cytoscape node objects
+ * @param edges - Array of cytoscape edge objects  
+ * @param enabled - Toggle to enable/disable merging (default: true)
+ * @returns Object with merged nodes and edges
+ */
+const mergeSameAsNodes = (
+    nodes: any[],
+    edges: any[],
+    enabled: boolean = true
+): { nodes: any[]; edges: any[] } => {
+    if (!enabled || nodes.length === 0) {
+        return { nodes, edges }
+    }
+
+    // Find SAME_AS edges
+    const sameAsEdges = edges.filter(
+        e => e.data.relation?.toLowerCase() === 'same_as'
+    )
+
+    if (sameAsEdges.length === 0) {
+        return { nodes, edges }
+    }
+
+    // Union-find data structure
+    const parent = new Map<string, string>()
+
+    const find = (id: string): string => {
+        if (!parent.has(id)) parent.set(id, id)
+        if (parent.get(id) !== id) {
+            parent.set(id, find(parent.get(id)!))
+        }
+        return parent.get(id)!
+    }
+
+    const union = (a: string, b: string) => {
+        const rootA = find(a)
+        const rootB = find(b)
+        if (rootA !== rootB) {
+            // Prefer lower ID as canonical (stable ordering)
+            if (rootA < rootB) {
+                parent.set(rootB, rootA)
+            } else {
+                parent.set(rootA, rootB)
+            }
+        }
+    }
+
+    // Union all SAME_AS connected nodes
+    sameAsEdges.forEach(edge => {
+        union(edge.data.source, edge.data.target)
+    })
+
+    // Group nodes by canonical representative
+    const nodeGroups = new Map<string, any[]>()
+    nodes.forEach(node => {
+        const canonical = find(node.data.id)
+        if (!nodeGroups.has(canonical)) {
+            nodeGroups.set(canonical, [])
+        }
+        nodeGroups.get(canonical)!.push(node)
+    })
+
+    // Create merged nodes
+    const mergedNodes = Array.from(nodeGroups.entries()).map(([canonicalId, group]) => {
+        // Use canonical node as primary, fallback to first
+        const primary = group.find(n => n.data.id === canonicalId) || group[0]
+
+        if (group.length === 1) {
+            return primary
+        }
+
+        // Collect aliases (all nodes in group)
+        const aliases = group.map(n => ({
+            id: n.data.id,
+            uri: n.data.uri || n.data.nodeUri,
+            label: n.data.label,
+            entType: n.data.entType,
+            raw: n.data.raw
+        }))
+
+        // Pick best label (prefer shorter, non-URL labels)
+        const bestLabel = group
+            .map(n => n.data.label)
+            .sort((a, b) => {
+                const aIsUrl = a?.includes('://') || a?.includes('/')
+                const bIsUrl = b?.includes('://') || b?.includes('/')
+                if (aIsUrl && !bIsUrl) return 1
+                if (!aIsUrl && bIsUrl) return -1
+                return (a?.length || 999) - (b?.length || 999)
+            })[0] || primary.data.label
+
+        return {
+            ...primary,
+            data: {
+                ...primary.data,
+                label: bestLabel,
+                aliases,
+                isMerged: true,
+                mergedCount: group.length
+            }
+        }
+    })
+
+    // Build node ID to canonical ID mapping
+    const idToCanonical = new Map<string, string>()
+    nodes.forEach(node => {
+        idToCanonical.set(node.data.id, find(node.data.id))
+    })
+
+    // Rewrite edges and filter out SAME_AS
+    const seenEdges = new Set<string>()
+    const mergedEdges = edges
+        .filter(e => e.data.relation?.toLowerCase() !== 'same_as')
+        .map(edge => {
+            const newSource = idToCanonical.get(edge.data.source) || edge.data.source
+            const newTarget = idToCanonical.get(edge.data.target) || edge.data.target
+            return {
+                ...edge,
+                data: {
+                    ...edge.data,
+                    source: newSource,
+                    target: newTarget,
+                    originalSource: edge.data.source,
+                    originalTarget: edge.data.target
+                }
+            }
+        })
+        // Remove self-loops
+        .filter(e => e.data.source !== e.data.target)
+        // Dedupe edges that became identical
+        .filter(edge => {
+            const key = `${edge.data.source}-${edge.data.target}-${edge.data.relation}`
+            if (seenEdges.has(key)) return false
+            seenEdges.add(key)
+            return true
+        })
+
+    console.log(`mergeSameAsNodes: ${nodes.length} -> ${mergedNodes.length} nodes, ${edges.length} -> ${mergedEdges.length} edges`)
+
+    return { nodes: mergedNodes, edges: mergedEdges }
+}
+
+export { parseClaims, parseMultipleNodes, parseSingleNode, mergeSameAsNodes }
