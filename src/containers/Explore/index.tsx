@@ -159,7 +159,6 @@ const Explore = (homeProps: IHomeProps) => {
         // Filter out edges that already exist in the graph and only include edges connecting to valid nodes
         const currentGraphEdgeIds = new Set(cy.edges().map((e: any) => e.id()))
         // Note: edges use database IDs for source/target, not URIs
-        const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
         const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
 
         // Only include edges that:
