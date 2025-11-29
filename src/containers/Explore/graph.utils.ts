@@ -93,17 +93,25 @@ const parseMultipleNodes = (data: any) => {
 
   // The backend returns an array of nodes with embedded edges
   if (Array.isArray(data)) {
-    console.log('Parsing array of nodes:', data.length)
-    data.forEach((node: any) => {
+    console.log('[parseMultipleNodes] Backend returned array of', data.length, 'nodes')
+    // Check for duplicate node IDs in backend response
+    const backendNodeIds = data.map((n: any) => n.id)
+    const uniqueBackendIds = new Set(backendNodeIds)
+    if (backendNodeIds.length !== uniqueBackendIds.size) {
+      console.error('[parseMultipleNodes] ⚠️ BACKEND RETURNED DUPLICATE NODE IDs!', { total: backendNodeIds.length, unique: uniqueBackendIds.size })
+      console.error('[parseMultipleNodes] Duplicate IDs:', backendNodeIds.filter((id, idx) => backendNodeIds.indexOf(id) !== idx))
+    }
+    data.forEach((node: any, idx: number) => {
+      console.log(`[parseMultipleNodes] Processing backend node ${idx + 1}/${data.length}:`, { id: node.id, uri: node.nodeUri })
       parseSingleNode(nodes, edges, node, existingNodeIds, existingEdgeIds)
     })
   } else if (data && typeof data === 'object') {
     // Single node with edges
-    console.log('Parsing single node')
+    console.log('[parseMultipleNodes] Backend returned single node')
     parseSingleNode(nodes, edges, data, existingNodeIds, existingEdgeIds)
   }
 
-  console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
+  console.log(`[parseMultipleNodes] FINAL: Created ${nodes.length} nodes, ${edges.length} edges`)
   return { nodes, edges }
 }
 
@@ -167,9 +175,12 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
     if (!existingNodeIds.has(nodeId)) {
       const nodeData = getNodeData(node)
       if (nodeData) {
+        console.log('[parseSingleNode] Adding main node:', { id: nodeId, uri: node.nodeUri, label: nodeData.data.label })
         nodes.push(nodeData)
         existingNodeIds.add(nodeId)
       }
+    } else {
+      console.log('[parseSingleNode] Skipping duplicate main node:', { id: nodeId, uri: node.nodeUri })
     }
   }
 
@@ -179,9 +190,12 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
       if (e.endNode && !existingNodeIds.has(e.endNode.id.toString())) {
         const nodeData = getNodeData(e.endNode)
         if (nodeData) {
+          console.log('[parseSingleNode] Adding endNode from edge:', { id: e.endNode.id.toString(), uri: e.endNode.nodeUri, label: nodeData.data.label })
           nodes.push(nodeData)
           existingNodeIds.add(e.endNode.id.toString())
         }
+      } else if (e.endNode) {
+        console.log('[parseSingleNode] Skipping duplicate endNode:', { id: e.endNode.id.toString(), uri: e.endNode.nodeUri })
       }
     })
 
@@ -218,9 +232,12 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
       if (e.startNode && !existingNodeIds.has(e.startNode.id.toString())) {
         const nodeData = getNodeData(e.startNode)
         if (nodeData) {
+          console.log('[parseSingleNode] Adding startNode from edge:', { id: e.startNode.id.toString(), uri: e.startNode.nodeUri, label: nodeData.data.label })
           nodes.push(nodeData)
           existingNodeIds.add(e.startNode.id.toString())
         }
+      } else if (e.startNode) {
+        console.log('[parseSingleNode] Skipping duplicate startNode:', { id: e.startNode.id.toString(), uri: e.startNode.nodeUri })
       }
     })
 

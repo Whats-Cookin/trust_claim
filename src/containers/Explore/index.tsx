@@ -148,7 +148,10 @@ const Explore = (homeProps: IHomeProps) => {
         // IMPORTANT: Filter out nodes that already exist in the graph FIRST
         // before limiting, otherwise we might keep duplicates and discard unique nodes
         const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
+        console.log('[fetchRelatedClaims] Current graph has', currentGraphNodeIds.size, 'nodes')
+        console.log('[fetchRelatedClaims] API returned', newNodes.length, 'nodes to consider')
         let actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
+        console.log('[fetchRelatedClaims] After deduplication:', actuallyNewNodes.length, 'new nodes to add')
 
         // Now limit the actually new nodes
         const maxNodesToAdd = Math.min(5, 30 - currentNodeCount)
@@ -173,7 +176,10 @@ const Explore = (homeProps: IHomeProps) => {
 
         // Only add and re-layout if we have truly new elements to add
         if (actuallyNewNodes.length > 0 || actuallyNewEdges.length > 0) {
+          console.log('[fetchRelatedClaims] Adding to graph:', { nodes: actuallyNewNodes.length, edges: actuallyNewEdges.length })
+          console.log('[fetchRelatedClaims] New node IDs being added:', actuallyNewNodes.map((n: any) => ({ id: n.data.id, uri: n.data.uri })))
           cy.add({ nodes: actuallyNewNodes, edges: actuallyNewEdges } as any)
+          console.log('[fetchRelatedClaims] Graph now has', cy.nodes().length, 'total nodes')
           runCy(cy, false) // Re-layout with new nodes
         } else {
           setSnackbarMessage('No new connections found')
