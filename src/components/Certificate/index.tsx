@@ -18,6 +18,7 @@ import ShareIcon from '@mui/icons-material/Share'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
 import html2pdf from 'html2pdf.js'
 import { CertificateProps, Validation } from '../../types/certificate'
 import {
@@ -176,10 +177,40 @@ const Certificate: React.FC<CertificateProps> = ({
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [currentUrl, setCurrentUrl] = useState('')
+  const [isOwnerViaSameAs, setIsOwnerViaSameAs] = useState<boolean | null>(null)
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
   }, [])
+
+  // Check if user is the owner via SAME_AS claims
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (!currentUser || !subject) {
+        setIsOwnerViaSameAs(false)
+        return
+      }
+
+      try {
+        const axiosInstance = (await import('../../axiosInstance')).default
+        const response = await axiosInstance.get('/api/identity/is-me', {
+          params: { subjectUri: subject }
+        })
+
+        if (response.data.success) {
+          setIsOwnerViaSameAs(response.data.isMe)
+        } else {
+          setIsOwnerViaSameAs(false)
+        }
+      } catch (error) {
+        console.error('Error checking ownership via SAME_AS:', error)
+        // Fallback to basic ownership check
+        setIsOwnerViaSameAs(null)
+      }
+    }
+
+    checkOwnership()
+  }, [currentUser, subject])
 
   // Get user URI based on login type
   const getUserUri = () => {
@@ -194,7 +225,9 @@ const Certificate: React.FC<CertificateProps> = ({
   }
 
   const userUri = getUserUri()
-  const isOwner = userUri && subject === userUri
+  const isOwnerDirect = userUri && subject === userUri
+  // Use SAME_AS check if available, otherwise fall back to direct check
+  const isOwner = isOwnerViaSameAs !== null ? isOwnerViaSameAs : isOwnerDirect
 
   const handleExport = () => {
     const element = document.getElementById('certificate-content')
@@ -652,7 +685,7 @@ const Certificate: React.FC<CertificateProps> = ({
             p: { xs: 2, sm: 2.5, md: 3 }
           }}
         >
-          {/* Export - always available */}
+          {/* Export Certificate - always available */}
           <Box onClick={handleExport} sx={actionButtonStyles}>
             <SystemUpdateAltIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
@@ -660,20 +693,27 @@ const Certificate: React.FC<CertificateProps> = ({
             </Typography>
           </Box>
 
-          {/* Copy Link - always available */}
-          <Box onClick={handleCopyLink} sx={actionButtonStyles}>
-            <ContentCopyIcon sx={{ color: COLORS.primary }} />
+          {/* Evidence - always available */}
+          <Box onClick={() => navigate(`/report/${claimId}`)} sx={actionButtonStyles}>
+            <ArticleOutlinedIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
-              Copy Link
+              Evidence
             </Typography>
           </Box>
 
-          {/* LinkedIn Share - only for owner */}
-          {isOwner && (
-            <Box onClick={handleLinkedInPost} sx={actionButtonStyles}>
+          {/* Copy Link or Share - always available */}
+          {isOwner ? (
+            <Box onClick={handleShareClick} sx={actionButtonStyles}>
               <ShareIcon sx={{ color: COLORS.primary }} />
               <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
-                Share to LinkedIn
+                Share
+              </Typography>
+            </Box>
+          ) : (
+            <Box onClick={handleCopyLink} sx={actionButtonStyles}>
+              <ContentCopyIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                Copy Link
               </Typography>
             </Box>
           )}
