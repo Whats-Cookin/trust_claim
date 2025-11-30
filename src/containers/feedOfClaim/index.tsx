@@ -287,6 +287,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 const object = getEntityData(claim.object)
                 const claimId = claim.id || claim.claim_id || 0
 
+                // Check if this is a validation claim (claim about another claim)
+                const validationTypes = ['is_vouched_for', 'agree', 'verified', 'validated']
+                const isValidationClaim = validationTypes.includes(claim.claim || '')
+
                 return (
                   <Grow in={true} timeout={1000} key={claimId}>
                     <Box sx={{ marginBottom: '15px' }}>
@@ -475,42 +479,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               pr: '20px'
                             }}
                           >
-                            <Button
-                              onClick={() => handleValidation(claimId)}
-                              startIcon={<VerifiedOutlinedIcon />}
-                              variant='text'
-                              sx={{
-                                fontSize: isMediumScreen ? '8px' : '12px',
-                                marginRight: '10px',
-                                p: '4px',
-                                color: theme.palette.sidecolor,
-                                '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                              }}
-                            >
-                              Validate
-                            </Button>
-
-                            <Link to={'/report/' + claimId}>
-                              <Button
-                                startIcon={<FeedOutlinedIcon />}
-                                variant='text'
-                                sx={{
-                                  fontSize: isMediumScreen ? '8px' : '12px',
-                                  marginRight: '10px',
-                                  p: '4px',
-                                  color: theme.palette.sidecolor,
-                                  '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                }}
-                              >
-                                Evidence
-                              </Button>
-                            </Link>
-
-                            {/* NEW: Certificate button */}
-                            {!!claimId && (
-                              <Link to={`/certificate/${claimId}`}>
+                            {/* Only show Validate, Evidence, and Certificate for non-validation claims */}
+                            {!isValidationClaim && (
+                              <>
                                 <Button
-                                  startIcon={<WorkspacePremiumOutlinedIcon />}
+                                  onClick={() => handleValidation(claimId)}
+                                  startIcon={<VerifiedOutlinedIcon />}
                                   variant='text'
                                   sx={{
                                     fontSize: isMediumScreen ? '8px' : '12px',
@@ -520,11 +494,47 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                                   }}
                                 >
-                                  Certificate
+                                  Validate
                                 </Button>
-                              </Link>
+
+                                <Link to={'/report/' + claimId}>
+                                  <Button
+                                    startIcon={<FeedOutlinedIcon />}
+                                    variant='text'
+                                    sx={{
+                                      fontSize: isMediumScreen ? '8px' : '12px',
+                                      marginRight: '10px',
+                                      p: '4px',
+                                      color: theme.palette.sidecolor,
+                                      '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                                    }}
+                                  >
+                                    Evidence
+                                  </Button>
+                                </Link>
+
+                                {/* Certificate button - only for people/org claims */}
+                                {!!claimId && (
+                                  <Link to={`/certificate/${claimId}`}>
+                                    <Button
+                                      startIcon={<WorkspacePremiumOutlinedIcon />}
+                                      variant='text'
+                                      sx={{
+                                        fontSize: isMediumScreen ? '8px' : '12px',
+                                        marginRight: '10px',
+                                        p: '4px',
+                                        color: theme.palette.sidecolor,
+                                        '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                                      }}
+                                    >
+                                      Certificate
+                                    </Button>
+                                  </Link>
+                                )}
+                              </>
                             )}
 
+                            {/* Always show Graph View */}
                             <Button
                               startIcon={<ShareOutlinedIcon />}
                               onClick={() => handleSchema(claim)}

@@ -164,14 +164,39 @@ const Explore = (homeProps: IHomeProps) => {
         // Note: edges use database IDs for source/target, not URIs
         const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
 
+        // Count existing edges between each pair of nodes to limit clutter
+        const edgeCountByPair = new Map<string, number>()
+        cy.edges().forEach((e: any) => {
+          const key = `${e.data('source')}-${e.data('target')}`
+          edgeCountByPair.set(key, (edgeCountByPair.get(key) || 0) + 1)
+        })
+
         // Only include edges that:
-        // 1. Connect to nodes in the graph (existing or new)
-        // 2. Don't already exist in the graph
+        // 1. Connect to at least one node in the graph (existing or new)
+        // 2. Don't already exist in the graph (by edge ID)
+        // 3. Don't exceed max 2 edges between same node pair
         const actuallyNewEdges = newEdges.filter(
-          (edge: any) =>
-            allNodeIds.has(edge.data.source) &&
-            allNodeIds.has(edge.data.target) &&
-            !currentGraphEdgeIds.has(edge.data.id)
+          (edge: any) => {
+            const sourceInGraph = allNodeIds.has(edge.data.source)
+            const targetInGraph = allNodeIds.has(edge.data.target)
+            const edgeAlreadyExists = currentGraphEdgeIds.has(edge.data.id)
+
+            // Must connect to at least one node in graph
+            if (!sourceInGraph && !targetInGraph) return false
+
+            // Must not already exist
+            if (edgeAlreadyExists) return false
+
+            // Check edge count limit between this pair
+            const pairKey = `${edge.data.source}-${edge.data.target}`
+            const currentCount = edgeCountByPair.get(pairKey) || 0
+            if (currentCount >= 2) {
+              console.log('[fetchRelatedClaims] Skipping edge - max 2 edges between nodes:', pairKey)
+              return false
+            }
+
+            return true
+          }
         )
 
         // Only add and re-layout if we have truly new elements to add
