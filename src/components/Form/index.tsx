@@ -65,6 +65,38 @@ interface FormData {
   images: MediaI[]
   claim: string
   object: string | null
+  subjectEntityType: 'PERSON' | 'ORGANIZATION' | null
+}
+
+// Infer entity type from URL patterns
+const inferEntityType = (url: string): 'PERSON' | 'ORGANIZATION' => {
+  if (!url) return 'ORGANIZATION'
+  const urlLower = url.toLowerCase()
+
+  // LinkedIn personal profiles
+  if (urlLower.includes('linkedin.com/in/')) return 'PERSON'
+
+  // LinkedIn company pages
+  if (urlLower.includes('linkedin.com/company/')) return 'ORGANIZATION'
+
+  // Twitter/X profiles (excluding non-profile paths)
+  if (urlLower.includes('twitter.com/') || urlLower.includes('x.com/')) {
+    if (!['/status/', '/search', '/explore', '/home', '/i/'].some(p => urlLower.includes(p))) {
+      return 'PERSON'
+    }
+  }
+
+  // Bluesky profiles
+  if (urlLower.includes('bsky.app/profile/') || urlLower.includes('bsky.social')) return 'PERSON'
+
+  // GitHub profiles (single path segment)
+  if (urlLower.includes('github.com/')) {
+    const path = urlLower.split('github.com/')[1]?.replace(/^\/|\/$/g, '') || ''
+    const segments = path.split('/').filter(Boolean)
+    if (segments.length === 1) return 'PERSON'
+  }
+
+  return 'ORGANIZATION'
 }
 
 interface IFormProps {
@@ -83,6 +115,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
   const { createClaim } = useCreateClaim()
 
   const [selectedClaimType, setSelectedClaimType] = useState<string>('')
+  const [subjectEntityType, setSubjectEntityType] = useState<'PERSON' | 'ORGANIZATION'>('ORGANIZATION')
 
   // Get subject and name from URL params if present
   const subjectFromUrl = searchParams.get('subject') || ''
@@ -109,9 +142,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       confidence: 1,
       stars: null,
       amt: null,
-      images: []
+      images: [],
+      subjectEntityType: null
     }
   })
+
+  const watchSubject = watch('subject')
 
   // Set subject and name when URL params change
   useEffect(() => {
@@ -122,6 +158,13 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       setValue('name', nameFromUrl)
     }
   }, [subjectFromUrl, nameFromUrl, setValue])
+
+  // Update entity type guess when subject changes
+  useEffect(() => {
+    if (watchSubject) {
+      setSubjectEntityType(inferEntityType(watchSubject))
+    }
+  }, [watchSubject])
 
   const imageFieldArray = useFieldArray({
     control,
@@ -148,7 +191,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       ...formData,
       claim: selectedClaimType.toUpperCase(), // Convert 'rated' to 'RATED', etc.
       // Ensure sourceURI is null if empty, not defaulting to subject
-      sourceURI: formData.sourceURI || null
+      sourceURI: formData.sourceURI || null,
+      subjectEntityType: subjectEntityType
     }
 
     // Debug logging to track the sourceURI issue
@@ -251,10 +295,25 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   {...register('subject', { required: true })}
                   label="Link to what you're making a claim about"
                   fullWidth
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 0.5 }}
                   error={Boolean(errors.subject)}
                   helperText={errors.subject ? 'This field is required' : ''}
                 />
+                {watchSubject && (
+                  <Typography
+                    variant='caption'
+                    onClick={() => setSubjectEntityType(prev => prev === 'PERSON' ? 'ORGANIZATION' : 'PERSON')}
+                    sx={{
+                      color: 'text.secondary',
+                      cursor: 'pointer',
+                      mb: 2,
+                      display: 'block',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    {subjectEntityType.toLowerCase()}
+                  </Typography>
+                )}
                 <TextField
                   {...register('statement', { required: true })}
                   label='Describe your claim'

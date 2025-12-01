@@ -71,22 +71,35 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
   const [claimData, setClaimData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
 
-  // Get claimId from node data
-  const claimId = data?.claimId || data?.raw?.claimId
+  // Get claimId from node data - check multiple possible locations
+  const claimId = data?.claimId || data?.raw?.claimId || data?.raw?.claim?.id
 
   // Fetch claim data when modal opens for a CLAIM node
   useEffect(() => {
     const isClaimNode = data?.entType === EntityType.CLAIM || data?.entityType === EntityType.CLAIM
 
+    console.log('[GraphDetailModal] Node data:', {
+      isClaimNode,
+      claimId,
+      entType: data?.entType,
+      rawClaimId: data?.raw?.claimId,
+      dataKeys: data ? Object.keys(data) : [],
+      rawKeys: data?.raw ? Object.keys(data.raw) : []
+    })
+
     if (open && type === 'node' && isClaimNode && claimId && !claimData) {
       setLoading(true)
+      console.log('[GraphDetailModal] Fetching claim data for claimId:', claimId)
       axios
         .get(`/api/claims/${claimId}`)
         .then(res => {
-          setClaimData(res.data)
+          console.log('[GraphDetailModal] Claim data received:', res.data)
+          // API returns {success, claim, images} - extract the claim
+          const claim = res.data?.claim || res.data
+          setClaimData(claim)
         })
         .catch(err => {
-          console.error('Failed to fetch claim data:', err)
+          console.error('[GraphDetailModal] Failed to fetch claim data:', err)
         })
         .finally(() => {
           setLoading(false)
@@ -110,19 +123,19 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
     const displayClaimData = claimData || data.claim || data.raw?.claim || {}
 
     // Fields to display for CLAIM nodes (in order of priority)
-    const claimFields = [
+    const claimFields: Array<{ key: string; label: string; format?: (v: any, d?: any) => string }> = [
       { key: 'statement', label: 'Statement' },
       { key: 'subject', label: 'Subject' },
       { key: 'object', label: 'Object' },
       { key: 'aspect', label: 'Aspect' },
-      { key: 'confidence', label: 'Confidence', format: (v: number) => `${Math.round(v * 100)}%` },
-      { key: 'stars', label: 'Rating', format: (v: number) => '★'.repeat(v) + '☆'.repeat(5 - v) },
+      { key: 'confidence', label: 'Confidence', format: (v) => `${Math.round(v * 100)}%` },
+      { key: 'stars', label: 'Rating', format: (v) => '★'.repeat(v) + '☆'.repeat(5 - v) },
       { key: 'howKnown', label: 'How Known' },
-      { key: 'effectiveDate', label: 'Date', format: (v: string) => new Date(v).toLocaleDateString() },
-      { key: 'amt', label: 'Amount', format: (v: number, d: any) => `$${v}${d.unit ? ' ' + d.unit : ''}` },
-      { key: 'sourceURI', label: 'Source', format: (v: string) => truncateText(v, 50) },
+      { key: 'effectiveDate', label: 'Date', format: (v) => new Date(v).toLocaleDateString() },
+      { key: 'amt', label: 'Amount', format: (v, d) => `$${v}${d?.unit ? ' ' + d.unit : ''}` },
+      { key: 'sourceURI', label: 'Source', format: (v) => truncateText(v, 50) },
       { key: 'author', label: 'Author' },
-      { key: 'score', label: 'Score', format: (v: number) => v.toFixed(2) }
+      { key: 'score', label: 'Score', format: (v) => v.toFixed(2) }
     ]
 
     return (
@@ -310,114 +323,20 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
   }
 
   const renderEdgeDetails = () => {
-    // Edges are now structural relationships only: subject, object, source
-    // They connect a CLAIM node to an entity node
-    const edgeLabel = data.label || 'relationship'
-
-    // The startNode is the CLAIM node, endNode is the entity
-    const claimNode = startNode
+    // Edges are structural relationships: subject, object, source
+    const edgeLabel = data.label || 'related to'
     const entityNode = endNode
+    const claimNode = startNode
 
-    // Human-readable description of the relationship
-    const getRelationshipDescription = () => {
-      const entityName = entityNode?.name || entityNode?.label || 'Entity'
-      const claimName = claimNode?.name || claimNode?.label || 'Claim'
-
-      switch (edgeLabel.toLowerCase()) {
-        case 'subject':
-          return `"${truncateText(entityName, 40)}" is the subject of this claim`
-        case 'object':
-          return `"${truncateText(entityName, 40)}" is the object of this claim`
-        case 'source':
-          return `"${truncateText(entityName, 40)}" is the source of this claim`
-        default:
-          return `"${truncateText(entityName, 40)}" is connected to "${truncateText(claimName, 40)}"`
-      }
-    }
-
-    // Get a more descriptive label
-    const getLabelDisplay = () => {
-      switch (edgeLabel.toLowerCase()) {
-        case 'subject':
-          return 'Subject'
-        case 'object':
-          return 'Object'
-        case 'source':
-          return 'Source'
-        default:
-          return edgeLabel
-      }
-    }
+    const entityName = entityNode?.name || entityNode?.label || 'Unknown'
+    const claimType = claimNode?.name || claimNode?.claim || 'claim'
 
     return (
-      <>
-        <Box sx={{ mb: 2, textAlign: 'center' }}>
-          {/* Relationship type badge */}
-          <Box
-            sx={{
-              display: 'inline-block',
-              px: 2,
-              py: 0.5,
-              mb: 2,
-              borderRadius: 1,
-              backgroundColor: theme.palette.mode === 'dark' ? '#374151' : '#E5E7EB',
-              color: theme.palette.text.primary
-            }}
-          >
-            <Typography variant='body2' sx={{ fontWeight: 500 }}>
-              {getLabelDisplay()} Relationship
-            </Typography>
-          </Box>
-
-          {/* Human-readable description */}
-          <Typography variant='body1' sx={{ mb: 2, fontStyle: 'italic' }}>
-            {getRelationshipDescription()}
-          </Typography>
-
-          {/* Show entity info */}
-          {entityNode && (
-            <Box sx={{ mt: 2, p: 1.5, borderRadius: 1, backgroundColor: theme.palette.action?.hover || '#f5f5f5' }}>
-              <Typography variant='body2' color='text.secondary' sx={{ mb: 0.5 }}>
-                {entityNode.entType || 'Entity'}
-              </Typography>
-              <Typography variant='body1' sx={{ fontWeight: 500 }}>
-                {truncateText(entityNode.name || entityNode.label || 'Unknown', 60)}
-              </Typography>
-              {entityNode.nodeUri && (
-                <Typography
-                  variant='caption'
-                  sx={{
-                    display: 'block',
-                    mt: 0.5,
-                    color: 'text.secondary',
-                    wordBreak: 'break-all'
-                  }}
-                >
-                  {truncateText(entityNode.nodeUri, 50)}
-                </Typography>
-              )}
-            </Box>
-          )}
-        </Box>
-
-        <Divider sx={{ my: 1.5 }} />
-
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-          <Button
-            onClick={onClose}
-            variant='text'
-            size='small'
-            sx={{
-              fontSize: '11px',
-              p: '3px 8px',
-              color: theme.palette.sidecolor || '#666',
-              '&:hover': { backgroundColor: theme.palette.cardsbuttons || '#f5f5f5' }
-            }}
-          >
-            Close
-          </Button>
-        </Box>
-      </>
+      <Box sx={{ textAlign: 'center', py: 1 }}>
+        <Typography variant='body1'>
+          <strong>{entityName}</strong> is the {edgeLabel} of the claim <strong>{claimType}</strong>
+        </Typography>
+      </Box>
     )
   }
 
