@@ -1,5 +1,41 @@
 import { edgeColors } from '../../theme/colors'
 
+/**
+ * Aspects that indicate identity equivalence.
+ * These are used for visual merging of nodes that represent the same entity.
+ *
+ * Supports both:
+ * - Legacy: relation="same_as" (claim.claim="SAME_AS")
+ * - New: relation="related_to" with aspect="relationship:same-as"
+ */
+const IDENTITY_EQUIVALENT_ASPECTS = ['relationship:same-as'] as const
+
+/**
+ * Check if an edge represents an identity-equivalent relationship.
+ * This is the single source of truth for what edges should cause node merging.
+ *
+ * @param edge - Cytoscape edge object with data.relation and optionally data.raw.aspect or data.aspect
+ */
+const isIdentityEquivalentEdge = (edge: any): boolean => {
+  const relation = edge.data?.relation?.toLowerCase()
+
+  // Legacy: direct SAME_AS claim type
+  if (relation === 'same_as') {
+    return true
+  }
+
+  // New: RELATED_TO with identity-equivalent aspect
+  if (relation === 'related_to') {
+    // Check for aspect in edge data (may be in raw claim data or directly on edge)
+    const aspect = edge.data?.raw?.aspect || edge.data?.aspect
+    if (aspect && IDENTITY_EQUIVALENT_ASPECTS.includes(aspect as any)) {
+      return true
+    }
+  }
+
+  return false
+}
+
 // Edge styles configuration using theme colors
 const edgeStylesByClaimType: any = {
   is_vouched_for: { color: edgeColors.is_vouched_for, style: 'solid', width: 4, arrow: 'triangle' },
@@ -84,7 +120,8 @@ const parseClaims = (claims: any) => {
           id: claim.id,
           source: claim.subject,
           target: claim.object,
-          relation: claim.claim
+          relation: claim.claim,
+          aspect: claim.aspect // Include aspect for identity-equivalent detection
         }
       })
   })
@@ -304,10 +341,8 @@ const mergeSameAsNodes = (
         return { nodes, edges }
     }
 
-    // Find SAME_AS edges
-    const sameAsEdges = edges.filter(
-        e => e.data.relation?.toLowerCase() === 'same_as'
-    )
+    // Find identity-equivalent edges (SAME_AS or RELATED_TO with same-as aspect)
+    const sameAsEdges = edges.filter(isIdentityEquivalentEdge)
 
     if (sameAsEdges.length === 0) {
         return { nodes, edges }
@@ -399,10 +434,10 @@ const mergeSameAsNodes = (
         idToCanonical.set(node.data.id, find(node.data.id))
     })
 
-    // Rewrite edges and filter out SAME_AS
+    // Rewrite edges and filter out identity-equivalent edges
     const seenEdges = new Set<string>()
     const mergedEdges = edges
-        .filter(e => e.data.relation?.toLowerCase() !== 'same_as')
+        .filter(e => !isIdentityEquivalentEdge(e))
         .map(edge => {
             const newSource = idToCanonical.get(edge.data.source) || edge.data.source
             const newTarget = idToCanonical.get(edge.data.target) || edge.data.target
