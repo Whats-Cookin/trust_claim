@@ -47,6 +47,11 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
   const renderNodeDetails = () => {
     // Clean image URL by removing query parameters
     const imageUrl = (data.image || data.thumbnail || '').replace(/\?.+$/, '')
+    const isClaimNode = data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
+
+    // For CLAIM nodes, get claim data from raw or nested claim object
+    const claimData = data.raw?.claim || data.claim || data.raw || {}
+    const claimId = data.claimId || data.raw?.claimId
 
     return (
       <>
@@ -59,22 +64,80 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
                 alt={data.name}
                 sx={{
                   width: 120,
-                  height: 120,
-                  borderRadius: '50%',
+                  height: isClaimNode ? 'auto' : 120,
+                  borderRadius: isClaimNode ? '8px' : '50%',
                   objectFit: 'cover',
                   boxShadow: 2
                 }}
               />
             </Box>
           )}
+
+          {/* For CLAIM nodes, show badge */}
+          {isClaimNode && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Badge claim={claimData.claim || data.name || 'claim'} />
+            </Box>
+          )}
+
           <Typography variant='h6' align='center' gutterBottom>
             {data.name || data.label || 'Unknown'}
           </Typography>
+
           {data.entType && (
             <Typography variant='body2' color='text.secondary' align='center'>
               Type: {data.entType}
             </Typography>
           )}
+
+          {/* CLAIM node specific details */}
+          {isClaimNode && (
+            <>
+              {/* Statement */}
+              {(claimData.statement || data.descrip) && (
+                <Box sx={{ mt: 2, mb: 2 }}>
+                  <Typography variant='body1' sx={{ fontStyle: 'italic', textAlign: 'center' }}>
+                    "{claimData.statement || data.descrip}"
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Rating stars if applicable */}
+              {claimData.stars !== undefined && (
+                <Box sx={{ textAlign: 'center', my: 2 }}>
+                  <Typography variant='h6' sx={{ color: theme.palette.stars || '#FCD34D' }}>
+                    {'★'.repeat(claimData.stars)}
+                    {'☆'.repeat(5 - claimData.stars)}
+                  </Typography>
+                </Box>
+              )}
+
+              {/* Metadata */}
+              <Box sx={{ mt: 2 }}>
+                {claimData.aspect && (
+                  <Typography variant='body2' color='text.secondary' align='center'>
+                    Aspect: {claimData.aspect}
+                  </Typography>
+                )}
+                {claimData.confidence !== undefined && claimData.confidence !== null && (
+                  <Typography variant='body2' color='text.secondary' align='center'>
+                    Confidence: {claimData.confidence === 0 ? '0%' : `${Math.round(claimData.confidence * 100)}%`}
+                  </Typography>
+                )}
+                {claimData.howKnown && (
+                  <Typography variant='body2' color='text.secondary' align='center'>
+                    How Known: {claimData.howKnown}
+                  </Typography>
+                )}
+                {claimData.amt !== undefined && claimData.amt !== null && (
+                  <Typography variant='body2' color='text.secondary' align='center'>
+                    Amount: ${claimData.amt} {claimData.unit || ''}
+                  </Typography>
+                )}
+              </Box>
+            </>
+          )}
+
           {data.nodeUri && (
             <Typography
               variant='body2'
@@ -134,11 +197,52 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
           >
             Return to Graph
           </Button>
+
+          {/* CLAIM nodes get Evidence and Graph View buttons */}
+          {isClaimNode && claimId && (
+            <>
+              <Button
+                component={Link}
+                to={`/report/${claimId}`}
+                startIcon={<FeedOutlinedIcon />}
+                variant='text'
+                onClick={onClose}
+                sx={{
+                  fontSize: '12px',
+                  p: '4px 8px',
+                  color: theme.palette.sidecolor || '#666',
+                  '&:hover': {
+                    backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+                  }
+                }}
+              >
+                Evidence
+              </Button>
+              <Button
+                component={Link}
+                to={`/explore/${claimId}`}
+                startIcon={<ShareOutlinedIcon />}
+                variant='text'
+                onClick={onClose}
+                sx={{
+                  fontSize: '12px',
+                  p: '4px 8px',
+                  color: theme.palette.sidecolor || '#666',
+                  '&:hover': {
+                    backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
+                  }
+                }}
+              >
+                Graph View
+              </Button>
+            </>
+          )}
+
           {checkAuth() && (
             <Button
               component={Link}
               to={
-                data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
+                isClaimNode
                   ? `/validate?subject=${encodeURIComponent(data.nodeUri || '')}`
                   : `/claim?subject=${encodeURIComponent(data.nodeUri || '')}&name=${encodeURIComponent(
                       data.name || data.label || ''
@@ -155,9 +259,7 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
                 }
               }}
             >
-              {data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
-                ? 'Validate/Reject'
-                : 'Add Attestation'}
+              {isClaimNode ? 'Validate/Reject' : 'Add Attestation'}
             </Button>
           )}
         </Box>
