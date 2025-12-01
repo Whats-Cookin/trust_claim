@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
   Typography,
   Button,
   Divider,
+  CircularProgress,
   useTheme
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
@@ -17,6 +18,7 @@ import { Link } from 'react-router-dom'
 import { checkAuth } from '../../utils/authUtils'
 import Badge from '../../containers/feedOfClaim/Badge'
 import { EntityType } from '../../types/entities'
+import axios from '../../axiosInstance'
 
 interface GraphDetailModalProps {
   open: boolean
@@ -66,6 +68,36 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
   onCenterNode
 }) => {
   const theme = useTheme()
+  const [claimData, setClaimData] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
+
+  // Get claimId from node data
+  const claimId = data?.claimId || data?.raw?.claimId
+
+  // Fetch claim data when modal opens for a CLAIM node
+  useEffect(() => {
+    const isClaimNode = data?.entType === EntityType.CLAIM || data?.entityType === EntityType.CLAIM
+
+    if (open && type === 'node' && isClaimNode && claimId && !claimData) {
+      setLoading(true)
+      axios
+        .get(`/api/claims/${claimId}`)
+        .then(res => {
+          setClaimData(res.data)
+        })
+        .catch(err => {
+          console.error('Failed to fetch claim data:', err)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    }
+
+    // Reset claim data when modal closes
+    if (!open) {
+      setClaimData(null)
+    }
+  }, [open, type, data, claimId])
 
   if (!data) return null
 
@@ -74,9 +106,8 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
     const imageUrl = (data.image || data.thumbnail || '').replace(/\?.+$/, '')
     const isClaimNode = data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
 
-    // For CLAIM nodes, get claim data - it may be nested in different places
-    const claimData = data.claim || data.raw?.claim || data.raw || data || {}
-    const claimId = data.claimId || data.raw?.claimId || claimData.id
+    // Use fetched claim data, or fall back to what's available on the node
+    const displayClaimData = claimData || data.claim || data.raw?.claim || {}
 
     // Fields to display for CLAIM nodes (in order of priority)
     const claimFields = [
@@ -116,15 +147,15 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
           )}
 
           {/* For CLAIM nodes, show badge with claim type */}
-          {isClaimNode && isDisplayable(claimData.claim) && (
+          {isClaimNode && isDisplayable(displayClaimData.claim) && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <Badge claim={claimData.claim} />
+              <Badge claim={displayClaimData.claim} />
             </Box>
           )}
 
           {/* Node name/title */}
           <Typography variant='h6' align='center' gutterBottom sx={{ fontSize: '1.1rem' }}>
-            {truncateText(data.name || data.label || claimData.claim || 'Unknown', 80)}
+            {truncateText(data.name || data.label || displayClaimData.claim || 'Unknown', 80)}
           </Typography>
 
           {/* Entity type for non-claim nodes */}
@@ -134,14 +165,21 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
             </Typography>
           )}
 
+          {/* CLAIM node: show loading or fields */}
+          {isClaimNode && loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+              <CircularProgress size={24} />
+            </Box>
+          )}
+
           {/* CLAIM node: show available fields dynamically */}
-          {isClaimNode && (
+          {isClaimNode && !loading && (
             <Box sx={{ mt: 2 }}>
               {claimFields.map(({ key, label, format }) => {
-                const value = claimData[key]
+                const value = displayClaimData[key]
                 if (!isDisplayable(value)) return null
 
-                const displayValue = format ? format(value, claimData) : truncateText(String(value), 100)
+                const displayValue = format ? format(value, displayClaimData) : truncateText(String(value), 100)
 
                 return (
                   <Typography

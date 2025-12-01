@@ -91,76 +91,6 @@ const parseClaims = (claims: any) => {
   return elements
 }
 
-/**
- * Collapse an unattested CLAIM node into a single edge.
- *
- * New model: Unattested claims render as: subject --claim_type--> object
- * This hides the claim node and structural edges for cleaner visualization.
- */
-const collapseClaimToEdge = (
-  claimNode: any,
-  nodes: any[],
-  edges: any[],
-  existingNodeIds: Set<string>,
-  existingEdgeIds: Set<string>
-) => {
-  // Find subject and object edges
-  const subjectEdge = claimNode.edgesFrom?.find((e: any) => e.label === 'subject')
-  const objectEdge = claimNode.edgesFrom?.find((e: any) => e.label === 'object')
-
-  // If no object edge, can't collapse - render as normal node
-  if (!objectEdge) {
-    console.log('[collapseClaimToEdge] No object edge - rendering as node:', claimNode.id)
-    parseSingleNode(nodes, edges, claimNode, existingNodeIds, existingEdgeIds)
-    return
-  }
-
-  // Add subject and object nodes (if not already added)
-  if (subjectEdge?.endNode && !existingNodeIds.has(subjectEdge.endNode.id.toString())) {
-    const nodeData = getNodeData(subjectEdge.endNode)
-    if (nodeData) {
-      nodes.push(nodeData)
-      existingNodeIds.add(subjectEdge.endNode.id.toString())
-    }
-  }
-
-  if (objectEdge.endNode && !existingNodeIds.has(objectEdge.endNode.id.toString())) {
-    const nodeData = getNodeData(objectEdge.endNode)
-    if (nodeData) {
-      nodes.push(nodeData)
-      existingNodeIds.add(objectEdge.endNode.id.toString())
-    }
-  }
-
-  // Create collapsed edge: subject --claimType--> object
-  const collapsedEdgeId = `collapsed-${claimNode.id}`
-  if (!existingEdgeIds.has(collapsedEdgeId) && subjectEdge && objectEdge) {
-    const claimType = claimNode.claim?.claim || claimNode.name || 'unknown'
-    const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
-
-    edges.push({
-      data: {
-        id: collapsedEdgeId,
-        source: subjectEdge.endNodeId.toString(),
-        target: objectEdge.endNodeId.toString(),
-        relation: claimType,
-        raw: claimNode,  // Keep claim data for inspection
-        color: edgeStyle.color,
-        width: edgeStyle.width,
-        arrow: edgeStyle.arrow,
-        lineStyle: edgeStyle.style,
-        isCollapsedClaim: true  // Flag for identifying collapsed claims
-      }
-    })
-    existingEdgeIds.add(collapsedEdgeId)
-    console.log('[collapseClaimToEdge] Created collapsed edge:', {
-      from: subjectEdge.endNode?.name,
-      to: objectEdge.endNode?.name,
-      type: claimType
-    })
-  }
-}
-
 const parseMultipleNodes = (data: any) => {
   const nodes: any[] = []
   const edges: any[] = []
@@ -181,33 +111,15 @@ const parseMultipleNodes = (data: any) => {
       console.log(`[parseMultipleNodes] Processing backend node ${idx + 1}/${data.length}:`, {
         id: node.id,
         uri: node.nodeUri,
-        entType: node.entType,
-        isAttested: node.isAttested
+        entType: node.entType
       })
-
-      // NEW: Check if this is an unattested claim - collapse it to an edge
-      const isClaimNode = node.entType === 'CLAIM' || node.entityType === 'CLAIM'
-      const isAttested = node.isAttested || false
-
-      if (isClaimNode && !isAttested) {
-        console.log('[parseMultipleNodes] Collapsing unattested claim to edge:', node.id)
-        collapseClaimToEdge(node, nodes, edges, existingNodeIds, existingEdgeIds)
-      } else {
-        // Normal node rendering (entities or attested claims)
-        parseSingleNode(nodes, edges, node, existingNodeIds, existingEdgeIds)
-      }
+      // All nodes (including CLAIM nodes) are rendered as nodes
+      parseSingleNode(nodes, edges, node, existingNodeIds, existingEdgeIds)
     })
   } else if (data && typeof data === 'object') {
     // Single node with edges
     console.log('[parseMultipleNodes] Backend returned single node')
-    const isClaimNode = data.entType === 'CLAIM' || data.entityType === 'CLAIM'
-    const isAttested = data.isAttested || false
-
-    if (isClaimNode && !isAttested) {
-      collapseClaimToEdge(data, nodes, edges, existingNodeIds, existingEdgeIds)
-    } else {
-      parseSingleNode(nodes, edges, data, existingNodeIds, existingEdgeIds)
-    }
+    parseSingleNode(nodes, edges, data, existingNodeIds, existingEdgeIds)
   }
 
   console.log(`[parseMultipleNodes] FINAL: Created ${nodes.length} nodes, ${edges.length} edges`)
@@ -305,15 +217,17 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
         return
       }
 
-      const claimType = e.label || e.claim?.claim || ''
-      const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+      // Edges are structural relationships: subject, object, source
+      const edgeLabel = e.label || ''
+      const edgeStyle = edgeStylesByClaimType[edgeLabel] || edgeStylesByClaimType.default
 
       edges.push({
         data: {
           id: edgeId,
           source: e.startNodeId.toString(),
           target: e.endNodeId.toString(),
-          relation: claimType,
+          relation: edgeLabel,
+          label: edgeLabel,
           raw: e,
           color: edgeStyle.color,
           width: edgeStyle.width,
@@ -347,15 +261,17 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
         return
       }
 
-      const claimType = e.label || e.claim?.claim || ''
-      const edgeStyle = edgeStylesByClaimType[claimType] || edgeStylesByClaimType.default
+      // Edges are structural relationships: subject, object, source
+      const edgeLabel = e.label || ''
+      const edgeStyle = edgeStylesByClaimType[edgeLabel] || edgeStylesByClaimType.default
 
       edges.push({
         data: {
           id: edgeId,
           source: e.startNodeId.toString(),
           target: e.endNodeId.toString(),
-          relation: claimType,
+          relation: edgeLabel,
+          label: edgeLabel,
           raw: e,
           color: edgeStyle.color,
           width: edgeStyle.width,
