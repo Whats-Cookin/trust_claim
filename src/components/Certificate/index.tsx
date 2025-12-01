@@ -718,15 +718,6 @@ const Certificate: React.FC<CertificateProps> = ({
             </Box>
           )}
 
-          {/* This is Me - for logged in non-owners */}
-          {currentUser && !isOwner && (
-            <Box onClick={handleThisIsMe} sx={actionButtonStyles}>
-              <PersonAddIcon sx={{ color: COLORS.primary }} />
-              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
-                This is Me
-              </Typography>
-            </Box>
-          )}
         </Box>
 
         <SharePopover
