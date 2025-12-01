@@ -11,12 +11,9 @@ import {
   useTheme
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { Link } from 'react-router-dom'
-import { BACKEND_BASE_URL } from '../../utils/settings'
 import { checkAuth } from '../../utils/authUtils'
 import Badge from '../../containers/feedOfClaim/Badge'
 import { EntityType } from '../../types/entities'
@@ -29,6 +26,34 @@ interface GraphDetailModalProps {
   startNode?: any
   endNode?: any
   onCenterNode?: (nodeId: string) => void
+}
+
+// Truncate text to fit popup
+const truncateText = (text: string, maxLength: number = 150): string => {
+  if (!text || text.length <= maxLength) return text
+  return text.slice(0, maxLength) + '...'
+}
+
+// Format field name for display
+const formatFieldName = (field: string): string => {
+  const fieldLabels: Record<string, string> = {
+    howKnown: 'How Known',
+    effectiveDate: 'Effective Date',
+    sourceURI: 'Source',
+    amt: 'Amount',
+    dateObserved: 'Date Observed',
+    howMeasured: 'How Measured',
+    intendedAudience: 'Intended Audience',
+    respondAt: 'Respond At'
+  }
+  return fieldLabels[field] || field.charAt(0).toUpperCase() + field.slice(1)
+}
+
+// Check if a value is displayable (non-null, non-empty)
+const isDisplayable = (value: any): boolean => {
+  if (value === null || value === undefined) return false
+  if (typeof value === 'string' && value.trim() === '') return false
+  return true
 }
 
 const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
@@ -49,23 +74,40 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
     const imageUrl = (data.image || data.thumbnail || '').replace(/\?.+$/, '')
     const isClaimNode = data.entType === EntityType.CLAIM || data.entityType === EntityType.CLAIM
 
-    // For CLAIM nodes, get claim data from raw or nested claim object
-    const claimData = data.raw?.claim || data.claim || data.raw || {}
-    const claimId = data.claimId || data.raw?.claimId
+    // For CLAIM nodes, get claim data - it may be nested in different places
+    const claimData = data.claim || data.raw?.claim || data.raw || data || {}
+    const claimId = data.claimId || data.raw?.claimId || claimData.id
+
+    // Fields to display for CLAIM nodes (in order of priority)
+    const claimFields = [
+      { key: 'statement', label: 'Statement' },
+      { key: 'subject', label: 'Subject' },
+      { key: 'object', label: 'Object' },
+      { key: 'aspect', label: 'Aspect' },
+      { key: 'confidence', label: 'Confidence', format: (v: number) => `${Math.round(v * 100)}%` },
+      { key: 'stars', label: 'Rating', format: (v: number) => '★'.repeat(v) + '☆'.repeat(5 - v) },
+      { key: 'howKnown', label: 'How Known' },
+      { key: 'effectiveDate', label: 'Date', format: (v: string) => new Date(v).toLocaleDateString() },
+      { key: 'amt', label: 'Amount', format: (v: number, d: any) => `$${v}${d.unit ? ' ' + d.unit : ''}` },
+      { key: 'sourceURI', label: 'Source', format: (v: string) => truncateText(v, 50) },
+      { key: 'author', label: 'Author' },
+      { key: 'score', label: 'Score', format: (v: number) => v.toFixed(2) }
+    ]
 
     return (
       <>
-        <Box sx={{ mb: 3 }}>
-          {imageUrl && (
+        <Box sx={{ mb: 2 }}>
+          {/* Image for non-claim nodes */}
+          {imageUrl && !isClaimNode && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
               <Box
                 component='img'
                 src={imageUrl}
                 alt={data.name}
                 sx={{
-                  width: 120,
-                  height: isClaimNode ? 'auto' : 120,
-                  borderRadius: isClaimNode ? '8px' : '50%',
+                  width: 100,
+                  height: 100,
+                  borderRadius: '50%',
                   objectFit: 'cover',
                   boxShadow: 2
                 }}
@@ -73,97 +115,77 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
             </Box>
           )}
 
-          {/* For CLAIM nodes, show badge */}
-          {isClaimNode && (
+          {/* For CLAIM nodes, show badge with claim type */}
+          {isClaimNode && isDisplayable(claimData.claim) && (
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <Badge claim={claimData.claim || data.name || 'claim'} />
+              <Badge claim={claimData.claim} />
             </Box>
           )}
 
-          <Typography variant='h6' align='center' gutterBottom>
-            {data.name || data.label || 'Unknown'}
+          {/* Node name/title */}
+          <Typography variant='h6' align='center' gutterBottom sx={{ fontSize: '1.1rem' }}>
+            {truncateText(data.name || data.label || claimData.claim || 'Unknown', 80)}
           </Typography>
 
-          {data.entType && (
-            <Typography variant='body2' color='text.secondary' align='center'>
-              Type: {data.entType}
+          {/* Entity type for non-claim nodes */}
+          {!isClaimNode && data.entType && (
+            <Typography variant='body2' color='text.secondary' align='center' sx={{ mb: 1 }}>
+              {data.entType}
             </Typography>
           )}
 
-          {/* CLAIM node specific details */}
+          {/* CLAIM node: show available fields dynamically */}
           {isClaimNode && (
-            <>
-              {/* Statement */}
-              {(claimData.statement || data.descrip) && (
-                <Box sx={{ mt: 2, mb: 2 }}>
-                  <Typography variant='body1' sx={{ fontStyle: 'italic', textAlign: 'center' }}>
-                    "{claimData.statement || data.descrip}"
-                  </Typography>
-                </Box>
-              )}
+            <Box sx={{ mt: 2 }}>
+              {claimFields.map(({ key, label, format }) => {
+                const value = claimData[key]
+                if (!isDisplayable(value)) return null
 
-              {/* Rating stars if applicable */}
-              {claimData.stars !== undefined && (
-                <Box sx={{ textAlign: 'center', my: 2 }}>
-                  <Typography variant='h6' sx={{ color: theme.palette.stars || '#FCD34D' }}>
-                    {'★'.repeat(claimData.stars)}
-                    {'☆'.repeat(5 - claimData.stars)}
-                  </Typography>
-                </Box>
-              )}
+                const displayValue = format ? format(value, claimData) : truncateText(String(value), 100)
 
-              {/* Metadata */}
-              <Box sx={{ mt: 2 }}>
-                {claimData.aspect && (
-                  <Typography variant='body2' color='text.secondary' align='center'>
-                    Aspect: {claimData.aspect}
+                return (
+                  <Typography
+                    key={key}
+                    variant='body2'
+                    sx={{ mb: 0.5, fontSize: '0.85rem' }}
+                  >
+                    <Box component='span' sx={{ color: 'text.secondary' }}>{label}:</Box>{' '}
+                    {key === 'stars' ? (
+                      <Box component='span' sx={{ color: '#FCD34D' }}>{displayValue}</Box>
+                    ) : (
+                      displayValue
+                    )}
                   </Typography>
-                )}
-                {claimData.confidence !== undefined && claimData.confidence !== null && (
-                  <Typography variant='body2' color='text.secondary' align='center'>
-                    Confidence: {claimData.confidence === 0 ? '0%' : `${Math.round(claimData.confidence * 100)}%`}
-                  </Typography>
-                )}
-                {claimData.howKnown && (
-                  <Typography variant='body2' color='text.secondary' align='center'>
-                    How Known: {claimData.howKnown}
-                  </Typography>
-                )}
-                {claimData.amt !== undefined && claimData.amt !== null && (
-                  <Typography variant='body2' color='text.secondary' align='center'>
-                    Amount: ${claimData.amt} {claimData.unit || ''}
-                  </Typography>
-                )}
-              </Box>
-            </>
+                )
+              })}
+            </Box>
           )}
 
-          {data.nodeUri && (
+          {/* URI link for non-claim nodes */}
+          {!isClaimNode && data.nodeUri && (
             <Typography
               variant='body2'
               align='center'
               sx={{
                 mt: 1,
+                fontSize: '0.8rem',
                 '& a': {
                   color: theme.palette.primary.main,
                   textDecoration: 'none',
-                  '&:hover': {
-                    textDecoration: 'underline'
-                  }
+                  '&:hover': { textDecoration: 'underline' }
                 }
               }}
             >
-              URI:{' '}
               <a href={data.nodeUri} target='_blank' rel='noopener noreferrer'>
-                {data.nodeUri}
+                {truncateText(data.nodeUri, 60)}
               </a>
             </Typography>
           )}
         </Box>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 1.5 }} />
 
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Button
             onClick={() => {
               if (onCenterNode && data.id) {
@@ -172,68 +194,51 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
               onClose()
             }}
             variant='text'
+            size='small'
             sx={{
-              fontSize: '12px',
-              p: '4px 8px',
+              fontSize: '11px',
+              p: '3px 8px',
               color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-              }
+              '&:hover': { backgroundColor: theme.palette.cardsbuttons || '#f5f5f5' }
             }}
           >
-            Center this Node
-          </Button>
-          <Button
-            onClick={onClose}
-            variant='text'
-            sx={{
-              fontSize: '12px',
-              p: '4px 8px',
-              color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-              }
-            }}
-          >
-            Return to Graph
+            Center
           </Button>
 
-          {/* CLAIM nodes get Evidence and Graph View buttons */}
+          {/* CLAIM nodes: Evidence and Graph View buttons */}
           {isClaimNode && claimId && (
             <>
               <Button
                 component={Link}
                 to={`/report/${claimId}`}
-                startIcon={<FeedOutlinedIcon />}
+                startIcon={<FeedOutlinedIcon sx={{ fontSize: 14 }} />}
                 variant='text'
+                size='small'
                 onClick={onClose}
                 sx={{
-                  fontSize: '12px',
-                  p: '4px 8px',
+                  fontSize: '11px',
+                  p: '3px 8px',
                   color: theme.palette.sidecolor || '#666',
-                  '&:hover': {
-                    backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-                  }
+                  '&:hover': { backgroundColor: theme.palette.cardsbuttons || '#f5f5f5' }
                 }}
               >
-                Evidence
+                Details
               </Button>
               <Button
                 component={Link}
                 to={`/explore/${claimId}`}
-                startIcon={<ShareOutlinedIcon />}
+                startIcon={<ShareOutlinedIcon sx={{ fontSize: 14 }} />}
                 variant='text'
+                size='small'
                 onClick={onClose}
                 sx={{
-                  fontSize: '12px',
-                  p: '4px 8px',
+                  fontSize: '11px',
+                  p: '3px 8px',
                   color: theme.palette.sidecolor || '#666',
-                  '&:hover': {
-                    backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-                  }
+                  '&:hover': { backgroundColor: theme.palette.cardsbuttons || '#f5f5f5' }
                 }}
               >
-                Graph View
+                Explore
               </Button>
             </>
           )}
@@ -250,16 +255,15 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
               }
               onClick={onClose}
               variant='text'
+              size='small'
               sx={{
-                fontSize: '12px',
-                p: '4px 8px',
+                fontSize: '11px',
+                p: '3px 8px',
                 color: theme.palette.sidecolor || '#666',
-                '&:hover': {
-                  backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-                }
+                '&:hover': { backgroundColor: theme.palette.cardsbuttons || '#f5f5f5' }
               }}
             >
-              {isClaimNode ? 'Validate/Reject' : 'Add Attestation'}
+              {isClaimNode ? 'Validate' : 'Add Claim'}
             </Button>
           )}
         </Box>
@@ -268,200 +272,111 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
   }
 
   const renderEdgeDetails = () => {
-    const claim = data.claim || data
-    const claimType = claim.claim || data.label || 'claim'
+    // Edges are now structural relationships only: subject, object, source
+    // They connect a CLAIM node to an entity node
+    const edgeLabel = data.label || 'relationship'
 
-    // Helper to extract name from URI
-    const extractName = (uri: string) => {
-      const regex = /linkedin\.com\/(?:in|company)\/([^\\/]+)(?:\/.*)?/
-      const match = regex.exec(uri)
-      return match ? match[1].replace(/-/g, ' ') : uri
+    // The startNode is the CLAIM node, endNode is the entity
+    const claimNode = startNode
+    const entityNode = endNode
+
+    // Human-readable description of the relationship
+    const getRelationshipDescription = () => {
+      const entityName = entityNode?.name || entityNode?.label || 'Entity'
+      const claimName = claimNode?.name || claimNode?.label || 'Claim'
+
+      switch (edgeLabel.toLowerCase()) {
+        case 'subject':
+          return `"${truncateText(entityName, 40)}" is the subject of this claim`
+        case 'object':
+          return `"${truncateText(entityName, 40)}" is the object of this claim`
+        case 'source':
+          return `"${truncateText(entityName, 40)}" is the source of this claim`
+        default:
+          return `"${truncateText(entityName, 40)}" is connected to "${truncateText(claimName, 40)}"`
+      }
     }
 
-    // Export function
-    const handleExport = () => {
-      const exportData = {
-        ...claim,
-        _metadata: {
-          exportedAt: new Date().toISOString(),
-          claimId: claim.id || data.claimId
-        }
+    // Get a more descriptive label
+    const getLabelDisplay = () => {
+      switch (edgeLabel.toLowerCase()) {
+        case 'subject':
+          return 'Subject'
+        case 'object':
+          return 'Object'
+        case 'source':
+          return 'Source'
+        default:
+          return edgeLabel
       }
-      const jsonString = JSON.stringify(exportData, null, 2)
-      const blob = new Blob([jsonString], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `claim_${claim.id || data.claimId}.json`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
     }
 
     return (
       <>
-        <Box sx={{ mb: 3 }}>
-          {/* Claim Type Badge */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <Badge claim={claimType} />
-          </Box>
-
-          {/* Subject */}
-          <Box sx={{ mb: 2 }}>
-            <Typography variant='caption' color='text.secondary'>
-              Subject
+        <Box sx={{ mb: 2, textAlign: 'center' }}>
+          {/* Relationship type badge */}
+          <Box
+            sx={{
+              display: 'inline-block',
+              px: 2,
+              py: 0.5,
+              mb: 2,
+              borderRadius: 1,
+              backgroundColor: theme.palette.mode === 'dark' ? '#374151' : '#E5E7EB',
+              color: theme.palette.text.primary
+            }}
+          >
+            <Typography variant='body2' sx={{ fontWeight: 500 }}>
+              {getLabelDisplay()} Relationship
             </Typography>
-            <Typography variant='body1'>{startNode?.name || extractName(claim.subject || '')}</Typography>
           </Box>
 
-          {/* Statement */}
-          {claim.statement && (
-            <Box sx={{ mb: 2 }}>
-              <Typography variant='body1' sx={{ fontStyle: 'italic' }}>
-                "{claim.statement}"
+          {/* Human-readable description */}
+          <Typography variant='body1' sx={{ mb: 2, fontStyle: 'italic' }}>
+            {getRelationshipDescription()}
+          </Typography>
+
+          {/* Show entity info */}
+          {entityNode && (
+            <Box sx={{ mt: 2, p: 1.5, borderRadius: 1, backgroundColor: theme.palette.action?.hover || '#f5f5f5' }}>
+              <Typography variant='body2' color='text.secondary' sx={{ mb: 0.5 }}>
+                {entityNode.entType || 'Entity'}
               </Typography>
+              <Typography variant='body1' sx={{ fontWeight: 500 }}>
+                {truncateText(entityNode.name || entityNode.label || 'Unknown', 60)}
+              </Typography>
+              {entityNode.nodeUri && (
+                <Typography
+                  variant='caption'
+                  sx={{
+                    display: 'block',
+                    mt: 0.5,
+                    color: 'text.secondary',
+                    wordBreak: 'break-all'
+                  }}
+                >
+                  {truncateText(entityNode.nodeUri, 50)}
+                </Typography>
+              )}
             </Box>
           )}
-
-          {/* Rating stars if applicable */}
-          {claim.stars !== undefined && (
-            <Box sx={{ textAlign: 'center', my: 2 }}>
-              <Typography variant='h6' sx={{ color: theme.palette.stars || '#FCD34D' }}>
-                {'★'.repeat(claim.stars)}
-                {'☆'.repeat(5 - claim.stars)}
-              </Typography>
-            </Box>
-          )}
-
-          {/* Source - subtle style like in feed */}
-          {claim.sourceURI && (
-            <Typography
-              variant='body2'
-              sx={{
-                fontSize: '12px',
-                color: theme.palette.date || '#666',
-                fontFamily: 'Roboto, sans-serif',
-                mb: 2
-              }}
-            >
-              source: {extractName(claim.sourceURI)}
-            </Typography>
-          )}
-
-          <Divider sx={{ my: 2 }} />
-
-          {/* Metadata section */}
-          <Box sx={{ mb: 2 }}>
-            {claim.aspect && (
-              <Typography variant='body2' sx={{ mb: 0.5 }}>
-                Aspect: {claim.aspect}
-              </Typography>
-            )}
-            {claim.confidence !== undefined && claim.confidence !== null && (
-              <Typography variant='body2' sx={{ mb: 0.5 }}>
-                Confidence: {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
-              </Typography>
-            )}
-            {claim.effectiveDate && (
-              <Typography variant='body2' sx={{ mb: 0.5 }}>
-                Date:{' '}
-                {new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </Typography>
-            )}
-            {claim.howKnown && (
-              <Typography variant='body2' sx={{ mb: 0.5 }}>
-                How Known: {claim.howKnown}
-              </Typography>
-            )}
-            {claim.score !== undefined && claim.score !== null && (
-              <Typography variant='body2' sx={{ mb: 0.5 }}>
-                Score: {claim.score}
-              </Typography>
-            )}
-            {claim.amt !== undefined && claim.amt !== null && (
-              <Typography variant='body2' sx={{ mb: 0.5 }}>
-                Amount: ${claim.amt} {claim.unit || ''}
-              </Typography>
-            )}
-          </Box>
         </Box>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ my: 1.5 }} />
 
-        {/* Action buttons - same style as feed */}
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
-          {checkAuth() && (
-            <Button
-              component={Link}
-              to={`/validate?subject=${BACKEND_BASE_URL}/claims/${claim.id || data.claimId}`}
-              startIcon={<VerifiedOutlinedIcon />}
-              variant='text'
-              onClick={onClose}
-              sx={{
-                fontSize: '12px',
-                p: '4px 8px',
-                color: theme.palette.sidecolor || '#666',
-                '&:hover': {
-                  backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-                }
-              }}
-            >
-              Validate
-            </Button>
-          )}
+        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
           <Button
-            component={Link}
-            to={`/report/${claim.id || data.claimId}`}
-            startIcon={<FeedOutlinedIcon />}
-            variant='text'
             onClick={onClose}
-            sx={{
-              fontSize: '12px',
-              p: '4px 8px',
-              color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-              }
-            }}
-          >
-            Evidence
-          </Button>
-          <Button
-            component={Link}
-            to={`/explore/${claim.id || data.claimId}`}
-            startIcon={<ShareOutlinedIcon />}
             variant='text'
-            onClick={onClose}
+            size='small'
             sx={{
-              fontSize: '12px',
-              p: '4px 8px',
+              fontSize: '11px',
+              p: '3px 8px',
               color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-              }
+              '&:hover': { backgroundColor: theme.palette.cardsbuttons || '#f5f5f5' }
             }}
           >
-            Graph View
-          </Button>
-          <Button
-            startIcon={<SystemUpdateAltIcon />}
-            variant='text'
-            onClick={handleExport}
-            sx={{
-              fontSize: '12px',
-              p: '4px 8px',
-              color: theme.palette.sidecolor || '#666',
-              '&:hover': {
-                backgroundColor: theme.palette.cardsbuttons || '#f5f5f5'
-              }
-            }}
-          >
-            Export
+            Close
           </Button>
         </Box>
       </>
