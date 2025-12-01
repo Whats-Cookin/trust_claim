@@ -10,7 +10,11 @@ import {
   useMediaQuery,
   useTheme,
   Divider,
-  Link as MuiLink
+  Link as MuiLink,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import badge from '../../assets/images/badge.png'
@@ -148,6 +152,9 @@ const deriveDisplayNameFromAny = (value: any): string => {
   return utilGuess || asString
 }
 
+// LinkedTrust LinkedIn organization ID for Add to Profile
+const LINKEDTRUST_LINKEDIN_ORG_ID = '69351143'
+
 const Certificate: React.FC<CertificateProps> = ({
   issuer_name,
   subject,
@@ -178,6 +185,13 @@ const Certificate: React.FC<CertificateProps> = ({
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [currentUrl, setCurrentUrl] = useState('')
   const [isOwnerViaSameAs, setIsOwnerViaSameAs] = useState<boolean | null>(null)
+  const [linkedInPreviewOpen, setLinkedInPreviewOpen] = useState(false)
+  const [linkedInPreviewData, setLinkedInPreviewData] = useState<{
+    name: string
+    issueDate: string
+    certUrl: string
+    certId: string
+  } | null>(null)
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
@@ -273,22 +287,86 @@ const Certificate: React.FC<CertificateProps> = ({
     }
   }
 
-  const generateLinkedInShareUrl = (credentialName: string, url: string) => {
-    const encodedUrl = encodeURIComponent(url)
-    const message = encodeURIComponent(
-      `Excited to share my verified ${credentialName} credential from LinkedTrust! Check it out here: ${url} Thanks to my validators for confirming my skills!`
-    )
-    return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
+  const generateLinkedInAddToProfileUrl = () => {
+    // Build LinkedIn Add to Profile URL for certifications
+    const params = new URLSearchParams()
+    params.set('startTask', 'CERTIFICATION_NAME')
+
+    // Build certificate name: claim : aspect : statement[0:50]
+    const claimObj = claim as any
+    const parts: string[] = []
+
+    if (claimObj?.claim) {
+      parts.push(claimObj.claim)
+    }
+    if (claimObj?.aspect) {
+      parts.push(claimObj.aspect)
+    }
+    if (statement) {
+      const truncated = statement.length > 50 ? statement.substring(0, 50) + '...' : statement
+      parts.push(truncated)
+    }
+
+    const certName = parts.length > 0 ? parts.join(': ') : 'LinkedTrust Credential'
+    params.set('name', certName)
+
+    // Organization (using ID pulls logo from LinkedIn company page)
+    params.set('organizationId', LINKEDTRUST_LINKEDIN_ORG_ID)
+
+    // Issue date from effectiveDate
+    if (effectiveDate) {
+      const date = new Date(effectiveDate)
+      params.set('issueYear', date.getFullYear().toString())
+      params.set('issueMonth', (date.getMonth() + 1).toString())
+    }
+
+    // Certificate ID and URL
+    if (claimId) {
+      params.set('certId', claimId.toString())
+    }
+    params.set('certUrl', currentUrl)
+
+    return `https://www.linkedin.com/profile/add?${params.toString()}`
   }
 
   const handleLinkedInPost = () => {
-    let credentialName = 'a new'
-    if (subject && typeof subject === 'string' && !subject.includes('http')) {
-      credentialName = subject
+    // Show preview dialog first
+    const claimObj = claim as any
+    const parts: string[] = []
+
+    if (claimObj?.claim) {
+      parts.push(claimObj.claim)
     }
-    const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
-    window.open(linkedInShareUrl, '_blank')
+    if (claimObj?.aspect) {
+      parts.push(claimObj.aspect)
+    }
+    if (statement) {
+      const truncated = statement.length > 50 ? statement.substring(0, 50) + '...' : statement
+      parts.push(truncated)
+    }
+
+    const certName = parts.length > 0 ? parts.join(': ') : 'LinkedTrust Credential'
+
+    let issueDate = ''
+    if (effectiveDate) {
+      const date = new Date(effectiveDate)
+      issueDate = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    }
+
+    setLinkedInPreviewData({
+      name: certName,
+      issueDate,
+      certUrl: currentUrl,
+      certId: claimId?.toString() || ''
+    })
+    setLinkedInPreviewOpen(true)
     handleClose()
+  }
+
+  const handleLinkedInConfirm = () => {
+    const linkedInUrl = generateLinkedInAddToProfileUrl()
+    window.open(linkedInUrl, '_blank')
+    setLinkedInPreviewOpen(false)
   }
 
   const handleThisIsMe = async () => {
@@ -751,6 +829,47 @@ const Certificate: React.FC<CertificateProps> = ({
           onClose={handleClaimDialogClose}
           validation={selectedValidation}
         />
+
+        {/* LinkedIn Add to Profile Preview Dialog */}
+        <Dialog
+          open={linkedInPreviewOpen}
+          onClose={() => setLinkedInPreviewOpen(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Add Certificate to LinkedIn</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+              This will open LinkedIn to add the following certificate to your profile:
+            </Typography>
+            <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
+              <Typography variant="subtitle2" color="textSecondary">Name</Typography>
+              <Typography variant="body1" sx={{ mb: 1.5 }}>{linkedInPreviewData?.name}</Typography>
+
+              <Typography variant="subtitle2" color="textSecondary">Issuing Organization</Typography>
+              <Typography variant="body1" sx={{ mb: 1.5 }}>LinkedTrust</Typography>
+
+              {linkedInPreviewData?.issueDate && (
+                <>
+                  <Typography variant="subtitle2" color="textSecondary">Issue Date</Typography>
+                  <Typography variant="body1" sx={{ mb: 1.5 }}>{linkedInPreviewData.issueDate}</Typography>
+                </>
+              )}
+
+              <Typography variant="subtitle2" color="textSecondary">Credential ID</Typography>
+              <Typography variant="body1" sx={{ mb: 1.5 }}>{linkedInPreviewData?.certId}</Typography>
+
+              <Typography variant="subtitle2" color="textSecondary">Credential URL</Typography>
+              <Typography variant="body1" sx={{ wordBreak: 'break-all' }}>{linkedInPreviewData?.certUrl}</Typography>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setLinkedInPreviewOpen(false)}>Cancel</Button>
+            <Button onClick={handleLinkedInConfirm} variant="contained" color="primary">
+              Add to LinkedIn
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Card>
     </Container>
   )
