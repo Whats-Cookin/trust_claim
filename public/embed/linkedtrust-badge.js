@@ -64,7 +64,7 @@
         let validationCount = 0;
         let videos = [];
         try {
-          const reportRes = await fetch(`${API_BASE}/report/claim/${this.claimId}`);
+          const reportRes = await fetch(`${API_BASE}/reports/claim/${this.claimId}`);
           if (reportRes.ok) {
             const reportData = await reportRes.json();
             validationCount = reportData.validations?.length || 0;
