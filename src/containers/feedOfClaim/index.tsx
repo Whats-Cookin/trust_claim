@@ -513,9 +513,9 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                   </Button>
                                 </Link>
 
-                                {/* Certificate button - only for people/org claims */}
+                                {/* Present button - opens presentation options (certificate, embed, share) */}
                                 {!!claimId && (
-                                  <Link to={`/certificate/${claimId}`}>
+                                  <Link to={`/present/${claimId}`}>
                                     <Button
                                       startIcon={<WorkspacePremiumOutlinedIcon />}
                                       variant='text'
@@ -527,7 +527,7 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                         '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                                       }}
                                     >
-                                      Certificate
+                                      Present
                                     </Button>
                                   </Link>
                                 )}

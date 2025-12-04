@@ -23,8 +23,10 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
+import CodeIcon from '@mui/icons-material/Code'
 import html2pdf from 'html2pdf.js'
-import { CertificateProps, Validation } from '../../types/certificate'
+import { CertificateProps, Validation, VideoMedia } from '../../types/certificate'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import {
   cardStyles,
   badgeStyles,
@@ -164,6 +166,7 @@ const Certificate: React.FC<CertificateProps> = ({
   validations,
   claimId,
   image,
+  videos,
   name,
   claim,
   subject_name,
@@ -192,6 +195,7 @@ const Certificate: React.FC<CertificateProps> = ({
     certUrl: string
     certId: string
   } | null>(null)
+  const [videoPlaying, setVideoPlaying] = useState(false)
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
@@ -591,6 +595,73 @@ const Certificate: React.FC<CertificateProps> = ({
                 </Typography>
               )}
 
+              {/* Video Testimonial Section */}
+              {videos && videos.length > 0 && (
+                <Box sx={{ width: '100%', maxWidth: 480, mx: 'auto', mb: { xs: 3, sm: 4 } }}>
+                  <Typography
+                    variant='subtitle2'
+                    sx={{
+                      textAlign: 'center',
+                      color: COLORS.text.secondary,
+                      mb: 1.5,
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                      fontSize: 12
+                    }}
+                  >
+                    Video Testimonial
+                  </Typography>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      aspectRatio: '16/9',
+                      backgroundColor: '#000',
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+                    }}
+                  >
+                    {!videoPlaying ? (
+                      <Box
+                        onClick={() => setVideoPlaying(true)}
+                        sx={{
+                          position: 'absolute',
+                          inset: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          background: 'linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%)',
+                          transition: 'opacity 0.2s',
+                          '&:hover': {
+                            opacity: 0.9
+                          }
+                        }}
+                      >
+                        <Box sx={{ textAlign: 'center', color: 'white' }}>
+                          <PlayCircleOutlineIcon sx={{ fontSize: 64, mb: 1 }} />
+                          <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                            Click to play
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <video
+                        src={videos[0].url}
+                        controls
+                        autoPlay
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Box>
+              )}
+
               {/* <CertificateMedia image={image} /> */}
 
               {validations && validations.length > 0 && (
@@ -776,6 +847,14 @@ const Certificate: React.FC<CertificateProps> = ({
             <ArticleOutlinedIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
               Evidence
+            </Typography>
+          </Box>
+
+          {/* Embed - get embed code for website */}
+          <Box onClick={() => navigate(`/present/${claimId}`)} sx={actionButtonStyles}>
+            <CodeIcon sx={{ color: COLORS.primary }} />
+            <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+              Embed
             </Typography>
           </Box>
 
