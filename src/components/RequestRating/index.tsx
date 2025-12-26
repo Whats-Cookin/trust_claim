@@ -65,7 +65,6 @@ const RequestRating: React.FC = () => {
   const theme = useTheme()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [createdClaimId, setCreatedClaimId] = useState<number | null>(null)
 
   const aboutUri = searchParams.get('about') || ''
 
@@ -133,11 +132,10 @@ const RequestRating: React.FC = () => {
         sourceURI: data.sourceURI || undefined
       }
 
-      const { message, isSuccess, claimId } = await createClaim(payload)
+      const { message, isSuccess } = await createClaim(payload)
 
       if (isSuccess) {
         setSubmitted(true)
-        setCreatedClaimId(claimId || null)
       } else {
         console.error('Failed to create rating:', message)
       }
@@ -176,24 +174,13 @@ const RequestRating: React.FC = () => {
             <Typography variant='body1' sx={{ color: theme.palette.text.secondary, mb: 3 }}>
               Your testimonial has been submitted and will be visible on LinkedTrust.
             </Typography>
-            {createdClaimId && (
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <Button
-                  variant='contained'
-                  onClick={() => navigate(`/certificate/${createdClaimId}`)}
-                  sx={{ textTransform: 'none' }}
-                >
-                  View Your Rating
-                </Button>
-                <Button
-                  variant='outlined'
-                  onClick={() => navigate('/feed')}
-                  sx={{ textTransform: 'none' }}
-                >
-                  Browse Feed
-                </Button>
-              </Box>
-            )}
+            <Button
+              variant='contained'
+              onClick={() => navigate('/feed')}
+              sx={{ textTransform: 'none' }}
+            >
+              Browse Feed
+            </Button>
           </Card>
         </Container>
       </MainContainer>
