@@ -21,6 +21,8 @@ import Privacy from './containers/Privacy'
 import { ClaimCredential } from './containers/ClaimCredential'
 import { checkAuth } from './utils/authUtils'
 import CertificateView from './components/Certificate/CertificateView'
+import Present from './components/Present'
+import RequestRating from './components/RequestRating'
 import './App.css'
 
 const App = () => {
@@ -167,8 +169,19 @@ const App = () => {
                   isAuthenticated ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
-              <Route path='/certificate/:id' element={<CertificateView />} /> {/* Alias for common typo */}
-              <Route path='/certificatet/:id' element={<CertificateView />} />
+              <Route path='/certificate/:id' element={<CertificateView />} />
+              <Route path='/certificatet/:id' element={<CertificateView />} /> {/* Alias for common typo */}
+              <Route path='/present/:id' element={<Present />} />
+              <Route
+                path='/request-rating'
+                element={
+                  isAuthenticated ? (
+                    <RequestRating />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
+                }
+              />
               {/* Catch-all to avoid blank pages */}
               <Route path='*' element={<Navigate to='/feed' replace />} />
             </Routes>

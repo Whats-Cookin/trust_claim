@@ -35,6 +35,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import placeholderImage from '../../assets/images/imgplaceholder.svg'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
+import VideoRecorder from '../VideoRecorder'
 import MainContainer from '../MainContainer'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
@@ -154,6 +155,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [claim, setClaim] = useState('')
   const [claimAddress, setClaimAddress] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   const subject = queryParams.get('subject')
   const theme = useTheme()
@@ -992,6 +994,19 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 helperText={error ? error.message : ''}
                               />
                             )}
+                          />
+                        </Box>
+
+                        {/* Video Testimonial */}
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <VideoRecorder
+                            onVideoUploaded={(url) => {
+                              setVideoUrl(url)
+                            }}
+                            onVideoRemoved={() => {
+                              setVideoUrl(null)
+                            }}
+                            maxDuration={30}
                           />
                         </Box>
 
