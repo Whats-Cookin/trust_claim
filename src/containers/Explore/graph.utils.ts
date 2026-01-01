@@ -141,8 +141,14 @@ const parseMultipleNodes = (data: any) => {
     const backendNodeIds = data.map((n: any) => n.id)
     const uniqueBackendIds = new Set(backendNodeIds)
     if (backendNodeIds.length !== uniqueBackendIds.size) {
-      console.error('[parseMultipleNodes] ⚠️ BACKEND RETURNED DUPLICATE NODE IDs!', { total: backendNodeIds.length, unique: uniqueBackendIds.size })
-      console.error('[parseMultipleNodes] Duplicate IDs:', backendNodeIds.filter((id, idx) => backendNodeIds.indexOf(id) !== idx))
+      console.error('[parseMultipleNodes] ⚠️ BACKEND RETURNED DUPLICATE NODE IDs!', {
+        total: backendNodeIds.length,
+        unique: uniqueBackendIds.size
+      })
+      console.error(
+        '[parseMultipleNodes] Duplicate IDs:',
+        backendNodeIds.filter((id, idx) => backendNodeIds.indexOf(id) !== idx)
+      )
     }
     data.forEach((node: any, idx: number) => {
       console.log(`[parseMultipleNodes] Processing backend node ${idx + 1}/${data.length}:`, {
@@ -216,14 +222,24 @@ const getNodeData = (node: any) => {
   return nodeData
 }
 
-const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: Set<string>, existingEdgeIds: Set<string>) => {
+const parseSingleNode = (
+  nodes: {}[],
+  edges: {}[],
+  node: any,
+  existingNodeIds: Set<string>,
+  existingEdgeIds: Set<string>
+) => {
   // adding subject node
   if (node.name && node.nodeUri) {
     const nodeId = node.id.toString()
     if (!existingNodeIds.has(nodeId)) {
       const nodeData = getNodeData(node)
       if (nodeData) {
-        console.log('[parseSingleNode] Adding main node:', { id: nodeId, uri: node.nodeUri, label: nodeData.data.label })
+        console.log('[parseSingleNode] Adding main node:', {
+          id: nodeId,
+          uri: node.nodeUri,
+          label: nodeData.data.label
+        })
         nodes.push(nodeData)
         existingNodeIds.add(nodeId)
       }
@@ -238,12 +254,19 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
       if (e.endNode && !existingNodeIds.has(e.endNode.id.toString())) {
         const nodeData = getNodeData(e.endNode)
         if (nodeData) {
-          console.log('[parseSingleNode] Adding endNode from edge:', { id: e.endNode.id.toString(), uri: e.endNode.nodeUri, label: nodeData.data.label })
+          console.log('[parseSingleNode] Adding endNode from edge:', {
+            id: e.endNode.id.toString(),
+            uri: e.endNode.nodeUri,
+            label: nodeData.data.label
+          })
           nodes.push(nodeData)
           existingNodeIds.add(e.endNode.id.toString())
         }
       } else if (e.endNode) {
-        console.log('[parseSingleNode] Skipping duplicate endNode:', { id: e.endNode.id.toString(), uri: e.endNode.nodeUri })
+        console.log('[parseSingleNode] Skipping duplicate endNode:', {
+          id: e.endNode.id.toString(),
+          uri: e.endNode.nodeUri
+        })
       }
     })
 
@@ -282,12 +305,19 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
       if (e.startNode && !existingNodeIds.has(e.startNode.id.toString())) {
         const nodeData = getNodeData(e.startNode)
         if (nodeData) {
-          console.log('[parseSingleNode] Adding startNode from edge:', { id: e.startNode.id.toString(), uri: e.startNode.nodeUri, label: nodeData.data.label })
+          console.log('[parseSingleNode] Adding startNode from edge:', {
+            id: e.startNode.id.toString(),
+            uri: e.startNode.nodeUri,
+            label: nodeData.data.label
+          })
           nodes.push(nodeData)
           existingNodeIds.add(e.startNode.id.toString())
         }
       } else if (e.startNode) {
-        console.log('[parseSingleNode] Skipping duplicate startNode:', { id: e.startNode.id.toString(), uri: e.startNode.nodeUri })
+        console.log('[parseSingleNode] Skipping duplicate startNode:', {
+          id: e.startNode.id.toString(),
+          uri: e.startNode.nodeUri
+        })
       }
     })
 
@@ -326,145 +356,144 @@ const parseSingleNode = (nodes: {}[], edges: {}[], node: any, existingNodeIds: S
 /**
  * Merges nodes connected by SAME_AS edges into single visual nodes.
  * The merged node contains aliases array with all original node data for inspection.
- * 
+ *
  * @param nodes - Array of cytoscape node objects
- * @param edges - Array of cytoscape edge objects  
+ * @param edges - Array of cytoscape edge objects
  * @param enabled - Toggle to enable/disable merging (default: true)
  * @returns Object with merged nodes and edges
  */
-const mergeSameAsNodes = (
-    nodes: any[],
-    edges: any[],
-    enabled: boolean = true
-): { nodes: any[]; edges: any[] } => {
-    if (!enabled || nodes.length === 0) {
-        return { nodes, edges }
+const mergeSameAsNodes = (nodes: any[], edges: any[], enabled: boolean = true): { nodes: any[]; edges: any[] } => {
+  if (!enabled || nodes.length === 0) {
+    return { nodes, edges }
+  }
+
+  // Find identity-equivalent edges (SAME_AS or RELATED_TO with same-as aspect)
+  const sameAsEdges = edges.filter(isIdentityEquivalentEdge)
+
+  if (sameAsEdges.length === 0) {
+    return { nodes, edges }
+  }
+
+  // Union-find data structure
+  const parent = new Map<string, string>()
+
+  const find = (id: string): string => {
+    if (!parent.has(id)) parent.set(id, id)
+    if (parent.get(id) !== id) {
+      parent.set(id, find(parent.get(id)!))
+    }
+    return parent.get(id)!
+  }
+
+  const union = (a: string, b: string) => {
+    const rootA = find(a)
+    const rootB = find(b)
+    if (rootA !== rootB) {
+      // Prefer lower ID as canonical (stable ordering)
+      if (rootA < rootB) {
+        parent.set(rootB, rootA)
+      } else {
+        parent.set(rootA, rootB)
+      }
+    }
+  }
+
+  // Union all SAME_AS connected nodes
+  sameAsEdges.forEach(edge => {
+    union(edge.data.source, edge.data.target)
+  })
+
+  // Group nodes by canonical representative
+  const nodeGroups = new Map<string, any[]>()
+  nodes.forEach(node => {
+    const canonical = find(node.data.id)
+    if (!nodeGroups.has(canonical)) {
+      nodeGroups.set(canonical, [])
+    }
+    nodeGroups.get(canonical)!.push(node)
+  })
+
+  // Create merged nodes
+  const mergedNodes = Array.from(nodeGroups.entries()).map(([canonicalId, group]) => {
+    // Use canonical node as primary, fallback to first
+    const primary = group.find(n => n.data.id === canonicalId) || group[0]
+
+    if (group.length === 1) {
+      return primary
     }
 
-    // Find identity-equivalent edges (SAME_AS or RELATED_TO with same-as aspect)
-    const sameAsEdges = edges.filter(isIdentityEquivalentEdge)
+    // Collect aliases (all nodes in group)
+    const aliases = group.map(n => ({
+      id: n.data.id,
+      uri: n.data.uri || n.data.nodeUri,
+      label: n.data.label,
+      entType: n.data.entType,
+      raw: n.data.raw
+    }))
 
-    if (sameAsEdges.length === 0) {
-        return { nodes, edges }
+    // Pick best label (prefer shorter, non-URL labels)
+    const bestLabel =
+      group
+        .map(n => n.data.label)
+        .sort((a, b) => {
+          const aIsUrl = a?.includes('://') || a?.includes('/')
+          const bIsUrl = b?.includes('://') || b?.includes('/')
+          if (aIsUrl && !bIsUrl) return 1
+          if (!aIsUrl && bIsUrl) return -1
+          return (a?.length || 999) - (b?.length || 999)
+        })[0] || primary.data.label
+
+    return {
+      ...primary,
+      data: {
+        ...primary.data,
+        label: bestLabel,
+        aliases,
+        isMerged: true,
+        mergedCount: group.length
+      }
     }
+  })
 
-    // Union-find data structure
-    const parent = new Map<string, string>()
+  // Build node ID to canonical ID mapping
+  const idToCanonical = new Map<string, string>()
+  nodes.forEach(node => {
+    idToCanonical.set(node.data.id, find(node.data.id))
+  })
 
-    const find = (id: string): string => {
-        if (!parent.has(id)) parent.set(id, id)
-        if (parent.get(id) !== id) {
-            parent.set(id, find(parent.get(id)!))
+  // Rewrite edges and filter out identity-equivalent edges
+  const seenEdges = new Set<string>()
+  const mergedEdges = edges
+    .filter(e => !isIdentityEquivalentEdge(e))
+    .map(edge => {
+      const newSource = idToCanonical.get(edge.data.source) || edge.data.source
+      const newTarget = idToCanonical.get(edge.data.target) || edge.data.target
+      return {
+        ...edge,
+        data: {
+          ...edge.data,
+          source: newSource,
+          target: newTarget,
+          originalSource: edge.data.source,
+          originalTarget: edge.data.target
         }
-        return parent.get(id)!
-    }
-
-    const union = (a: string, b: string) => {
-        const rootA = find(a)
-        const rootB = find(b)
-        if (rootA !== rootB) {
-            // Prefer lower ID as canonical (stable ordering)
-            if (rootA < rootB) {
-                parent.set(rootB, rootA)
-            } else {
-                parent.set(rootA, rootB)
-            }
-        }
-    }
-
-    // Union all SAME_AS connected nodes
-    sameAsEdges.forEach(edge => {
-        union(edge.data.source, edge.data.target)
+      }
+    })
+    // Remove self-loops
+    .filter(e => e.data.source !== e.data.target)
+    // Dedupe edges that became identical
+    .filter(edge => {
+      const key = `${edge.data.source}-${edge.data.target}-${edge.data.relation}`
+      if (seenEdges.has(key)) return false
+      seenEdges.add(key)
+      return true
     })
 
-    // Group nodes by canonical representative
-    const nodeGroups = new Map<string, any[]>()
-    nodes.forEach(node => {
-        const canonical = find(node.data.id)
-        if (!nodeGroups.has(canonical)) {
-            nodeGroups.set(canonical, [])
-        }
-        nodeGroups.get(canonical)!.push(node)
-    })
+  console.log(
+    `mergeSameAsNodes: ${nodes.length} -> ${mergedNodes.length} nodes, ${edges.length} -> ${mergedEdges.length} edges`
+  )
 
-    // Create merged nodes
-    const mergedNodes = Array.from(nodeGroups.entries()).map(([canonicalId, group]) => {
-        // Use canonical node as primary, fallback to first
-        const primary = group.find(n => n.data.id === canonicalId) || group[0]
-
-        if (group.length === 1) {
-            return primary
-        }
-
-        // Collect aliases (all nodes in group)
-        const aliases = group.map(n => ({
-            id: n.data.id,
-            uri: n.data.uri || n.data.nodeUri,
-            label: n.data.label,
-            entType: n.data.entType,
-            raw: n.data.raw
-        }))
-
-        // Pick best label (prefer shorter, non-URL labels)
-        const bestLabel = group
-            .map(n => n.data.label)
-            .sort((a, b) => {
-                const aIsUrl = a?.includes('://') || a?.includes('/')
-                const bIsUrl = b?.includes('://') || b?.includes('/')
-                if (aIsUrl && !bIsUrl) return 1
-                if (!aIsUrl && bIsUrl) return -1
-                return (a?.length || 999) - (b?.length || 999)
-            })[0] || primary.data.label
-
-        return {
-            ...primary,
-            data: {
-                ...primary.data,
-                label: bestLabel,
-                aliases,
-                isMerged: true,
-                mergedCount: group.length
-            }
-        }
-    })
-
-    // Build node ID to canonical ID mapping
-    const idToCanonical = new Map<string, string>()
-    nodes.forEach(node => {
-        idToCanonical.set(node.data.id, find(node.data.id))
-    })
-
-    // Rewrite edges and filter out identity-equivalent edges
-    const seenEdges = new Set<string>()
-    const mergedEdges = edges
-        .filter(e => !isIdentityEquivalentEdge(e))
-        .map(edge => {
-            const newSource = idToCanonical.get(edge.data.source) || edge.data.source
-            const newTarget = idToCanonical.get(edge.data.target) || edge.data.target
-            return {
-                ...edge,
-                data: {
-                    ...edge.data,
-                    source: newSource,
-                    target: newTarget,
-                    originalSource: edge.data.source,
-                    originalTarget: edge.data.target
-                }
-            }
-        })
-        // Remove self-loops
-        .filter(e => e.data.source !== e.data.target)
-        // Dedupe edges that became identical
-        .filter(edge => {
-            const key = `${edge.data.source}-${edge.data.target}-${edge.data.relation}`
-            if (seenEdges.has(key)) return false
-            seenEdges.add(key)
-            return true
-        })
-
-    console.log(`mergeSameAsNodes: ${nodes.length} -> ${mergedNodes.length} nodes, ${edges.length} -> ${mergedEdges.length} edges`)
-
-    return { nodes: mergedNodes, edges: mergedEdges }
+  return { nodes: mergedNodes, edges: mergedEdges }
 }
 
 export { parseClaims, parseMultipleNodes, parseSingleNode, mergeSameAsNodes }

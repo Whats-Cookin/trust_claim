@@ -128,14 +128,14 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
       { key: 'subject', label: 'Subject' },
       { key: 'object', label: 'Object' },
       { key: 'aspect', label: 'Aspect' },
-      { key: 'confidence', label: 'Confidence', format: (v) => `${Math.round(v * 100)}%` },
-      { key: 'stars', label: 'Rating', format: (v) => '★'.repeat(v) + '☆'.repeat(5 - v) },
+      { key: 'confidence', label: 'Confidence', format: v => `${Math.round(v * 100)}%` },
+      { key: 'stars', label: 'Rating', format: v => '★'.repeat(v) + '☆'.repeat(5 - v) },
       { key: 'howKnown', label: 'How Known' },
-      { key: 'effectiveDate', label: 'Date', format: (v) => new Date(v).toLocaleDateString() },
+      { key: 'effectiveDate', label: 'Date', format: v => new Date(v).toLocaleDateString() },
       { key: 'amt', label: 'Amount', format: (v, d) => `$${v}${d?.unit ? ' ' + d.unit : ''}` },
-      { key: 'sourceURI', label: 'Source', format: (v) => truncateText(v, 50) },
+      { key: 'sourceURI', label: 'Source', format: v => truncateText(v, 50) },
       { key: 'author', label: 'Author' },
-      { key: 'score', label: 'Score', format: (v) => v.toFixed(2) }
+      { key: 'score', label: 'Score', format: v => v.toFixed(2) }
     ]
 
     return (
@@ -195,14 +195,14 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
                 const displayValue = format ? format(value, displayClaimData) : truncateText(String(value), 100)
 
                 return (
-                  <Typography
-                    key={key}
-                    variant='body2'
-                    sx={{ mb: 0.5, fontSize: '0.85rem' }}
-                  >
-                    <Box component='span' sx={{ color: 'text.secondary' }}>{label}:</Box>{' '}
+                  <Typography key={key} variant='body2' sx={{ mb: 0.5, fontSize: '0.85rem' }}>
+                    <Box component='span' sx={{ color: 'text.secondary' }}>
+                      {label}:
+                    </Box>{' '}
                     {key === 'stars' ? (
-                      <Box component='span' sx={{ color: '#FCD34D' }}>{displayValue}</Box>
+                      <Box component='span' sx={{ color: '#FCD34D' }}>
+                        {displayValue}
+                      </Box>
                     ) : (
                       displayValue
                     )}

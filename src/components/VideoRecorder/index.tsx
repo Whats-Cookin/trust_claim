@@ -1,14 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react'
-import {
-  Box,
-  Button,
-  Typography,
-  useTheme,
-  Alert,
-  CircularProgress,
-  Paper,
-  LinearProgress
-} from '@mui/material'
+import { Box, Button, Typography, useTheme, Alert, CircularProgress, Paper, LinearProgress } from '@mui/material'
 import VideocamIcon from '@mui/icons-material/Videocam'
 import StopIcon from '@mui/icons-material/Stop'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -24,15 +15,15 @@ interface VideoRecorderProps {
 }
 
 /**
- * VideoRecorder - Browser-based video recording with DigitalOcean Spaces upload
+ * VideoRecorder - Browser-based video recording with backend upload
  *
  * Uses MediaRecorder API to capture webcam video.
- * Uploads directly to DO Spaces using presigned URL from backend.
+ * Uploads video to backend which stores it in DigitalOcean Spaces.
  */
 const VideoRecorder: React.FC<VideoRecorderProps> = ({
   onVideoUploaded,
   onVideoRemoved,
-  maxDuration = 30 // 30 seconds default (backend limit)
+  maxDuration = 30 // 30 seconds default
 }) => {
   const theme = useTheme()
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -86,9 +77,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     setRecordingTime(0)
 
     const mediaRecorder = new MediaRecorder(streamRef.current, {
-      mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
-        ? 'video/webm;codecs=vp9'
-        : 'video/webm'
+      mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm'
     })
 
     mediaRecorder.ondataavailable = event => {
@@ -139,7 +128,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     }
   }, [])
 
-  // Upload video to DigitalOcean Spaces
+  // Upload video to backend
   const uploadVideo = useCallback(async () => {
     if (!recordedBlob) return
 
@@ -148,37 +137,23 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     setError(null)
 
     try {
-      // 1. Get presigned upload URL from backend
-      const { data: uploadData } = await axiosInstance.post('/api/video/upload-url')
-      const { uploadUrl, videoUrl, videoId } = uploadData
+      // Create FormData and send to backend
+      const formData = new FormData()
+      formData.append('video', recordedBlob, 'video.webm')
 
-      // 2. Upload video directly to DO Spaces
-      const xhr = new XMLHttpRequest()
-
-      await new Promise<void>((resolve, reject) => {
-        xhr.upload.onprogress = event => {
-          if (event.lengthComputable) {
-            const percent = Math.round((event.loaded / event.total) * 100)
+      const response = await axiosInstance.post('/api/video/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: progressEvent => {
+          if (progressEvent.total) {
+            const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100)
             setUploadProgress(percent)
           }
         }
-
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve()
-          } else {
-            reject(new Error(`Upload failed: ${xhr.status}`))
-          }
-        }
-
-        xhr.onerror = () => reject(new Error('Upload failed'))
-
-        xhr.open('PUT', uploadUrl)
-        xhr.setRequestHeader('Content-Type', 'video/webm')
-        xhr.send(recordedBlob)
       })
 
-      // 3. Success
+      const { videoUrl } = response.data
       setUploadedVideoUrl(videoUrl)
       setStatus('uploaded')
       onVideoUploaded(videoUrl)
@@ -459,7 +434,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
         variant='caption'
         sx={{ display: 'block', textAlign: 'center', mt: 1, color: theme.palette.text.secondary }}
       >
-        Max {maxDuration} seconds • Video stored on DigitalOcean Spaces
+        Max {maxDuration} seconds
       </Typography>
 
       {/* CSS for pulse animation */}

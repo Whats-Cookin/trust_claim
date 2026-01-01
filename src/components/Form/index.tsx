@@ -302,7 +302,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                 {watchSubject && (
                   <Typography
                     variant='caption'
-                    onClick={() => setSubjectEntityType(prev => prev === 'PERSON' ? 'ORGANIZATION' : 'PERSON')}
+                    onClick={() => setSubjectEntityType(prev => (prev === 'PERSON' ? 'ORGANIZATION' : 'PERSON'))}
                     sx={{
                       color: 'text.secondary',
                       cursor: 'pointer',
@@ -511,7 +511,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   }
                   fullWidth
                   sx={{ mb: 2 }}
-                  helperText="Leave blank if unknown. Examples: https://example.com, did:ethr:0x123..."
+                  helperText='Leave blank if unknown. Examples: https://example.com, did:ethr:0x123...'
                 />
 
                 <LocalizationProvider dateAdapter={AdapterDateFns}>

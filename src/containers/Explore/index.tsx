@@ -175,34 +175,38 @@ const Explore = (homeProps: IHomeProps) => {
         // 1. Connect to at least one node in the graph (existing or new)
         // 2. Don't already exist in the graph (by edge ID)
         // 3. Don't exceed max 2 edges between same node pair
-        const actuallyNewEdges = newEdges.filter(
-          (edge: any) => {
-            const sourceInGraph = allNodeIds.has(edge.data.source)
-            const targetInGraph = allNodeIds.has(edge.data.target)
-            const edgeAlreadyExists = currentGraphEdgeIds.has(edge.data.id)
+        const actuallyNewEdges = newEdges.filter((edge: any) => {
+          const sourceInGraph = allNodeIds.has(edge.data.source)
+          const targetInGraph = allNodeIds.has(edge.data.target)
+          const edgeAlreadyExists = currentGraphEdgeIds.has(edge.data.id)
 
-            // Must connect to at least one node in graph
-            if (!sourceInGraph && !targetInGraph) return false
+          // Must connect to at least one node in graph
+          if (!sourceInGraph && !targetInGraph) return false
 
-            // Must not already exist
-            if (edgeAlreadyExists) return false
+          // Must not already exist
+          if (edgeAlreadyExists) return false
 
-            // Check edge count limit between this pair
-            const pairKey = `${edge.data.source}-${edge.data.target}`
-            const currentCount = edgeCountByPair.get(pairKey) || 0
-            if (currentCount >= 2) {
-              console.log('[fetchRelatedClaims] Skipping edge - max 2 edges between nodes:', pairKey)
-              return false
-            }
-
-            return true
+          // Check edge count limit between this pair
+          const pairKey = `${edge.data.source}-${edge.data.target}`
+          const currentCount = edgeCountByPair.get(pairKey) || 0
+          if (currentCount >= 2) {
+            console.log('[fetchRelatedClaims] Skipping edge - max 2 edges between nodes:', pairKey)
+            return false
           }
-        )
+
+          return true
+        })
 
         // Only add and re-layout if we have truly new elements to add
         if (actuallyNewNodes.length > 0 || actuallyNewEdges.length > 0) {
-          console.log('[fetchRelatedClaims] Adding to graph:', { nodes: actuallyNewNodes.length, edges: actuallyNewEdges.length })
-          console.log('[fetchRelatedClaims] New node IDs being added:', actuallyNewNodes.map((n: any) => ({ id: n.data.id, uri: n.data.uri })))
+          console.log('[fetchRelatedClaims] Adding to graph:', {
+            nodes: actuallyNewNodes.length,
+            edges: actuallyNewEdges.length
+          })
+          console.log(
+            '[fetchRelatedClaims] New node IDs being added:',
+            actuallyNewNodes.map((n: any) => ({ id: n.data.id, uri: n.data.uri }))
+          )
           cy.add({ nodes: actuallyNewNodes, edges: actuallyNewEdges } as any)
           console.log('[fetchRelatedClaims] Graph now has', cy.nodes().length, 'total nodes')
           runCy(cy, false) // Re-layout with new nodes
