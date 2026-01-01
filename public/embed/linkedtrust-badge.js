@@ -12,8 +12,14 @@
  */
 
 (function() {
-  const API_BASE = 'https://live.linkedtrust.us/api';
-  const SITE_BASE = 'https://live.linkedtrust.us';
+  // Detect base URL from script src or default to production
+  const scriptTag = document.currentScript;
+  const scriptSrc = scriptTag ? scriptTag.src : '';
+  const srcMatch = scriptSrc.match(/^(https?:\/\/[^\/]+)/);
+  const detectedBase = srcMatch ? srcMatch[1] : 'https://live.linkedtrust.us';
+
+  const API_BASE = detectedBase + '/api';
+  const SITE_BASE = detectedBase;
 
   class LinkedTrustBadge extends HTMLElement {
     constructor() {

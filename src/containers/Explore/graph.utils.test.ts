@@ -420,9 +420,7 @@ describe('graph.utils deduplication', () => {
         { data: { id: '1', label: 'Alice', uri: 'https://example.com/alice' } },
         { data: { id: '2', label: 'Alice Smith', uri: 'https://other.com/alice' } }
       ]
-      const edges = [
-        { data: { id: '100', source: '1', target: '2', relation: 'same_as' } }
-      ]
+      const edges = [{ data: { id: '100', source: '1', target: '2', relation: 'same_as' } }]
 
       const result = mergeSameAsNodes(nodes, edges, true)
 
@@ -456,9 +454,7 @@ describe('graph.utils deduplication', () => {
         { data: { id: '1', label: 'https://example.com/person/12345' } },
         { data: { id: '2', label: 'Alice' } }
       ]
-      const edges = [
-        { data: { id: '100', source: '1', target: '2', relation: 'same_as' } }
-      ]
+      const edges = [{ data: { id: '100', source: '1', target: '2', relation: 'same_as' } }]
 
       const result = mergeSameAsNodes(nodes, edges, true)
 
@@ -485,10 +481,7 @@ describe('graph.utils deduplication', () => {
     })
 
     it('should remove self-loops created by merging', () => {
-      const nodes = [
-        { data: { id: '1', label: 'A' } },
-        { data: { id: '2', label: 'B' } }
-      ]
+      const nodes = [{ data: { id: '1', label: 'A' } }, { data: { id: '2', label: 'B' } }]
       const edges = [
         { data: { id: '100', source: '1', target: '2', relation: 'same_as' } },
         { data: { id: '101', source: '1', target: '2', relation: 'rated' } } // Would become self-loop
@@ -590,9 +583,7 @@ describe('graph.utils deduplication', () => {
     })
 
     it('should handle non-URL subjects and objects', () => {
-      const claims = [
-        { id: 1, subject: 'Alice', claim: 'knows', object: 'Bob' }
-      ]
+      const claims = [{ id: 1, subject: 'Alice', claim: 'knows', object: 'Bob' }]
 
       const elements = parseClaims(claims)
 

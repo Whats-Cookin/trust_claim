@@ -92,24 +92,21 @@ const CertificateView: React.FC = () => {
   const claim = data.claim
 
   // Backend provides subjectNode directly with the correct name
-  const personName = data.subjectNode?.name || '';
+  const personName = data.subjectNode?.name || ''
 
   // Find issuer from edges - the source edge endNode is the issuer
-  const sourceEdge = data.claim?.edges?.find((e: any) => e.label === 'source');
-  const issuerName = sourceEdge?.endNode?.name || '';
+  const sourceEdge = data.claim?.edges?.find((e: any) => e.label === 'source')
+  const issuerName = sourceEdge?.endNode?.name || ''
 
   // Separate videos from images
-  const allMedia = data.images || [];
-  const videos = allMedia.filter((m: any) =>
-    m.metadata?.type === 'video' ||
-    m.url?.includes('.webm') ||
-    m.url?.includes('.mp4')
-  );
-  const images = allMedia.filter((m: any) =>
-    !m.metadata?.type ||
-    m.metadata?.type === 'image' ||
-    (!m.url?.includes('.webm') && !m.url?.includes('.mp4'))
-  );
+  const allMedia = data.images || []
+  const videos = allMedia.filter(
+    (m: any) => m.metadata?.type === 'video' || m.url?.includes('.webm') || m.url?.includes('.mp4')
+  )
+  const images = allMedia.filter(
+    (m: any) =>
+      !m.metadata?.type || m.metadata?.type === 'image' || (!m.url?.includes('.webm') && !m.url?.includes('.mp4'))
+  )
 
   return (
     <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '100%', width: '100%', boxSizing: 'border-box', mx: 'auto' }}>

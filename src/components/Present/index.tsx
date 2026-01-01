@@ -107,8 +107,8 @@ const Present: React.FC = () => {
   title="LinkedTrust Testimonial Badge"
 ></iframe>`
 
-  const scriptEmbed = `<div id="linkedtrust-badge-${id}"></div>
-<script src="${window.location.origin}/embed/badge.js" data-claim-id="${id}"></script>`
+  const scriptEmbed = `<script src="${window.location.origin}/embed/linkedtrust-badge.js"></script>
+<linkedtrust-badge claim-id="${id}"></linkedtrust-badge>`
 
   const htmlBadgeEmbed = `<a href="${claimUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; text-decoration: none;">
   <div style="
@@ -121,7 +121,9 @@ const Present: React.FC = () => {
     max-width: 300px;
   ">
     <div style="font-size: 14px; opacity: 0.9; margin-bottom: 8px;">✓ Verified Testimonial</div>
-    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${claim?.statement?.substring(0, 80) || 'Endorsed'}${claim?.statement?.length > 80 ? '...' : ''}</div>
+    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${
+      claim?.statement?.substring(0, 80) || 'Endorsed'
+    }${claim?.statement?.length > 80 ? '...' : ''}</div>
     <div style="font-size: 12px; opacity: 0.8; display: flex; align-items: center; gap: 4px;">
       <span>Verified on LinkedTrust</span>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -134,7 +136,9 @@ const Present: React.FC = () => {
   // Generate request links
   const requestValidationUrl = `${window.location.origin}/validate?subject=${BACKEND_BASE_URL}/claims/${id}`
   const requestRatingUrl = claim?.subject
-    ? `${window.location.origin}/request-rating?about=${encodeURIComponent(typeof claim.subject === 'string' ? claim.subject : claim.subject.uri)}`
+    ? `${window.location.origin}/request-rating?about=${encodeURIComponent(
+        typeof claim.subject === 'string' ? claim.subject : claim.subject.uri
+      )}`
     : ''
 
   if (loading) {
@@ -343,7 +347,8 @@ const Present: React.FC = () => {
                 Request Validation of This Claim
               </Typography>
               <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mb: 2 }}>
-                Send this link to someone who can validate this claim. They can add their endorsement with optional video testimony.
+                Send this link to someone who can validate this claim. They can add their endorsement with optional
+                video testimony.
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <TextField

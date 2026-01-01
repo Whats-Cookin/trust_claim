@@ -23,6 +23,7 @@ import { checkAuth } from './utils/authUtils'
 import CertificateView from './components/Certificate/CertificateView'
 import Present from './components/Present'
 import RequestRating from './components/RequestRating'
+import BadgeEmbed from './components/BadgeEmbed'
 import './App.css'
 
 const App = () => {
@@ -144,13 +145,21 @@ const App = () => {
               <Route
                 path='claim'
                 element={
-                  isAuthenticated ? <Form {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? (
+                    <Form {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
                 }
               />
               <Route
                 path='/rate'
                 element={
-                  isAuthenticated ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? (
+                    <Rate {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
                 }
               />
               <Route
@@ -172,14 +181,11 @@ const App = () => {
               <Route path='/certificate/:id' element={<CertificateView />} />
               <Route path='/certificatet/:id' element={<CertificateView />} /> {/* Alias for common typo */}
               <Route path='/present/:id' element={<Present />} />
+              <Route path='/badge-embed/:id' element={<BadgeEmbed />} />
               <Route
                 path='/request-rating'
                 element={
-                  isAuthenticated ? (
-                    <RequestRating />
-                  ) : (
-                    <Navigate to='/login' replace state={{ from: location }} />
-                  )
+                  isAuthenticated ? <RequestRating /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
               {/* Catch-all to avoid blank pages */}

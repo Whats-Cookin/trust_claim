@@ -375,7 +375,7 @@ const Certificate: React.FC<CertificateProps> = ({
 
   const handleThisIsMe = async () => {
     if (!userUri || !subject) return
-    
+
     try {
       // Create SAME_AS claim
       const { createClaim } = await import('../../api')
@@ -387,11 +387,11 @@ const Certificate: React.FC<CertificateProps> = ({
         howKnown: 'VERIFIED_LOGIN',
         confidence: 1.0
       })
-      
+
       // Show success message
       setSnackbarMessage('Identity link created! You can now share this certificate.')
       setSnackbarOpen(true)
-      
+
       // Refresh to update UI
       setTimeout(() => window.location.reload(), 2000)
     } catch (error) {
@@ -407,13 +407,13 @@ const Certificate: React.FC<CertificateProps> = ({
     claim: claim?.claim,
     statement: statement,
     subjectType: subjectType
-  });
+  })
 
   // Use the name from backend node resolution
-  const recipientName = subject_name || 'Certificate Holder';
+  const recipientName = subject_name || 'Certificate Holder'
 
   // Extract what is being certified (not WHO but WHAT)
-  const certificationTopic = extractCertificationTopic(statement, claim?.aspect);
+  const certificationTopic = extractCertificationTopic(statement, claim?.aspect)
 
   const containerMaxWidth = isXl ? 'xl' : 'lg'
   const visibleValidationCount = getVisibleValidationCount(isXs, isSm, isMd)
@@ -875,6 +875,15 @@ const Certificate: React.FC<CertificateProps> = ({
             </Box>
           )}
 
+          {/* This is me - shown to logged in users who aren't detected as owner */}
+          {currentUser && !isOwner && (
+            <Box onClick={handleThisIsMe} sx={actionButtonStyles}>
+              <PersonAddIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                This is Me
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <SharePopover
@@ -910,41 +919,56 @@ const Certificate: React.FC<CertificateProps> = ({
         />
 
         {/* LinkedIn Add to Profile Preview Dialog */}
-        <Dialog
-          open={linkedInPreviewOpen}
-          onClose={() => setLinkedInPreviewOpen(false)}
-          maxWidth="sm"
-          fullWidth
-        >
+        <Dialog open={linkedInPreviewOpen} onClose={() => setLinkedInPreviewOpen(false)} maxWidth='sm' fullWidth>
           <DialogTitle>Add Certificate to LinkedIn</DialogTitle>
           <DialogContent>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+            <Typography variant='body2' color='textSecondary' sx={{ mb: 2 }}>
               This will open LinkedIn to add the following certificate to your profile:
             </Typography>
             <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
-              <Typography variant="subtitle2" color="textSecondary">Name</Typography>
-              <Typography variant="body1" sx={{ mb: 1.5 }}>{linkedInPreviewData?.name}</Typography>
+              <Typography variant='subtitle2' color='textSecondary'>
+                Name
+              </Typography>
+              <Typography variant='body1' sx={{ mb: 1.5 }}>
+                {linkedInPreviewData?.name}
+              </Typography>
 
-              <Typography variant="subtitle2" color="textSecondary">Issuing Organization</Typography>
-              <Typography variant="body1" sx={{ mb: 1.5 }}>LinkedTrust</Typography>
+              <Typography variant='subtitle2' color='textSecondary'>
+                Issuing Organization
+              </Typography>
+              <Typography variant='body1' sx={{ mb: 1.5 }}>
+                LinkedTrust
+              </Typography>
 
               {linkedInPreviewData?.issueDate && (
                 <>
-                  <Typography variant="subtitle2" color="textSecondary">Issue Date</Typography>
-                  <Typography variant="body1" sx={{ mb: 1.5 }}>{linkedInPreviewData.issueDate}</Typography>
+                  <Typography variant='subtitle2' color='textSecondary'>
+                    Issue Date
+                  </Typography>
+                  <Typography variant='body1' sx={{ mb: 1.5 }}>
+                    {linkedInPreviewData.issueDate}
+                  </Typography>
                 </>
               )}
 
-              <Typography variant="subtitle2" color="textSecondary">Credential ID</Typography>
-              <Typography variant="body1" sx={{ mb: 1.5 }}>{linkedInPreviewData?.certId}</Typography>
+              <Typography variant='subtitle2' color='textSecondary'>
+                Credential ID
+              </Typography>
+              <Typography variant='body1' sx={{ mb: 1.5 }}>
+                {linkedInPreviewData?.certId}
+              </Typography>
 
-              <Typography variant="subtitle2" color="textSecondary">Credential URL</Typography>
-              <Typography variant="body1" sx={{ wordBreak: 'break-all' }}>{linkedInPreviewData?.certUrl}</Typography>
+              <Typography variant='subtitle2' color='textSecondary'>
+                Credential URL
+              </Typography>
+              <Typography variant='body1' sx={{ wordBreak: 'break-all' }}>
+                {linkedInPreviewData?.certUrl}
+              </Typography>
             </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setLinkedInPreviewOpen(false)}>Cancel</Button>
-            <Button onClick={handleLinkedInConfirm} variant="contained" color="primary">
+            <Button onClick={handleLinkedInConfirm} variant='contained' color='primary'>
               Add to LinkedIn
             </Button>
           </DialogActions>

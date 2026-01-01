@@ -281,6 +281,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         amt?: string | number
         score?: number
         images?: ImageI[]
+        videoUrl?: string
       }
 
       const payload: PayloadType = {
@@ -290,7 +291,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         howKnown: basis, // Start with basis, will be mapped below
         effectiveDate: effectiveDateAsString,
         claim: CLAIM_VALIDATED,
-        images
+        images,
+        ...(videoUrl && { videoUrl }) // Include video URL if recorded
       }
 
       // Handle special cases - map basis to actual howKnown
@@ -1000,7 +1002,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                         {/* Video Testimonial */}
                         <Box sx={{ mb: { xs: 2, sm: 3 } }}>
                           <VideoRecorder
-                            onVideoUploaded={(url) => {
+                            onVideoUploaded={url => {
                               setVideoUrl(url)
                             }}
                             onVideoRemoved={() => {

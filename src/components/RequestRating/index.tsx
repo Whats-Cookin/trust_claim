@@ -129,7 +129,8 @@ const RequestRating: React.FC = () => {
         howKnown: 'FIRST_HAND',
         effectiveDate: data.effectiveDate.toISOString(),
         stars: data.stars || undefined,
-        sourceURI: data.sourceURI || undefined
+        sourceURI: data.sourceURI || undefined,
+        images: [] // Required by useCreateClaim
       }
 
       const { message, isSuccess } = await createClaim(payload)
@@ -174,11 +175,7 @@ const RequestRating: React.FC = () => {
             <Typography variant='body1' sx={{ color: theme.palette.text.secondary, mb: 3 }}>
               Your testimonial has been submitted and will be visible on LinkedTrust.
             </Typography>
-            <Button
-              variant='contained'
-              onClick={() => navigate('/feed')}
-              sx={{ textTransform: 'none' }}
-            >
+            <Button variant='contained' onClick={() => navigate('/feed')} sx={{ textTransform: 'none' }}>
               Browse Feed
             </Button>
           </Card>
@@ -356,10 +353,7 @@ const RequestRating: React.FC = () => {
               </form>
 
               {/* Footer */}
-              <Typography
-                variant='body2'
-                sx={{ textAlign: 'center', mt: 3, color: theme.palette.text.secondary }}
-              >
+              <Typography variant='body2' sx={{ textAlign: 'center', mt: 3, color: theme.palette.text.secondary }}>
                 Your rating will be publicly visible on{' '}
                 <MuiLink href='https://linkedtrust.us' target='_blank' rel='noopener noreferrer'>
                   LinkedTrust

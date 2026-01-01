@@ -2,5 +2,5 @@
  * Certificate utilities index
  */
 
-export * from './certificateTypeInference';
-export * from './nodeNameExtraction';
+export * from './certificateTypeInference'
+export * from './nodeNameExtraction'
