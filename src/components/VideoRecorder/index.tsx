@@ -69,6 +69,24 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     }
   }, [])
 
+  // Stop recording
+  const stopRecording = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop()
+    }
+
+    // Stop all tracks
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop())
+      streamRef.current = null
+    }
+  }, [])
+
   // Start recording
   const startRecording = useCallback(() => {
     if (!streamRef.current) return
@@ -108,25 +126,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
         return newTime
       })
     }, 1000)
-  }, [maxDuration])
-
-  // Stop recording
-  const stopRecording = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
-
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop()
-    }
-
-    // Stop all tracks
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop())
-      streamRef.current = null
-    }
-  }, [])
+  }, [maxDuration, stopRecording])
 
   // Upload video to backend
   const uploadVideo = useCallback(async () => {
