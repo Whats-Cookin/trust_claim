@@ -222,7 +222,9 @@ const ClaimReport: React.FC = () => {
   // Get subject info
   const subjectName = (reportData as any)?.subject?.name || subjectNode?.name || claim.subjectNode?.name
   const subjectType = subjectNode?.entType || claim.subjectNode?.entType
-  const subjectUri = subjectNode?.nodeUri || claim.subjectNode?.nodeUri ||
+  const subjectUri =
+    subjectNode?.nodeUri ||
+    claim.subjectNode?.nodeUri ||
     (typeof claim.subject === 'object' ? claim.subject.uri : claim.subject)
   const subjectDescrip = subjectNode?.descrip || claim.subjectNode?.descrip
   const subjectImage = subjectNode?.image || claim.subjectNode?.image
@@ -232,9 +234,7 @@ const ClaimReport: React.FC = () => {
       {/* Subject - who/what this claim is about */}
       <Section>
         <Stack direction='row' spacing={2} alignItems='flex-start'>
-          {subjectImage && (
-            <Avatar src={subjectImage} sx={{ width: 56, height: 56 }} />
-          )}
+          {subjectImage && <Avatar src={subjectImage} sx={{ width: 56, height: 56 }} />}
           <Box>
             <Typography variant='h5' sx={{ fontWeight: 600 }}>
               {subjectName || 'Unknown Subject'}
@@ -251,7 +251,13 @@ const ClaimReport: React.FC = () => {
                 target='_blank'
                 rel='noopener noreferrer'
                 variant='body2'
-                sx={{ color: 'primary.main', textDecoration: 'none', '&:hover': { textDecoration: 'underline' }, display: 'block', mt: 0.5 }}
+                sx={{
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                  '&:hover': { textDecoration: 'underline' },
+                  display: 'block',
+                  mt: 0.5
+                }}
               >
                 {subjectUri} <OpenInNewIcon sx={{ fontSize: 12, verticalAlign: 'middle' }} />
               </Typography>
@@ -278,11 +284,7 @@ const ClaimReport: React.FC = () => {
 
             {reportData.image && (
               <Box sx={{ my: 2 }}>
-                <img
-                  src={reportData.image}
-                  alt=''
-                  style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }}
-                />
+                <img src={reportData.image} alt='' style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }} />
               </Box>
             )}
 
@@ -324,15 +326,17 @@ const ClaimReport: React.FC = () => {
                     {hasMedia && (
                       <Grid item xs={12} sm={5} md={4}>
                         {mediaIsVideo ? (
-                          <Box sx={{
-                            position: 'relative',
-                            width: '100%',
-                            aspectRatio: '16/9',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                          }}>
+                          <Box
+                            sx={{
+                              position: 'relative',
+                              width: '100%',
+                              aspectRatio: '16/9',
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                            }}
+                          >
                             <video
                               src={mediaUrl}
                               controls
@@ -346,16 +350,14 @@ const ClaimReport: React.FC = () => {
                             />
                           </Box>
                         ) : (
-                          <Box sx={{
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                          }}>
-                            <img
-                              src={validation.image}
-                              alt=''
-                              style={{ width: '100%', display: 'block' }}
-                            />
+                          <Box
+                            sx={{
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                            }}
+                          >
+                            <img src={validation.image} alt='' style={{ width: '100%', display: 'block' }} />
                           </Box>
                         )}
                       </Grid>
@@ -372,7 +374,11 @@ const ClaimReport: React.FC = () => {
                       )}
                       {(validation.sourceURI || validation.source_link) && (
                         <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
-                          <a href={validation.sourceURI || validation.source_link} target='_blank' rel='noopener noreferrer'>
+                          <a
+                            href={validation.sourceURI || validation.source_link}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                          >
                             {validation.sourceURI || validation.source_link}
                           </a>
                         </Typography>
@@ -405,15 +411,17 @@ const ClaimReport: React.FC = () => {
                     {hasMedia && (
                       <Grid item xs={12} sm={5} md={4}>
                         {mediaIsVideo ? (
-                          <Box sx={{
-                            position: 'relative',
-                            width: '100%',
-                            aspectRatio: '16/9',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                          }}>
+                          <Box
+                            sx={{
+                              position: 'relative',
+                              width: '100%',
+                              aspectRatio: '16/9',
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                            }}
+                          >
                             <video
                               src={mediaUrl}
                               controls
@@ -427,16 +435,14 @@ const ClaimReport: React.FC = () => {
                             />
                           </Box>
                         ) : (
-                          <Box sx={{
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                          }}>
-                            <img
-                              src={attestation.image}
-                              alt=''
-                              style={{ width: '100%', display: 'block' }}
-                            />
+                          <Box
+                            sx={{
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                            }}
+                          >
+                            <img src={attestation.image} alt='' style={{ width: '100%', display: 'block' }} />
                           </Box>
                         )}
                       </Grid>
@@ -453,7 +459,11 @@ const ClaimReport: React.FC = () => {
                       )}
                       {(attestation.sourceURI || attestation.source_link) && (
                         <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
-                          <a href={attestation.sourceURI || attestation.source_link} target='_blank' rel='noopener noreferrer'>
+                          <a
+                            href={attestation.sourceURI || attestation.source_link}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                          >
                             {attestation.sourceURI || attestation.source_link}
                           </a>
                         </Typography>

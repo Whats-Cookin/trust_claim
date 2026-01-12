@@ -29,7 +29,8 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
   if (!validation) return null
 
   // Check for video - either explicit videoUrl or video-like mediaUrl/image
-  const videoUrl = validation.videoUrl ||
+  const videoUrl =
+    validation.videoUrl ||
     (isVideoUrl(validation.mediaUrl) ? validation.mediaUrl : undefined) ||
     (isVideoUrl(validation.image) ? validation.image : undefined)
 
@@ -141,11 +142,13 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
 
             {/* Video Testimonial */}
             {videoUrl && (
-              <Box sx={{
-                mt: { xs: 2, sm: 2.5 },
-                width: '100%',
-                maxWidth: { xs: '100%', sm: 360, md: 420 }
-              }}>
+              <Box
+                sx={{
+                  mt: { xs: 2, sm: 2.5 },
+                  width: '100%',
+                  maxWidth: { xs: '100%', sm: 360, md: 420 }
+                }}
+              >
                 <Typography
                   sx={{
                     color: '#495057',
@@ -186,9 +189,7 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
                     >
                       <Box sx={{ textAlign: 'center', color: 'white' }}>
                         <PlayCircleOutlineIcon sx={{ fontSize: { xs: 40, sm: 48 }, mb: 0.5 }} />
-                        <Typography sx={{ fontWeight: 500, fontSize: { xs: 12, sm: 14 } }}>
-                          Play video
-                        </Typography>
+                        <Typography sx={{ fontWeight: 500, fontSize: { xs: 12, sm: 14 } }}>Play video</Typography>
                       </Box>
                     </Box>
                   ) : (
@@ -205,21 +206,21 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
 
             {/* Image */}
             {imageUrl && (
-              <Box sx={{
-                mt: { xs: 2, sm: 2.5 },
-                width: '100%',
-                maxWidth: { xs: '100%', sm: 360, md: 420 }
-              }}>
-                <Box sx={{
-                  borderRadius: { xs: '6px', sm: '8px' },
-                  overflow: 'hidden',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                }}>
-                  <img
-                    src={imageUrl}
-                    alt=''
-                    style={{ width: '100%', display: 'block' }}
-                  />
+              <Box
+                sx={{
+                  mt: { xs: 2, sm: 2.5 },
+                  width: '100%',
+                  maxWidth: { xs: '100%', sm: 360, md: 420 }
+                }}
+              >
+                <Box
+                  sx={{
+                    borderRadius: { xs: '6px', sm: '8px' },
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                  }}
+                >
+                  <img src={imageUrl} alt='' style={{ width: '100%', display: 'block' }} />
                 </Box>
               </Box>
             )}
@@ -277,29 +278,6 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
                   >
                     {validation.sourceURI}
                   </MuiLink>
-                </Typography>
-              </Box>
-            )}
-            {validation.confidence !== undefined && (
-              <Box sx={{ marginBottom: { xs: 1.5, sm: 2 } }}>
-                <Typography
-                  sx={{
-                    fontWeight: 500,
-                    color: '#495057',
-                    minWidth: { xs: '120px', sm: '140px', md: '150px' },
-                    display: { xs: 'block', sm: 'inline-block' },
-                    fontSize: { xs: '13px', sm: '14px' }
-                  }}
-                >
-                  Confidence:
-                </Typography>
-                <Typography
-                  sx={{
-                    color: '#212529',
-                    fontSize: { xs: '13px', sm: '14px' }
-                  }}
-                >
-                  {validation.confidence}
                 </Typography>
               </Box>
             )}

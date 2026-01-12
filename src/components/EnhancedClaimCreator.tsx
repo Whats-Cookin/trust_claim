@@ -274,18 +274,6 @@ export const EnhancedClaimCreator: React.FC = () => {
               </>
             )}
 
-            {/* Confidence slider */}
-            <Box>
-              <Typography gutterBottom>Confidence: {Math.round(formData.confidence * 100)}%</Typography>
-              <Slider
-                value={formData.confidence}
-                onChange={(e, value) => setFormData({ ...formData, confidence: value as number })}
-                min={0}
-                max={1}
-                step={0.1}
-              />
-            </Box>
-
             <Button
               variant='contained'
               onClick={handleSubmitClaim}

@@ -409,20 +409,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     Aspect: {claim.aspect}
                                   </Typography>
                                 )}
-                                {claim.confidence !== undefined && claim.confidence !== null && (
-                                  <Typography
-                                    variant='body2'
-                                    sx={{
-                                      mb: 0.5,
-                                      fontSize: '12px',
-                                      color: theme.palette.date,
-                                      fontFamily: 'Roboto, sans-serif'
-                                    }}
-                                  >
-                                    Confidence:{' '}
-                                    {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
-                                  </Typography>
-                                )}
                                 {claim.howKnown && (
                                   <Typography
                                     variant='body2'

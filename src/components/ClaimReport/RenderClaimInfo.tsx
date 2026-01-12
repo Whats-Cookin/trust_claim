@@ -183,14 +183,6 @@ const RenderClaimInfo = ({
             )}
             {claim.claim && <Chip label={claim.claim} color='primary' size='small' />}
             {claim.howKnown && <Chip label={claim.howKnown.replace(/_/g, ' ')} variant='outlined' size='small' />}
-            {claim.confidence && (
-              <Chip
-                label={`${Math.round(Number(claim.confidence) * 100)}% confidence`}
-                color='success'
-                variant='outlined'
-                size='small'
-              />
-            )}
             {claim.stars && (
               <Chip
                 label={`${'★'.repeat(Number(claim.stars))} (${claim.stars})`}

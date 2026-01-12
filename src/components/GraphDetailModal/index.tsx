@@ -128,7 +128,6 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
       { key: 'subject', label: 'Subject' },
       { key: 'object', label: 'Object' },
       { key: 'aspect', label: 'Aspect' },
-      { key: 'confidence', label: 'Confidence', format: v => `${Math.round(v * 100)}%` },
       { key: 'stars', label: 'Rating', format: v => '★'.repeat(v) + '☆'.repeat(5 - v) },
       { key: 'howKnown', label: 'How Known' },
       { key: 'effectiveDate', label: 'Date', format: v => new Date(v).toLocaleDateString() },

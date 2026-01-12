@@ -642,16 +642,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           </Typography>
                         </Box>
                       )}
-                      {confidenceValue !== null && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                          <Typography variant='body2' sx={{ color: theme.palette.text.secondary, fontWeight: 600 }}>
-                            Confidence:
-                          </Typography>
-                          <Typography variant='body2' sx={{ color: theme.palette.text.primary }}>
-                            {confidenceValue}
-                          </Typography>
-                        </Box>
-                      )}
                       {amtValue && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                           <Typography variant='body2' sx={{ color: theme.palette.text.secondary, fontWeight: 600 }}>
