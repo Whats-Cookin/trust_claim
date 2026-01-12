@@ -63,7 +63,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     if (githubAuthCode) {
       const githubAuthUrl = '/auth/github'
       axios
-        .post(githubAuthUrl, { githubAuthCode })
+        .post(githubAuthUrl, { code: githubAuthCode, client_id: GITHUB_CLIENT_ID })
         .then(res => {
           const { accessToken, refreshToken } = res.data
           handleAuth(accessToken, refreshToken)
