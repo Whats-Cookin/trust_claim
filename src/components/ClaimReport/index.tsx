@@ -403,32 +403,45 @@ const ClaimReport: React.FC = () => {
                 <CardContent sx={{ p: 2 }}>
                   <Grid container spacing={2}>
                     {hasMedia && (
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={5} md={4}>
                         {mediaIsVideo ? (
                           <Box sx={{
                             position: 'relative',
                             width: '100%',
-                            borderRadius: 1,
+                            aspectRatio: '16/9',
+                            borderRadius: '8px',
                             overflow: 'hidden',
-                            backgroundColor: '#000'
+                            backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
                           }}>
                             <video
                               src={mediaUrl}
                               controls
-                              style={{ width: '100%', maxHeight: 280, display: 'block' }}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                display: 'block'
+                              }}
                               preload='metadata'
                             />
                           </Box>
                         ) : (
-                          <img
-                            src={attestation.image}
-                            alt=''
-                            style={{ width: '100%', borderRadius: 4 }}
-                          />
+                          <Box sx={{
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                          }}>
+                            <img
+                              src={attestation.image}
+                              alt=''
+                              style={{ width: '100%', display: 'block' }}
+                            />
+                          </Box>
                         )}
                       </Grid>
                     )}
-                    <Grid item xs={12} sm={hasMedia ? 6 : 12}>
+                    <Grid item xs={12} sm={hasMedia ? 7 : 12} md={hasMedia ? 8 : 12}>
                       <Typography variant='caption' color='text.secondary'>
                         {attestation.claim || 'attestation'}
                         {attestation.effectiveDate && ` · ${new Date(attestation.effectiveDate).toLocaleDateString()}`}

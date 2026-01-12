@@ -141,15 +141,19 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
 
             {/* Video Testimonial */}
             {videoUrl && (
-              <Box sx={{ mt: 2, width: '100%', maxWidth: 400 }}>
+              <Box sx={{
+                mt: { xs: 2, sm: 2.5 },
+                width: '100%',
+                maxWidth: { xs: '100%', sm: 360, md: 420 }
+              }}>
                 <Typography
-                  variant='subtitle2'
                   sx={{
                     color: '#495057',
                     mb: 1,
                     textTransform: 'uppercase',
                     letterSpacing: 1,
-                    fontSize: 11
+                    fontSize: { xs: 10, sm: 11 },
+                    fontWeight: 600
                   }}
                 >
                   Video Testimonial
@@ -159,10 +163,10 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
                     position: 'relative',
                     width: '100%',
                     aspectRatio: '16/9',
-                    backgroundColor: '#000',
-                    borderRadius: 1,
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: { xs: '6px', sm: '8px' },
                     overflow: 'hidden',
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.15)'
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.1)'
                   }}
                 >
                   {!videoPlaying ? (
@@ -176,14 +180,14 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
                         justifyContent: 'center',
                         cursor: 'pointer',
                         background: 'linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%)',
-                        transition: 'opacity 0.2s',
-                        '&:hover': { opacity: 0.9 }
+                        transition: 'opacity 0.2s ease',
+                        '&:hover': { opacity: 0.92 }
                       }}
                     >
                       <Box sx={{ textAlign: 'center', color: 'white' }}>
-                        <PlayCircleOutlineIcon sx={{ fontSize: 48, mb: 0.5 }} />
-                        <Typography variant='body2' sx={{ fontWeight: 500 }}>
-                          Click to play
+                        <PlayCircleOutlineIcon sx={{ fontSize: { xs: 40, sm: 48 }, mb: 0.5 }} />
+                        <Typography sx={{ fontWeight: 500, fontSize: { xs: 12, sm: 14 } }}>
+                          Play video
                         </Typography>
                       </Box>
                     </Box>
@@ -201,12 +205,22 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
 
             {/* Image */}
             {imageUrl && (
-              <Box sx={{ mt: 2, width: '100%', maxWidth: 400 }}>
-                <img
-                  src={imageUrl}
-                  alt=''
-                  style={{ width: '100%', borderRadius: 4 }}
-                />
+              <Box sx={{
+                mt: { xs: 2, sm: 2.5 },
+                width: '100%',
+                maxWidth: { xs: '100%', sm: 360, md: 420 }
+              }}>
+                <Box sx={{
+                  borderRadius: { xs: '6px', sm: '8px' },
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                }}>
+                  <img
+                    src={imageUrl}
+                    alt=''
+                    style={{ width: '100%', display: 'block' }}
+                  />
+                </Box>
               </Box>
             )}
           </Box>
