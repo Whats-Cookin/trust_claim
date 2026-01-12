@@ -24,6 +24,7 @@ import StarIcon from '@mui/icons-material/Star'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Loader from '../Loader'
 import MainContainer from '../MainContainer'
+import VideoRecorder from '../VideoRecorder'
 
 /**
  * RequestRating - Public page for collecting ratings/testimonials
@@ -65,6 +66,7 @@ const RequestRating: React.FC = () => {
   const theme = useTheme()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   const aboutUri = searchParams.get('about') || ''
 
@@ -130,7 +132,8 @@ const RequestRating: React.FC = () => {
         effectiveDate: data.effectiveDate.toISOString(),
         stars: data.stars || undefined,
         sourceURI: data.sourceURI || undefined,
-        images: [] // Required by useCreateClaim
+        images: [], // Required by useCreateClaim
+        ...(videoUrl && { videoUrl }) // Include video URL if recorded
       }
 
       const { message, isSuccess } = await createClaim(payload)
@@ -336,6 +339,15 @@ const RequestRating: React.FC = () => {
                         />
                       </LocalizationProvider>
                     )}
+                  />
+                </Box>
+
+                {/* Video Testimonial */}
+                <Box sx={{ mb: 4 }}>
+                  <VideoRecorder
+                    onVideoUploaded={url => setVideoUrl(url)}
+                    onVideoRemoved={() => setVideoUrl(null)}
+                    maxDuration={60}
                   />
                 </Box>
 
