@@ -40,6 +40,7 @@ export interface Validation {
   sourceURI?: string
   image?: string
   mediaUrl?: string
+  videoUrl?: string
   subject?: string
   effectiveDate?: string
 }

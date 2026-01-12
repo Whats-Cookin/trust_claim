@@ -1,15 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dialog, DialogContent, IconButton, Box, Typography, Link as MuiLink } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { ValidationDetailsDialogProps } from '../../types/certificate'
 import { useTheme, useMediaQuery } from '@mui/material'
+
+// Helper to detect if a URL is a video
+const isVideoUrl = (url?: string): boolean => {
+  if (!url) return false
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov']
+  const lowerUrl = url.toLowerCase()
+  return videoExtensions.some(ext => lowerUrl.includes(ext))
+}
 
 const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open, onClose, validation }) => {
   const theme = useTheme()
   const isXs = useMediaQuery(theme.breakpoints.down('sm'))
+  const [videoPlaying, setVideoPlaying] = useState(false)
+
+  // Reset video playing state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setVideoPlaying(false)
+    }
+  }, [open])
 
   if (!validation) return null
+
+  // Check for video - either explicit videoUrl or video-like mediaUrl/image
+  const videoUrl = validation.videoUrl ||
+    (isVideoUrl(validation.mediaUrl) ? validation.mediaUrl : undefined) ||
+    (isVideoUrl(validation.image) ? validation.image : undefined)
+
+  // Check for image (only if not a video)
+  const imageUrl = !videoUrl && validation.image ? validation.image : undefined
 
   return (
     <Dialog
@@ -113,6 +138,77 @@ const ValidationDetailsDialog: React.FC<ValidationDetailsDialogProps> = ({ open,
                   day: 'numeric'
                 })}
             </Typography>
+
+            {/* Video Testimonial */}
+            {videoUrl && (
+              <Box sx={{ mt: 2, width: '100%', maxWidth: 400 }}>
+                <Typography
+                  variant='subtitle2'
+                  sx={{
+                    color: '#495057',
+                    mb: 1,
+                    textTransform: 'uppercase',
+                    letterSpacing: 1,
+                    fontSize: 11
+                  }}
+                >
+                  Video Testimonial
+                </Typography>
+                <Box
+                  sx={{
+                    position: 'relative',
+                    width: '100%',
+                    aspectRatio: '16/9',
+                    backgroundColor: '#000',
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.15)'
+                  }}
+                >
+                  {!videoPlaying ? (
+                    <Box
+                      onClick={() => setVideoPlaying(true)}
+                      sx={{
+                        position: 'absolute',
+                        inset: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        background: 'linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%)',
+                        transition: 'opacity 0.2s',
+                        '&:hover': { opacity: 0.9 }
+                      }}
+                    >
+                      <Box sx={{ textAlign: 'center', color: 'white' }}>
+                        <PlayCircleOutlineIcon sx={{ fontSize: 48, mb: 0.5 }} />
+                        <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                          Click to play
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <video
+                      src={videoUrl}
+                      controls
+                      autoPlay
+                      style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    />
+                  )}
+                </Box>
+              </Box>
+            )}
+
+            {/* Image */}
+            {imageUrl && (
+              <Box sx={{ mt: 2, width: '100%', maxWidth: 400 }}>
+                <img
+                  src={imageUrl}
+                  alt=''
+                  style={{ width: '100%', borderRadius: 4 }}
+                />
+              </Box>
+            )}
           </Box>
           <Box sx={{ marginTop: { xs: 2, sm: 2.5, md: 3 } }}>
             {validation.howKnown && (

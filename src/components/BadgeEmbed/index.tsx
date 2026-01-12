@@ -3,7 +3,16 @@ import { useParams } from 'react-router-dom'
 import { Box, Typography, Rating } from '@mui/material'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import VideocamIcon from '@mui/icons-material/Videocam'
 import * as api from '../../api'
+
+// Helper to detect if a URL is a video
+const isVideoUrl = (url?: string): boolean => {
+  if (!url) return false
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov']
+  const lowerUrl = url.toLowerCase()
+  return videoExtensions.some(ext => lowerUrl.includes(ext))
+}
 
 /**
  * BadgeEmbed - Minimal embeddable badge for iframes
@@ -19,6 +28,7 @@ const BadgeEmbed: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const [claim, setClaim] = useState<any>(null)
   const [validationCount, setValidationCount] = useState(0)
+  const [hasVideo, setHasVideo] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -50,11 +60,29 @@ const BadgeEmbed: React.FC = () => {
         const claimRes = await api.getClaim(id)
         setClaim(claimRes.data.claim)
 
-        // Get validation count
+        // Get validation count and check for videos
         try {
           const reportRes = await api.getClaimReport(Number(id))
           if (reportRes.data?.validations) {
             setValidationCount(reportRes.data.validations.length)
+
+            // Check if any validation has a video
+            const validationsHaveVideo = reportRes.data.validations.some(
+              (v: any) => v.videoUrl || isVideoUrl(v.mediaUrl) || isVideoUrl(v.image)
+            )
+            if (validationsHaveVideo) {
+              setHasVideo(true)
+            }
+          }
+
+          // Check if the main claim has videos
+          if (reportRes.data?.images) {
+            const claimHasVideo = reportRes.data.images.some(
+              (img: any) => img.metadata?.type === 'video' || isVideoUrl(img.url)
+            )
+            if (claimHasVideo) {
+              setHasVideo(true)
+            }
           }
         } catch (e) {
           // No validations
@@ -159,21 +187,39 @@ const BadgeEmbed: React.FC = () => {
         >
           Verified Testimonial
         </Typography>
-        {validationCount > 0 && (
-          <Box
-            sx={{
-              ml: 'auto',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              px: 1,
-              py: 0.25,
-              borderRadius: 1,
-              fontSize: 11,
-              color: colors.text
-            }}
-          >
-            {validationCount} endorsement{validationCount > 1 ? 's' : ''}
-          </Box>
-        )}
+        <Box sx={{ ml: 'auto', display: 'flex', gap: 0.5, alignItems: 'center' }}>
+          {hasVideo && (
+            <Box
+              sx={{
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                px: 0.75,
+                py: 0.25,
+                borderRadius: 1,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.5,
+                fontSize: 11,
+                color: colors.text
+              }}
+            >
+              <VideocamIcon sx={{ fontSize: 14 }} />
+            </Box>
+          )}
+          {validationCount > 0 && (
+            <Box
+              sx={{
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                px: 1,
+                py: 0.25,
+                borderRadius: 1,
+                fontSize: 11,
+                color: colors.text
+              }}
+            >
+              {validationCount} endorsement{validationCount > 1 ? 's' : ''}
+            </Box>
+          )}
+        </Box>
       </Box>
 
       {/* Statement */}

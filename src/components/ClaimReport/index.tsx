@@ -15,9 +15,11 @@ import {
   Avatar,
   styled,
   Alert,
-  AlertTitle
+  AlertTitle,
+  Button
 } from '@mui/material'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import type { Claim } from '../../api/types'
 
 // Styled Components - minimal, content-first
@@ -67,7 +69,16 @@ interface ValidationItem {
   source_link?: string
   sourceURI?: string
   image?: string
+  videoUrl?: string
   claim?: string
+}
+
+// Helper to detect if a URL is a video
+const isVideoUrl = (url?: string): boolean => {
+  if (!url) return false
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov']
+  const lowerUrl = url.toLowerCase()
+  return videoExtensions.some(ext => lowerUrl.includes(ext))
 }
 
 interface RelatedClaim {
@@ -301,41 +312,77 @@ const ClaimReport: React.FC = () => {
             Validations ({validations.length})
           </Typography>
 
-          {validations.map((validation, index) => (
-            <ValidationCard key={validation.id || `validation-${index}`} elevation={0}>
-              <CardContent sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-                  {validation.image && (
-                    <Grid item xs={12} sm={6}>
-                      <img
-                        src={validation.image}
-                        alt=''
-                        style={{ width: '100%', borderRadius: 4 }}
-                      />
+          {validations.map((validation, index) => {
+            const hasMedia = validation.image || validation.videoUrl
+            const mediaIsVideo = validation.videoUrl || isVideoUrl(validation.image)
+            const mediaUrl = validation.videoUrl || validation.image
+
+            return (
+              <ValidationCard key={validation.id || `validation-${index}`} elevation={0}>
+                <CardContent sx={{ p: 2 }}>
+                  <Grid container spacing={2}>
+                    {hasMedia && (
+                      <Grid item xs={12} sm={5} md={4}>
+                        {mediaIsVideo ? (
+                          <Box sx={{
+                            position: 'relative',
+                            width: '100%',
+                            aspectRatio: '16/9',
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                          }}>
+                            <video
+                              src={mediaUrl}
+                              controls
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                display: 'block'
+                              }}
+                              preload='metadata'
+                            />
+                          </Box>
+                        ) : (
+                          <Box sx={{
+                            borderRadius: '8px',
+                            overflow: 'hidden',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                          }}>
+                            <img
+                              src={validation.image}
+                              alt=''
+                              style={{ width: '100%', display: 'block' }}
+                            />
+                          </Box>
+                        )}
+                      </Grid>
+                    )}
+                    <Grid item xs={12} sm={hasMedia ? 7 : 12} md={hasMedia ? 8 : 12}>
+                      <Typography variant='caption' color='text.secondary'>
+                        {validation.claim || 'validated'}
+                        {validation.effectiveDate && ` · ${new Date(validation.effectiveDate).toLocaleDateString()}`}
+                      </Typography>
+                      {validation.statement && (
+                        <Typography variant='body2' sx={{ mt: 0.5 }}>
+                          {validation.statement}
+                        </Typography>
+                      )}
+                      {(validation.sourceURI || validation.source_link) && (
+                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
+                          <a href={validation.sourceURI || validation.source_link} target='_blank' rel='noopener noreferrer'>
+                            {validation.sourceURI || validation.source_link}
+                          </a>
+                        </Typography>
+                      )}
                     </Grid>
-                  )}
-                  <Grid item xs={12} sm={validation.image ? 6 : 12}>
-                    <Typography variant='caption' color='text.secondary'>
-                      {validation.claim || 'validated'}
-                      {validation.effectiveDate && ` · ${new Date(validation.effectiveDate).toLocaleDateString()}`}
-                    </Typography>
-                    {validation.statement && (
-                      <Typography variant='body2' sx={{ mt: 0.5 }}>
-                        {validation.statement}
-                      </Typography>
-                    )}
-                    {(validation.sourceURI || validation.source_link) && (
-                      <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
-                        <a href={validation.sourceURI || validation.source_link} target='_blank' rel='noopener noreferrer'>
-                          {validation.sourceURI || validation.source_link}
-                        </a>
-                      </Typography>
-                    )}
                   </Grid>
-                </Grid>
-              </CardContent>
-            </ValidationCard>
-          ))}
+                </CardContent>
+              </ValidationCard>
+            )
+          })}
         </Section>
       )}
 
@@ -346,41 +393,64 @@ const ClaimReport: React.FC = () => {
             Attestations ({attestations.length})
           </Typography>
 
-          {attestations.map((attestation, index) => (
-            <ValidationCard key={attestation.id || `attestation-${index}`} elevation={0}>
-              <CardContent sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-                  {attestation.image && (
-                    <Grid item xs={12} sm={6}>
-                      <img
-                        src={attestation.image}
-                        alt=''
-                        style={{ width: '100%', borderRadius: 4 }}
-                      />
+          {attestations.map((attestation, index) => {
+            const hasMedia = attestation.image || attestation.videoUrl
+            const mediaIsVideo = attestation.videoUrl || isVideoUrl(attestation.image)
+            const mediaUrl = attestation.videoUrl || attestation.image
+
+            return (
+              <ValidationCard key={attestation.id || `attestation-${index}`} elevation={0}>
+                <CardContent sx={{ p: 2 }}>
+                  <Grid container spacing={2}>
+                    {hasMedia && (
+                      <Grid item xs={12} sm={6}>
+                        {mediaIsVideo ? (
+                          <Box sx={{
+                            position: 'relative',
+                            width: '100%',
+                            borderRadius: 1,
+                            overflow: 'hidden',
+                            backgroundColor: '#000'
+                          }}>
+                            <video
+                              src={mediaUrl}
+                              controls
+                              style={{ width: '100%', maxHeight: 280, display: 'block' }}
+                              preload='metadata'
+                            />
+                          </Box>
+                        ) : (
+                          <img
+                            src={attestation.image}
+                            alt=''
+                            style={{ width: '100%', borderRadius: 4 }}
+                          />
+                        )}
+                      </Grid>
+                    )}
+                    <Grid item xs={12} sm={hasMedia ? 6 : 12}>
+                      <Typography variant='caption' color='text.secondary'>
+                        {attestation.claim || 'attestation'}
+                        {attestation.effectiveDate && ` · ${new Date(attestation.effectiveDate).toLocaleDateString()}`}
+                      </Typography>
+                      {attestation.statement && (
+                        <Typography variant='body2' sx={{ mt: 0.5 }}>
+                          {attestation.statement}
+                        </Typography>
+                      )}
+                      {(attestation.sourceURI || attestation.source_link) && (
+                        <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
+                          <a href={attestation.sourceURI || attestation.source_link} target='_blank' rel='noopener noreferrer'>
+                            {attestation.sourceURI || attestation.source_link}
+                          </a>
+                        </Typography>
+                      )}
                     </Grid>
-                  )}
-                  <Grid item xs={12} sm={attestation.image ? 6 : 12}>
-                    <Typography variant='caption' color='text.secondary'>
-                      {attestation.claim || 'attestation'}
-                      {attestation.effectiveDate && ` · ${new Date(attestation.effectiveDate).toLocaleDateString()}`}
-                    </Typography>
-                    {attestation.statement && (
-                      <Typography variant='body2' sx={{ mt: 0.5 }}>
-                        {attestation.statement}
-                      </Typography>
-                    )}
-                    {(attestation.sourceURI || attestation.source_link) && (
-                      <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 1 }}>
-                        <a href={attestation.sourceURI || attestation.source_link} target='_blank' rel='noopener noreferrer'>
-                          {attestation.sourceURI || attestation.source_link}
-                        </a>
-                      </Typography>
-                    )}
                   </Grid>
-                </Grid>
-              </CardContent>
-            </ValidationCard>
-          ))}
+                </CardContent>
+              </ValidationCard>
+            )
+          })}
         </Section>
       )}
 
