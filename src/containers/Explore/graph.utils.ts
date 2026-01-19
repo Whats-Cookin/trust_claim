@@ -288,7 +288,11 @@ const parseSingleNode = (
           target: e.endNodeId.toString(),
           relation: edgeLabel,
           label: edgeLabel,
-          raw: e,
+          raw: {
+            ...e,
+            // For edgesFrom, the current node IS the startNode (backend omits it to save data)
+            startNode: e.startNode || node
+          },
           color: edgeStyle.color,
           width: edgeStyle.width,
           arrow: edgeStyle.arrow,
@@ -339,7 +343,11 @@ const parseSingleNode = (
           target: e.endNodeId.toString(),
           relation: edgeLabel,
           label: edgeLabel,
-          raw: e,
+          raw: {
+            ...e,
+            // For edgesTo, the current node IS the endNode (backend omits it to save data)
+            endNode: e.endNode || node
+          },
           color: edgeStyle.color,
           width: edgeStyle.width,
           arrow: edgeStyle.arrow,
