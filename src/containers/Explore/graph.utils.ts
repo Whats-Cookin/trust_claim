@@ -137,27 +137,107 @@ const parseMultipleNodes = (data: any) => {
   // The backend returns an array of nodes with embedded edges
   if (Array.isArray(data)) {
     console.log('[parseMultipleNodes] Backend returned array of', data.length, 'nodes')
-    // Check for duplicate node IDs in backend response
-    const backendNodeIds = data.map((n: any) => n.id)
-    const uniqueBackendIds = new Set(backendNodeIds)
-    if (backendNodeIds.length !== uniqueBackendIds.size) {
-      console.error('[parseMultipleNodes] ⚠️ BACKEND RETURNED DUPLICATE NODE IDs!', {
-        total: backendNodeIds.length,
-        unique: uniqueBackendIds.size
-      })
-      console.error(
-        '[parseMultipleNodes] Duplicate IDs:',
-        backendNodeIds.filter((id, idx) => backendNodeIds.indexOf(id) !== idx)
-      )
-    }
+
+    // FIRST PASS: Add all backend nodes first (these are the primary nodes)
+    // This ensures they come first in the list and won't be cut off when limiting
     data.forEach((node: any, idx: number) => {
-      console.log(`[parseMultipleNodes] Processing backend node ${idx + 1}/${data.length}:`, {
-        id: node.id,
-        uri: node.nodeUri,
-        entType: node.entType
-      })
-      // All nodes (including CLAIM nodes) are rendered as nodes
-      parseSingleNode(nodes, edges, node, existingNodeIds, existingEdgeIds)
+      if (node.name && node.nodeUri) {
+        const nodeId = node.id.toString()
+        if (!existingNodeIds.has(nodeId)) {
+          const nodeData = getNodeData(node)
+          if (nodeData) {
+            console.log(`[parseMultipleNodes] Adding primary node ${idx + 1}/${data.length}:`, {
+              id: nodeId,
+              uri: node.nodeUri,
+              label: nodeData.data.label
+            })
+            nodes.push(nodeData)
+            existingNodeIds.add(nodeId)
+          }
+        }
+      }
+    })
+
+    // SECOND PASS: Process edges and add discovered nodes
+    data.forEach((node: any) => {
+      // Process edgesFrom - add discovered endNodes
+      if (node.edgesFrom) {
+        node.edgesFrom.forEach((e: any) => {
+          if (e.endNode && !existingNodeIds.has(e.endNode.id.toString())) {
+            const nodeData = getNodeData(e.endNode)
+            if (nodeData) {
+              nodes.push(nodeData)
+              existingNodeIds.add(e.endNode.id.toString())
+            }
+          }
+        })
+      }
+
+      // Process edgesTo - add discovered startNodes
+      if (node.edgesTo) {
+        node.edgesTo.forEach((e: any) => {
+          if (e.startNode && !existingNodeIds.has(e.startNode.id.toString())) {
+            const nodeData = getNodeData(e.startNode)
+            if (nodeData) {
+              nodes.push(nodeData)
+              existingNodeIds.add(e.startNode.id.toString())
+            }
+          }
+        })
+      }
+    })
+
+    // THIRD PASS: Add all edges
+    data.forEach((node: any) => {
+      if (node.edgesFrom) {
+        node.edgesFrom.forEach((e: any) => {
+          const edgeId = e.id.toString()
+          if (!existingEdgeIds.has(edgeId)) {
+            const edgeLabel = e.label || ''
+            const edgeStyle = edgeStylesByClaimType[edgeLabel] || edgeStylesByClaimType.default
+            edges.push({
+              data: {
+                id: edgeId,
+                source: e.startNodeId.toString(),
+                target: e.endNodeId.toString(),
+                relation: edgeLabel,
+                label: edgeLabel,
+                raw: { ...e, startNode: e.startNode || node },
+                color: edgeStyle.color,
+                width: edgeStyle.width,
+                arrow: edgeStyle.arrow,
+                lineStyle: edgeStyle.style
+              }
+            })
+            existingEdgeIds.add(edgeId)
+          }
+        })
+      }
+
+      if (node.edgesTo) {
+        node.edgesTo.forEach((e: any) => {
+          const edgeId = e.id.toString()
+          if (!existingEdgeIds.has(edgeId)) {
+            const edgeLabel = e.label || ''
+            const edgeStyle = edgeStylesByClaimType[edgeLabel] || edgeStylesByClaimType.default
+            edges.push({
+              data: {
+                id: edgeId,
+                source: e.startNodeId.toString(),
+                target: e.endNodeId.toString(),
+                relation: edgeLabel,
+                label: edgeLabel,
+                raw: { ...e, endNode: e.endNode || node },
+                color: edgeStyle.color,
+                width: edgeStyle.width,
+                arrow: edgeStyle.arrow,
+                lineStyle: edgeStyle.style
+              }
+            })
+            existingEdgeIds.add(edgeId)
+          }
+        })
+      }
     })
   } else if (data && typeof data === 'object') {
     // Single node with edges
