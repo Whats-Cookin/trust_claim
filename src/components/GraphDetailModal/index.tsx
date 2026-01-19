@@ -231,6 +231,41 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
               </a>
             </Typography>
           )}
+
+          {/* Aliases section for merged SAME_AS nodes */}
+          {data.isMerged && data.aliases && data.aliases.length > 1 && (
+            <Box sx={{ mt: 2, p: 1.5, bgcolor: 'action.hover', borderRadius: 1 }}>
+              <Typography variant='body2' sx={{ fontWeight: 500, mb: 1, fontSize: '0.85rem' }}>
+                Also known as ({data.aliases.length} linked identities):
+              </Typography>
+              {data.aliases.map((alias: any, idx: number) => (
+                <Typography
+                  key={idx}
+                  variant='body2'
+                  sx={{
+                    fontSize: '0.8rem',
+                    mb: 0.5,
+                    pl: 1,
+                    borderLeft: '2px solid',
+                    borderColor: 'primary.main',
+                    '& a': {
+                      color: theme.palette.primary.main,
+                      textDecoration: 'none',
+                      '&:hover': { textDecoration: 'underline' }
+                    }
+                  }}
+                >
+                  {alias.uri?.startsWith('http') ? (
+                    <a href={alias.uri} target='_blank' rel='noopener noreferrer'>
+                      {alias.label || truncateText(alias.uri, 50)}
+                    </a>
+                  ) : (
+                    <span>{alias.label || alias.uri}</span>
+                  )}
+                </Typography>
+              ))}
+            </Box>
+          )}
         </Box>
 
         <Divider sx={{ my: 1.5 }} />
