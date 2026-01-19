@@ -284,7 +284,15 @@ const ClaimReport: React.FC = () => {
 
             {reportData.image && (
               <Box sx={{ my: 2 }}>
-                <img src={reportData.image} alt='' style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }} />
+                {isVideoUrl(reportData.image) ? (
+                  <video
+                    src={reportData.image}
+                    controls
+                    style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }}
+                  />
+                ) : (
+                  <img src={reportData.image} alt='' style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }} />
+                )}
               </Box>
             )}
 
