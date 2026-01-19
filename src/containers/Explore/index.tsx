@@ -232,18 +232,30 @@ const Explore = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      const nodeData = event.target.data('raw')
-      const nodeId = event.target.data('id')
+      // Get full cytoscape node data (includes aliases, isMerged, etc.)
+      const fullNodeData = event.target.data()
+      const nodeId = fullNodeData?.id
 
-      if (nodeData && nodeId) {
-        // Check if ctrl key or cmd key (Mac) is pressed
+      if (fullNodeData && nodeId) {
+        // Shift+click: navigate to Add Claim page
+        if (originalEvent.shiftKey) {
+          const nodeUri = fullNodeData.nodeUri || fullNodeData.uri || ''
+          const nodeName = fullNodeData.label || fullNodeData.name || ''
+          const isClaimNode = fullNodeData.entType === 'CLAIM' || fullNodeData.entityType === 'CLAIM'
+          if (isClaimNode) {
+            window.location.href = `/validate?subject=${encodeURIComponent(nodeUri)}`
+          } else {
+            window.location.href = `/claim?subject=${encodeURIComponent(nodeUri)}&name=${encodeURIComponent(nodeName)}`
+          }
+          return
+        }
+        // Ctrl/Cmd+click: Show node details modal
         if (originalEvent.ctrlKey || originalEvent.metaKey) {
-          // Show node details modal on ctrl/cmd+click
-          setModalData(nodeData)
+          setModalData(fullNodeData)
           setModalType('node')
           setModalOpen(true)
         } else {
-          // Expand the graph on regular left click
+          // Regular left click: Expand the graph
           fetchRelatedClaims(nodeId, page.current)
         }
       }
@@ -281,7 +293,8 @@ const Explore = (homeProps: IHomeProps) => {
     event.preventDefault()
     event.stopPropagation()
     const element = event.target
-    const data = element.data('raw')
+    // Get full cytoscape data (includes aliases, isMerged for merged nodes)
+    const data = element.data()
 
     if (element.isNode() && data) {
       // Show node details modal on right-click
