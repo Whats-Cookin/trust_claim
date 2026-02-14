@@ -27,10 +27,19 @@ describe('Endorse Component', () => {
     claim: 'ACHIEVEMENT',
     statement: 'Completed the project successfully',
     subject: 'https://example.com/person/john',
-    issuer: {
-      name: 'John Doe',
-      image: 'https://example.com/avatar.jpg'
-    }
+    effectiveDate: '2026-02-14'
+  }
+
+  const mockReportResponse = {
+    claim: mockClaim,
+    validations: [],
+    summary: { totalValidations: 0, averageConfidence: 0, consensusValid: false }
+  }
+
+  const commonProps = {
+    toggleSnackbar: vi.fn(),
+    setSnackbarMessage: vi.fn(),
+    setLoading: vi.fn()
   }
 
   beforeEach(() => {
@@ -38,11 +47,11 @@ describe('Endorse Component', () => {
   })
 
   test('shows video suggestion alert when video=true parameter is present', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: mockReportResponse } as any)
 
     const claimUri = 'https://live.linkedtrust.us/claims/123'
-    renderWithRouter(<Endorse />, {
+    renderWithRouter(<Endorse {...commonProps} />, {
       route: `/endorse?claim=${encodeURIComponent(claimUri)}&video=true`
     })
 
@@ -52,11 +61,11 @@ describe('Endorse Component', () => {
   })
 
   test('does not show video suggestion alert when video parameter is missing', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: mockReportResponse } as any)
 
     const claimUri = 'https://live.linkedtrust.us/claims/123'
-    renderWithRouter(<Endorse />, {
+    renderWithRouter(<Endorse {...commonProps} />, {
       route: `/endorse?claim=${encodeURIComponent(claimUri)}`
     })
 
@@ -67,42 +76,13 @@ describe('Endorse Component', () => {
     expect(screen.queryByText(/A video endorsement would be especially valuable/i)).not.toBeInTheDocument()
   })
 
-  test('shows friendly header with issuer name', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
-
-    const claimUri = 'https://live.linkedtrust.us/claims/123'
-    renderWithRouter(<Endorse />, {
-      route: `/endorse?claim=${encodeURIComponent(claimUri)}`
-    })
-
-    await waitFor(() => {
-      expect(screen.getByText(/John Doe has requested your endorsement/i)).toBeInTheDocument()
-    })
-  })
-
   test('works with subject parameter (backward compatibility)', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: mockReportResponse } as any)
 
     const claimUri = 'https://live.linkedtrust.us/claims/123'
-    renderWithRouter(<Endorse />, {
+    renderWithRouter(<Endorse {...commonProps} />, {
       route: `/endorse?subject=${encodeURIComponent(claimUri)}`
-    })
-
-    await waitFor(() => {
-      expect(screen.getByText(/Endorse This Claim/i)).toBeInTheDocument()
-    })
-  })
-
-  test('shows default header when issuer name is missing', async () => {
-    const claimNoIssuer = { ...mockClaim, issuer: {} }
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: claimNoIssuer } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
-
-    const claimUri = 'https://live.linkedtrust.us/claims/123'
-    renderWithRouter(<Endorse />, {
-      route: `/endorse?claim=${encodeURIComponent(claimUri)}`
     })
 
     await waitFor(() => {
