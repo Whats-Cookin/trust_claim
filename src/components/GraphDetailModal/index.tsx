@@ -131,7 +131,7 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
       { key: 'stars', label: 'Rating', format: v => '★'.repeat(v) + '☆'.repeat(5 - v) },
       { key: 'howKnown', label: 'How Known' },
       { key: 'effectiveDate', label: 'Date', format: v => new Date(v).toLocaleDateString() },
-      { key: 'amt', label: 'Amount', format: (v, d) => `$${v}${d?.unit ? ' ' + d.unit : ''}` },
+      { key: 'amt', label: 'Amount', format: (v, d) => `${v}${d?.unit ? ' ' + d.unit : ''}` },
       { key: 'sourceURI', label: 'Source', format: v => truncateText(v, 50) },
       { key: 'author', label: 'Author' },
       { key: 'score', label: 'Score', format: v => v.toFixed(2) }
