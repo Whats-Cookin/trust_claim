@@ -12,6 +12,7 @@ import Explore from './containers/Explore'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
+import Endorse from './components/Endorse'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import ClaimDetails from './containers/ClaimDetails'
@@ -24,6 +25,7 @@ import CertificateView from './components/Certificate/CertificateView'
 import Present from './components/Present'
 import RequestRating from './components/RequestRating'
 import BadgeEmbed from './components/BadgeEmbed'
+import BadgeView from './components/BadgeView'
 import './App.css'
 
 const App = () => {
@@ -173,6 +175,16 @@ const App = () => {
                 }
               />
               <Route
+                path='/endorse'
+                element={
+                  isAuthenticated ? (
+                    <Endorse {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
+                }
+              />
+              <Route
                 path='claim-credential'
                 element={
                   isAuthenticated ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
@@ -182,6 +194,7 @@ const App = () => {
               <Route path='/certificatet/:id' element={<CertificateView />} /> {/* Alias for common typo */}
               <Route path='/present/:id' element={<Present />} />
               <Route path='/badge-embed/:id' element={<BadgeEmbed />} />
+              <Route path='/badge' element={<BadgeView />} />
               <Route
                 path='/request-rating'
                 element={

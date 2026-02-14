@@ -134,6 +134,7 @@ const Present: React.FC = () => {
   const markdownEmbed = `[![Verified on LinkedTrust](${window.location.origin}/api/badge/${id}/image)](${claimUrl})`
 
   // Generate request links
+  const requestEndorsementUrl = `${window.location.origin}/endorse?claim=${BACKEND_BASE_URL}/claims/${id}&video=true`
   const requestValidationUrl = `${window.location.origin}/validate?subject=${BACKEND_BASE_URL}/claims/${id}`
   const requestRatingUrl = claim?.subject
     ? `${window.location.origin}/request-rating?about=${encodeURIComponent(
@@ -157,7 +158,7 @@ const Present: React.FC = () => {
     <Container maxWidth='lg' sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant='h4' sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-          Present Your Credential
+          Present This Credential
         </Typography>
         <Typography variant='body1' sx={{ color: theme.palette.text.secondary }}>
           Share this endorsement as a certificate, embed it on your website, or request more validations.
@@ -341,14 +342,43 @@ const Present: React.FC = () => {
               Get More Endorsements
             </Typography>
 
+            {/* Request Video Endorsement */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 1 }}>
+                Request Video Endorsement (Recommended)
+              </Typography>
+              <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mb: 2 }}>
+                Send this link to request a video endorsement. Video testimonials are more compelling and help build
+                trust with your audience.
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <TextField
+                  fullWidth
+                  value={requestEndorsementUrl}
+                  InputProps={{ readOnly: true, sx: { fontSize: '0.9rem' } }}
+                />
+                <Tooltip title='Copy link'>
+                  <IconButton onClick={() => handleCopy(requestEndorsementUrl, 'Endorsement request link')}>
+                    <ContentCopyIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title='Open in new tab'>
+                  <IconButton onClick={() => window.open(requestEndorsementUrl, '_blank')}>
+                    <OpenInNewIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
+
+            <Divider sx={{ my: 3 }} />
+
             {/* Request Validation */}
             <Box sx={{ mb: 4 }}>
               <Typography variant='subtitle1' sx={{ fontWeight: 600, mb: 1 }}>
-                Request Validation of This Claim
+                Request Text Validation
               </Typography>
               <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mb: 2 }}>
-                Send this link to someone who can validate this claim. They can add their endorsement with optional
-                video testimony.
+                Send this link to someone who can validate this claim with a text endorsement or upload an image.
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <TextField
