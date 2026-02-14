@@ -23,6 +23,7 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import MainContainer from '../MainContainer'
 import MediaUploader, { MediaI } from './imageUploading'
+import VideoRecorder from '../VideoRecorder'
 import { HowKnown } from '../../enums'
 
 const CLAIM_TYPES = {
@@ -47,6 +48,18 @@ const CLAIM_TYPES = {
       'relationship:worked-on',
       'relationship:same-as'
     ]
+  },
+  achievement: {
+    label: 'Achievement',
+    aspects: ['achievement:completed', 'achievement:earned', 'achievement:won', 'achievement:reached']
+  },
+  thankyou: {
+    label: 'Thank You',
+    aspects: ['thankyou:help', 'thankyou:support', 'thankyou:mentorship', 'thankyou:collaboration']
+  },
+  contribution: {
+    label: 'Contribution',
+    aspects: ['contribution:built', 'contribution:created', 'contribution:developed', 'contribution:delivered']
   }
 }
 
@@ -116,6 +129,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
 
   const [selectedClaimType, setSelectedClaimType] = useState<string>('')
   const [subjectEntityType, setSubjectEntityType] = useState<'PERSON' | 'ORGANIZATION'>('ORGANIZATION')
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   // Get subject and name from URL params if present
   const subjectFromUrl = searchParams.get('subject') || ''
@@ -192,7 +206,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       claim: selectedClaimType.toUpperCase(), // Convert 'rated' to 'RATED', etc.
       // Ensure sourceURI is null if empty, not defaulting to subject
       sourceURI: formData.sourceURI || null,
-      subjectEntityType: subjectEntityType
+      subjectEntityType: subjectEntityType,
+      ...(videoUrl && { videoUrl }) // Include video URL if recorded
     }
 
     // Debug logging to track the sourceURI issue
@@ -534,6 +549,15 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               <Box sx={{ mb: 4 }}>
                 <Typography sx={{ mb: 1 }}>Add supporting image (optional)</Typography>
                 <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
+              </Box>
+
+              {/* Optional Video Testimonial */}
+              <Box sx={{ mb: 4 }}>
+                <VideoRecorder
+                  onVideoUploaded={(url) => setVideoUrl(url)}
+                  onVideoRemoved={() => setVideoUrl(null)}
+                  maxDuration={60}
+                />
               </Box>
 
               {/* Submit Buttons */}
