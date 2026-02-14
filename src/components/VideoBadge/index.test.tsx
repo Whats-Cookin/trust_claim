@@ -18,21 +18,22 @@ describe('VideoBadge', () => {
   const mockClaim = {
     id: 123,
     claim: 'RATED',
+    subject: { uri: 'https://example.com/person', name: 'John Doe', image: 'https://example.com/avatar.jpg' },
     statement: 'Excellent work on the project',
     stars: 5,
     effectiveDate: '2026-02-14',
-    images: [
-      { url: 'https://cdn.example.com/video.mp4', metadata: { type: 'video' } }
-    ],
-    issuer: {
-      name: 'John Doe',
-      image: 'https://example.com/avatar.jpg'
-    }
+    image: 'https://cdn.example.com/video.mp4'
   }
 
   const mockValidations = [
-    { id: 1, statement: 'I confirm this', claim: 'VALIDATED' }
+    { id: 1, isValid: true, confidence: 1, statement: 'I confirm this', issuerName: 'Jane Doe', createdAt: '2026-02-14' }
   ]
+
+  const mockReportResponse = {
+    claim: mockClaim,
+    validations: mockValidations,
+    summary: { totalValidations: 1, averageConfidence: 1, consensusValid: true }
+  }
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -45,23 +46,23 @@ describe('VideoBadge', () => {
   })
 
   test('renders claim data after loading', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: mockValidations } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: mockReportResponse } as any)
 
     render(<VideoBadge claimUri='https://live.linkedtrust.us/claims/123' />)
 
     await waitFor(() => {
-      expect(screen.getByText(mockClaim.statement)).toBeInTheDocument()
+      expect(screen.getByText(mockClaim.statement!)).toBeInTheDocument()
     })
 
-    expect(screen.getByText(mockClaim.issuer.name)).toBeInTheDocument()
+    expect(screen.getByText(/John Doe/i)).toBeInTheDocument()
     expect(screen.getByText(/1 endorsement/i)).toBeInTheDocument()
     expect(screen.getByText(/Verified on LinkedTrust/i)).toBeInTheDocument()
   })
 
   test('shows stars for RATED claims', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { ...mockReportResponse, validations: [] } } as any)
 
     render(<VideoBadge claimUri='https://live.linkedtrust.us/claims/123' />)
 
@@ -71,14 +72,14 @@ describe('VideoBadge', () => {
   })
 
   test('handles claim without video', async () => {
-    const claimNoVideo = { ...mockClaim, images: [] }
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: claimNoVideo } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    const claimNoVideo = { ...mockClaim, image: null }
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: claimNoVideo } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { ...mockReportResponse, validations: [] } } as any)
 
     render(<VideoBadge claimUri='https://live.linkedtrust.us/claims/123' />)
 
     await waitFor(() => {
-      expect(screen.getByText(mockClaim.statement)).toBeInTheDocument()
+      expect(screen.getByText(mockClaim.statement!)).toBeInTheDocument()
     })
 
     // Video element should not be present
@@ -104,8 +105,8 @@ describe('VideoBadge', () => {
   })
 
   test('extracts claim ID from various URI formats', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { ...mockReportResponse, validations: [] } } as any)
 
     render(<VideoBadge claimUri='https://live.linkedtrust.us/claims/123' />)
 
@@ -115,15 +116,15 @@ describe('VideoBadge', () => {
   })
 
   test('applies compact styling when compact prop is true', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } })
-    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { validations: [] } })
+    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    vi.mocked(api.getClaimReport).mockResolvedValue({ data: { ...mockReportResponse, validations: [] } } as any)
 
     const { container } = render(
       <VideoBadge claimUri='https://live.linkedtrust.us/claims/123' compact={true} />
     )
 
     await waitFor(() => {
-      expect(screen.getByText(mockClaim.statement)).toBeInTheDocument()
+      expect(screen.getByText(mockClaim.statement!)).toBeInTheDocument()
     })
 
     // Check for compact styling (maxWidth: 320)

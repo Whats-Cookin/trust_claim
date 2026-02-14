@@ -18,6 +18,7 @@ import {
 import VerifiedIcon from '@mui/icons-material/Verified'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import * as api from '../../api'
+import { Claim } from '../../api/types'
 import { BACKEND_BASE_URL } from '../../utils/settings'
 
 interface VideoBadgeProps {
@@ -26,33 +27,20 @@ interface VideoBadgeProps {
   theme?: 'light' | 'dark'
 }
 
-interface ClaimData {
-  id: number
-  claim: string
-  statement: string
-  subject?: any
-  object?: any
-  effectiveDate?: string
-  stars?: number
-  aspect?: string
-  images?: Array<{ url: string; metadata?: { type?: string } }>
-  issuer?: {
-    name?: string
-    image?: string
-  }
-}
-
 interface ValidationData {
   id: number
+  isValid: boolean
+  confidence: number
   statement?: string
-  claim: string
+  issuerName: string
+  createdAt: string
 }
 
 const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, theme: themeMode = 'light' }) => {
   const muiTheme = useTheme()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [claim, setClaim] = useState<ClaimData | null>(null)
+  const [claim, setClaim] = useState<Claim | null>(null)
   const [validations, setValidations] = useState<ValidationData[]>([])
   const [videoPlaying, setVideoPlaying] = useState(false)
 
@@ -130,10 +118,13 @@ const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, them
   }
 
   // Find video in images
-  const video = claim.images?.find(img => img.metadata?.type === 'video')
-  const hasVideo = !!video
+  // Get images from claim.image field if available
+  const videoUrl = claim.image && claim.image.includes('video') ? claim.image : null
+  const hasVideo = !!videoUrl
   const isRated = claim.claim === 'RATED'
   const stars = claim.stars || 0
+  const issuerName = typeof claim.subject === 'object' ? claim.subject.name : undefined
+  const issuerImage = typeof claim.subject === 'object' ? claim.subject.image : undefined
 
   return (
     <Card
@@ -152,7 +143,7 @@ const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, them
       }}
     >
       {/* Video Section */}
-      {hasVideo && video && (
+      {hasVideo && videoUrl && (
         <Box
           sx={{
             position: 'relative',
@@ -166,7 +157,7 @@ const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, them
           {!videoPlaying ? (
             <>
               <video
-                src={video.url}
+                src={videoUrl}
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -205,7 +196,7 @@ const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, them
             </>
           ) : (
             <video
-              src={video.url}
+              src={videoUrl}
               controls
               autoPlay
               style={{
@@ -241,27 +232,29 @@ const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, them
         )}
 
         {/* Statement */}
-        <Typography
-          variant={compact ? 'body1' : 'h6'}
-          sx={{
-            mb: 2,
-            fontWeight: 500,
-            lineHeight: 1.4,
-            color: 'inherit'
-          }}
-        >
-          {claim.statement}
-        </Typography>
+        {claim.statement && (
+          <Typography
+            variant={compact ? 'body1' : 'h6'}
+            sx={{
+              mb: 2,
+              fontWeight: 500,
+              lineHeight: 1.4,
+              color: 'inherit'
+            }}
+          >
+            {claim.statement}
+          </Typography>
+        )}
 
         {/* Issuer info */}
-        {claim.issuer && (
+        {(issuerName || issuerImage) && (
           <Stack direction='row' spacing={1.5} alignItems='center' sx={{ mb: 2 }}>
-            {claim.issuer.image && (
-              <Avatar src={claim.issuer.image} sx={{ width: compact ? 32 : 40, height: compact ? 32 : 40 }} />
+            {issuerImage && (
+              <Avatar src={issuerImage} sx={{ width: compact ? 32 : 40, height: compact ? 32 : 40 }} />
             )}
             <Box sx={{ flex: 1 }}>
               <Typography variant='body2' sx={{ fontWeight: 600, color: 'inherit' }}>
-                {claim.issuer.name || 'Anonymous'}
+                {issuerName || 'Anonymous'}
               </Typography>
               {claim.effectiveDate && (
                 <Typography variant='caption' sx={{ color: themeMode === 'dark' ? '#999' : '#666' }}>
