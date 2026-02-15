@@ -1,21 +1,12 @@
 import React from 'react'
-import { Container, Typography, Box, Grid, Paper, Divider, Chip } from '@mui/material'
-import VideoBadge from '../VideoBadge'
-import VideoBadgeEnhanced from '../VideoBadge/VideoBadgeEnhanced'
-import { BACKEND_BASE_URL } from '../../utils/settings'
+import { Container, Typography, Box, Grid, Divider, Chip, Paper, alpha } from '@mui/material'
+import MockBadgeExample from './MockBadgeExample'
 
 /**
  * Gallery page to preview all badge variations
  * Route: /badge-gallery
  */
 const BadgeGallery: React.FC = () => {
-  // Example claim URIs for demonstration
-  const exampleClaims = {
-    withVideo: `${BACKEND_BASE_URL}/claims/124446`, // Replace with actual claim with video
-    rated: `${BACKEND_BASE_URL}/claims/124446`, // Example rated claim
-    achievement: `${BACKEND_BASE_URL}/claims/124446` // Example achievement
-  }
-
   return (
     <Container maxWidth='xl' sx={{ py: 6 }}>
       <Typography variant='h3' sx={{ mb: 2, fontWeight: 700 }}>
@@ -26,142 +17,216 @@ const BadgeGallery: React.FC = () => {
       </Typography>
       <Box sx={{ mb: 6, p: 3, backgroundColor: '#f0f7ff', borderRadius: 2 }}>
         <Typography variant='h6' sx={{ mb: 1 }}>
-          Comparing Designs
+          Design Comparison - Mock Examples
         </Typography>
         <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-          <strong>Enhanced Version:</strong> Polished design with better hierarchy, animations, and visual appeal
-          <br />
-          <strong>Original Version:</strong> Current production version for comparison
+          These are design mockups showing exactly how badges will look with real data. "Minimal" versions show just video, quote, and name - clicking takes them to a detailed landing page.
         </Typography>
       </Box>
 
-      {/* Enhanced vs Original Comparison */}
-      <Box sx={{ mb: 8 }}>
-        <Typography variant='h4' sx={{ mb: 3, fontWeight: 600 }}>
-          Enhanced Design (NEW)
+      {/* MINIMAL CLEAN VERSION */}
+      <Box sx={{ mb: 8, p: 4, backgroundColor: alpha('#10B981', 0.05), borderRadius: 2, border: '2px solid #10B981' }}>
+        <Typography variant='h4' sx={{ mb: 1, fontWeight: 700, color: '#059669' }}>
+          ✨ Minimal Versions (Recommended)
         </Typography>
+        <Typography variant='body1' sx={{ mb: 4, color: 'text.secondary' }}>
+          Clean, focused design - just video, quote, and endorser. All details available on click.
+        </Typography>
+
+        {/* Horizontal Compact */}
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Chip label='Horizontal Compact' color='success' size='medium' sx={{ fontWeight: 600 }} />
+            <Typography variant='subtitle2' sx={{ mt: 1, color: 'text.secondary' }}>
+              Best for website embedding (600px x 140px)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, flexWrap: 'wrap' }}>
+            <MockBadgeExample hasVideo={true} hasStars={true} enhanced={true} minimal={true} horizontal={true} />
+          </Box>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Vertical Options */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant='h6' sx={{ mb: 3, textAlign: 'center', color: 'text.secondary' }}>
+            Vertical Options (if needed)
+          </Typography>
+        </Box>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Chip label='NEW - Enhanced' color='primary' size='small' sx={{ mb: 2 }} />
-              <Typography variant='h6' sx={{ mb: 2 }}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='With Video' variant='outlined' size='small' />
+              <Typography variant='caption' sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
                 Standard (600px)
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadgeEnhanced claimUri={exampleClaims.withVideo} />
-              </Box>
-            </Paper>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample hasVideo={true} hasStars={true} enhanced={true} minimal={true} />
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Chip label='NEW - Enhanced' color='primary' size='small' sx={{ mb: 2 }} />
-              <Typography variant='h6' sx={{ mb: 2 }}>
-                Compact (320px)
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Text Only' variant='outlined' size='small' />
+              <Typography variant='caption' sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
+                Standard (600px)
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadgeEnhanced claimUri={exampleClaims.withVideo} compact={true} />
-              </Box>
-            </Paper>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample hasVideo={false} hasStars={true} enhanced={true} minimal={true} />
+            </Box>
           </Grid>
         </Grid>
       </Box>
 
       <Divider sx={{ my: 6 }} />
 
-      {/* Original for Comparison */}
+      {/* With Video Examples */}
       <Box sx={{ mb: 8 }}>
         <Typography variant='h4' sx={{ mb: 3, fontWeight: 600 }}>
-          Original Design (for comparison)
+          With Video Testimonial
         </Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Chip label='Current' variant='outlined' size='small' sx={{ mb: 2 }} />
-              <Typography variant='h6' sx={{ mb: 2 }}>
-                Standard
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Enhanced Design' color='primary' size='medium' sx={{ fontWeight: 600 }} />
+              <Typography variant='subtitle2' sx={{ mt: 1, color: 'text.secondary' }}>
+                Standard (600px) - With video & 5 stars
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadge claimUri={exampleClaims.withVideo} />
-              </Box>
-            </Paper>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample hasVideo={true} hasStars={true} enhanced={true} />
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Chip label='Current' variant='outlined' size='small' sx={{ mb: 2 }} />
-              <Typography variant='h6' sx={{ mb: 2 }}>
-                Compact
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Current Design' variant='outlined' size='medium' />
+              <Typography variant='subtitle2' sx={{ mt: 1, color: 'text.secondary' }}>
+                Standard (600px) - With video & 5 stars
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadge claimUri={exampleClaims.withVideo} compact={true} />
-              </Box>
-            </Paper>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample hasVideo={true} hasStars={true} enhanced={false} />
+            </Box>
           </Grid>
         </Grid>
       </Box>
 
       <Divider sx={{ my: 6 }} />
 
-      {/* Theme Variations - Enhanced */}
+      {/* Without Video Examples */}
+      <Box sx={{ mb: 8 }}>
+        <Typography variant='h4' sx={{ mb: 3, fontWeight: 600 }}>
+          Without Video (Text Only)
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Enhanced Design' color='primary' size='medium' sx={{ fontWeight: 600 }} />
+              <Typography variant='subtitle2' sx={{ mt: 1, color: 'text.secondary' }}>
+                Text endorsement with stars
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample hasVideo={false} hasStars={true} enhanced={true} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Current Design' variant='outlined' size='medium' />
+              <Typography variant='subtitle2' sx={{ mt: 1, color: 'text.secondary' }}>
+                Text endorsement with stars
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample hasVideo={false} hasStars={true} enhanced={false} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Divider sx={{ my: 6 }} />
+
+      {/* Compact Size Comparison */}
+      <Box sx={{ mb: 8 }}>
+        <Typography variant='h4' sx={{ mb: 3, fontWeight: 600 }}>
+          Compact Size (320px)
+        </Typography>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Enhanced' color='primary' size='small' />
+              <Typography variant='caption' sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
+                With video
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample compact={true} hasVideo={true} enhanced={true} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Enhanced' color='primary' size='small' />
+              <Typography variant='caption' sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
+                No video
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample compact={true} hasVideo={false} enhanced={true} />
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Chip label='Current' variant='outlined' size='small' />
+              <Typography variant='caption' sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
+                With video
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample compact={true} hasVideo={true} enhanced={false} />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Divider sx={{ my: 6 }} />
+
+      {/* Theme Variations */}
       <Box sx={{ mb: 8 }}>
         <Typography variant='h4' sx={{ mb: 3, fontWeight: 600 }}>
           Theme Variations (Enhanced)
         </Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, backgroundColor: '#f5f5f5' }}>
-              <Typography variant='h6' sx={{ mb: 2 }}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                 Light Theme
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadgeEnhanced claimUri={exampleClaims.withVideo} theme='light' />
-              </Box>
-            </Paper>
+              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                For light-colored websites
+              </Typography>
+            </Box>
+            <Box sx={{ p: 3, backgroundColor: '#f5f5f5', display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample theme='light' hasVideo={true} enhanced={true} />
+            </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3, backgroundColor: '#0a0a0a' }}>
-              <Typography variant='h6' sx={{ mb: 2, color: 'white' }}>
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Typography variant='subtitle1' sx={{ fontWeight: 600 }}>
                 Dark Theme
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadgeEnhanced claimUri={exampleClaims.withVideo} theme='dark' />
-              </Box>
-            </Paper>
+              <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                For dark-colored websites
+              </Typography>
+            </Box>
+            <Box sx={{ p: 3, backgroundColor: '#0a0a0a', display: 'flex', justifyContent: 'center' }}>
+              <MockBadgeExample theme='dark' hasVideo={true} enhanced={true} />
+            </Box>
           </Grid>
         </Grid>
       </Box>
 
-      <Divider sx={{ my: 6 }} />
-
-      {/* Claim Type Variations */}
-      <Box sx={{ mb: 8 }}>
-        <Typography variant='h4' sx={{ mb: 3, fontWeight: 600 }}>
-          Claim Type Variations
-        </Typography>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant='h6' sx={{ mb: 2 }}>
-                Rated Claim (with stars)
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadge claimUri={exampleClaims.rated} />
-              </Box>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 3 }}>
-              <Typography variant='h6' sx={{ mb: 2 }}>
-                Achievement Claim
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <VideoBadge claimUri={exampleClaims.achievement} />
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
-
-      <Divider sx={{ my: 6 }} />
 
       {/* Usage Instructions */}
       <Box>
