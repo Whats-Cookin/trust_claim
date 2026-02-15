@@ -16,7 +16,6 @@
   'use strict'
 
   const DEFAULT_API = 'https://live.linkedtrust.us'
-  const SITE_BASE = 'https://linkedtrust.us'
 
   class LinkedBadge extends HTMLElement {
     static get observedAttributes () {
@@ -65,26 +64,25 @@
       }
     }
 
-    // Extract subject info from edges
-    _getSubject () {
+    // Extract source info from edges (the person who made the claim)
+    _getSource () {
       const claim = this._data.claim
       const edges = claim.edges || []
 
-      // Find subject edge — endNode is the subject entity
-      const subjectEdge = edges.find(e => e.label === 'subject')
-      if (subjectEdge && subjectEdge.endNode) {
+      const sourceEdge = edges.find(e => e.label === 'source')
+      if (sourceEdge && sourceEdge.endNode) {
         return {
-          name: subjectEdge.endNode.name || null,
-          uri: subjectEdge.endNode.nodeUri || claim.sourceURI || null,
-          image: subjectEdge.endNode.image || subjectEdge.endNode.thumbnail || null,
-          type: subjectEdge.endNode.entType || null
+          name: sourceEdge.endNode.name || null,
+          uri: sourceEdge.endNode.nodeUri || claim.sourceURI || null,
+          image: sourceEdge.endNode.image || sourceEdge.endNode.thumbnail || null,
+          type: sourceEdge.endNode.entType || null
         }
       }
 
-      // Fallback: use claim.subject if it's a string URI
+      // Fallback: use sourceURI from the claim
       return {
         name: null,
-        uri: typeof claim.subject === 'string' ? claim.subject : claim.sourceURI,
+        uri: claim.sourceURI || null,
         image: null,
         type: null
       }
@@ -138,36 +136,37 @@
       }
 
       const claim = this._data.claim
-      const subject = this._getSubject()
+      const source = this._getSource()
       const videoUrl = this._getVideoUrl()
       const imageUrl = this._getImageUrl()
       const hasMedia = videoUrl || imageUrl
-      const isRated = claim.claim === 'RATED' && claim.stars != null && claim.stars > 0
+      const isRated = claim.claim && claim.claim.toLowerCase() === 'rated' && claim.stars != null && claim.stars > 0
       const date = claim.effectiveDate ? new Date(claim.effectiveDate).toLocaleDateString() : ''
-      const claimUrl = `${SITE_BASE}/claims/${claim.id}`
+      const claimUrl = `${this._apiBase}/explore/${claim.id}`
 
-      // Build star HTML
-      let starsHtml = ''
+      // Build rating line: ★★★★★ 5.0 : quality
+      let ratingHtml = ''
       if (isRated) {
-        const stars = Math.round(claim.stars * 2) / 2 // round to 0.5
-        starsHtml = '<div class="rating">'
+        const stars = Math.round(claim.stars * 2) / 2
+        let starStr = ''
         for (let i = 1; i <= 5; i++) {
           if (i <= Math.floor(stars)) {
-            starsHtml += '<span class="star full">★</span>'
+            starStr += '<span class="star full">★</span>'
           } else if (i - 0.5 === stars) {
-            starsHtml += '<span class="star half">★</span>'
+            starStr += '<span class="star half">★</span>'
           } else {
-            starsHtml += '<span class="star empty">★</span>'
+            starStr += '<span class="star empty">★</span>'
           }
         }
-        starsHtml += `<span class="rating-num">${Number(claim.stars).toFixed(1)}</span></div>`
+        const aspect = claim.aspect ? claim.aspect.includes(':') ? claim.aspect.split(':')[1] : claim.aspect : ''
+        ratingHtml = `<div class="rating-line">${starStr} <span class="rating-num">${Number(claim.stars).toFixed(1)}</span>${aspect ? ` <span class="rating-sep">:</span> <span class="rating-aspect">${this._esc(aspect)}</span>` : ''}</div>`
       }
 
-      // Subject initial for avatar fallback
-      const initial = subject.name ? subject.name.charAt(0).toUpperCase() : '?'
+      // Source initial for avatar fallback
+      const initial = source.name ? source.name.charAt(0).toUpperCase() : '?'
 
-      // Subject link — prefer sourceURI, fall back to subject URI
-      const subjectLink = claim.sourceURI || subject.uri || null
+      // Source link
+      const sourceLink = source.uri || claim.sourceURI || null
 
       // Media section
       let mediaHtml = ''
@@ -193,32 +192,24 @@
         <div class="badge-card ${this._theme} ${this._compact ? 'compact' : ''}">
           ${mediaHtml}
           <div class="badge-body">
-            ${starsHtml}
-            ${claim.statement ? `<p class="statement">${this._esc(claim.statement)}</p>` : ''}
+            ${ratingHtml}
+            ${claim.statement ? `<p class="statement" id="stmt">${this._esc(claim.statement)}</p>` : ''}
             <div class="issuer-row">
-              ${subject.image
-                ? `<img class="avatar" src="${this._esc(subject.image)}" alt="" />`
-                : `<div class="avatar avatar-fallback">${initial}</div>`
+              ${source.name
+                ? `<span class="issuer-name">${this._esc(source.name)}</span>`
+                : ''
               }
-              <div class="issuer-info">
-                ${subject.name
-                  ? (subjectLink
-                    ? `<a class="issuer-name" href="${this._esc(subjectLink)}" target="_blank" rel="noopener">${this._esc(subject.name)}</a>`
-                    : `<span class="issuer-name">${this._esc(subject.name)}</span>`)
-                  : (subjectLink
-                    ? `<a class="issuer-name" href="${this._esc(subjectLink)}" target="_blank" rel="noopener">${this._truncUri(subjectLink)}</a>`
-                    : '')
-                }
-                ${date ? `<span class="date">${date}</span>` : ''}
-              </div>
+              ${sourceLink
+                ? `<a class="source-link" href="${this._esc(sourceLink)}" target="_blank" rel="noopener">${this._truncUri(sourceLink)}</a>`
+                : ''
+              }
+              ${date ? `<span class="date">${date}</span>` : ''}
             </div>
-            ${claim.aspect ? `<span class="aspect-chip">${this._esc(claim.aspect.includes(':') ? claim.aspect.split(':')[1] : claim.aspect)}</span>` : ''}
             <div class="footer">
-              <span class="verified-label">
+              <a class="verified-link" href="${this._esc(claimUrl)}" target="_blank" rel="noopener">
                 <svg viewBox="0 0 20 20" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"><path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm-1 15l-5-5 1.41-1.41L9 12.17l7.59-7.59L18 6l-9 9z" fill="#10B981"/></svg>
                 Verified on LinkedTrust
-              </span>
-              <a class="view-link" href="${this._esc(claimUrl)}" target="_blank" rel="noopener">View Full Claim →</a>
+              </a>
             </div>
           </div>
         </div>
@@ -238,6 +229,14 @@
             }
           })
         }
+      }
+
+      // Wire up statement expand on click
+      const stmt = this.shadowRoot.getElementById('stmt')
+      if (stmt) {
+        stmt.addEventListener('click', () => {
+          stmt.classList.toggle('expanded')
+        })
       }
     }
 
@@ -336,15 +335,14 @@
           padding: 12px 14px 10px;
         }
 
-        /* Rating */
-        .rating {
+        /* Rating line: ★★★★★ 5.0 : quality */
+        .rating-line {
           margin-bottom: 8px;
-          display: flex;
-          align-items: center;
-          gap: 2px;
+          font-size: 14px;
+          line-height: 1.4;
         }
-        .star { font-size: 20px; line-height: 1; }
-        .compact .star { font-size: 16px; }
+        .star { font-size: 18px; }
+        .compact .star { font-size: 15px; }
         .star.full { color: #FFC107; }
         .star.half {
           color: #FFC107;
@@ -356,12 +354,17 @@
         .star.empty { color: #ccc; }
         .dark .star.empty { color: #555; }
         .rating-num {
-          margin-left: 6px;
-          font-size: 14px;
           font-weight: 600;
           color: #666;
         }
         .dark .rating-num { color: #aaa; }
+        .rating-sep {
+          color: #ccc;
+        }
+        .rating-aspect {
+          color: #888;
+        }
+        .dark .rating-aspect { color: #999; }
 
         /* Statement */
         .statement {
@@ -372,14 +375,28 @@
           -webkit-box-orient: vertical;
           overflow: hidden;
           color: inherit;
+          cursor: pointer;
+          transition: color 0.15s;
+        }
+        .statement:hover {
+          color: #444;
+        }
+        .dark .statement:hover {
+          color: #f0f0f0;
+        }
+        .statement.expanded {
+          display: block;
+          -webkit-line-clamp: unset;
         }
         .compact .statement { font-size: 13px; }
 
-        /* Issuer row */
+
+
+        /* Source row — name, url, date all on one line */
         .issuer-row {
           display: flex;
-          align-items: center;
-          gap: 10px;
+          align-items: baseline;
+          gap: 8px;
           margin-bottom: 10px;
         }
         .avatar {
@@ -403,6 +420,7 @@
           flex-direction: column;
           min-width: 0;
         }
+
         .issuer-name {
           font-size: 14px;
           font-weight: 600;
@@ -415,9 +433,21 @@
         a.issuer-name:hover {
           text-decoration: underline;
         }
+        .source-link {
+          font-size: 12px;
+          color: #aaa;
+          text-decoration: none;
+          white-space: nowrap;
+        }
+        .source-link:hover {
+          text-decoration: underline;
+        }
+        .dark .source-link { color: #666; }
         .date {
           font-size: 12px;
           color: #888;
+          margin-left: auto;
+          white-space: nowrap;
         }
         .dark .date { color: #777; }
 
@@ -450,18 +480,13 @@
         .dark .footer {
           border-top-color: rgba(255,255,255,0.1);
         }
-        .verified-label {
+        .verified-link {
           font-size: 12px;
           color: #10B981;
           font-weight: 500;
-        }
-        .view-link {
-          font-size: 13px;
-          font-weight: 600;
-          color: #6366f1;
           text-decoration: none;
         }
-        .view-link:hover {
+        .verified-link:hover {
           text-decoration: underline;
         }
 
