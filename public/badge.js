@@ -49,36 +49,47 @@
     return { name: null, uri: claim.sourceURI || null, image: null }
   }
 
-  function getVideoUrl (images) {
+  function resolveUrl (url, apiBase) {
+    if (!url) return null
+    if (url.startsWith('/')) return apiBase + url
+    return url
+  }
+
+  function getVideoUrl (images, apiBase) {
     const v = (images || []).find(i =>
       i.type === 'video' ||
       (i.contentType && i.contentType.startsWith('video/')) ||
       (i.url && /\.(mp4|webm|ogg)(\?|$)/i.test(i.url))
     )
-    return v ? v.url : null
+    return v ? resolveUrl(v.url, apiBase) : null
   }
 
-  function getImageUrl (images) {
+  function getImageUrl (images, apiBase) {
     const img = (images || []).find(i =>
       i.type === 'image' ||
       (i.contentType && i.contentType.startsWith('image/'))
     )
-    return img ? img.url : null
+    if (!img) return null
+    const url = resolveUrl(img.url, apiBase)
+    // If it's an API endpoint, we'll need to resolve it async later
+    return { url, needsResolve: /\/api\/images\//.test(url) }
   }
 
   // Parse claim into a flat context object for templates
   function parseClaimData (data, apiBase) {
     const claim = data.claim
     const source = getSource(claim)
-    const videoUrl = getVideoUrl(data.images)
-    const imageUrl = getImageUrl(data.images)
+    const videoUrl = getVideoUrl(data.images, apiBase)
+    const imageResult = getImageUrl(data.images, apiBase)
+    const imageUrl = imageResult ? imageResult.url : null
+    const imageNeedsResolve = imageResult ? imageResult.needsResolve : false
     const isRated = claim.claim && claim.claim.toLowerCase() === 'rated' && claim.stars != null && claim.stars > 0
     const date = claim.effectiveDate ? new Date(claim.effectiveDate).toLocaleDateString() : ''
     const claimUrl = `${apiBase}/explore/${claim.id}`
     const sourceLink = source.uri || claim.sourceURI || null
     const aspect = claim.aspect ? (claim.aspect.includes(':') ? claim.aspect.split(':')[1] : claim.aspect) : ''
 
-    return { claim, source, videoUrl, imageUrl, isRated, date, claimUrl, sourceLink, aspect }
+    return { claim, source, videoUrl, imageUrl, imageNeedsResolve, isRated, date, claimUrl, sourceLink, aspect }
   }
 
   // ── Shared HTML fragments ───────────────────────────────────────
@@ -114,21 +125,28 @@
   }
 
   function sourceRowHtml (ctx) {
+    let sourceHtml = ''
+    const nameMatchesUrl = ctx.source.name && ctx.sourceLink &&
+      ctx.source.name.replace(/^https?:\/\//, '').replace(/\/$/, '') ===
+      ctx.sourceLink.replace(/^https?:\/\//, '').replace(/\/$/, '')
+
+    if (ctx.source.name && ctx.sourceLink && !nameMatchesUrl) {
+      // Name + separate URL — URL hides via CSS overflow if too long
+      sourceHtml = `<a class="source-name-link" href="${esc(ctx.sourceLink)}" target="_blank" rel="noopener">${esc(ctx.source.name)}</a><a class="source-link" href="${esc(ctx.sourceLink)}" target="_blank" rel="noopener">${truncUri(ctx.sourceLink)}</a>`
+    } else if (ctx.source.name && ctx.sourceLink) {
+      // Name IS the URL — just show name as link
+      sourceHtml = `<a class="source-name-link" href="${esc(ctx.sourceLink)}" target="_blank" rel="noopener">${esc(ctx.source.name)}</a>`
+    } else if (ctx.source.name) {
+      sourceHtml = `<span class="source-name">${esc(ctx.source.name)}</span>`
+    } else if (ctx.sourceLink) {
+      sourceHtml = `<a class="source-name-link" href="${esc(ctx.sourceLink)}" target="_blank" rel="noopener">${truncUri(ctx.sourceLink)}</a>`
+    }
     return `<div class="source-row">
-      ${ctx.source.name ? `<span class="source-name">${esc(ctx.source.name)}</span>` : ''}
-      ${ctx.sourceLink ? `<a class="source-link" href="${esc(ctx.sourceLink)}" target="_blank" rel="noopener">${truncUri(ctx.sourceLink)}</a>` : ''}
+      ${sourceHtml}
       ${ctx.date ? `<span class="date">${ctx.date}</span>` : ''}
     </div>`
   }
 
-  function footerHtml (ctx) {
-    return `<div class="footer">
-      <a class="verified-link" href="${esc(ctx.claimUrl)}" target="_blank" rel="noopener">
-        <svg viewBox="0 0 20 20" width="14" height="14" style="vertical-align:-2px;margin-right:4px;"><path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm-1 15l-5-5 1.41-1.41L9 12.17l7.59-7.59L18 6l-9 9z" fill="#10B981"/></svg>
-        Verified on LinkedTrust
-      </a>
-    </div>`
-  }
 
   function videoMediaHtml (ctx) {
     if (!ctx.videoUrl) return ''
@@ -157,10 +175,12 @@
     return `<div class="badge card ${theme} ${compact ? 'compact' : ''}">
       ${media}
       <div class="badge-body">
-        ${ratingHtml(ctx)}
+        <div class="topline">
+          ${ratingHtml(ctx)}
+          <a class="verified-badge" href="${esc(ctx.claimUrl)}" target="_blank" rel="noopener">${LOGO_SVG} Verified</a>
+        </div>
         ${statementHtml(ctx)}
         ${sourceRowHtml(ctx)}
-        ${footerHtml(ctx)}
       </div>
     </div>`
   }
@@ -175,9 +195,9 @@
     return `<div class="badge row ${theme} ${compact ? 'compact' : ''}">
       ${media ? `<div class="row-media">${media}</div>` : ''}
       <div class="badge-body">
-        <div class="row-topline">
+        <div class="topline">
           ${ratingHtmlCompact(ctx)}
-          <a class="row-verified" href="${esc(ctx.claimUrl)}" target="_blank" rel="noopener">${LOGO_SVG} Verified</a>
+          <a class="verified-badge" href="${esc(ctx.claimUrl)}" target="_blank" rel="noopener">${LOGO_SVG} Verified</a>
         </div>
         ${statementHtml(ctx)}
         ${sourceRowHtml(ctx)}
@@ -293,6 +313,8 @@
       .statement.expanded {
         display: block;
         -webkit-line-clamp: unset;
+        max-height: 120px;
+        overflow-y: auto;
       }
 
       /* Source row */
@@ -313,9 +335,22 @@
         color: #aaa;
         text-decoration: none;
         white-space: nowrap;
+        overflow: hidden;
+        flex-shrink: 1;
+        min-width: 0;
       }
       .source-link:hover { text-decoration: underline; }
       .dark .source-link { color: #666; }
+      .source-name-link {
+        font-size: 14px;
+        font-weight: 600;
+        color: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .source-name-link:hover { text-decoration: underline; }
       .date {
         font-size: 12px;
         color: #888;
@@ -324,21 +359,26 @@
       }
       .dark .date { color: #777; }
 
-      /* Footer */
-      .footer {
+      /* Top line — rating left, verified right */
+      .topline {
         display: flex;
         align-items: center;
-        padding-top: 10px;
-        border-top: 1px solid rgba(0,0,0,0.08);
+        justify-content: space-between;
+        margin-bottom: 8px;
       }
-      .dark .footer { border-top-color: rgba(255,255,255,0.1); }
-      .verified-link {
-        font-size: 12px;
+      .topline .rating-line { margin-bottom: 0; }
+      .verified-badge {
+        font-size: 11px;
         color: #10B981;
         font-weight: 500;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        white-space: nowrap;
+        margin-left: auto;
       }
-      .verified-link:hover { text-decoration: underline; }
+      .verified-badge:hover { text-decoration: underline; }
 
       /* Skeleton */
       .skeleton-media {
@@ -431,23 +471,7 @@
       .badge.row .play-overlay svg { width: 40px; height: 40px; }
       .badge.row .star { font-size: 15px; }
       .badge.row .rating-line { margin-bottom: 4px; }
-      .badge.row .row-topline {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .badge.row .row-topline .rating-line { margin-bottom: 0; }
-      .badge.row .row-verified {
-        font-size: 11px;
-        color: #10B981;
-        font-weight: 500;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        white-space: nowrap;
-      }
-      .badge.row .row-verified:hover { text-decoration: underline; }
+      .badge.row .topline { margin-bottom: 0; }
     `
   }
 
@@ -542,6 +566,16 @@
             const vid = media.querySelector('video')
             if (vid) { vid.controls = true; vid.play(); playBtn.style.display = 'none' }
           })
+        }
+      }
+
+      // Resolve API image URLs
+      if (ctx.imageNeedsResolve && ctx.imageUrl) {
+        const img = this.shadowRoot.querySelector('.media-img')
+        if (img) {
+          fetch(ctx.imageUrl).then(r => r.json()).then(j => {
+            if (j.imageUrl) img.src = j.imageUrl
+          }).catch(() => {})
         }
       }
 
