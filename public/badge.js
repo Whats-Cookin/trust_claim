@@ -376,7 +376,7 @@
       }
       .verified-badge:hover { text-decoration: underline; }
 
-      /* Skeleton */
+      /* Skeleton — mimics final badge layout so load is less jarring */
       .skeleton-media {
         width: 100%;
         height: 200px;
@@ -385,13 +385,49 @@
       .dark .skeleton-media {
         background: #2a2a2a;
       }
+      .skeleton-topline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .skeleton-pill {
+        height: 12px;
+        width: 70px;
+        border-radius: 6px;
+        background: #eee;
+      }
+      .dark .skeleton-pill {
+        background: #2a2a2a;
+      }
       .skeleton-line {
-        height: 14px;
+        height: 13px;
         border-radius: 4px;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         background: #eee;
       }
       .dark .skeleton-line {
+        background: #2a2a2a;
+      }
+      .skeleton-source {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: auto;
+        padding-top: 8px;
+        border-top: 1px solid #eee;
+      }
+      .dark .skeleton-source {
+        border-top-color: #333;
+      }
+      .skeleton-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eee;
+        flex-shrink: 0;
+      }
+      .dark .skeleton-avatar {
         background: #2a2a2a;
       }
     `
@@ -523,15 +559,26 @@
       const compact = this._compact
 
       if (!this._data) {
+        const skelBody = `
+          <div class="badge-body">
+            <div class="skeleton-topline">
+              <div class="skeleton-pill"></div>
+              <div class="skeleton-pill" style="width:55px"></div>
+            </div>
+            <div class="skeleton-line" style="width:85%"></div>
+            <div class="skeleton-line" style="width:65%"></div>
+            <div class="skeleton-source">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-line" style="width:40%;margin:0"></div>
+            </div>
+          </div>`
+        const skelMedia = layout === 'row'
+          ? `<div class="row-media"><div class="skeleton-media" style="height:100%"></div></div>`
+          : `<div class="skeleton-media"></div>`
         this.shadowRoot.innerHTML = `
           <style>${sharedStyles()}${layout === 'row' ? rowStyles() : cardStyles()}</style>
           <div class="badge ${layout} ${theme} ${compact ? 'compact' : ''}">
-            <div class="skeleton-media"></div>
-            <div class="badge-body">
-              <div class="skeleton-line" style="width:60%"></div>
-              <div class="skeleton-line" style="width:90%"></div>
-              <div class="skeleton-line" style="width:40%"></div>
-            </div>
+            ${skelMedia}${skelBody}
           </div>
         `
         return
