@@ -142,9 +142,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       formData.append('video', recordedBlob, 'video.webm')
 
       const response = await axiosInstance.post('/api/video/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
+        timeout: 120000, // 2 min timeout for video uploads (default 10s is too short)
         onUploadProgress: progressEvent => {
           if (progressEvent.total) {
             const percent = Math.round((progressEvent.loaded / progressEvent.total) * 100)

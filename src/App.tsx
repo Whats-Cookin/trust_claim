@@ -26,6 +26,8 @@ import Present from './components/Present'
 import RequestRating from './components/RequestRating'
 import BadgeEmbed from './components/BadgeEmbed'
 import BadgeView from './components/BadgeView'
+import BadgeGallery from './components/BadgeGallery'
+import Wall from './containers/Wall'
 import './App.css'
 
 const App = () => {
@@ -195,6 +197,8 @@ const App = () => {
               <Route path='/present/:id' element={<Present />} />
               <Route path='/badge-embed/:id' element={<BadgeEmbed />} />
               <Route path='/badge' element={<BadgeView />} />
+              <Route path='/badge-gallery' element={<BadgeGallery />} />
+              <Route path='/wall' element={<Wall />} />
               <Route
                 path='/request-rating'
                 element={
