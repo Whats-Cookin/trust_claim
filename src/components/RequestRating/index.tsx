@@ -25,6 +25,7 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import Loader from '../Loader'
 import MainContainer from '../MainContainer'
 import VideoRecorder from '../VideoRecorder'
+import BadgeSharePanel from '../BadgeSharePanel'
 
 /**
  * RequestRating - Public page for collecting ratings/testimonials
@@ -66,6 +67,7 @@ const RequestRating: React.FC = () => {
   const theme = useTheme()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [newClaimId, setNewClaimId] = useState<number | null>(null)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   const aboutUri = searchParams.get('about') || ''
@@ -136,10 +138,11 @@ const RequestRating: React.FC = () => {
         ...(videoUrl && { videoUrl }) // Include video URL if recorded
       }
 
-      const { message, isSuccess } = await createClaim(payload)
+      const { message, isSuccess, claimId } = await createClaim(payload)
 
       if (isSuccess) {
         setSubmitted(true)
+        if (claimId) setNewClaimId(claimId)
       } else {
         console.error('Failed to create rating:', message)
       }
@@ -168,20 +171,23 @@ const RequestRating: React.FC = () => {
     return (
       <MainContainer>
         <Container maxWidth='sm' sx={{ py: 4 }}>
-          <Card sx={{ textAlign: 'center', p: 4 }}>
-            <Box sx={{ mb: 3 }}>
-              <StarIcon sx={{ fontSize: 64, color: theme.palette.warning.main }} />
-            </Box>
-            <Typography variant='h5' sx={{ fontWeight: 700, mb: 2 }}>
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <StarIcon sx={{ fontSize: 48, color: theme.palette.warning.main }} />
+            <Typography variant='h5' sx={{ fontWeight: 700, mt: 1 }}>
               Thank You for Your Rating!
             </Typography>
-            <Typography variant='body1' sx={{ color: theme.palette.text.secondary, mb: 3 }}>
+            <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mt: 1 }}>
               Your testimonial has been submitted and will be visible on LinkedTrust.
             </Typography>
-            <Button variant='contained' onClick={() => navigate('/feed')} sx={{ textTransform: 'none' }}>
-              Browse Feed
-            </Button>
-          </Card>
+          </Box>
+          {newClaimId && <BadgeSharePanel claimId={newClaimId} />}
+          {!newClaimId && (
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Button variant='contained' onClick={() => navigate('/feed')} sx={{ textTransform: 'none' }}>
+                Browse Feed
+              </Button>
+            </Box>
+          )}
         </Container>
       </MainContainer>
     )

@@ -4,9 +4,10 @@ import { MediaI } from '../components/Form/imageUploading'
 import { getCurrentAccount, signAndPrepareClaim } from '../utils/web3Auth'
 
 export function useCreateClaim() {
-  const createClaim = useCallback(async (payload: any): Promise<{ message: string; isSuccess: boolean }> => {
+  const createClaim = useCallback(async (payload: any): Promise<{ message: string; isSuccess: boolean; claimId?: number }> => {
     let message = 'Something went wrong!'
     let isSuccess = false
+    let claimId: number | undefined
 
     console.log('🔍 === useCreateClaim DEBUG SESSION START ===')
     console.log('🔍 Original payload received:', JSON.stringify(payload, null, 2))
@@ -540,6 +541,7 @@ export function useCreateClaim() {
       if (res.status === 200 || res.status === 201) {
         message = 'Claim submitted successfully!'
         isSuccess = true
+        claimId = res.data?.claim?.id
       } else {
         console.warn('⚠️ Unexpected response status:', res.status)
         message = 'Claim may have been created, but received unexpected response'
@@ -575,9 +577,9 @@ export function useCreateClaim() {
     }
 
     console.log('🔍 === useCreateClaim DEBUG SESSION END ===')
-    console.log('🔍 Final result:', { message, isSuccess })
+    console.log('🔍 Final result:', { message, isSuccess, claimId })
 
-    return { message, isSuccess }
+    return { message, isSuccess, claimId }
   }, [])
 
   return { createClaim }

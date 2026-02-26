@@ -28,6 +28,8 @@ import BadgeEmbed from './components/BadgeEmbed'
 import BadgeView from './components/BadgeView'
 import BadgeGallery from './components/BadgeGallery'
 import Wall from './containers/Wall'
+import BadgeEmbedPage from './containers/BadgeEmbed2'
+import BadgePage from './containers/BadgePage'
 import './App.css'
 
 const App = () => {
@@ -69,6 +71,7 @@ const App = () => {
 
   const isLoginPage = location.pathname === '/login'
   const isRegisterPage = location.pathname === '/register'
+  const isEmbedPage = location.pathname.startsWith('/embed/')
 
   const globalStyles = (
     <GlobalStyles
@@ -90,7 +93,7 @@ const App = () => {
       <CssBaseline />
       {globalStyles}
 
-      {!isLoginPage && !isRegisterPage && (
+      {!isLoginPage && !isRegisterPage && !isEmbedPage && (
         <Navbar
           isAuth={isAuthenticated}
           toggleTheme={toggleTheme}
@@ -100,7 +103,7 @@ const App = () => {
         />
       )}
       <Box sx={{ display: 'flex' }}>
-        {!isLoginPage && !isRegisterPage && (
+        {!isLoginPage && !isRegisterPage && !isEmbedPage && (
           <Sidebar
             isAuth={isAuthenticated}
             isOpen={isSidebarOpen}
@@ -199,6 +202,8 @@ const App = () => {
               <Route path='/badge' element={<BadgeView />} />
               <Route path='/badge-gallery' element={<BadgeGallery />} />
               <Route path='/wall' element={<Wall />} />
+              <Route path='/embed/:claimId' element={<BadgeEmbedPage />} />
+              <Route path='/badge/:claimId' element={<BadgePage />} />
               <Route
                 path='/request-rating'
                 element={
