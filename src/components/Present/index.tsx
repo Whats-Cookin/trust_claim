@@ -23,6 +23,7 @@ import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOu
 import CodeIcon from '@mui/icons-material/Code'
 import ShareIcon from '@mui/icons-material/Share'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import * as api from '../../api'
 import Loader from '../Loader'
 import { BACKEND_BASE_URL, BASE_URL } from '../../utils/settings'
@@ -55,6 +56,7 @@ const Present: React.FC = () => {
 
   const claimUrl = `${window.location.origin}/certificate/${id}`
   const badgeUrl = `${window.location.origin}/badge-embed/${id}`
+  const linkedInShareUrl = `${BACKEND_BASE_URL}/api/share/${id}`
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,8 +135,8 @@ const Present: React.FC = () => {
 
   const markdownEmbed = `[![Verified on LinkedTrust](${window.location.origin}/api/badge/${id}/image)](${claimUrl})`
 
-  // Generate request links
-  const requestEndorsementUrl = `${window.location.origin}/endorse?claim=${BACKEND_BASE_URL}/claims/${id}&video=true`
+  // Generate request links (clean URLs)
+  const requestEndorsementUrl = `${window.location.origin}/endorse/${id}?video=true`
   const requestValidationUrl = `${window.location.origin}/validate?subject=${BACKEND_BASE_URL}/claims/${id}`
   const requestRatingUrl = claim?.subject
     ? `${window.location.origin}/request-rating?about=${encodeURIComponent(
@@ -174,6 +176,18 @@ const Present: React.FC = () => {
           sx={{ textTransform: 'none' }}
         >
           View as Certificate
+        </Button>
+        <Button
+          variant='contained'
+          startIcon={<LinkedInIcon />}
+          onClick={() => {
+            const text = encodeURIComponent(`Check out this credential on LinkedTrust!`)
+            const url = encodeURIComponent(linkedInShareUrl)
+            window.open(`https://www.linkedin.com/feed/?shareActive=true&shareUrl=${url}&text=${text}`, '_blank')
+          }}
+          sx={{ textTransform: 'none', backgroundColor: '#0077B5', '&:hover': { backgroundColor: '#005885' } }}
+        >
+          Share on LinkedIn
         </Button>
         <Button
           variant='outlined'

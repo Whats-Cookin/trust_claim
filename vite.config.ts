@@ -10,6 +10,7 @@ export default defineConfig({
   server: {
     host: true,
     open: true,
+    allowedHosts: ['dev.linkedtrust.us'],
     proxy: {
       // Proxy image requests to avoid CORS issues
       '/api/uploads': {

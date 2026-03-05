@@ -179,6 +179,16 @@ const App = () => {
                 }
               />
               <Route
+                path='/endorse/:claimId'
+                element={
+                  isAuthenticated ? (
+                    <Endorse {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
+                }
+              />
+              <Route
                 path='/endorse'
                 element={
                   isAuthenticated ? (

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams, useParams } from 'react-router-dom'
 import Typography from '@mui/material/Typography'
 import {
   Button,
@@ -37,6 +37,7 @@ import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
 import VideoRecorder from '../VideoRecorder'
 import MainContainer from '../MainContainer'
+import EndorsementShare from '../EndorsementShare'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import VideocamIcon from '@mui/icons-material/Videocam'
 
@@ -158,10 +159,14 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [claimAddress, setClaimAddress] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const [submittedClaimId, setSubmittedClaimId] = useState<number | null>(null)
+  const [submittedStatement, setSubmittedStatement] = useState('')
 
   // Check if video is suggested via URL param
   const suggestVideo = searchParams.get('video') === 'true'
 
+  // Support clean URL /endorse/:claimId and legacy query params
+  const { claimId: pathClaimId } = useParams<{ claimId: string }>()
   const subject = queryParams.get('subject') || searchParams.get('claim')
   const theme = useTheme()
   const navigate = useNavigate()
@@ -172,8 +177,9 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const isTouchDevice = useMediaQuery('(hover: none)')
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
 
-  let number: string | undefined
-  if (subject) {
+  // Resolve claim ID: path param takes priority, then parse from query string
+  let number: string | undefined = pathClaimId
+  if (!number && subject) {
     const parts = subject.split('/')
     number = parts[parts.length - 1]
   }
@@ -319,18 +325,23 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       setLoading(true)
 
       try {
-        const { message, isSuccess } = await createClaim(payload)
+        const { message, isSuccess, claimId } = await createClaim(payload)
 
         setLoading(false)
-        toggleSnackbar(true)
-        if (isSuccess) {
+        if (isSuccess && claimId) {
+          setSubmittedStatement(statement)
+          setSubmittedClaimId(claimId)
+          reset()
+        } else if (isSuccess) {
           setSnackbarMessage('Thank you for your endorsement! ' + message)
+          toggleSnackbar(true)
           setTimeout(() => {
             navigate('/feed')
           }, 3000)
           reset()
         } else {
           setSnackbarMessage('An error occurred: ' + message)
+          toggleSnackbar(true)
         }
       } catch (error) {
         console.error('Error during submission:', error)
@@ -396,6 +407,18 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   const getLinkUrl = () => {
     return claim === 'credential' ? claimAddress : subjectValue
+  }
+
+  // Show share page after successful endorsement
+  if (submittedClaimId) {
+    return (
+      <EndorsementShare
+        claimId={submittedClaimId}
+        subjectName={subject_name || claimName || subjectValue}
+        statement={submittedStatement}
+        videoUrl={videoUrl}
+      />
+    )
   }
 
   // Loading state

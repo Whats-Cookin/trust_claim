@@ -21,7 +21,7 @@ interface BadgeSharePanelProps {
   claimId: number
 }
 
-const BASE_URL = 'https://live.linkedtrust.us'
+const BASE_URL = typeof window !== 'undefined' ? window.location.origin : 'https://live.linkedtrust.us'
 
 export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
   const [copied, setCopied] = useState<'link' | 'embed' | 'imgurl' | null>(null)
