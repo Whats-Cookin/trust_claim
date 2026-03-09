@@ -1,0 +1,58 @@
+# Deploy to production (VM 508 — live.linkedtrust.us)
+#
+# TODO (Peter):
+# 1. Generate an SSH key pair for deploys (can reuse the same one as backend):
+#      ssh-keygen -t ed25519 -C "github-deploy" -f deploy_key
+# 2. Add the PUBLIC key to VM 508:
+#      ssh ubuntu@10.0.0.158
+#      cat deploy_key.pub >> ~/.ssh/authorized_keys
+# 3. Add these GitHub repo secrets (Settings > Secrets > Actions):
+#      DEPLOY_SSH_KEY    — contents of deploy_key (private key)
+#      DEPLOY_HOST       — public IP or hostname that GitHub can reach
+#                          (10.0.0.158 is internal — you need the Proxmox
+#                          host's public IP with port forwarding, or a
+#                          bastion/jump host, or a tailscale/wireguard IP)
+#      DEPLOY_KNOWN_HOST — output of: ssh-keyscan <DEPLOY_HOST>
+#                          (optional: can remove the known_hosts step below
+#                          and uncomment StrictHostKeyChecking=no instead)
+# 4. Delete the local deploy_key files — they should only live in GitHub secrets
+#
+# NOTE: The same SSH key + secrets can be shared across both repos
+# (trust_claim and trust_claim_backend) if set as org-level secrets,
+# or duplicated per-repo.
+#
+# Once secrets are set, push to main to trigger deploy.
+
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.DEPLOY_KNOWN_HOST }}" >> ~/.ssh/known_hosts
+          # If skipping known_hosts, uncomment this instead:
+          # echo "StrictHostKeyChecking=no" >> ~/.ssh/config
+
+      - name: Deploy
+        run: |
+          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.DEPLOY_HOST }} << 'SCRIPT'
+            set -e
+            export NVM_DIR="$HOME/.nvm"
+            . "$NVM_DIR/nvm.sh"
+            nvm use 20
+
+            cd /data/trust_claim
+            git pull origin main
+            yarn install --frozen-lockfile
+            yarn build
+            cp -r dist/ /var/www/trust_claim/
+          SCRIPT
