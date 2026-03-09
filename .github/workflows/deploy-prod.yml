@@ -8,10 +8,7 @@
 #      cat deploy_key.pub >> ~/.ssh/authorized_keys
 # 3. Add these GitHub repo secrets (Settings > Secrets > Actions):
 #      DEPLOY_SSH_KEY    — contents of deploy_key (private key)
-#      DEPLOY_HOST       — public IP or hostname that GitHub can reach
-#                          (10.0.0.158 is internal — you need the Proxmox
-#                          host's public IP with port forwarding, or a
-#                          bastion/jump host, or a tailscale/wireguard IP)
+#      DEPLOY_HOST       — public IP/hostname with port forwarding to VM 508
 #      DEPLOY_KNOWN_HOST — output of: ssh-keyscan <DEPLOY_HOST>
 #                          (optional: can remove the known_hosts step below
 #                          and uncomment StrictHostKeyChecking=no instead)
