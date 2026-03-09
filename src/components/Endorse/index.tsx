@@ -38,6 +38,7 @@ import ImageUploader from '../Form/imageUploading'
 import VideoRecorder from '../VideoRecorder'
 import MainContainer from '../MainContainer'
 import EndorsementShare from '../EndorsementShare'
+import QuickAuth from '../QuickAuth'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import VideocamIcon from '@mui/icons-material/Videocam'
 
@@ -137,7 +138,7 @@ const URLInputField: React.FC<{
   )
 }
 
-const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
+const Endorse = ({ toggleSnackbar, setSnackbarMessage, isAuthenticated }: IHomeProps & { isAuthenticated?: boolean }) => {
   const [loading, setLoading] = useState(false)
   const [dataLoading, setDataLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -161,6 +162,8 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [submittedClaimId, setSubmittedClaimId] = useState<number | null>(null)
   const [submittedStatement, setSubmittedStatement] = useState('')
+  const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [pendingSubmit, setPendingSubmit] = useState(false)
 
   // Check if video is suggested via URL param
   const suggestVideo = searchParams.get('video') === 'true'
@@ -271,86 +274,109 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
 
   const { createClaim } = useCreateClaim()
 
-  const onSubmit = handleSubmit(
-    async ({ subject, statement, basis, effectiveDate, amt, sourceURI, images, decision, otherRejectReason }) => {
-      if (!subject) {
-        setSnackbarMessage('Subject is required')
-        toggleSnackbar(true)
-        return
-      }
+  const doSubmit = async ({ subject, statement, basis, effectiveDate, amt, sourceURI, images, decision, otherRejectReason }: FormData) => {
+    if (!subject) {
+      setSnackbarMessage('Subject is required')
+      toggleSnackbar(true)
+      return
+    }
 
-      const effectiveDateAsString = effectiveDate.toISOString()
+    const effectiveDateAsString = effectiveDate.toISOString()
 
-      type PayloadType = {
-        subject: string
-        statement: string
-        sourceURI: string
-        howKnown: string
-        effectiveDate: string
-        claim: string
-        amt?: string | number
-        score?: number
-        images?: ImageI[]
-        videoUrl?: string
-      }
+    type PayloadType = {
+      subject: string
+      statement: string
+      sourceURI: string
+      howKnown: string
+      effectiveDate: string
+      claim: string
+      amt?: string | number
+      score?: number
+      images?: ImageI[]
+      videoUrl?: string
+    }
 
-      const payload: PayloadType = {
-        subject,
-        statement,
-        sourceURI,
-        howKnown: basis,
-        effectiveDate: effectiveDateAsString,
-        claim: CLAIM_VALIDATED,
-        images,
-        ...(videoUrl && { videoUrl })
-      }
+    const payload: PayloadType = {
+      subject,
+      statement,
+      sourceURI,
+      howKnown: basis,
+      effectiveDate: effectiveDateAsString,
+      claim: CLAIM_VALIDATED,
+      images,
+      ...(videoUrl && { videoUrl })
+    }
 
-      // Handle special cases
-      if (basis === FIRST_HAND_BENEFIT) {
-        payload.claim = CLAIM_IMPACT
+    // Handle special cases
+    if (basis === FIRST_HAND_BENEFIT) {
+      payload.claim = CLAIM_IMPACT
+      payload.howKnown = HOW_KNOWN.FirstHand
+    } else if (decision === 'reject') {
+      if (basis === NOT_RELEVANT) {
+        payload.claim = 'spam'
         payload.howKnown = HOW_KNOWN.FirstHand
-      } else if (decision === 'reject') {
-        if (basis === NOT_RELEVANT) {
-          payload.claim = 'spam'
-          payload.howKnown = HOW_KNOWN.FirstHand
-        } else {
-          payload.claim = CLAIM_REJECTED
-          payload.score = -1
-          payload.howKnown = basis
-        }
       } else {
+        payload.claim = CLAIM_REJECTED
+        payload.score = -1
         payload.howKnown = basis
       }
+    } else {
+      payload.howKnown = basis
+    }
 
-      setLoading(true)
+    setLoading(true)
 
-      try {
-        const { message, isSuccess, claimId } = await createClaim(payload)
+    try {
+      const { message, isSuccess, claimId } = await createClaim(payload)
 
-        setLoading(false)
-        if (isSuccess && claimId) {
-          setSubmittedStatement(statement)
-          setSubmittedClaimId(claimId)
-          reset()
-        } else if (isSuccess) {
-          setSnackbarMessage('Thank you for your endorsement! ' + message)
-          toggleSnackbar(true)
-          setTimeout(() => {
-            navigate('/feed')
-          }, 3000)
-          reset()
-        } else {
-          setSnackbarMessage('An error occurred: ' + message)
-          toggleSnackbar(true)
-        }
-      } catch (error) {
-        console.error('Error during submission:', error)
-        setLoading(false)
-        setSnackbarMessage('An error occurred during submission.')
+      setLoading(false)
+      if (isSuccess && claimId) {
+        setSubmittedStatement(statement)
+        setSubmittedClaimId(claimId)
+        reset()
+      } else if (isSuccess) {
+        setSnackbarMessage('Thank you for your endorsement! ' + message)
+        toggleSnackbar(true)
+        setTimeout(() => {
+          navigate('/feed')
+        }, 3000)
+        reset()
+      } else {
+        setSnackbarMessage('An error occurred: ' + message)
         toggleSnackbar(true)
       }
+    } catch (error) {
+      console.error('Error during submission:', error)
+      setLoading(false)
+      setSnackbarMessage('An error occurred during submission.')
+      toggleSnackbar(true)
     }
-  )
+  }
+
+  const onSubmit = handleSubmit(async (data) => {
+    if (!isAuthenticated) {
+      // Not logged in — show auth dialog, hold the form data
+      setPendingSubmit(true)
+      setShowAuthDialog(true)
+      return
+    }
+    await doSubmit(data)
+  })
+
+  // Called when user authenticates via QuickAuth dialog, then submit
+  const handleAuthThenSubmit = () => {
+    setShowAuthDialog(false)
+    setPendingSubmit(false)
+    // Re-trigger form submit now that user is authenticated
+    handleSubmit(doSubmit)()
+  }
+
+  // Called when user chooses to submit without signing in
+  const handleSubmitAnonymous = () => {
+    setShowAuthDialog(false)
+    setPendingSubmit(false)
+    handleSubmit(doSubmit)()
+  }
 
   const truncateText = (text: string, length: number) => {
     if (text.length <= length) return text
@@ -525,6 +551,16 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                     }}
                   />
                 </Box>
+
+                {/* Auth banner for anonymous users */}
+                {!isAuthenticated && (
+                  <QuickAuth
+                    mode='banner'
+                    onAuthenticated={() => {
+                      // Auth state change event will update isAuthenticated via App.tsx
+                    }}
+                  />
+                )}
 
                 {/* Video Suggestion Alert */}
                 {suggestVideo && (
@@ -1053,6 +1089,19 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
           </Box>
         </form>
       </MainContainer>
+
+      {/* Auth dialog shown on submit when not authenticated */}
+      {showAuthDialog && (
+        <QuickAuth
+          mode='dialog'
+          onAuthenticated={handleAuthThenSubmit}
+          onDismiss={() => {
+            setShowAuthDialog(false)
+            setPendingSubmit(false)
+          }}
+          onSubmitAnonymous={handleSubmitAnonymous}
+        />
+      )}
     </>
   )
 }

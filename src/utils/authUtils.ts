@@ -1,5 +1,7 @@
 // Ceramic imports removed - no longer using ceramic
 
+export const AUTH_STATE_CHANGED_EVENT = 'linkedtrust:auth-state-changed'
+
 interface AuthState {
   accessToken?: string
   refreshToken?: string
@@ -12,6 +14,9 @@ export const handleAuthSuccess = (authData: AuthState) => {
   if (authData.refreshToken) localStorage.setItem('refreshToken', authData.refreshToken)
   if (authData.ethAddress) localStorage.setItem('ethAddress', authData.ethAddress)
   if (authData.did) localStorage.setItem('did', authData.did)
+
+  // Notify listeners (e.g. App.tsx) that auth state changed
+  window.dispatchEvent(new Event(AUTH_STATE_CHANGED_EVENT))
 }
 
 export const checkAuth = () => {

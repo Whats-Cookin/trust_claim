@@ -20,7 +20,7 @@ import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
 import { ClaimCredential } from './containers/ClaimCredential'
-import { checkAuth } from './utils/authUtils'
+import { checkAuth, AUTH_STATE_CHANGED_EVENT } from './utils/authUtils'
 import CertificateView from './components/Certificate/CertificateView'
 import Present from './components/Present'
 import RequestRating from './components/RequestRating'
@@ -49,6 +49,13 @@ const App = () => {
   useEffect(() => {
     setIsAuthenticated(checkAuth())
   }, [location])
+
+  // Listen for auth state changes (e.g. QuickAuth inline login)
+  useEffect(() => {
+    const handler = () => setIsAuthenticated(checkAuth())
+    window.addEventListener(AUTH_STATE_CHANGED_EVENT, handler)
+    return () => window.removeEventListener(AUTH_STATE_CHANGED_EVENT, handler)
+  }, [])
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -180,23 +187,11 @@ const App = () => {
               />
               <Route
                 path='/endorse/:claimId'
-                element={
-                  isAuthenticated ? (
-                    <Endorse {...commonProps} />
-                  ) : (
-                    <Navigate to='/login' replace state={{ from: location }} />
-                  )
-                }
+                element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
               />
               <Route
                 path='/endorse'
-                element={
-                  isAuthenticated ? (
-                    <Endorse {...commonProps} />
-                  ) : (
-                    <Navigate to='/login' replace state={{ from: location }} />
-                  )
-                }
+                element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
               />
               <Route
                 path='claim-credential'
