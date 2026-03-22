@@ -113,6 +113,18 @@ cp -r dist/* /var/www/trust_claim/
 
 Jenkins CI/CD configured for develop branch at http://68.183.144.184:8080/job/Trustclaim_frontend/
 
+## ATProto Integration
+
+### Web Components (in `public/`)
+- **`badge.js`** — `<linked-badge>` embeddable claim badge. DO NOT MODIFY.
+- **`claims-feed.js`** — `<linked-claims-feed>` claim feed widget. DO NOT MODIFY.
+- **`atproto-claims.js`** — `<linked-claims-atproto>` ATProto-specific claim feed. NEW. Shows `com.linkedclaims.claim` records from ATProto. Attributes: `subject` (default: current page URL), `api` (backend URL for indexed search), `repo` (DID for direct ATProto fetch), `theme`, `limit`.
+
+### /at Route
+- `src/containers/AtprotoFeed/index.tsx` — shows all ATProto claims
+- Tries backend index first (`/api/atproto/claims`), falls back to direct ATProto `listRecords`
+- Shows "In LinkedTrust" chip for claims already in DB, "Import" button for others
+
 ## LinkedClaims Standard
 
 This implements the LinkedClaims specification where:

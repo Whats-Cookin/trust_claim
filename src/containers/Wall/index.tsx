@@ -14,6 +14,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import * as api from '../../api'
 import { Claim } from '../../api/types'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 // TypeScript declaration for the web component
 declare global {
@@ -23,6 +24,7 @@ declare global {
         'claim-id': number | string
         layout?: string
         theme?: string
+        'api-base'?: string
       }
     }
   }
@@ -214,6 +216,7 @@ const Wall = () => {
                 claim-id={claim.id}
                 layout='row'
                 theme={theme.palette.mode}
+                api-base={BACKEND_BASE_URL}
               />
             </Grid>
           ))}

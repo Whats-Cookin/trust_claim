@@ -29,6 +29,7 @@ import BadgeView from './components/BadgeView'
 import Wall from './containers/Wall'
 import BadgeEmbedPage from './containers/BadgeEmbed2'
 import BadgePage from './containers/BadgePage'
+import AtprotoFeed from './containers/AtprotoFeed'
 import './App.css'
 
 const App = () => {
@@ -207,6 +208,7 @@ const App = () => {
               <Route path='/wall' element={<Wall />} />
               <Route path='/embed/:claimId' element={<BadgeEmbedPage />} />
               <Route path='/badge/:claimId' element={<BadgePage />} />
+              <Route path='/at' element={<AtprotoFeed />} />
               <Route
                 path='/request-rating'
                 element={

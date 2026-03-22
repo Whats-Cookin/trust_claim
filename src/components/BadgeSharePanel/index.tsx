@@ -4,6 +4,7 @@ import LinkIcon from '@mui/icons-material/Link'
 import CodeIcon from '@mui/icons-material/Code'
 import EmailIcon from '@mui/icons-material/Email'
 import CheckIcon from '@mui/icons-material/Check'
+import { BACKEND_BASE_URL } from '../../utils/settings'
 
 declare global {
   namespace JSX {
@@ -12,6 +13,7 @@ declare global {
         'claim-id': number | string
         layout?: string
         theme?: string
+        'api-base'?: string
       }
     }
   }
@@ -55,7 +57,7 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
     <Box>
       {/* The badge — natural row size, centered */}
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-        <linked-badge claim-id={claimId} layout='row' />
+        <linked-badge claim-id={claimId} layout='row' api-base={BACKEND_BASE_URL} />
       </Box>
 
       <Divider sx={{ mb: 2 }} />
