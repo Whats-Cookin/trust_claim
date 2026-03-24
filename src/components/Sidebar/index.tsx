@@ -122,6 +122,15 @@ const Sidebar: React.FC<SidebarProps> = ({
             primaryTypographyProps={{ variant: 'body2' }}
           />
         </ListItemButton>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/contact') }} onClick={() => navigate('/contact')}>
+          <AlternateEmailIcon sx={iconStyle} />
+          <ListItemText
+            primary='Contact'
+            sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+            primaryTypographyProps={{ variant: 'body2' }}
+          />
+        </ListItemButton>
+
         <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
           <AtSymbolIcon sx={iconStyle} />
           <ListItemText
