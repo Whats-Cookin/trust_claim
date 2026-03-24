@@ -5,6 +5,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
 import { clearAuth } from '../../utils/authUtils'
