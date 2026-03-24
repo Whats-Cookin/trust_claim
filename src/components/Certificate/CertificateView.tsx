@@ -91,18 +91,37 @@ const CertificateView: React.FC = () => {
 
   const claim = data.claim
 
+  // Backend provides subjectNode directly with the correct name
+  const personName = data.subjectNode?.name || ''
+
+  // Find issuer from edges - the source edge endNode is the issuer
+  const sourceEdge = data.claim?.edges?.find((e: any) => e.label === 'source')
+  const issuerName = sourceEdge?.endNode?.name || ''
+
+  // Separate videos from images
+  const allMedia = data.images || []
+  const videos = allMedia.filter(
+    (m: any) => m.metadata?.type === 'video' || m.url?.includes('.webm') || m.url?.includes('.mp4')
+  )
+  const images = allMedia.filter(
+    (m: any) =>
+      !m.metadata?.type || m.metadata?.type === 'image' || (!m.url?.includes('.webm') && !m.url?.includes('.mp4'))
+  )
+
   return (
-    <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '1200px', mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, sm: 2.5, md: 3 }, maxWidth: '100%', width: '100%', boxSizing: 'border-box', mx: 'auto' }}>
       <Certificate
         subject={claim.subject || ''} // keep the URL as-is (string)
-        subject_name={data.subject?.name} // <-- pass the normalized name from the report
-        issuer_name={data.claim?.claimData?.issuer_name || ''}
+        subject_name={personName} // Use subject node name
+        issuer_name={issuerName} // Use source node name
+        subjectType={data.subjectNode?.entType} // Pass node type for certificate inference
         statement={claim.statement || ''}
         effectiveDate={claim.effectiveDate}
         sourceURI={claim.sourceURI}
         validations={data.validations || []}
         claimId={id}
-        image={(data.images && data.images[0]) || claim.image}
+        image={(images && images[0]) || claim.image}
+        videos={videos}
         name={data.claim?.claimData?.name || ''}
         claim={data.claim}
       />

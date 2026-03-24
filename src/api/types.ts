@@ -99,6 +99,12 @@ export interface ClaimReportResponse {
     averageConfidence: number
     consensusValid: boolean
   }
+  images?: Array<{
+    url: string
+    metadata?: {
+      type?: string
+    }
+  }>
 }
 
 export interface EntityReport {

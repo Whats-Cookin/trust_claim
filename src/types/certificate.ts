@@ -1,3 +1,13 @@
+export interface VideoMedia {
+  url: string
+  metadata?: {
+    type?: string
+    duration?: number
+    thumbnail?: string
+    transcript?: string
+  }
+}
+
 export interface CertificateProps {
   issuer_name?: string
   subject?: string
@@ -7,13 +17,17 @@ export interface CertificateProps {
   validations?: Validation[]
   claimId?: string
   image?: string
+  videos?: VideoMedia[]
   name?: string
   claim?: {
     claimData: any
     type?: string
     name?: string
+    aspect?: string
+    claim?: string
   }
   subject_name?: string
+  subjectType?: string
 }
 
 export interface Validation {
@@ -26,6 +40,7 @@ export interface Validation {
   sourceURI?: string
   image?: string
   mediaUrl?: string
+  videoUrl?: string
   subject?: string
   effectiveDate?: string
 }

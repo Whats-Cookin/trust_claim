@@ -22,15 +22,16 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
         mt: '64px',
         mb: isMobile ? '77px' : '28px',
 
-        paddingTop: isMobile ? '0px' : '41px',
-        paddingBottom: isMobile ? '0px' : '0px',
+        paddingTop: isMobile ? '20px' : '41px',
+        paddingBottom: '20px',
         paddingLeft: isMobile ? '16px' : '30px',
         paddingRight: isMobile ? '16px' : '30px',
 
+        maxWidth: '100%',
         width: '95%',
+        boxSizing: 'border-box',
         backgroundColor: theme.palette.menuBackground,
         borderRadius: '20px',
-        padding: '20px',
         ...(sx ?? {})
       }}
     >

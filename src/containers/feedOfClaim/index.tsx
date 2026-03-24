@@ -250,8 +250,8 @@ const FeedClaim: React.FC<IHomeProps> = () => {
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
     e.preventDefault()
 
-    const allowedDomains = ['https://live.linkedtrust.us', 'https://dev.linkedtrust.us', 'https://linkedtrust.us']
-    const isInternal = allowedDomains.some(domain => url.startsWith(domain))
+    // Check if link is internal to current LinkedTrust instance
+    const isInternal = url.startsWith(BACKEND_BASE_URL) || url.startsWith(window.location.origin)
 
     if (!isInternal) {
       setShowNotification(true)
@@ -286,6 +286,10 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 const subject = getEntityData(claim.subject)
                 const object = getEntityData(claim.object)
                 const claimId = claim.id || claim.claim_id || 0
+
+                // Check if this is a validation claim (claim about another claim)
+                const validationTypes = ['is_vouched_for', 'agree', 'verified', 'validated']
+                const isValidationClaim = validationTypes.includes(claim.claim || '')
 
                 return (
                   <Grow in={true} timeout={1000} key={claimId}>
@@ -405,20 +409,6 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     Aspect: {claim.aspect}
                                   </Typography>
                                 )}
-                                {claim.confidence !== undefined && claim.confidence !== null && (
-                                  <Typography
-                                    variant='body2'
-                                    sx={{
-                                      mb: 0.5,
-                                      fontSize: '12px',
-                                      color: theme.palette.date,
-                                      fontFamily: 'Roboto, sans-serif'
-                                    }}
-                                  >
-                                    Confidence:{' '}
-                                    {claim.confidence === 0 ? '0%' : `${Math.round(claim.confidence * 100)}%`}
-                                  </Typography>
-                                )}
                                 {claim.howKnown && (
                                   <Typography
                                     variant='body2'
@@ -475,42 +465,12 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                               pr: '20px'
                             }}
                           >
-                            <Button
-                              onClick={() => handleValidation(claimId)}
-                              startIcon={<VerifiedOutlinedIcon />}
-                              variant='text'
-                              sx={{
-                                fontSize: isMediumScreen ? '8px' : '12px',
-                                marginRight: '10px',
-                                p: '4px',
-                                color: theme.palette.sidecolor,
-                                '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                              }}
-                            >
-                              Validate
-                            </Button>
-
-                            <Link to={'/report/' + claimId}>
-                              <Button
-                                startIcon={<FeedOutlinedIcon />}
-                                variant='text'
-                                sx={{
-                                  fontSize: isMediumScreen ? '8px' : '12px',
-                                  marginRight: '10px',
-                                  p: '4px',
-                                  color: theme.palette.sidecolor,
-                                  '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                }}
-                              >
-                                Evidence
-                              </Button>
-                            </Link>
-
-                            {/* NEW: Certificate button */}
-                            {!!claimId && (
-                              <Link to={`/certificate/${claimId}`}>
+                            {/* Only show Validate, Evidence, and Certificate for non-validation claims */}
+                            {!isValidationClaim && (
+                              <>
                                 <Button
-                                  startIcon={<WorkspacePremiumOutlinedIcon />}
+                                  onClick={() => handleValidation(claimId)}
+                                  startIcon={<VerifiedOutlinedIcon />}
                                   variant='text'
                                   sx={{
                                     fontSize: isMediumScreen ? '8px' : '12px',
@@ -520,11 +480,47 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                     '&:hover': { backgroundColor: theme.palette.cardsbuttons }
                                   }}
                                 >
-                                  Certificate
+                                  Validate
                                 </Button>
-                              </Link>
+
+                                <Link to={'/report/' + claimId}>
+                                  <Button
+                                    startIcon={<FeedOutlinedIcon />}
+                                    variant='text'
+                                    sx={{
+                                      fontSize: isMediumScreen ? '8px' : '12px',
+                                      marginRight: '10px',
+                                      p: '4px',
+                                      color: theme.palette.sidecolor,
+                                      '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                                    }}
+                                  >
+                                    Evidence
+                                  </Button>
+                                </Link>
+
+                                {/* Present button - opens presentation options (certificate, embed, share) */}
+                                {!!claimId && (
+                                  <Link to={`/present/${claimId}`}>
+                                    <Button
+                                      startIcon={<WorkspacePremiumOutlinedIcon />}
+                                      variant='text'
+                                      sx={{
+                                        fontSize: isMediumScreen ? '8px' : '12px',
+                                        marginRight: '10px',
+                                        p: '4px',
+                                        color: theme.palette.sidecolor,
+                                        '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                                      }}
+                                    >
+                                      Present
+                                    </Button>
+                                  </Link>
+                                )}
+                              </>
                             )}
 
+                            {/* Always show Graph View */}
                             <Button
                               startIcon={<ShareOutlinedIcon />}
                               onClick={() => handleSchema(claim)}

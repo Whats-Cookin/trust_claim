@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import axios from '../../axiosInstance'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { connectWallet, createDidFromAddress } from '../../utils/web3Auth'
@@ -12,7 +12,7 @@ import styles from './styles'
 import ILoginProps from './types'
 // Ceramic imports removed
 import { useQueryParams } from '../../hooks'
-import { GITHUB_CLIENT_ID } from '../../utils/settings'
+import { GITHUB_CLIENT_ID, BACKEND_BASE_URL } from '../../utils/settings'
 import { useForm } from 'react-hook-form'
 import { useTheme, TextField, IconButton, useMediaQuery } from '@mui/material'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
@@ -63,7 +63,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     if (githubAuthCode) {
       const githubAuthUrl = '/auth/github'
       axios
-        .post(githubAuthUrl, { githubAuthCode })
+        .post(githubAuthUrl, { code: githubAuthCode, client_id: GITHUB_CLIENT_ID })
         .then(res => {
           const { accessToken, refreshToken } = res.data
           handleAuth(accessToken, refreshToken)
@@ -118,6 +118,31 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     handleWalletAuth()
   }
 
+  const [blueskyHandle, setBlueskyHandle] = useState('')
+  const [showBlueskyInput, setShowBlueskyInput] = useState(false)
+  const [blueskyLoading, setBlueskyLoading] = useState(false)
+
+  const handleBlueskyAuth = async () => {
+    if (!blueskyHandle.trim()) {
+      toggleSnackbar(true)
+      setSnackbarMessage('Enter your Bluesky handle')
+      return
+    }
+    try {
+      setBlueskyLoading(true)
+      const res = await axios.post('/auth/atproto/authorize', {
+        handle: blueskyHandle.trim()
+      })
+      if (res.data.url) {
+        window.location.href = res.data.url
+      }
+    } catch (e: any) {
+      setBlueskyLoading(false)
+      toggleSnackbar(true)
+      setSnackbarMessage(e.response?.data?.error || 'Bluesky login failed')
+    }
+  }
+
   const onSubmit = handleSubmit(async ({ email, password }) => {
     try {
       if (!email || !password) {
@@ -147,29 +172,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
     return <MobileLogin {...{ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }} />
   }
 
-  let ethLoginOpt
-  if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
-    ethLoginOpt = (
-      <Box
-        id='loginButton'
-        onClick={handleMetamaskAuth}
-        sx={{
-          color: theme.palette.buttontext
-        }}
-      >
-        <Box component='img' src={metaicon} alt='' sx={{ width: '30px' }} />
-      </Box>
-    )
-  } else {
-    ethLoginOpt = (
-      <Typography id='metamaskLink' sx={{ color: theme.palette.texts }}>
-        To login with Ethereum &nbsp;
-        <MuiLink component={Link} to='https://metamask.io/' target='_blank' sx={{ color: theme.palette.link }}>
-          Install Metamask
-        </MuiLink>
-      </Typography>
-    )
-  }
+  const hasMetamask = typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask
 
   return (
     <Box
@@ -312,11 +315,14 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 sx={{
                   display: 'flex',
                   flexDirection: 'row',
-                  gap: '29px',
+                  gap: '20px',
                   alignItems: 'center',
-                  m: 'auto'
+                  m: 'auto',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center'
                 }}
               >
+                {/* Google */}
                 <Box
                   sx={{
                     display: 'flex',
@@ -328,8 +334,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     cursor: 'pointer',
                     boxShadow: '0px 1px 5px #ffffff20',
                     borderRadius: '50%',
-                    width: '82px',
-                    height: '82px'
+                    width: '72px',
+                    height: '72px'
                   }}
                 >
                   <GoogleLogin
@@ -342,7 +348,6 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                         } = await axios.post('/auth/google', {
                           googleAuthCode: credentialResponse.credential
                         })
-
                         handleAuth(accessToken, refreshToken)
                       } catch (err) {
                         console.error('Google auth error:', err)
@@ -355,6 +360,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     }}
                   />
                 </Box>
+                {/* GitHub */}
                 <Box
                   sx={{
                     display: 'flex',
@@ -366,32 +372,91 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     cursor: 'pointer',
                     boxShadow: '0px 1px 5px #ffffff20',
                     borderRadius: '50%',
-                    width: '82px',
-                    height: '82px'
+                    width: '72px',
+                    height: '72px'
                   }}
                 >
                   <MuiLink href={githubUrl} sx={{ color: theme.palette.texts }}>
-                    <GitHubIcon sx={{ fontSize: '50px' }} />
+                    <GitHubIcon sx={{ fontSize: '44px' }} />
                   </MuiLink>
                 </Box>
+                {/* Bluesky */}
                 <Box
+                  onClick={() => setShowBlueskyInput(!showBlueskyInput)}
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: theme.palette.buttontext,
-                    backgroundColor: theme.palette.formBackground,
+                    backgroundColor: showBlueskyInput ? theme.palette.pageBackground : theme.palette.formBackground,
                     cursor: 'pointer',
                     boxShadow: '0px 1px 5px #ffffff20',
                     borderRadius: '50%',
-                    width: '82px',
-                    height: '82px'
+                    width: '72px',
+                    height: '72px',
+                    transition: 'background-color 0.2s'
                   }}
                 >
-                  {ethLoginOpt}
+                  <Typography sx={{ fontSize: '32px', fontWeight: 700, color: '#0085ff', lineHeight: 1 }}>🦋</Typography>
                 </Box>
+                {/* MetaMask — only if installed */}
+                {hasMetamask && (
+                  <Box
+                    onClick={handleMetamaskAuth}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: theme.palette.buttontext,
+                      backgroundColor: theme.palette.formBackground,
+                      cursor: 'pointer',
+                      boxShadow: '0px 1px 5px #ffffff20',
+                      borderRadius: '50%',
+                      width: '72px',
+                      height: '72px'
+                    }}
+                  >
+                    <Box component='img' src={metaicon} alt='MetaMask' sx={{ width: '30px' }} />
+                  </Box>
+                )}
               </Box>
+              {/* Bluesky handle input */}
+              {showBlueskyInput && (
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1, width: '100%' }}>
+                  <TextField
+                    fullWidth
+                    size='small'
+                    placeholder='your-handle.bsky.social'
+                    value={blueskyHandle}
+                    onChange={e => setBlueskyHandle(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleBlueskyAuth() } }}
+                    disabled={blueskyLoading}
+                    sx={{
+                      backgroundColor: theme.palette.formBackground,
+                      '& .MuiOutlinedInput-root': {
+                        color: theme.palette.darkinputtext,
+                        '& fieldset': { borderColor: theme.palette.darkinputtext + '40' }
+                      },
+                      '& .MuiInputBase-input::placeholder': { color: theme.palette.darkinputtext, opacity: 0.6 }
+                    }}
+                  />
+                  <Button
+                    variant='contained'
+                    onClick={handleBlueskyAuth}
+                    disabled={blueskyLoading}
+                    sx={{
+                      textTransform: 'none',
+                      whiteSpace: 'nowrap',
+                      backgroundColor: '#0085ff',
+                      '&:hover': { backgroundColor: '#0066cc' }
+                    }}
+                  >
+                    {blueskyLoading ? 'Connecting…' : 'Sign in'}
+                  </Button>
+                </Box>
+              )}
               <TextField
                 {...register('email', {
                   required: 'Email is required',

@@ -12,6 +12,7 @@ import Explore from './containers/Explore'
 import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
+import Endorse from './components/Endorse'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import ClaimDetails from './containers/ClaimDetails'
@@ -19,8 +20,16 @@ import Terms from './containers/Terms'
 // import Cookie from './containers/Cookie'
 import Privacy from './containers/Privacy'
 import { ClaimCredential } from './containers/ClaimCredential'
-import { checkAuth } from './utils/authUtils'
+import { checkAuth, AUTH_STATE_CHANGED_EVENT } from './utils/authUtils'
 import CertificateView from './components/Certificate/CertificateView'
+import Present from './components/Present'
+import RequestRating from './components/RequestRating'
+import BadgeEmbed from './components/BadgeEmbed'
+import BadgeView from './components/BadgeView'
+import Wall from './containers/Wall'
+import BadgeEmbedPage from './containers/BadgeEmbed2'
+import BadgePage from './containers/BadgePage'
+import AtprotoFeed from './containers/AtprotoFeed'
 import './App.css'
 
 const App = () => {
@@ -29,26 +38,29 @@ const App = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [isNavbarVisible, setIsNavbarVisible] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(checkAuth())
 
   const location = useLocation()
   const navigate = useNavigate()
   const theme = useTheme()
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
+  // Check auth status when location changes
+  useEffect(() => {
+    setIsAuthenticated(checkAuth())
+  }, [location])
+
+  // Listen for auth state changes (e.g. QuickAuth inline login)
+  useEffect(() => {
+    const handler = () => setIsAuthenticated(checkAuth())
+    window.addEventListener(AUTH_STATE_CHANGED_EVENT, handler)
+    return () => window.removeEventListener(AUTH_STATE_CHANGED_EVENT, handler)
+  }, [])
+
   useEffect(() => {
     if (location.pathname === '/') {
       navigate('/feed') // Redirect to /feed
-    }
-
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth)
-    }
-
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
     }
   }, [location.pathname, navigate])
 
@@ -66,6 +78,7 @@ const App = () => {
 
   const isLoginPage = location.pathname === '/login'
   const isRegisterPage = location.pathname === '/register'
+  const isEmbedPage = location.pathname.startsWith('/embed/')
 
   const globalStyles = (
     <GlobalStyles
@@ -82,18 +95,14 @@ const App = () => {
     />
   )
 
-  // Define sidebar widths
-  const SIDEBAR_WIDTH_OPEN = 200
-  const SIDEBAR_WIDTH_CLOSED = 40
-
   return (
     <ThemeProvider theme={isDarkMode ? darkModeTheme : lightModeTheme}>
       <CssBaseline />
       {globalStyles}
 
-      {!isLoginPage && !isRegisterPage && (
+      {!isLoginPage && !isRegisterPage && !isEmbedPage && (
         <Navbar
-          isAuth={checkAuth()}
+          isAuth={isAuthenticated}
           toggleTheme={toggleTheme}
           isDarkMode={isDarkMode}
           isSidebarOpen={isSidebarOpen}
@@ -101,9 +110,9 @@ const App = () => {
         />
       )}
       <Box sx={{ display: 'flex' }}>
-        {!isLoginPage && !isRegisterPage && (
+        {!isLoginPage && !isRegisterPage && !isEmbedPage && (
           <Sidebar
-            isAuth={checkAuth()}
+            isAuth={isAuthenticated}
             isOpen={isSidebarOpen}
             toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             toggleTheme={toggleTheme}
@@ -115,21 +124,13 @@ const App = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            flex: 1,
             minHeight: '100vh',
             backgroundColor: theme => theme.palette.pageBackground,
             fontSize: 'calc(3px + 2vmin)',
             overflow: 'auto',
-            marginLeft:
-              isMediumScreen || isLoginPage || isRegisterPage
-                ? '0'
-                : isSidebarOpen
-                ? `${SIDEBAR_WIDTH_OPEN}px`
-                : `${SIDEBAR_WIDTH_CLOSED}px`,
-            width:
-              isMediumScreen || isLoginPage || isRegisterPage
-                ? '100%'
-                : `calc(100% - ${isSidebarOpen ? SIDEBAR_WIDTH_OPEN : SIDEBAR_WIDTH_CLOSED}px)`,
-            transition: 'margin-left 0.3s, width 0.3s'
+            width: '100%',
+            boxSizing: 'border-box'
           }}
         >
           <Snackbar snackbarMessage={snackbarMessage} isSnackbarOpen={isSnackbarOpen} toggleSnackbar={toggleSnackbar} />
@@ -158,19 +159,27 @@ const App = () => {
               <Route
                 path='claim'
                 element={
-                  checkAuth() ? <Form {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? (
+                    <Form {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
                 }
               />
               <Route
                 path='/rate'
                 element={
-                  checkAuth() ? <Rate {...commonProps} /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? (
+                    <Rate {...commonProps} />
+                  ) : (
+                    <Navigate to='/login' replace state={{ from: location }} />
+                  )
                 }
               />
               <Route
                 path='/validate'
                 element={
-                  checkAuth() ? (
+                  isAuthenticated ? (
                     <Validate {...commonProps} />
                   ) : (
                     <Navigate to='/login' replace state={{ from: location }} />
@@ -178,13 +187,34 @@ const App = () => {
                 }
               />
               <Route
+                path='/endorse/:claimId'
+                element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
+              />
+              <Route
+                path='/endorse'
+                element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
+              />
+              <Route
                 path='claim-credential'
                 element={
-                  checkAuth() ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
+                  isAuthenticated ? <ClaimCredential /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
               />
-              <Route path='/certificate/:id' element={<CertificateView />} /> {/* Alias for common typo */}
-              <Route path='/certificatet/:id' element={<CertificateView />} />
+              <Route path='/certificate/:id' element={<CertificateView />} />
+              <Route path='/certificatet/:id' element={<CertificateView />} /> {/* Alias for common typo */}
+              <Route path='/present/:id' element={<Present />} />
+              <Route path='/badge-embed/:id' element={<BadgeEmbed />} />
+              <Route path='/badge' element={<BadgeView />} />
+              <Route path='/wall' element={<Wall />} />
+              <Route path='/embed/:claimId' element={<BadgeEmbedPage />} />
+              <Route path='/badge/:claimId' element={<BadgePage />} />
+              <Route path='/at' element={<AtprotoFeed />} />
+              <Route
+                path='/request-rating'
+                element={
+                  isAuthenticated ? <RequestRating /> : <Navigate to='/login' replace state={{ from: location }} />
+                }
+              />
               {/* Catch-all to avoid blank pages */}
               <Route path='*' element={<Navigate to='/feed' replace />} />
             </Routes>

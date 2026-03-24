@@ -10,14 +10,23 @@ import {
   useMediaQuery,
   useTheme,
   Divider,
-  Link as MuiLink
+  Link as MuiLink,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import badge from '../../assets/images/badge.png'
 import ShareIcon from '@mui/icons-material/Share'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined'
+import CodeIcon from '@mui/icons-material/Code'
 import html2pdf from 'html2pdf.js'
-import { CertificateProps, Validation } from '../../types/certificate'
+import { CertificateProps, Validation, VideoMedia } from '../../types/certificate'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import {
   cardStyles,
   badgeStyles,
@@ -29,6 +38,9 @@ import {
   getVisibleValidationCount
 } from '../../constants/certificateStyles'
 import { extractProfileName, isValidUrl } from '../../utils/string.utils'
+import { inferCertificateType, extractCertificationTopic } from '../../utils/certificate/certificateTypeInference'
+import { useAuth } from '../../hooks/useAuth'
+import { BASE_URL } from '../../utils/settings'
 import ValidationDialog from './ValidationDialog'
 import ValidationDetailsDialog from './ValidationDetailsDialog'
 import SharePopover from './SharePopover'
@@ -142,6 +154,9 @@ const deriveDisplayNameFromAny = (value: any): string => {
   return utilGuess || asString
 }
 
+// LinkedTrust LinkedIn organization ID for Add to Profile
+const LINKEDTRUST_LINKEDIN_ORG_ID = '69351143'
+
 const Certificate: React.FC<CertificateProps> = ({
   issuer_name,
   subject,
@@ -151,12 +166,15 @@ const Certificate: React.FC<CertificateProps> = ({
   validations,
   claimId,
   image,
+  videos,
   name,
   claim,
-  subject_name
+  subject_name,
+  subjectType
 }) => {
   const navigate = useNavigate()
   const theme = useTheme()
+  const { currentUser } = useAuth()
   const isXs = useMediaQuery(theme.breakpoints.down('sm'))
   const isSm = useMediaQuery(theme.breakpoints.between('sm', 'md'))
   const isMd = useMediaQuery(theme.breakpoints.between('md', 'lg'))
@@ -167,11 +185,67 @@ const Certificate: React.FC<CertificateProps> = ({
   const [claimDialogOpen, setClaimDialogOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
   const [currentUrl, setCurrentUrl] = useState('')
+  const [isOwnerViaSameAs, setIsOwnerViaSameAs] = useState<boolean | null>(null)
+  const [linkedInPreviewOpen, setLinkedInPreviewOpen] = useState(false)
+  const [linkedInPreviewData, setLinkedInPreviewData] = useState<{
+    name: string
+    issueDate: string
+    certUrl: string
+    certId: string
+  } | null>(null)
+  const [videoPlaying, setVideoPlaying] = useState(false)
 
   useEffect(() => {
     setCurrentUrl(window.location.href)
   }, [])
+
+  // Check if user is the owner via SAME_AS claims
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (!currentUser || !subject) {
+        setIsOwnerViaSameAs(false)
+        return
+      }
+
+      try {
+        const axiosInstance = (await import('../../axiosInstance')).default
+        const response = await axiosInstance.get('/api/identity/is-me', {
+          params: { subjectUri: subject }
+        })
+
+        if (response.data.success) {
+          setIsOwnerViaSameAs(response.data.isMe)
+        } else {
+          setIsOwnerViaSameAs(false)
+        }
+      } catch (error) {
+        console.error('Error checking ownership via SAME_AS:', error)
+        // Fallback to basic ownership check
+        setIsOwnerViaSameAs(null)
+      }
+    }
+
+    checkOwnership()
+  }, [currentUser, subject])
+
+  // Get user URI based on login type
+  const getUserUri = () => {
+    if (!currentUser) return null
+    if (currentUser.metamaskAddress) {
+      return `did:pkh:eip155:1:${currentUser.metamaskAddress}`
+    }
+    if (currentUser.googleId) {
+      return `${BASE_URL}/userids/google/${currentUser.googleId}`
+    }
+    return `${BASE_URL}/users/${currentUser.id}`
+  }
+
+  const userUri = getUserUri()
+  const isOwnerDirect = userUri && subject === userUri
+  // Use SAME_AS check if available, otherwise fall back to direct check
+  const isOwner = isOwnerViaSameAs !== null ? isOwnerViaSameAs : isOwnerDirect
 
   const handleExport = () => {
     const element = document.getElementById('certificate-content')
@@ -207,51 +281,139 @@ const Certificate: React.FC<CertificateProps> = ({
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(currentUrl)
+      setSnackbarMessage('Link copied to clipboard!')
       setSnackbarOpen(true)
       handleClose()
     } catch (err) {
       console.error('Failed to copy link:', err)
+      setSnackbarMessage('Failed to copy link')
+      setSnackbarOpen(true)
     }
   }
 
-  const generateLinkedInShareUrl = (credentialName: string, url: string) => {
-    const encodedUrl = encodeURIComponent(url)
-    const message = encodeURIComponent(
-      `Excited to share my verified ${credentialName} credential from LinkedTrust! Check it out here: ${url} Thanks to my validators for confirming my skills!`
-    )
-    return `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${encodedUrl}&text=${message}`
+  const generateLinkedInAddToProfileUrl = () => {
+    // Build LinkedIn Add to Profile URL for certifications
+    const params = new URLSearchParams()
+    params.set('startTask', 'CERTIFICATION_NAME')
+
+    // Build certificate name: claim : aspect : statement[0:50]
+    const claimObj = claim as any
+    const parts: string[] = []
+
+    if (claimObj?.claim) {
+      parts.push(claimObj.claim)
+    }
+    if (claimObj?.aspect) {
+      parts.push(claimObj.aspect)
+    }
+    if (statement) {
+      const truncated = statement.length > 50 ? statement.substring(0, 50) + '...' : statement
+      parts.push(truncated)
+    }
+
+    const certName = parts.length > 0 ? parts.join(': ') : 'LinkedTrust Credential'
+    params.set('name', certName)
+
+    // Organization (using ID pulls logo from LinkedIn company page)
+    params.set('organizationId', LINKEDTRUST_LINKEDIN_ORG_ID)
+
+    // Issue date from effectiveDate
+    if (effectiveDate) {
+      const date = new Date(effectiveDate)
+      params.set('issueYear', date.getFullYear().toString())
+      params.set('issueMonth', (date.getMonth() + 1).toString())
+    }
+
+    // Certificate ID and URL
+    if (claimId) {
+      params.set('certId', claimId.toString())
+    }
+    params.set('certUrl', currentUrl)
+
+    return `https://www.linkedin.com/profile/add?${params.toString()}`
   }
 
   const handleLinkedInPost = () => {
-    let credentialName = 'a new'
-    if (subject && typeof subject === 'string' && !subject.includes('http')) {
-      credentialName = subject
+    // Show preview dialog first
+    const claimObj = claim as any
+    const parts: string[] = []
+
+    if (claimObj?.claim) {
+      parts.push(claimObj.claim)
     }
-    const linkedInShareUrl = generateLinkedInShareUrl(credentialName, currentUrl)
-    window.open(linkedInShareUrl, '_blank')
+    if (claimObj?.aspect) {
+      parts.push(claimObj.aspect)
+    }
+    if (statement) {
+      const truncated = statement.length > 50 ? statement.substring(0, 50) + '...' : statement
+      parts.push(truncated)
+    }
+
+    const certName = parts.length > 0 ? parts.join(': ') : 'LinkedTrust Credential'
+
+    let issueDate = ''
+    if (effectiveDate) {
+      const date = new Date(effectiveDate)
+      issueDate = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    }
+
+    setLinkedInPreviewData({
+      name: certName,
+      issueDate,
+      certUrl: currentUrl,
+      certId: claimId?.toString() || ''
+    })
+    setLinkedInPreviewOpen(true)
     handleClose()
   }
 
-  const getDisplayText = () => {
-    if ((claim as Claim)?.type === 'credential') {
-      return subject
-    }
-    return name || subject
+  const handleLinkedInConfirm = () => {
+    const linkedInUrl = generateLinkedInAddToProfileUrl()
+    window.open(linkedInUrl, '_blank')
+    setLinkedInPreviewOpen(false)
   }
 
-  /** UPDATED: robust extraction for the field/skill line */
-  const recipientNameRaw = getDisplayText()
-  const recipientName = deriveDisplayNameFromAny(recipientNameRaw)
+  const handleThisIsMe = async () => {
+    if (!userUri || !subject) return
 
-  /** Recipient name with improved fallback (keeps your original preferences first) */
-  const skillName =
-    ((subject as any)?.name && String((subject as any)?.name).trim()) ||
-    (subject_name ? String(subject_name).trim() : '') ||
-    (name && String(name).trim()) ||
-    ((claim as any)?.name && String((claim as any)?.name).trim()) ||
-    deriveDisplayNameFromAny(subject) ||
-    extractProfileName(((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()) ||
-    ((typeof subject === 'string' ? subject : (subject as any)?.uri) || '').trim()
+    try {
+      // Create SAME_AS claim
+      const { createClaim } = await import('../../api')
+      const response = await createClaim({
+        subject: userUri,
+        claim: 'SAME_AS',
+        object: subject,
+        statement: `${userUri} is the same person as ${subject}`,
+        howKnown: 'VERIFIED_LOGIN',
+        confidence: 1.0
+      })
+
+      // Show success message
+      setSnackbarMessage('Identity link created! You can now share this certificate.')
+      setSnackbarOpen(true)
+
+      // Refresh to update UI
+      setTimeout(() => window.location.reload(), 2000)
+    } catch (error) {
+      console.error('Failed to create SAME_AS claim:', error)
+      setSnackbarMessage('Failed to link identity. Please try again.')
+      setSnackbarOpen(true)
+    }
+  }
+
+  // Get certificate type info
+  const certificateInfo = inferCertificateType({
+    aspect: claim?.aspect,
+    claim: claim?.claim,
+    statement: statement,
+    subjectType: subjectType
+  })
+
+  // Use the name from backend node resolution
+  const recipientName = subject_name || 'Certificate Holder'
+
+  // Extract what is being certified (not WHO but WHAT)
+  const certificationTopic = extractCertificationTopic(statement, claim?.aspect)
 
   const containerMaxWidth = isXl ? 'xl' : 'lg'
   const visibleValidationCount = getVisibleValidationCount(isXs, isSm, isMd)
@@ -328,7 +490,7 @@ const Certificate: React.FC<CertificateProps> = ({
               />
 
               <Typography variant='h4' sx={{ ...titleStyles, fontWeight: 800 }}>
-                Certificate
+                {certificateInfo.title}
               </Typography>
 
               <Typography
@@ -339,7 +501,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   opacity: 0.9
                 }}
               >
-                OF SKILL VALIDATION
+                {certificateInfo.subtitle}
               </Typography>
 
               <Typography
@@ -380,7 +542,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   mb: { xs: 0.5, sm: 1 }
                 }}
               >
-                has been validated in
+                {certificateInfo.verbPhrase}
               </Typography>
               <Typography
                 variant='h3'
@@ -393,7 +555,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   mb: { xs: 1, sm: 1.5 }
                 }}
               >
-                {skillName}
+                {certificationTopic}
               </Typography>
 
               {issuer_name && (
@@ -431,6 +593,73 @@ const Certificate: React.FC<CertificateProps> = ({
                     {sourceURI}
                   </MuiLink>
                 </Typography>
+              )}
+
+              {/* Video Testimonial Section */}
+              {videos && videos.length > 0 && (
+                <Box sx={{ width: '100%', maxWidth: 480, mx: 'auto', mb: { xs: 3, sm: 4 } }}>
+                  <Typography
+                    variant='subtitle2'
+                    sx={{
+                      textAlign: 'center',
+                      color: COLORS.text.secondary,
+                      mb: 1.5,
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                      fontSize: 12
+                    }}
+                  >
+                    Video Testimonial
+                  </Typography>
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      aspectRatio: '16/9',
+                      backgroundColor: '#000',
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+                    }}
+                  >
+                    {!videoPlaying ? (
+                      <Box
+                        onClick={() => setVideoPlaying(true)}
+                        sx={{
+                          position: 'absolute',
+                          inset: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          background: 'linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%)',
+                          transition: 'opacity 0.2s',
+                          '&:hover': {
+                            opacity: 0.9
+                          }
+                        }}
+                      >
+                        <Box sx={{ textAlign: 'center', color: 'white' }}>
+                          <PlayCircleOutlineIcon sx={{ fontSize: 64, mb: 1 }} />
+                          <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                            Click to play
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <video
+                        src={videos[0].url}
+                        controls
+                        autoPlay
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    )}
+                  </Box>
+                </Box>
               )}
 
               {/* <CertificateMedia image={image} /> */}
@@ -605,6 +834,7 @@ const Certificate: React.FC<CertificateProps> = ({
             p: { xs: 2, sm: 2.5, md: 3 }
           }}
         >
+          {/* Export Certificate - always available */}
           <Box onClick={handleExport} sx={actionButtonStyles}>
             <SystemUpdateAltIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
@@ -612,12 +842,48 @@ const Certificate: React.FC<CertificateProps> = ({
             </Typography>
           </Box>
 
-          <Box onClick={handleShareClick} sx={actionButtonStyles}>
-            <ShareIcon sx={{ color: COLORS.primary }} />
+          {/* Evidence - always available */}
+          <Box onClick={() => navigate(`/report/${claimId}`)} sx={actionButtonStyles}>
+            <ArticleOutlinedIcon sx={{ color: COLORS.primary }} />
             <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
-              Share
+              Evidence
             </Typography>
           </Box>
+
+          {/* Embed - get embed code for website */}
+          <Box onClick={() => navigate(`/present/${claimId}`)} sx={actionButtonStyles}>
+            <CodeIcon sx={{ color: COLORS.primary }} />
+            <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+              Embed
+            </Typography>
+          </Box>
+
+          {/* Copy Link or Share - always available */}
+          {isOwner ? (
+            <Box onClick={handleShareClick} sx={actionButtonStyles}>
+              <ShareIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                Share
+              </Typography>
+            </Box>
+          ) : (
+            <Box onClick={handleCopyLink} sx={actionButtonStyles}>
+              <ContentCopyIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                Copy Link
+              </Typography>
+            </Box>
+          )}
+
+          {/* This is me - shown to logged in users who aren't detected as owner */}
+          {currentUser && !isOwner && (
+            <Box onClick={handleThisIsMe} sx={actionButtonStyles}>
+              <PersonAddIcon sx={{ color: COLORS.primary }} />
+              <Typography variant='body2' sx={{ color: COLORS.primary, whiteSpace: 'nowrap' }}>
+                This is Me
+              </Typography>
+            </Box>
+          )}
         </Box>
 
         <SharePopover
@@ -631,7 +897,7 @@ const Certificate: React.FC<CertificateProps> = ({
           open={snackbarOpen}
           autoHideDuration={3000}
           onClose={() => setSnackbarOpen(false)}
-          message='Link copied to clipboard!'
+          message={snackbarMessage}
           sx={{
             '& .MuiSnackbarContent-root': {
               backgroundColor: COLORS.primary
@@ -651,6 +917,62 @@ const Certificate: React.FC<CertificateProps> = ({
           onClose={handleClaimDialogClose}
           validation={selectedValidation}
         />
+
+        {/* LinkedIn Add to Profile Preview Dialog */}
+        <Dialog open={linkedInPreviewOpen} onClose={() => setLinkedInPreviewOpen(false)} maxWidth='sm' fullWidth>
+          <DialogTitle>Add Certificate to LinkedIn</DialogTitle>
+          <DialogContent>
+            <Typography variant='body2' color='textSecondary' sx={{ mb: 2 }}>
+              This will open LinkedIn to add the following certificate to your profile:
+            </Typography>
+            <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
+              <Typography variant='subtitle2' color='textSecondary'>
+                Name
+              </Typography>
+              <Typography variant='body1' sx={{ mb: 1.5 }}>
+                {linkedInPreviewData?.name}
+              </Typography>
+
+              <Typography variant='subtitle2' color='textSecondary'>
+                Issuing Organization
+              </Typography>
+              <Typography variant='body1' sx={{ mb: 1.5 }}>
+                LinkedTrust
+              </Typography>
+
+              {linkedInPreviewData?.issueDate && (
+                <>
+                  <Typography variant='subtitle2' color='textSecondary'>
+                    Issue Date
+                  </Typography>
+                  <Typography variant='body1' sx={{ mb: 1.5 }}>
+                    {linkedInPreviewData.issueDate}
+                  </Typography>
+                </>
+              )}
+
+              <Typography variant='subtitle2' color='textSecondary'>
+                Credential ID
+              </Typography>
+              <Typography variant='body1' sx={{ mb: 1.5 }}>
+                {linkedInPreviewData?.certId}
+              </Typography>
+
+              <Typography variant='subtitle2' color='textSecondary'>
+                Credential URL
+              </Typography>
+              <Typography variant='body1' sx={{ wordBreak: 'break-all' }}>
+                {linkedInPreviewData?.certUrl}
+              </Typography>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setLinkedInPreviewOpen(false)}>Cancel</Button>
+            <Button onClick={handleLinkedInConfirm} variant='contained' color='primary'>
+              Add to LinkedIn
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Card>
     </Container>
   )

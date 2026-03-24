@@ -19,8 +19,9 @@ import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 import { GoogleLogin } from '@react-oauth/google'
 import { handleAuthSuccess } from '../../utils/authUtils'
+import { GITHUB_CLIENT_ID } from '../../utils/settings'
 
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`
+const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 
 const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()

@@ -23,6 +23,7 @@ import { useCreateClaim } from '../../hooks/useCreateClaim'
 import { PromiseTimeoutError, timeoutPromise } from '../../utils/promise.utils'
 import MainContainer from '../MainContainer'
 import MediaUploader, { MediaI } from './imageUploading'
+import VideoRecorder from '../VideoRecorder'
 import { HowKnown } from '../../enums'
 
 const CLAIM_TYPES = {
@@ -47,6 +48,18 @@ const CLAIM_TYPES = {
       'relationship:worked-on',
       'relationship:same-as'
     ]
+  },
+  achievement: {
+    label: 'Achievement',
+    aspects: ['achievement:completed', 'achievement:earned', 'achievement:won', 'achievement:reached']
+  },
+  thankyou: {
+    label: 'Thank You',
+    aspects: ['thankyou:help', 'thankyou:support', 'thankyou:mentorship', 'thankyou:collaboration']
+  },
+  contribution: {
+    label: 'Contribution',
+    aspects: ['contribution:built', 'contribution:created', 'contribution:developed', 'contribution:delivered']
   }
 }
 
@@ -65,6 +78,38 @@ interface FormData {
   images: MediaI[]
   claim: string
   object: string | null
+  subjectEntityType: 'PERSON' | 'ORGANIZATION' | null
+}
+
+// Infer entity type from URL patterns
+const inferEntityType = (url: string): 'PERSON' | 'ORGANIZATION' => {
+  if (!url) return 'ORGANIZATION'
+  const urlLower = url.toLowerCase()
+
+  // LinkedIn personal profiles
+  if (urlLower.includes('linkedin.com/in/')) return 'PERSON'
+
+  // LinkedIn company pages
+  if (urlLower.includes('linkedin.com/company/')) return 'ORGANIZATION'
+
+  // Twitter/X profiles (excluding non-profile paths)
+  if (urlLower.includes('twitter.com/') || urlLower.includes('x.com/')) {
+    if (!['/status/', '/search', '/explore', '/home', '/i/'].some(p => urlLower.includes(p))) {
+      return 'PERSON'
+    }
+  }
+
+  // Bluesky profiles
+  if (urlLower.includes('bsky.app/profile/') || urlLower.includes('bsky.social')) return 'PERSON'
+
+  // GitHub profiles (single path segment)
+  if (urlLower.includes('github.com/')) {
+    const path = urlLower.split('github.com/')[1]?.replace(/^\/|\/$/g, '') || ''
+    const segments = path.split('/').filter(Boolean)
+    if (segments.length === 1) return 'PERSON'
+  }
+
+  return 'ORGANIZATION'
 }
 
 interface IFormProps {
@@ -83,6 +128,8 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
   const { createClaim } = useCreateClaim()
 
   const [selectedClaimType, setSelectedClaimType] = useState<string>('')
+  const [subjectEntityType, setSubjectEntityType] = useState<'PERSON' | 'ORGANIZATION'>('ORGANIZATION')
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   // Get subject and name from URL params if present
   const subjectFromUrl = searchParams.get('subject') || ''
@@ -109,9 +156,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       confidence: 1,
       stars: null,
       amt: null,
-      images: []
+      images: [],
+      subjectEntityType: null
     }
   })
+
+  const watchSubject = watch('subject')
 
   // Set subject and name when URL params change
   useEffect(() => {
@@ -122,6 +172,13 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       setValue('name', nameFromUrl)
     }
   }, [subjectFromUrl, nameFromUrl, setValue])
+
+  // Update entity type guess when subject changes
+  useEffect(() => {
+    if (watchSubject) {
+      setSubjectEntityType(inferEntityType(watchSubject))
+    }
+  }, [watchSubject])
 
   const imageFieldArray = useFieldArray({
     control,
@@ -148,7 +205,9 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
       ...formData,
       claim: selectedClaimType.toUpperCase(), // Convert 'rated' to 'RATED', etc.
       // Ensure sourceURI is null if empty, not defaulting to subject
-      sourceURI: formData.sourceURI || null
+      sourceURI: formData.sourceURI || null,
+      subjectEntityType: subjectEntityType,
+      ...(videoUrl && { videoUrl }) // Include video URL if recorded
     }
 
     // Debug logging to track the sourceURI issue
@@ -251,10 +310,25 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   {...register('subject', { required: true })}
                   label="Link to what you're making a claim about"
                   fullWidth
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 0.5 }}
                   error={Boolean(errors.subject)}
                   helperText={errors.subject ? 'This field is required' : ''}
                 />
+                {watchSubject && (
+                  <Typography
+                    variant='caption'
+                    onClick={() => setSubjectEntityType(prev => (prev === 'PERSON' ? 'ORGANIZATION' : 'PERSON'))}
+                    sx={{
+                      color: 'text.secondary',
+                      cursor: 'pointer',
+                      mb: 2,
+                      display: 'block',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    {subjectEntityType.toLowerCase()}
+                  </Typography>
+                )}
                 <TextField
                   {...register('statement', { required: true })}
                   label='Describe your claim'
@@ -447,11 +521,12 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
                   {...register('sourceURI')}
                   label={
                     watchHowKnown === HowKnown.FIRST_HAND
-                      ? 'Your home page or social media link'
-                      : 'Where did you find the information'
+                      ? 'Your home page or social media link (URI)'
+                      : 'Where did you find the information (URI)'
                   }
                   fullWidth
                   sx={{ mb: 2 }}
+                  helperText='Leave blank if unknown. Examples: https://example.com, did:ethr:0x123...'
                 />
 
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -474,6 +549,15 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               <Box sx={{ mb: 4 }}>
                 <Typography sx={{ mb: 1 }}>Add supporting image (optional)</Typography>
                 <MediaUploader fieldArray={imageFieldArray} control={control} register={register} />
+              </Box>
+
+              {/* Optional Video Testimonial */}
+              <Box sx={{ mb: 4 }}>
+                <VideoRecorder
+                  onVideoUploaded={(url) => setVideoUrl(url)}
+                  onVideoRemoved={() => setVideoUrl(null)}
+                  maxDuration={60}
+                />
               </Box>
 
               {/* Submit Buttons */}

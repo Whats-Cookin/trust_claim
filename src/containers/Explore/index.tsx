@@ -8,11 +8,14 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Box, useMediaQuery, useTheme, Fab, Tooltip } from '@mui/material'
 import GraphinfButton from './GraphInfButton'
-import { parseMultipleNodes, parseSingleNode } from './graph.utils'
+import { parseMultipleNodes, parseSingleNode, mergeSameAsNodes } from './graph.utils'
 import cytoscapeNodeHtmlLabel from 'cytoscape-node-html-label'
 import './CustomNodeStyles.css'
 import GraphDetailModal from '../../components/GraphDetailModal'
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong'
+
+// Toggle SAME_AS node merging (set to false to see all nodes separately)
+const MERGE_SAME_AS_NODES = true
 
 // Register the extension only once
 if (typeof cytoscapeNodeHtmlLabel === 'function' && !(Cytoscape as any)._nodeHtmlLabelRegistered) {
@@ -125,7 +128,13 @@ const Explore = (homeProps: IHomeProps) => {
       if (res.data) {
         let newNodes: any[] = []
         let newEdges: any[] = []
-        parseSingleNode(newNodes, newEdges, res.data)
+        // Two-level deduplication strategy:
+        // 1. First level: dedupe within the API response (existingNodeIds/existingEdgeIds)
+        // 2. Second level: dedupe against the Cytoscape graph (currentGraphNodeIds/currentGraphEdgeIds)
+        // This is necessary because the API doesn't know what's already in the graph
+        const existingNodeIds = new Set<string>()
+        const existingEdgeIds = new Set<string>()
+        parseSingleNode(newNodes, newEdges, res.data, existingNodeIds, existingEdgeIds)
         if (!cy) return
 
         // Check current node count before adding
@@ -136,28 +145,70 @@ const Explore = (homeProps: IHomeProps) => {
           return
         }
 
-        // Limit new nodes to add
+        // IMPORTANT: Filter out nodes that already exist in the graph FIRST
+        // before limiting, otherwise we might keep duplicates and discard unique nodes
+        const currentGraphNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
+        console.log('[fetchRelatedClaims] Current graph has', currentGraphNodeIds.size, 'nodes')
+        console.log('[fetchRelatedClaims] API returned', newNodes.length, 'nodes to consider')
+        let actuallyNewNodes = newNodes.filter((node: any) => !currentGraphNodeIds.has(node.data.id))
+        console.log('[fetchRelatedClaims] After deduplication:', actuallyNewNodes.length, 'new nodes to add')
+
+        // Now limit the actually new nodes
         const maxNodesToAdd = Math.min(5, 30 - currentNodeCount)
-        if (newNodes.length > maxNodesToAdd) {
-          newNodes = newNodes.slice(0, maxNodesToAdd)
-          // Only include edges that connect to included nodes
-          const nodeIds = new Set([...cy.nodes().map(n => n.id()), ...newNodes.map(n => n.data.id)])
-          newEdges = newEdges.filter(edge => nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target))
+        if (actuallyNewNodes.length > maxNodesToAdd) {
+          actuallyNewNodes = actuallyNewNodes.slice(0, maxNodesToAdd)
         }
 
-        // Filter out nodes that already exist in the graph
-        const existingNodeIds = new Set(cy.nodes().map((n: any) => n.id()))
-        const actuallyNewNodes = newNodes.filter((node: any) => !existingNodeIds.has(node.data.id))
+        // Filter out edges that already exist in the graph and only include edges connecting to valid nodes
+        const currentGraphEdgeIds = new Set(cy.edges().map((e: any) => e.id()))
+        // Note: edges use database IDs for source/target, not URIs
+        const allNodeIds = new Set([...currentGraphNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
 
-        // Only add and re-layout if we have truly new nodes to add
-        if (actuallyNewNodes.length > 0) {
-          // Only include edges that connect to nodes in the graph
-          const allNodeIds = new Set([...existingNodeIds, ...actuallyNewNodes.map((n: any) => n.data.id)])
-          const relevantEdges = newEdges.filter(
-            (edge: any) => allNodeIds.has(edge.data.source) && allNodeIds.has(edge.data.target)
+        // Count existing edges between each pair of nodes to limit clutter
+        const edgeCountByPair = new Map<string, number>()
+        cy.edges().forEach((e: any) => {
+          const key = `${e.data('source')}-${e.data('target')}`
+          edgeCountByPair.set(key, (edgeCountByPair.get(key) || 0) + 1)
+        })
+
+        // Only include edges that:
+        // 1. Connect to at least one node in the graph (existing or new)
+        // 2. Don't already exist in the graph (by edge ID)
+        // 3. Don't exceed max 2 edges between same node pair
+        const actuallyNewEdges = newEdges.filter((edge: any) => {
+          const sourceInGraph = allNodeIds.has(edge.data.source)
+          const targetInGraph = allNodeIds.has(edge.data.target)
+          const edgeAlreadyExists = currentGraphEdgeIds.has(edge.data.id)
+
+          // Must connect to at least one node in graph
+          if (!sourceInGraph && !targetInGraph) return false
+
+          // Must not already exist
+          if (edgeAlreadyExists) return false
+
+          // Check edge count limit between this pair
+          const pairKey = `${edge.data.source}-${edge.data.target}`
+          const currentCount = edgeCountByPair.get(pairKey) || 0
+          if (currentCount >= 2) {
+            console.log('[fetchRelatedClaims] Skipping edge - max 2 edges between nodes:', pairKey)
+            return false
+          }
+
+          return true
+        })
+
+        // Only add and re-layout if we have truly new elements to add
+        if (actuallyNewNodes.length > 0 || actuallyNewEdges.length > 0) {
+          console.log('[fetchRelatedClaims] Adding to graph:', {
+            nodes: actuallyNewNodes.length,
+            edges: actuallyNewEdges.length
+          })
+          console.log(
+            '[fetchRelatedClaims] New node IDs being added:',
+            actuallyNewNodes.map((n: any) => ({ id: n.data.id, uri: n.data.uri }))
           )
-
-          cy.add({ nodes: actuallyNewNodes, edges: relevantEdges } as any)
+          cy.add({ nodes: actuallyNewNodes, edges: actuallyNewEdges } as any)
+          console.log('[fetchRelatedClaims] Graph now has', cy.nodes().length, 'total nodes')
           runCy(cy, false) // Re-layout with new nodes
         } else {
           setSnackbarMessage('No new connections found')
@@ -181,18 +232,30 @@ const Explore = (homeProps: IHomeProps) => {
     const originalEvent = event.originalEvent
     event.preventDefault()
     if (originalEvent) {
-      const nodeData = event.target.data('raw')
-      const nodeId = event.target.data('id')
+      // Get full cytoscape node data (includes aliases, isMerged, etc.)
+      const fullNodeData = event.target.data()
+      const nodeId = fullNodeData?.id
 
-      if (nodeData && nodeId) {
-        // Check if ctrl key or cmd key (Mac) is pressed
+      if (fullNodeData && nodeId) {
+        // Shift+click: navigate to Add Claim page
+        if (originalEvent.shiftKey) {
+          const nodeUri = fullNodeData.nodeUri || fullNodeData.uri || ''
+          const nodeName = fullNodeData.label || fullNodeData.name || ''
+          const isClaimNode = fullNodeData.entType === 'CLAIM' || fullNodeData.entityType === 'CLAIM'
+          if (isClaimNode) {
+            window.location.href = `/validate?subject=${encodeURIComponent(nodeUri)}`
+          } else {
+            window.location.href = `/claim?subject=${encodeURIComponent(nodeUri)}&name=${encodeURIComponent(nodeName)}`
+          }
+          return
+        }
+        // Ctrl/Cmd+click: Show node details modal
         if (originalEvent.ctrlKey || originalEvent.metaKey) {
-          // Show node details modal on ctrl/cmd+click
-          setModalData(nodeData)
+          setModalData(fullNodeData)
           setModalType('node')
           setModalOpen(true)
         } else {
-          // Expand the graph on regular left click
+          // Regular left click: Expand the graph
           fetchRelatedClaims(nodeId, page.current)
         }
       }
@@ -230,7 +293,8 @@ const Explore = (homeProps: IHomeProps) => {
     event.preventDefault()
     event.stopPropagation()
     const element = event.target
-    const data = element.data('raw')
+    // Get full cytoscape data (includes aliases, isMerged for merged nodes)
+    const data = element.data()
 
     if (element.isNode() && data) {
       // Show node details modal on right-click
@@ -263,7 +327,10 @@ const Explore = (homeProps: IHomeProps) => {
       if (modalData && (modalData.entType === 'CLAIM' || modalData.entityType === 'CLAIM')) {
         // For claim nodes, use the graph endpoint which gives a better 2-hop view
         const claimRes = await api.getGraph(nodeId)
-        const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+        let { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+
+        // Merge SAME_AS connected nodes for cleaner visualization
+        ;({ nodes, edges } = mergeSameAsNodes(nodes, edges, MERGE_SAME_AS_NODES))
 
         // Limit to reasonable size
         let limitedNodes = nodes
@@ -282,9 +349,11 @@ const Explore = (homeProps: IHomeProps) => {
         if (nodeRes.data) {
           let allNodes: any[] = []
           let allEdges: any[] = []
+          const existingNodeIds = new Set<string>()
+          const existingEdgeIds = new Set<string>()
 
           // Parse the central node and its neighbors
-          parseSingleNode(allNodes, allEdges, nodeRes.data)
+          parseSingleNode(allNodes, allEdges, nodeRes.data, existingNodeIds, existingEdgeIds)
 
           cy.add({ nodes: allNodes, edges: allEdges } as any)
         }
@@ -323,8 +392,11 @@ const Explore = (homeProps: IHomeProps) => {
 
       cy.elements().remove() // Clear any existing elements
 
-      const { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
+      let { nodes, edges } = parseMultipleNodes(claimRes.data.nodes || claimRes.data)
       console.log('Parsed nodes:', nodes.length, 'edges:', edges.length)
+
+      // Merge SAME_AS connected nodes for cleaner visualization
+      ;({ nodes, edges } = mergeSameAsNodes(nodes, edges, MERGE_SAME_AS_NODES))
 
       // Check if graph is empty and this is not a retry
       if (nodes.length === 0 && !isRetry) {

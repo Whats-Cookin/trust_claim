@@ -35,6 +35,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import placeholderImage from '../../assets/images/imgplaceholder.svg'
 import HelpIcon from '@mui/icons-material/Help'
 import ImageUploader from '../Form/imageUploading'
+import VideoRecorder from '../VideoRecorder'
 import MainContainer from '../MainContainer'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 
@@ -154,6 +155,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
   const [claim, setClaim] = useState('')
   const [claimAddress, setClaimAddress] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
 
   const subject = queryParams.get('subject')
   const theme = useTheme()
@@ -279,6 +281,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         amt?: string | number
         score?: number
         images?: ImageI[]
+        videoUrl?: string
       }
 
       const payload: PayloadType = {
@@ -288,7 +291,8 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
         howKnown: basis, // Start with basis, will be mapped below
         effectiveDate: effectiveDateAsString,
         claim: CLAIM_VALIDATED,
-        images
+        images,
+        ...(videoUrl && { videoUrl }) // Include video URL if recorded
       }
 
       // Handle special cases - map basis to actual howKnown
@@ -401,7 +405,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <MainContainer
         sx={{
           width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-          maxWidth: '1200px',
+          maxWidth: '100%',
           mx: 'auto',
           p: { xs: 2, sm: 3, md: 4 }
         }}
@@ -420,7 +424,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <MainContainer
         sx={{
           width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-          maxWidth: '1200px',
+          maxWidth: '100%',
           mx: 'auto',
           p: { xs: 2, sm: 3, md: 4 }
         }}
@@ -449,7 +453,7 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
       <MainContainer
         sx={{
           width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
-          maxWidth: '1200px',
+          maxWidth: '100%',
           mx: 'auto',
           p: { xs: 1, sm: 2, md: 3, lg: 4 }
         }}
@@ -635,16 +639,6 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                           </Typography>
                           <Typography variant='body2' sx={{ color: theme.palette.text.primary }}>
                             {aspectValue}
-                          </Typography>
-                        </Box>
-                      )}
-                      {confidenceValue !== null && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                          <Typography variant='body2' sx={{ color: theme.palette.text.secondary, fontWeight: 600 }}>
-                            Confidence:
-                          </Typography>
-                          <Typography variant='body2' sx={{ color: theme.palette.text.primary }}>
-                            {confidenceValue}
                           </Typography>
                         </Box>
                       )}
@@ -992,6 +986,19 @@ const Validate = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps) => {
                                 helperText={error ? error.message : ''}
                               />
                             )}
+                          />
+                        </Box>
+
+                        {/* Video Testimonial */}
+                        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+                          <VideoRecorder
+                            onVideoUploaded={url => {
+                              setVideoUrl(url)
+                            }}
+                            onVideoRemoved={() => {
+                              setVideoUrl(null)
+                            }}
+                            maxDuration={30}
                           />
                         </Box>
 
