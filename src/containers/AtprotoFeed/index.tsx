@@ -15,8 +15,18 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import DownloadIcon from '@mui/icons-material/Download'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import SvgIcon from '@mui/material/SvgIcon'
 import MainContainer from '../../components/MainContainer'
 import { BACKEND_BASE_URL } from '../../utils/settings'
+
+// Noun Project AT symbol icon (licensed)
+function AtSymbolIcon(props: any) {
+  return (
+    <SvgIcon {...props} viewBox="0 0 1200 1200">
+      <path d="m600 9.9844c-182.72 0.09375-355.08 84.797-466.78 229.4-111.66 144.61-150.05 332.81-103.92 509.63 46.172 176.76 171.61 322.22 339.71 393.79 168.14 71.625 359.9 61.266 519.37-27.984 14.438-8.1094 19.594-26.391 11.484-40.828-8.1094-14.484-26.391-19.641-40.875-11.531-136.31 76.406-299.44 88.688-445.69 33.656-146.26-55.031-260.76-171.79-312.94-319.08-52.219-147.32-36.703-310.13 42.281-444.98 79.031-134.81 213.52-227.9 367.5-254.39 154.03-26.484 311.86 16.359 431.39 117.05 119.48 100.69 188.44 249 188.48 405.28v125.11c0 68.297-55.359 123.66-123.66 123.66-68.297 0-123.66-55.359-123.66-123.66v-125.11c0-175.5-126.84-318.24-282.71-318.24s-282.71 142.74-282.71 318.24 126.71 318.24 282.71 318.24c96.094-2.0625 184.18-54.094 232.31-137.29 17.766 56.062 61.406 100.17 117.28 118.59 55.875 18.375 117.19 8.8125 164.81-25.734 47.621-34.547 75.75-89.859 75.609-148.69v-125.11c-0.1875-156.42-62.391-306.37-173.02-417s-260.58-172.82-417-173.02zm0 848.26c-122.81 0-222.71-116.02-222.71-258.24s99.891-258.24 222.71-258.24 222.71 116.02 222.71 258.24-99.891 258.24-222.71 258.24z" />
+    </SvgIcon>
+  )
+}
 
 const ATPROTO_API = 'https://public.api.bsky.app'
 const COLLECTION = 'com.linkedclaims.claim'
@@ -111,6 +121,13 @@ function extractClaimId(respondAt?: string): string | null {
   if (!respondAt) return null
   const m = respondAt.match(/\/api\/claim\/(\d+)/)
   return m ? m[1] : null
+}
+
+// Convert at:// URI to pdsls.dev viewer URL
+function atUriToViewerUrl(atUri: string): string | null {
+  if (!atUri || !atUri.startsWith('at://')) return null
+  // at://did:plc:xyz/collection/rkey → https://pdsls.dev/at/did:plc:xyz/collection/rkey
+  return `https://pdsls.dev/${atUri.replace('at://', 'at/')}`
 }
 
 const AtprotoFeed: React.FC = () => {
@@ -371,22 +388,35 @@ const AtprotoFeed: React.FC = () => {
           {/* Evidence */}
           {renderEvidence(c.evidence)}
 
-          {/* Footer: DB match or AT-URI */}
+          {/* Footer: AT record link, DB match or import */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, pt: 1, borderTop: '1px solid', borderColor: 'divider' }}>
-            <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.disabled', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
-              {record.uri}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflow: 'hidden', minWidth: 0 }}>
+              {atUriToViewerUrl(record.uri) && (
+                <a
+                  href={atUriToViewerUrl(record.uri)!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="View ATProto record"
+                  style={{ display: 'flex', alignItems: 'center', color: theme.palette.text.disabled, flexShrink: 0 }}
+                >
+                  <AtSymbolIcon sx={{ fontSize: 18, '&:hover': { color: theme.palette.primary.main } }} />
+                </a>
+              )}
+              <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.disabled', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {record.uri}
+              </Typography>
+            </Box>
             {match ? (
               <Chip
                 icon={<CheckCircleIcon sx={{ fontSize: 14 }} />}
-                label="In LinkedTrust"
+                label="Explore"
                 size="small"
                 color="success"
                 variant="outlined"
                 clickable
                 component="a"
-                href={`/claims/${match.id}`}
-                sx={{ fontSize: 11 }}
+                href={`/explore/${match.id}`}
+                sx={{ fontSize: 11, flexShrink: 0, ml: 1 }}
               />
             ) : (
               <Button
@@ -402,7 +432,7 @@ const AtprotoFeed: React.FC = () => {
                     setImporting(prev => ({ ...prev, [record.uri]: false }))
                   }, 1000)
                 }}
-                sx={{ fontSize: 11, textTransform: 'none' }}
+                sx={{ fontSize: 11, textTransform: 'none', flexShrink: 0, ml: 1 }}
               >
                 {importing[record.uri] ? 'Importing\u2026' : 'Import'}
               </Button>
