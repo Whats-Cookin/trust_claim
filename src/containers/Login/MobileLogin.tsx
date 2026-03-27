@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import axios from '../../axiosInstance'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -82,6 +82,31 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
   const handleMetamaskAuth = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     handleWalletAuth()
+  }
+
+  const [blueskyHandle, setBlueskyHandle] = useState('')
+  const [showBlueskyInput, setShowBlueskyInput] = useState(false)
+  const [blueskyLoading, setBlueskyLoading] = useState(false)
+
+  const handleBlueskyAuth = async () => {
+    if (!blueskyHandle.trim()) {
+      toggleSnackbar(true)
+      setSnackbarMessage('Enter your Bluesky handle')
+      return
+    }
+    try {
+      setBlueskyLoading(true)
+      const res = await axios.post('/auth/atproto/authorize', {
+        handle: blueskyHandle.trim()
+      })
+      if (res.data.url) {
+        window.location.href = res.data.url
+      }
+    } catch (e: any) {
+      setBlueskyLoading(false)
+      toggleSnackbar(true)
+      setSnackbarMessage(e.response?.data?.error || 'Bluesky login failed')
+    }
   }
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
@@ -247,7 +272,9 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 alignItems: 'center',
                 marginBottom: '20px',
                 mt: '65px',
-                zIndex: '2'
+                zIndex: '2',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
               }}
             >
               <Box
@@ -308,9 +335,30 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                   <GitHubIcon sx={{ fontSize: '50px' }} />
                 </MuiLink>
               </Box>
+              {/* Bluesky */}
               <Box
+                onClick={() => setShowBlueskyInput(!showBlueskyInput)}
                 sx={{
                   display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: theme.palette.buttontext,
+                  backgroundColor: showBlueskyInput ? theme.palette.pageBackground : theme.palette.formBackground,
+                  cursor: 'pointer',
+                  boxShadow: '0px 1px 5px #ffffff20',
+                  borderRadius: '50%',
+                  width: '82px',
+                  height: '82px',
+                  transition: 'background-color 0.2s'
+                }}
+              >
+                <Typography sx={{ fontSize: '36px', fontWeight: 700, color: '#0085ff', lineHeight: 1 }}>🦋</Typography>
+              </Box>
+              {/* MetaMask — hidden on mobile, preserved for future use */}
+              <Box
+                sx={{
+                  display: 'none',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -326,6 +374,40 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 {ethLoginOpt}
               </Box>
             </Box>
+            {showBlueskyInput && (
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', width: '100%', mb: 1 }}>
+                <TextField
+                  fullWidth
+                  size='small'
+                  placeholder='your-handle.bsky.social'
+                  value={blueskyHandle}
+                  onChange={e => setBlueskyHandle(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleBlueskyAuth() } }}
+                  disabled={blueskyLoading}
+                  sx={{
+                    backgroundColor: theme.palette.formBackground,
+                    '& .MuiOutlinedInput-root': {
+                      color: theme.palette.darkinputtext,
+                      '& fieldset': { borderColor: theme.palette.darkinputtext + '40' }
+                    },
+                    '& .MuiInputBase-input::placeholder': { color: theme.palette.darkinputtext, opacity: 0.6 }
+                  }}
+                />
+                <Button
+                  variant='contained'
+                  onClick={handleBlueskyAuth}
+                  disabled={blueskyLoading}
+                  sx={{
+                    textTransform: 'none',
+                    whiteSpace: 'nowrap',
+                    backgroundColor: '#0085ff',
+                    '&:hover': { backgroundColor: '#0066cc' }
+                  }}
+                >
+                  {blueskyLoading ? '...' : 'Go'}
+                </Button>
+              </Box>
+            )}
             <TextField
               {...register('email', {
                 required: 'Email is required',
