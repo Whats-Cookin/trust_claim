@@ -89,7 +89,11 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', gap: 2 }}>
           <SearchBar />
           {isAuth ? (
-            hasIdentity() ? <IdentityButton /> : null
+            hasIdentity() ? (
+              <IdentityButton />
+            ) : (
+              <span style={{ fontWeight: 'bold', color: 'gray' }}>Logged In</span>
+            )
           ) : (
             <Button
               onClick={() => navigate('/login')}
