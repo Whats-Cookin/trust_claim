@@ -91,7 +91,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
           {isAuth ? (
             hasIdentity() ? (
               <IdentityButton />
-            ) : null
+            ) : (
+              <span style={{ fontWeight: 'bold', color: 'gray' }}>Logged In</span>
+            )
           ) : (
             <Button
               onClick={() => navigate('/login')}
