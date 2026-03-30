@@ -19,7 +19,7 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
         justifyContent: flexRowOnDesktop && !isMobile ? 'flex-end' : 'center',
         height: 'auto',
 
-        mt: '64px',
+        mt: isMobile ? '8px' : '16px',
         mb: isMobile ? '77px' : '28px',
 
         paddingTop: isMobile ? '20px' : '41px',
