@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         </ListItemButton>
 
-        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/ATProto') }} onClick={() => navigate('/ATProto')}>
+      <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
           <AlternateEmailIcon sx={iconStyle} />
           <ListItemText
             primary='ATProto'
