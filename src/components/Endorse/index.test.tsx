@@ -39,7 +39,9 @@ describe('Endorse Component', () => {
   const commonProps = {
     toggleSnackbar: vi.fn(),
     setSnackbarMessage: vi.fn(),
-    setLoading: vi.fn()
+    setLoading: vi.fn(),
+    /** Avoid mounting QuickAuth banner (GoogleLogin requires GoogleOAuthProvider in tests). */
+    isAuthenticated: true
   }
 
   beforeEach(() => {

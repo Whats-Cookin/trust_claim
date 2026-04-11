@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Box, Button, Typography, useTheme, Alert, CircularProgress, Paper, LinearProgress } from '@mui/material'
 import VideocamIcon from '@mui/icons-material/Videocam'
 import StopIcon from '@mui/icons-material/Stop'
@@ -12,6 +12,12 @@ interface VideoRecorderProps {
   onVideoUploaded: (videoUrl: string, thumbnailUrl?: string) => void
   onVideoRemoved?: () => void
   maxDuration?: number // in seconds
+  /** Hide the “Video Testimonial (Optional)” heading (e.g. when embedded in another layout). */
+  hideHeading?: boolean
+  /** Render without bordered Paper (e.g. inside a Dialog). */
+  noPaper?: boolean
+  /** Request camera as soon as the component mounts (dialog flow). */
+  openCameraOnMount?: boolean
 }
 
 /**
@@ -23,7 +29,10 @@ interface VideoRecorderProps {
 const VideoRecorder: React.FC<VideoRecorderProps> = ({
   onVideoUploaded,
   onVideoRemoved,
-  maxDuration = 30 // 30 seconds default
+  maxDuration = 30, // 30 seconds default
+  hideHeading = false,
+  noPaper = false,
+  openCameraOnMount = false
 }) => {
   const theme = useTheme()
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -41,6 +50,27 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   const [recordingTime, setRecordingTime] = useState(0)
   const [uploadProgress, setUploadProgress] = useState(0)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const autoCameraStartedRef = useRef(false)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(t => t.stop())
+        streamRef.current = null
+      }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        try {
+          mediaRecorderRef.current.stop()
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+  }, [])
 
   // Request camera access
   const startCamera = useCallback(async () => {
@@ -68,6 +98,12 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       setStatus('error')
     }
   }, [])
+
+  useEffect(() => {
+    if (!openCameraOnMount || autoCameraStartedRef.current) return
+    autoCameraStartedRef.current = true
+    void startCamera()
+  }, [openCameraOnMount, startCamera])
 
   // Stop recording
   const stopRecording = useCallback(() => {
@@ -189,18 +225,13 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
-  return (
-    <Paper
-      variant='outlined'
-      sx={{
-        p: 2,
-        borderRadius: 2,
-        backgroundColor: theme.palette.background.paper
-      }}
-    >
-      <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 2 }}>
-        Video Testimonial (Optional)
-      </Typography>
+  const content = (
+    <>
+      {!hideHeading && (
+        <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 2 }}>
+          Video Testimonial (Optional)
+        </Typography>
+      )}
 
       {error && (
         <Alert severity='error' sx={{ mb: 2 }} onClose={() => setError(null)}>
@@ -220,7 +251,21 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
           mb: 2
         }}
       >
-        {status === 'idle' && (
+        {status === 'idle' && openCameraOnMount && (
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <CircularProgress sx={{ color: 'white' }} />
+          </Box>
+        )}
+
+        {status === 'idle' && !openCameraOnMount && (
           <Box
             sx={{
               position: 'absolute',
@@ -363,7 +408,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
 
       {/* Controls */}
       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
-        {status === 'idle' && (
+        {status === 'idle' && !openCameraOnMount && (
           <Button variant='contained' startIcon={<VideocamIcon />} onClick={startCamera} sx={{ textTransform: 'none' }}>
             Enable Camera
           </Button>
@@ -442,6 +487,23 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
           50% { opacity: 0.5; }
         }
       `}</style>
+    </>
+  )
+
+  if (noPaper) {
+    return <Box sx={{ width: '100%', pt: 0 }}>{content}</Box>
+  }
+
+  return (
+    <Paper
+      variant='outlined'
+      sx={{
+        p: 2,
+        borderRadius: 2,
+        backgroundColor: theme.palette.background.paper
+      }}
+    >
+      {content}
     </Paper>
   )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BottomNavigation, BottomNavigationAction } from '@mui/material'
-import { Home, Search, AddCircleOutlineOutlined, LightModeOutlined, DarkMode, Logout, Login } from '@mui/icons-material'
+import { Home, AddCircleOutlineOutlined, LightModeOutlined, DarkMode, Logout, Login, FavoriteBorder } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { clearAuth } from '../../utils/authUtils'
@@ -9,9 +9,10 @@ interface BottomNavProps {
   isAuth: boolean
   toggleTheme: () => void
   isDarkMode: boolean
+  onOpenEndorseUs: () => void
 }
 
-const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }) => {
+const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode, onOpenEndorseUs }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const theme = useTheme()
@@ -56,6 +57,18 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode }
           sx={{ ...getActiveStyle('/claim'), color: theme.palette.sidecolor }}
         />
       )}
+      <BottomNavigationAction
+        label='Endorse Us'
+        icon={<FavoriteBorder />}
+        onClick={onOpenEndorseUs}
+        sx={{
+          transition: 'background-color 0.3s',
+          maxWidth: '64px',
+          marginBottom: '4px',
+          color: theme.palette.sidecolor,
+          '& .MuiBottomNavigationAction-label': { fontSize: '0.65rem' }
+        }}
+      />
       <BottomNavigationAction
         label={isDarkMode ? 'Light' : 'Dark'}
         icon={isDarkMode ? <LightModeOutlined /> : <DarkMode />}
