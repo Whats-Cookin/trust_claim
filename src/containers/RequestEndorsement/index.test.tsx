@@ -66,34 +66,35 @@ describe('RequestEndorsement', () => {
     })
   })
 
-  test('does not auto-expand video when video=true in URL', async () => {
+  test('submit opens mailto with endorsement link and does not create a claim', async () => {
     vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
-
-    const claimUri = 'https://live.linkedtrust.us/claims/123'
-    renderRequestEndorsementAt(`/request-endorsement?claim=${encodeURIComponent(claimUri)}&video=true`, commonProps)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Request an Endorsement/i)).toBeInTheDocument()
-    })
-
-    expect(screen.queryByText(/record a video testimonial/i)).not.toBeInTheDocument()
-  })
-
-  test('opens inline video recorder when user clicks the video thumbnail', async () => {
-    vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
 
     const claimUri = 'https://live.linkedtrust.us/claims/123'
     renderRequestEndorsementAt(`/request-endorsement?claim=${encodeURIComponent(claimUri)}`, commonProps)
 
     await waitFor(() => {
-      expect(screen.getByText(/Request an Endorsement/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/What would you like to be endorsed for/i)).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /add or manage video endorsement/i }))
+    fireEvent.change(screen.getByLabelText(/What would you like to be endorsed for/i), {
+      target: { value: 'My project work' }
+    })
+    fireEvent.change(screen.getByPlaceholderText('name@example.com'), {
+      target: { value: 'friend@example.com' }
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Send endorsement request/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/record a video testimonial/i)).toBeInTheDocument()
+      expect(openSpy).toHaveBeenCalled()
     })
+
+    const mailtoCall = openSpy.mock.calls.find(c => typeof c[0] === 'string' && (c[0] as string).startsWith('mailto:'))
+    expect(mailtoCall).toBeDefined()
+    expect(decodeURIComponent(mailtoCall![0] as string)).toContain('/endorse/123')
+
+    openSpy.mockRestore()
   })
 
   test('subject query param is supported like legacy endorse', async () => {
