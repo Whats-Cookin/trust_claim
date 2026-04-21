@@ -188,12 +188,16 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
     if (emails.length === 0 || !number) return
     const endorsePath = `/endorse/${number}`
     const endorseUrl = `${window.location.origin}${endorsePath}`
+    const claimSubjectUri = `${window.location.origin}/claims/${number}`
+    const validateUrl = `${window.location.origin}/validate?subject=${encodeURIComponent(claimSubjectUri)}`
     const topic = data.endorsementTopic.trim()
     let body = ''
     if (data.personalNote.trim()) {
       body += `${data.personalNote.trim()}\n\n`
     }
-    body += `I'm requesting your endorsement for:\n${topic}\n\nPlease use this link:\n${endorseUrl}`
+    body += `I'm requesting your endorsement for:\n${topic}\n\n`
+    body += `Write your endorsement on LinkedTrust:\n${validateUrl}\n\n`
+    body += `Or use the endorsement page:\n${endorseUrl}`
     const mailSubject = `Request for endorsement${topic ? `: ${topic.slice(0, 60)}${topic.length > 60 ? '…' : ''}` : ''}`
     const mailto = `mailto:${emails.join(',')}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(body)}`
     window.open(mailto, '_blank', 'noopener,noreferrer')

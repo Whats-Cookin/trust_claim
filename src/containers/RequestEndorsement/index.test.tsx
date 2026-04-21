@@ -92,7 +92,13 @@ describe('RequestEndorsement', () => {
 
     const mailtoCall = openSpy.mock.calls.find(c => typeof c[0] === 'string' && (c[0] as string).startsWith('mailto:'))
     expect(mailtoCall).toBeDefined()
-    expect(decodeURIComponent(mailtoCall![0] as string)).toContain('/endorse/123')
+    const mailtoHref = mailtoCall![0] as string
+    const bodyParam = new URL(mailtoHref).searchParams.get('body')
+    expect(bodyParam).toBeTruthy()
+    const decodedBody = decodeURIComponent(bodyParam!)
+    expect(decodedBody).toContain('/endorse/123')
+    expect(decodedBody).toMatch(/\/validate\?subject=/)
+    expect(decodedBody).toContain(`${window.location.origin}/claims/123`)
 
     openSpy.mockRestore()
   })
