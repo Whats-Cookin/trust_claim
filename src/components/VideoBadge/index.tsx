@@ -249,9 +249,7 @@ const VideoBadge: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, them
         {/* Issuer info */}
         {(issuerName || issuerImage) && (
           <Stack direction='row' spacing={1.5} alignItems='center' sx={{ mb: 2 }}>
-            {issuerImage && (
-              <Avatar src={issuerImage} sx={{ width: compact ? 32 : 40, height: compact ? 32 : 40 }} />
-            )}
+            {issuerImage && <Avatar src={issuerImage} sx={{ width: compact ? 32 : 40, height: compact ? 32 : 40 }} />}
             <Box sx={{ flex: 1 }}>
               <Typography variant='body2' sx={{ fontWeight: 600, color: 'inherit' }}>
                 {issuerName || 'Anonymous'}

@@ -1,6 +1,14 @@
 import React from 'react'
 import { BottomNavigation, BottomNavigationAction } from '@mui/material'
-import { Home, AddCircleOutlineOutlined, LightModeOutlined, DarkMode, Logout, Login, FavoriteBorder } from '@mui/icons-material'
+import {
+  Home,
+  AddCircleOutlineOutlined,
+  LightModeOutlined,
+  DarkMode,
+  Logout,
+  Login,
+  FavoriteBorder
+} from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import { clearAuth } from '../../utils/authUtils'

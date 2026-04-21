@@ -14,7 +14,11 @@ interface PlatformFeedbackVideoSectionProps {
   onVideoRemoved: () => void
 }
 
-const PlatformFeedbackVideoSection = ({ videoUrl, onVideoUploaded, onVideoRemoved }: PlatformFeedbackVideoSectionProps) => {
+const PlatformFeedbackVideoSection = ({
+  videoUrl,
+  onVideoUploaded,
+  onVideoRemoved
+}: PlatformFeedbackVideoSectionProps) => {
   const [open, setOpen] = useState(false)
   const [session, setSession] = useState(0)
 

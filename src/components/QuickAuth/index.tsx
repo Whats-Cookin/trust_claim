@@ -52,13 +52,19 @@ const QuickAuth = ({
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const { register, handleSubmit, formState: { errors } } = useForm<{ email: string; password: string }>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<{ email: string; password: string }>()
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
       setLoading(true)
       setError(null)
-      const { data: { accessToken, refreshToken } } = await axios.post('/auth/google', {
+      const {
+        data: { accessToken, refreshToken }
+      } = await axios.post('/auth/google', {
         googleAuthCode: credentialResponse.credential
       })
       handleAuthSuccess({ accessToken, refreshToken })
@@ -105,7 +111,9 @@ const QuickAuth = ({
     try {
       setLoading(true)
       setError(null)
-      const { data: { accessToken, refreshToken } } = await axios.post('/auth/login', { email, password })
+      const {
+        data: { accessToken, refreshToken }
+      } = await axios.post('/auth/login', { email, password })
       handleAuthSuccess({ accessToken, refreshToken })
       onAuthenticated()
     } catch (err) {
@@ -119,9 +127,7 @@ const QuickAuth = ({
   const hasMetaMask = typeof window.ethereum !== 'undefined' && (window.ethereum as any).isMetaMask
 
   const showMetaMaskButton =
-    hasMetaMask &&
-    !(mode === 'inline' && inlineHideMetaMask) &&
-    !(mode === 'dialog' && dialogHideMetaMask)
+    hasMetaMask && !(mode === 'inline' && inlineHideMetaMask) && !(mode === 'dialog' && dialogHideMetaMask)
 
   const authButtons = (
     <Box
@@ -190,12 +196,7 @@ const QuickAuth = ({
           Continue with Email
         </Button>
       ) : (
-        <Button
-          onClick={() => setShowEmail(!showEmail)}
-          variant='text'
-          size='small'
-          sx={{ textTransform: 'none' }}
-        >
+        <Button onClick={() => setShowEmail(!showEmail)} variant='text' size='small' sx={{ textTransform: 'none' }}>
           {showEmail ? 'Hide' : 'Email sign-in'}
         </Button>
       )}
@@ -237,7 +238,13 @@ const QuickAuth = ({
           helperText={errors.password?.message as string}
           sx={{ flex: 1, minWidth: 150 }}
         />
-        <Button type='submit' variant='contained' size='small' disabled={loading} sx={{ textTransform: 'none', mt: '3px' }}>
+        <Button
+          type='submit'
+          variant='contained'
+          size='small'
+          disabled={loading}
+          sx={{ textTransform: 'none', mt: '3px' }}
+        >
           Sign in
         </Button>
       </Box>
@@ -283,20 +290,11 @@ const QuickAuth = ({
 
   // Dialog mode
   return (
-    <Dialog
-      open
-      onClose={onDismiss}
-      maxWidth='sm'
-      fullWidth
-      fullScreen={isMobile}
-    >
-      <DialogTitle sx={{ fontWeight: 700 }}>
-        {dialogTitle ?? 'Sign in to strengthen your endorsement'}
-      </DialogTitle>
+    <Dialog open onClose={onDismiss} maxWidth='sm' fullWidth fullScreen={isMobile}>
+      <DialogTitle sx={{ fontWeight: 700 }}>{dialogTitle ?? 'Sign in to strengthen your endorsement'}</DialogTitle>
       <DialogContent>
         <Typography variant='body2' sx={{ mb: 2, color: theme.palette.text.secondary }}>
-          {dialogDescription ??
-            'A signed endorsement carries more weight. You can also submit without signing in.'}
+          {dialogDescription ?? 'A signed endorsement carries more weight. You can also submit without signing in.'}
         </Typography>
         {authButtons}
         {emailForm}
@@ -307,10 +305,7 @@ const QuickAuth = ({
         )}
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2, justifyContent: 'space-between' }}>
-        <Button
-          onClick={onSubmitAnonymous}
-          sx={{ textTransform: 'none', color: theme.palette.text.secondary }}
-        >
+        <Button onClick={onSubmitAnonymous} sx={{ textTransform: 'none', color: theme.palette.text.secondary }}>
           Submit without signing in
         </Button>
         <Button onClick={onDismiss} sx={{ textTransform: 'none' }}>

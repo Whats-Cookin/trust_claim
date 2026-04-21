@@ -22,8 +22,8 @@ import { BACKEND_BASE_URL } from '../../utils/settings'
 // Noun Project AT symbol icon (licensed)
 function AtSymbolIcon(props: any) {
   return (
-    <SvgIcon {...props} viewBox="0 0 1200 1200">
-      <path d="m600 9.9844c-182.72 0.09375-355.08 84.797-466.78 229.4-111.66 144.61-150.05 332.81-103.92 509.63 46.172 176.76 171.61 322.22 339.71 393.79 168.14 71.625 359.9 61.266 519.37-27.984 14.438-8.1094 19.594-26.391 11.484-40.828-8.1094-14.484-26.391-19.641-40.875-11.531-136.31 76.406-299.44 88.688-445.69 33.656-146.26-55.031-260.76-171.79-312.94-319.08-52.219-147.32-36.703-310.13 42.281-444.98 79.031-134.81 213.52-227.9 367.5-254.39 154.03-26.484 311.86 16.359 431.39 117.05 119.48 100.69 188.44 249 188.48 405.28v125.11c0 68.297-55.359 123.66-123.66 123.66-68.297 0-123.66-55.359-123.66-123.66v-125.11c0-175.5-126.84-318.24-282.71-318.24s-282.71 142.74-282.71 318.24 126.71 318.24 282.71 318.24c96.094-2.0625 184.18-54.094 232.31-137.29 17.766 56.062 61.406 100.17 117.28 118.59 55.875 18.375 117.19 8.8125 164.81-25.734 47.621-34.547 75.75-89.859 75.609-148.69v-125.11c-0.1875-156.42-62.391-306.37-173.02-417s-260.58-172.82-417-173.02zm0 848.26c-122.81 0-222.71-116.02-222.71-258.24s99.891-258.24 222.71-258.24 222.71 116.02 222.71 258.24-99.891 258.24-222.71 258.24z" />
+    <SvgIcon {...props} viewBox='0 0 1200 1200'>
+      <path d='m600 9.9844c-182.72 0.09375-355.08 84.797-466.78 229.4-111.66 144.61-150.05 332.81-103.92 509.63 46.172 176.76 171.61 322.22 339.71 393.79 168.14 71.625 359.9 61.266 519.37-27.984 14.438-8.1094 19.594-26.391 11.484-40.828-8.1094-14.484-26.391-19.641-40.875-11.531-136.31 76.406-299.44 88.688-445.69 33.656-146.26-55.031-260.76-171.79-312.94-319.08-52.219-147.32-36.703-310.13 42.281-444.98 79.031-134.81 213.52-227.9 367.5-254.39 154.03-26.484 311.86 16.359 431.39 117.05 119.48 100.69 188.44 249 188.48 405.28v125.11c0 68.297-55.359 123.66-123.66 123.66-68.297 0-123.66-55.359-123.66-123.66v-125.11c0-175.5-126.84-318.24-282.71-318.24s-282.71 142.74-282.71 318.24 126.71 318.24 282.71 318.24c96.094-2.0625 184.18-54.094 232.31-137.29 17.766 56.062 61.406 100.17 117.28 118.59 55.875 18.375 117.19 8.8125 164.81-25.734 47.621-34.547 75.75-89.859 75.609-148.69v-125.11c-0.1875-156.42-62.391-306.37-173.02-417s-260.58-172.82-417-173.02zm0 848.26c-122.81 0-222.71-116.02-222.71-258.24s99.891-258.24 222.71-258.24 222.71 116.02 222.71 258.24-99.891 258.24-222.71 258.24z' />
     </SvgIcon>
   )
 }
@@ -85,9 +85,13 @@ function formatDate(dateStr?: string): string {
   if (!dateStr) return ''
   try {
     return new Date(dateStr).toLocaleDateString(undefined, {
-      year: 'numeric', month: 'short', day: 'numeric'
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     })
-  } catch { return dateStr }
+  } catch {
+    return dateStr
+  }
 }
 
 function truncUri(uri: string, max = 50): string {
@@ -98,7 +102,9 @@ function truncUri(uri: string, max = 50): string {
     const path = u.pathname + u.search
     if (path.length > 30) return u.host + path.slice(0, 15) + '\u2026' + path.slice(-12)
     return u.host + path
-  } catch { return uri.slice(0, max - 3) + '\u2026' }
+  } catch {
+    return uri.slice(0, max - 3) + '\u2026'
+  }
 }
 
 function isImageUrl(url?: string): boolean {
@@ -114,7 +120,9 @@ function isLinkedTrustUrl(url?: string): boolean {
   try {
     const h = new URL(url).hostname
     return h === 'live.linkedtrust.us' || h === 'dev.linkedtrust.us' || h.endsWith('.linkedtrust.us')
-  } catch { return false }
+  } catch {
+    return false
+  }
 }
 
 function extractClaimId(respondAt?: string): string | null {
@@ -173,18 +181,20 @@ const AtprotoFeed: React.FC = () => {
                 createdAt: c.createdAt,
                 effectiveDate: c.effectiveDate,
                 respondAt: c.respondAt,
-                source: c.sourceURI ? {
-                  uri: c.sourceURI,
-                  howKnown: c.howKnown,
-                } : undefined,
+                source: c.sourceURI
+                  ? {
+                      uri: c.sourceURI,
+                      howKnown: c.howKnown
+                    }
+                  : undefined,
                 evidence: (c.images || []).map((img: any) => ({
                   uri: img.url,
                   digestMultibase: img.digestMultibase,
                   mediaType: img.metadata?.contentType || (img.metadata?.type === 'video' ? 'video/mp4' : undefined),
-                  description: img.metadata?.description,
-                })),
+                  description: img.metadata?.description
+                }))
               },
-              _dbId: c.id, // We already have it in DB
+              _dbId: c.id // We already have it in DB
             }))
 
             // All backend claims are in DB by definition
@@ -201,11 +211,16 @@ const AtprotoFeed: React.FC = () => {
 
       // Fall back to direct ATProto if backend returned nothing
       if (allClaims.length === 0) {
-        const repoList = repos.split(',').map(r => r.trim()).filter(Boolean)
+        const repoList = repos
+          .split(',')
+          .map(r => r.trim())
+          .filter(Boolean)
 
         for (const repo of repoList) {
           try {
-            const url = `${ATPROTO_API}/xrpc/com.atproto.repo.listRecords?repo=${encodeURIComponent(repo)}&collection=${COLLECTION}&limit=100`
+            const url = `${ATPROTO_API}/xrpc/com.atproto.repo.listRecords?repo=${encodeURIComponent(
+              repo
+            )}&collection=${COLLECTION}&limit=100`
             const res = await fetch(url)
             if (!res.ok) {
               console.warn(`Failed to fetch from ${repo}: ${res.status}`)
@@ -270,11 +285,15 @@ const AtprotoFeed: React.FC = () => {
                 <video
                   src={uri}
                   controls
-                  preload="metadata"
+                  preload='metadata'
                   playsInline
                   style={{ maxWidth: '100%', maxHeight: 300, borderRadius: 4 }}
                 />
-                {desc && <Typography variant="caption" color="text.secondary">{desc}</Typography>}
+                {desc && (
+                  <Typography variant='caption' color='text.secondary'>
+                    {desc}
+                  </Typography>
+                )}
               </Box>
             )
           }
@@ -284,24 +303,37 @@ const AtprotoFeed: React.FC = () => {
                 <img
                   src={uri}
                   alt={desc || 'evidence'}
-                  loading="lazy"
+                  loading='lazy'
                   style={{ maxWidth: '100%', maxHeight: 300, borderRadius: 4 }}
                 />
-                {desc && <Typography variant="caption" color="text.secondary">{desc}</Typography>}
+                {desc && (
+                  <Typography variant='caption' color='text.secondary'>
+                    {desc}
+                  </Typography>
+                )}
               </Box>
             )
           }
           if (uri) {
             return (
               <Box key={i} sx={{ mb: 0.5 }}>
-                <a href={uri} target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main, fontSize: 13 }}>
+                <a
+                  href={uri}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  style={{ color: theme.palette.primary.main, fontSize: 13 }}
+                >
                   {desc || truncUri(uri, 60)}
                 </a>
               </Box>
             )
           }
           if (desc) {
-            return <Typography key={i} variant="caption" color="text.secondary">{desc}</Typography>
+            return (
+              <Typography key={i} variant='caption' color='text.secondary'>
+                {desc}
+              </Typography>
+            )
           }
           return null
         })}
@@ -321,26 +353,31 @@ const AtprotoFeed: React.FC = () => {
           {/* Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', mb: 0.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="caption" sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, color: 'primary.main' }}>
+              <Typography
+                variant='caption'
+                sx={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, color: 'primary.main' }}
+              >
                 {type}
               </Typography>
               {c.object && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant='caption' color='text.secondary'>
                   &middot; {c.object}
                 </Typography>
               )}
               {c.aspect && (
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant='caption' color='text.secondary'>
                   ({c.aspect})
                 </Typography>
               )}
             </Box>
-            <Typography variant="caption" color="text.secondary">{date}</Typography>
+            <Typography variant='caption' color='text.secondary'>
+              {date}
+            </Typography>
           </Box>
 
           {/* Statement */}
           {c.statement && (
-            <Typography variant="body2" sx={{ fontStyle: 'italic', my: 0.5 }}>
+            <Typography variant='body2' sx={{ fontStyle: 'italic', my: 0.5 }}>
               &ldquo;{c.statement}&rdquo;
             </Typography>
           )}
@@ -349,9 +386,11 @@ const AtprotoFeed: React.FC = () => {
           {c.stars && (
             <Box sx={{ my: 0.5 }}>
               {Array.from({ length: 5 }, (_, i) => (
-                <span key={i} style={{ color: i < c.stars! ? '#FFC107' : '#ccc', fontSize: 18 }}>&#9733;</span>
+                <span key={i} style={{ color: i < c.stars! ? '#FFC107' : '#ccc', fontSize: 18 }}>
+                  &#9733;
+                </span>
               ))}
-              <Typography component="span" variant="caption" sx={{ ml: 0.5, fontWeight: 600, color: 'text.secondary' }}>
+              <Typography component='span' variant='caption' sx={{ ml: 0.5, fontWeight: 600, color: 'text.secondary' }}>
                 {Number(c.stars).toFixed(1)}
               </Typography>
             </Box>
@@ -359,16 +398,21 @@ const AtprotoFeed: React.FC = () => {
 
           {/* Confidence */}
           {c.confidence != null && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant='caption' color='text.secondary'>
               confidence: {Math.round(c.confidence * 100)}%
             </Typography>
           )}
 
           {/* Subject */}
           {c.subject && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+            <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mt: 0.5 }}>
               about:{' '}
-              <a href={c.subject} target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main, textDecoration: 'none' }}>
+              <a
+                href={c.subject}
+                target='_blank'
+                rel='noopener noreferrer'
+                style={{ color: theme.palette.primary.main, textDecoration: 'none' }}
+              >
                 {truncUri(c.subject)}
               </a>
             </Typography>
@@ -376,9 +420,14 @@ const AtprotoFeed: React.FC = () => {
 
           {/* Source */}
           {c.source?.uri && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+            <Typography variant='caption' color='text.secondary' sx={{ display: 'block' }}>
               source:{' '}
-              <a href={c.source.uri} target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main, textDecoration: 'none' }}>
+              <a
+                href={c.source.uri}
+                target='_blank'
+                rel='noopener noreferrer'
+                style={{ color: theme.palette.primary.main, textDecoration: 'none' }}
+              >
                 {truncUri(c.source.uri, 40)}
               </a>
               {c.source.howKnown && ` \u00b7 ${c.source.howKnown.replace(/_/g, ' ').toLowerCase()}`}
@@ -389,39 +438,58 @@ const AtprotoFeed: React.FC = () => {
           {renderEvidence(c.evidence)}
 
           {/* Footer: AT record link, DB match or import */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1, pt: 1, borderTop: '1px solid', borderColor: 'divider' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mt: 1,
+              pt: 1,
+              borderTop: '1px solid',
+              borderColor: 'divider'
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflow: 'hidden', minWidth: 0 }}>
               {atUriToViewerUrl(record.uri) && (
                 <a
                   href={atUriToViewerUrl(record.uri)!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="View ATProto record"
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  title='View ATProto record'
                   style={{ display: 'flex', alignItems: 'center', color: theme.palette.text.disabled, flexShrink: 0 }}
                 >
                   <AtSymbolIcon sx={{ fontSize: 18, '&:hover': { color: theme.palette.primary.main } }} />
                 </a>
               )}
-              <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.disabled', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <Typography
+                variant='caption'
+                sx={{
+                  fontFamily: 'monospace',
+                  color: 'text.disabled',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
                 {record.uri}
               </Typography>
             </Box>
             {match ? (
               <Chip
                 icon={<CheckCircleIcon sx={{ fontSize: 14 }} />}
-                label="Explore"
-                size="small"
-                color="success"
-                variant="outlined"
+                label='Explore'
+                size='small'
+                color='success'
+                variant='outlined'
                 clickable
-                component="a"
+                component='a'
                 href={`/explore/${match.id}`}
                 sx={{ fontSize: 11, flexShrink: 0, ml: 1 }}
               />
             ) : (
               <Button
-                size="small"
-                variant="outlined"
+                size='small'
+                variant='outlined'
                 startIcon={<DownloadIcon sx={{ fontSize: 14 }} />}
                 disabled={importing[record.uri]}
                 onClick={() => {
@@ -449,14 +517,14 @@ const AtprotoFeed: React.FC = () => {
         {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            <Typography variant='h5' sx={{ fontWeight: 600 }}>
               ATProto Claims
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant='body2' color='text.secondary'>
               Live <code style={{ fontSize: 12 }}>com.linkedclaims.claim</code> records from the AT Protocol
             </Typography>
           </Box>
-          <IconButton onClick={fetchClaims} disabled={loading} title="Refresh">
+          <IconButton onClick={fetchClaims} disabled={loading} title='Refresh'>
             <RefreshIcon />
           </IconButton>
         </Box>
@@ -465,14 +533,16 @@ const AtprotoFeed: React.FC = () => {
         <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
           <TextField
             fullWidth
-            size="small"
+            size='small'
             value={repoInput}
             onChange={e => setRepoInput(e.target.value)}
-            placeholder="DID or handle (comma-separated for multiple)"
-            onKeyDown={e => { if (e.key === 'Enter') handleRepoSearch() }}
+            placeholder='DID or handle (comma-separated for multiple)'
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleRepoSearch()
+            }}
             sx={{ '& .MuiInputBase-input': { fontSize: 13, fontFamily: 'monospace' } }}
           />
-          <Button variant="contained" onClick={handleRepoSearch} sx={{ textTransform: 'none', whiteSpace: 'nowrap' }}>
+          <Button variant='contained' onClick={handleRepoSearch} sx={{ textTransform: 'none', whiteSpace: 'nowrap' }}>
             Load
           </Button>
         </Box>
@@ -481,7 +551,7 @@ const AtprotoFeed: React.FC = () => {
         {loading && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <CircularProgress size={32} />
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            <Typography variant='body2' color='text.secondary' sx={{ mt: 1 }}>
               Fetching from ATProto&hellip;
             </Typography>
           </Box>
@@ -490,19 +560,19 @@ const AtprotoFeed: React.FC = () => {
         {/* Error */}
         {error && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography color="error">{error}</Typography>
+            <Typography color='error'>{error}</Typography>
           </Box>
         )}
 
         {/* Results */}
         {!loading && !error && (
           <>
-            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+            <Typography variant='caption' color='text.secondary' sx={{ mb: 1, display: 'block' }}>
               {claims.length} claim{claims.length !== 1 ? 's' : ''} found
             </Typography>
             {claims.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography color="text.secondary">
+                <Typography color='text.secondary'>
                   No <code>com.linkedclaims.claim</code> records found in this repository.
                 </Typography>
               </Box>
@@ -514,10 +584,15 @@ const AtprotoFeed: React.FC = () => {
 
         {/* Info box */}
         <Box sx={{ mt: 3, p: 2, borderRadius: 1, bgcolor: 'action.hover' }}>
-          <Typography variant="caption" color="text.secondary">
-            This page reads <code>com.linkedclaims.claim</code> records directly from ATProto&rsquo;s public API.
-            Anyone can publish claims using the{' '}
-            <a href="https://www.npmjs.com/package/@cooperation/claim-atproto" target="_blank" rel="noopener noreferrer" style={{ color: theme.palette.primary.main }}>
+          <Typography variant='caption' color='text.secondary'>
+            This page reads <code>com.linkedclaims.claim</code> records directly from ATProto&rsquo;s public API. Anyone
+            can publish claims using the{' '}
+            <a
+              href='https://www.npmjs.com/package/@cooperation/claim-atproto'
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ color: theme.palette.primary.main }}
+            >
               @cooperation/claim-atproto
             </a>{' '}
             SDK. Claims with a LinkedTrust respondAt URL are linked to our database.

@@ -192,10 +192,7 @@ const App = () => {
                 path='/endorse/:claimId'
                 element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
               />
-              <Route
-                path='/endorse'
-                element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
-              />
+              <Route path='/endorse' element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />} />
               <Route
                 path='/request-endorsement/:claimId'
                 element={<RequestEndorsement {...commonProps} isAuthenticated={isAuthenticated} />}

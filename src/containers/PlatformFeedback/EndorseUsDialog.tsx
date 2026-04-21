@@ -77,7 +77,9 @@ const EndorseUsDialog = ({ open, onClose }: EndorseUsDialogProps) => {
             </Box>
             <Box sx={{ textAlign: 'left' }}>
               <Typography sx={{ fontWeight: 600, fontSize: '15px', color: 'text.primary' }}>Rating</Typography>
-              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>Rate your experience with linkedtrust.us</Typography>
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+                Rate your experience with linkedtrust.us
+              </Typography>
             </Box>
           </Button>
           <Button
@@ -108,7 +110,9 @@ const EndorseUsDialog = ({ open, onClose }: EndorseUsDialogProps) => {
             </Box>
             <Box sx={{ textAlign: 'left' }}>
               <Typography sx={{ fontWeight: 600, fontSize: '15px', color: 'text.primary' }}>Endorsement</Typography>
-              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>Write an endorsement for linkedtrust.us</Typography>
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+                Write an endorsement for linkedtrust.us
+              </Typography>
             </Box>
           </Button>
         </Box>

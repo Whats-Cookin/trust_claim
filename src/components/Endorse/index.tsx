@@ -138,7 +138,11 @@ const URLInputField: React.FC<{
   )
 }
 
-const Endorse = ({ toggleSnackbar, setSnackbarMessage, isAuthenticated }: IHomeProps & { isAuthenticated?: boolean }) => {
+const Endorse = ({
+  toggleSnackbar,
+  setSnackbarMessage,
+  isAuthenticated
+}: IHomeProps & { isAuthenticated?: boolean }) => {
   const [loading, setLoading] = useState(false)
   const [dataLoading, setDataLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -274,7 +278,17 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage, isAuthenticated }: IHomeP
 
   const { createClaim } = useCreateClaim()
 
-  const doSubmit = async ({ subject, statement, basis, effectiveDate, amt, sourceURI, images, decision, otherRejectReason }: FormData) => {
+  const doSubmit = async ({
+    subject,
+    statement,
+    basis,
+    effectiveDate,
+    amt,
+    sourceURI,
+    images,
+    decision,
+    otherRejectReason
+  }: FormData) => {
     if (!subject) {
       setSnackbarMessage('Subject is required')
       toggleSnackbar(true)
@@ -353,7 +367,7 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage, isAuthenticated }: IHomeP
     }
   }
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async data => {
     if (!isAuthenticated) {
       // Not logged in — show auth dialog, hold the form data
       setPendingSubmit(true)
@@ -929,7 +943,9 @@ const Endorse = ({ toggleSnackbar, setSnackbarMessage, isAuthenticated }: IHomeP
                                                     }}
                                                     sx={{ ml: 1 }}
                                                   >
-                                                    <HelpIcon sx={{ color: theme.palette.primary.main, fontSize: '1rem' }} />
+                                                    <HelpIcon
+                                                      sx={{ color: theme.palette.primary.main, fontSize: '1rem' }}
+                                                    />
                                                   </IconButton>
                                                 )}
                                               </Box>

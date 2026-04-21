@@ -554,7 +554,7 @@ export const Form = ({ toggleSnackbar, setSnackbarMessage, setLoading, onCancel,
               {/* Optional Video Testimonial */}
               <Box sx={{ mb: 4 }}>
                 <VideoRecorder
-                  onVideoUploaded={(url) => setVideoUrl(url)}
+                  onVideoUploaded={url => setVideoUrl(url)}
                   onVideoRemoved={() => setVideoUrl(null)}
                   maxDuration={60}
                 />

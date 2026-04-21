@@ -45,11 +45,7 @@ const pulse = keyframes`
   50% { opacity: 0.6; }
 `
 
-const VideoBadgeEnhanced: React.FC<VideoBadgeProps> = ({
-  claimUri,
-  compact = false,
-  theme: themeMode = 'light'
-}) => {
+const VideoBadgeEnhanced: React.FC<VideoBadgeProps> = ({ claimUri, compact = false, theme: themeMode = 'light' }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [claim, setClaim] = useState<Claim | null>(null)
@@ -118,25 +114,27 @@ const VideoBadgeEnhanced: React.FC<VideoBadgeProps> = ({
   }
 
   // Responsive sizes
-  const sizes = compact ? {
-    maxWidth: 320,
-    padding: 2,
-    videoHeight: '180px',
-    avatarSize: 36,
-    starSize: 'medium' as const,
-    statementSize: '1rem',
-    nameSize: '0.85rem',
-    playIconSize: 64
-  } : {
-    maxWidth: 600,
-    padding: 3,
-    videoHeight: '350px',
-    avatarSize: 48,
-    starSize: 'large' as const,
-    statementSize: '1.25rem',
-    nameSize: '0.95rem',
-    playIconSize: 80
-  }
+  const sizes = compact
+    ? {
+        maxWidth: 320,
+        padding: 2,
+        videoHeight: '180px',
+        avatarSize: 36,
+        starSize: 'medium' as const,
+        statementSize: '1rem',
+        nameSize: '0.85rem',
+        playIconSize: 64
+      }
+    : {
+        maxWidth: 600,
+        padding: 3,
+        videoHeight: '350px',
+        avatarSize: 48,
+        starSize: 'large' as const,
+        statementSize: '1.25rem',
+        nameSize: '0.95rem',
+        playIconSize: 80
+      }
 
   if (loading) {
     return (

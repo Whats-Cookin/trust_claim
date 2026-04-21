@@ -265,16 +265,10 @@ const PlatformFeedbackForm = ({
   const title = mode === 'rating' ? 'Rate Your Experience' : 'Write an Endorsement'
 
   const footerVisibility =
-    mode === 'rating'
-      ? 'Your rating will be publicly visible on '
-      : 'Your endorsement will be publicly visible on '
+    mode === 'rating' ? 'Your rating will be publicly visible on ' : 'Your endorsement will be publicly visible on '
 
   const primarySubmitLabel =
-    isAuthenticated === true
-      ? mode === 'rating'
-        ? 'Submit rating'
-        : 'Submit endorsement'
-      : 'Sign in to Submit'
+    isAuthenticated === true ? (mode === 'rating' ? 'Submit rating' : 'Submit endorsement') : 'Sign in to Submit'
 
   return (
     <>
@@ -300,7 +294,10 @@ const PlatformFeedbackForm = ({
                   <Controller
                     name='stars'
                     control={control}
-                    rules={{ required: 'Please select a rating', validate: v => (v != null && v > 0) || 'Please select a rating' }}
+                    rules={{
+                      required: 'Please select a rating',
+                      validate: v => (v != null && v > 0) || 'Please select a rating'
+                    }}
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                       <FormControl error={!!error}>
                         <Rating
@@ -445,7 +442,10 @@ const PlatformFeedbackForm = ({
               linkedtrust.us
             </Link>
           </Typography>
-          <Typography component='p' sx={{ fontSize: '12px', lineHeight: '16px', color: '#62748E', textAlign: 'center', m: 0 }}>
+          <Typography
+            component='p'
+            sx={{ fontSize: '12px', lineHeight: '16px', color: '#62748E', textAlign: 'center', m: 0 }}
+          >
             By submitting, you agree to our{' '}
             <Link href='/terms' sx={{ color: '#155DFC' }}>
               Terms

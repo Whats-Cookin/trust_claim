@@ -1,16 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Snackbar,
-  useTheme,
-  useMediaQuery
-} from '@mui/material'
+import { Box, Typography, Button, Card, CardContent, Divider, Snackbar, useTheme, useMediaQuery } from '@mui/material'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import LinkIcon from '@mui/icons-material/Link'
 import CodeIcon from '@mui/icons-material/Code'
@@ -53,13 +43,12 @@ const EndorsementShare = ({ claimId, subjectName, statement, videoUrl }: Endorse
 
   const handleLinkedInShare = () => {
     const text = encodeURIComponent(
-      `I just endorsed ${subjectName} on LinkedTrust!\n\n"${statement.length > 120 ? statement.substring(0, 120) + '...' : statement}"\n\nSee the full endorsement:`
+      `I just endorsed ${subjectName} on LinkedTrust!\n\n"${
+        statement.length > 120 ? statement.substring(0, 120) + '...' : statement
+      }"\n\nSee the full endorsement:`
     )
     const url = encodeURIComponent(shareUrl)
-    window.open(
-      `https://www.linkedin.com/feed/?shareActive=true&shareUrl=${url}&text=${text}`,
-      '_blank'
-    )
+    window.open(`https://www.linkedin.com/feed/?shareActive=true&shareUrl=${url}&text=${text}`, '_blank')
   }
 
   const handleDownloadVideo = () => {
@@ -83,10 +72,7 @@ const EndorsementShare = ({ claimId, subjectName, statement, videoUrl }: Endorse
       }}
     >
       <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
-        <Typography
-          variant={isMobile ? 'h5' : 'h4'}
-          sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}
-        >
+        <Typography variant={isMobile ? 'h5' : 'h4'} sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
           You endorsed {subjectName || 'someone'}!
         </Typography>
         <Typography variant='body1' sx={{ color: theme.palette.text.secondary }}>
@@ -133,10 +119,7 @@ const EndorsementShare = ({ claimId, subjectName, statement, videoUrl }: Endorse
       {/* Share options */}
       <Card sx={{ mb: { xs: 3, sm: 4 }, backgroundColor: theme.palette.background.paper }}>
         <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-          <Typography
-            variant='h6'
-            sx={{ fontWeight: 600, color: theme.palette.text.primary, mb: 2 }}
-          >
+          <Typography variant='h6' sx={{ fontWeight: 600, color: theme.palette.text.primary, mb: 2 }}>
             Share your endorsement
           </Typography>
 

@@ -3,8 +3,7 @@ import Typography from '@mui/material/Typography'
 import type { ReactNode } from 'react'
 import { neutralColors } from '../../theme/colors'
 
-const pillGradient =
-  'linear-gradient(90deg, #11aae6 0%, #1fa3e7 20.19%, #3299e7 48.08%, #4290e8 71.64%, #5586e9 100%)'
+const pillGradient = 'linear-gradient(90deg, #11aae6 0%, #1fa3e7 20.19%, #3299e7 48.08%, #4290e8 71.64%, #5586e9 100%)'
 
 type Mode = 'rating' | 'endorsement'
 
@@ -15,7 +14,12 @@ interface PlatformFeedbackCardProps {
   children: ReactNode
 }
 
-const PlatformFeedbackCard = ({ mode, title, subtitleLinkHref = 'https://linkedtrust.us/', children }: PlatformFeedbackCardProps) => {
+const PlatformFeedbackCard = ({
+  mode,
+  title,
+  subtitleLinkHref = 'https://linkedtrust.us/',
+  children
+}: PlatformFeedbackCardProps) => {
   const pillLabel = mode === 'rating' ? 'Rating' : 'Endorsement'
   const pillMinWidth = mode === 'rating' ? 82 : 124
 
@@ -56,7 +60,9 @@ const PlatformFeedbackCard = ({ mode, title, subtitleLinkHref = 'https://linkedt
             flexShrink: 0
           }}
         >
-          <Typography sx={{ fontSize: '14px', fontWeight: 500, lineHeight: '20px', color: '#fff' }}>{pillLabel}</Typography>
+          <Typography sx={{ fontSize: '14px', fontWeight: 500, lineHeight: '20px', color: '#fff' }}>
+            {pillLabel}
+          </Typography>
         </Box>
 
         <Typography

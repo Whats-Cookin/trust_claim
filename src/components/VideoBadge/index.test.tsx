@@ -26,7 +26,14 @@ describe('VideoBadge', () => {
   }
 
   const mockValidations = [
-    { id: 1, isValid: true, confidence: 1, statement: 'I confirm this', issuerName: 'Jane Doe', createdAt: '2026-02-14' }
+    {
+      id: 1,
+      isValid: true,
+      confidence: 1,
+      statement: 'I confirm this',
+      issuerName: 'Jane Doe',
+      createdAt: '2026-02-14'
+    }
   ]
 
   const mockReportResponse = {
@@ -119,9 +126,7 @@ describe('VideoBadge', () => {
     vi.mocked(api.getClaim).mockResolvedValue({ data: { claim: mockClaim } } as any)
     vi.mocked(api.getClaimReport).mockResolvedValue({ data: { ...mockReportResponse, validations: [] } } as any)
 
-    const { container } = render(
-      <VideoBadge claimUri='https://live.linkedtrust.us/claims/123' compact={true} />
-    )
+    const { container } = render(<VideoBadge claimUri='https://live.linkedtrust.us/claims/123' compact={true} />)
 
     await waitFor(() => {
       expect(screen.getByText(mockClaim.statement!)).toBeInTheDocument()

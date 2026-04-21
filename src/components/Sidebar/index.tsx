@@ -1,5 +1,15 @@
 import React, { useState } from 'react'
-import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery, Link as MuiLink } from '@mui/material'
+import {
+  Drawer,
+  List,
+  ListItemText,
+  ListItemButton,
+  Box,
+  useTheme,
+  Typography,
+  useMediaQuery,
+  Link as MuiLink
+} from '@mui/material'
 import { Home, DarkMode, Logout, Login } from '@mui/icons-material'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
@@ -127,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         </ListItemButton>
 
-      <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
           <AlternateEmailIcon sx={iconStyle} />
           <ListItemText
             primary='ATProto'
@@ -167,7 +177,17 @@ const Footer: React.FC<{ isOpen: boolean; onOpenEndorseUs: () => void }> = ({ is
 
   return (
     <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%' }}>
-      <Box sx={{ display: 'flex', gap: '10px', textAlign: 'left', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '10px',
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}
+      >
         <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           <Typography variant='body2'>Terms of Service</Typography>
         </Link>

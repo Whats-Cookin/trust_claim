@@ -132,8 +132,7 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
         const res = await api.getClaim(number)
 
         if (res.data.claim.subject) {
-          const subj =
-            typeof res.data.claim.subject === 'string' ? res.data.claim.subject : res.data.claim.subject.uri
+          const subj = typeof res.data.claim.subject === 'string' ? res.data.claim.subject : res.data.claim.subject.uri
           setSubjectValue(subj)
         }
         if (res.data.claim.statement) setStatementValue(res.data.claim.statement)
@@ -198,8 +197,12 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
     body += `I'm requesting your endorsement for:\n${topic}\n\n`
     body += `Write your endorsement on LinkedTrust:\n${validateUrl}\n\n`
     body += `Or use the endorsement page:\n${endorseUrl}`
-    const mailSubject = `Request for endorsement${topic ? `: ${topic.slice(0, 60)}${topic.length > 60 ? '…' : ''}` : ''}`
-    const mailto = `mailto:${emails.join(',')}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(body)}`
+    const mailSubject = `Request for endorsement${
+      topic ? `: ${topic.slice(0, 60)}${topic.length > 60 ? '…' : ''}` : ''
+    }`
+    const mailto = `mailto:${emails.join(',')}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(
+      body
+    )}`
     window.open(mailto, '_blank', 'noopener,noreferrer')
   }
 
@@ -524,10 +527,22 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
 
               {invitationSent ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  <Button type='button' fullWidth variant='outlined' onClick={handleSendAnother} sx={{ textTransform: 'none' }}>
+                  <Button
+                    type='button'
+                    fullWidth
+                    variant='outlined'
+                    onClick={handleSendAnother}
+                    sx={{ textTransform: 'none' }}
+                  >
                     Send another request
                   </Button>
-                  <Button type='button' fullWidth variant='text' onClick={() => navigate('/feed')} sx={{ textTransform: 'none' }}>
+                  <Button
+                    type='button'
+                    fullWidth
+                    variant='text'
+                    onClick={() => navigate('/feed')}
+                    sx={{ textTransform: 'none' }}
+                  >
                     Back to feed
                   </Button>
                 </Box>
