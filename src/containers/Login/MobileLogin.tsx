@@ -382,7 +382,12 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                   placeholder='your-handle.bsky.social'
                   value={blueskyHandle}
                   onChange={e => setBlueskyHandle(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleBlueskyAuth() } }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      handleBlueskyAuth()
+                    }
+                  }}
                   disabled={blueskyLoading}
                   sx={{
                     backgroundColor: theme.palette.formBackground,

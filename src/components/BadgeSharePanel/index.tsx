@@ -64,7 +64,6 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
 
       {/* Share options */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-
         {/* Copy link */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
@@ -119,16 +118,21 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
           <Collapse in={emailOpen}>
             <Box sx={{ mt: 2, pl: 0 }}>
               <Typography variant='caption' color='text.secondary' display='block' sx={{ mb: 1 }}>
-                Right-click the image below and save or copy it, then paste it into your email.
-                Clicking the image will open the full badge page.
+                Right-click the image below and save or copy it, then paste it into your email. Clicking the image will
+                open the full badge page.
               </Typography>
-              <Box sx={{ display: 'inline-block', border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden', mb: 1 }}>
+              <Box
+                sx={{
+                  display: 'inline-block',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                  mb: 1
+                }}
+              >
                 <a href={badgeUrl} target='_blank' rel='noopener noreferrer'>
-                  <img
-                    src={imageUrl}
-                    alt='LinkedTrust badge'
-                    style={{ display: 'block', maxWidth: '100%' }}
-                  />
+                  <img src={imageUrl} alt='LinkedTrust badge' style={{ display: 'block', maxWidth: '100%' }} />
                 </a>
               </Box>
               <Box>

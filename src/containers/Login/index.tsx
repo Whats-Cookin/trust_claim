@@ -398,7 +398,9 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     transition: 'background-color 0.2s'
                   }}
                 >
-                  <Typography sx={{ fontSize: '32px', fontWeight: 700, color: '#0085ff', lineHeight: 1 }}>🦋</Typography>
+                  <Typography sx={{ fontSize: '32px', fontWeight: 700, color: '#0085ff', lineHeight: 1 }}>
+                    🦋
+                  </Typography>
                 </Box>
                 {/* MetaMask — only if installed */}
                 {hasMetamask && (
@@ -431,7 +433,12 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     placeholder='your-handle.bsky.social'
                     value={blueskyHandle}
                     onChange={e => setBlueskyHandle(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleBlueskyAuth() } }}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        handleBlueskyAuth()
+                      }
+                    }}
                     disabled={blueskyLoading}
                     sx={{
                       backgroundColor: theme.palette.formBackground,

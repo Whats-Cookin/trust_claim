@@ -100,7 +100,7 @@ const Present: React.FC = () => {
   }
 
   // Generate request links (clean URLs)
-  const requestEndorsementUrl = `${window.location.origin}/endorse/${id}?video=true`
+  const requestEndorsementUrl = `${window.location.origin}/request-endorsement/${id}`
   const requestValidationUrl = `${window.location.origin}/validate?subject=${BACKEND_BASE_URL}/claims/${id}`
   const requestRatingUrl = claim?.subject
     ? `${window.location.origin}/request-rating?about=${encodeURIComponent(

@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Typography,
-  Button,
-  Chip,
-  CircularProgress,
-  Alert,
-  Grid,
-  useTheme,
-  useMediaQuery
-} from '@mui/material'
+import { Box, Typography, Button, Chip, CircularProgress, Alert, Grid, useTheme, useMediaQuery } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import * as api from '../../api'
 import { Claim } from '../../api/types'
@@ -71,7 +61,8 @@ const Wall = () => {
       return
     }
 
-    api.getEntityReport(subject)
+    api
+      .getEntityReport(subject)
       .then(res => {
         const name = (res.data as any)?.entity?.name || (res.data as any)?.name
         setSubjectName(name || friendlyLabel(subject))
@@ -79,7 +70,8 @@ const Wall = () => {
       .catch(() => setSubjectName(friendlyLabel(subject)))
 
     setLoading(true)
-    api.getClaimsBySubject(subject)
+    api
+      .getClaimsBySubject(subject)
       .then(res => {
         setClaims(res.data.claims || [])
         setLoading(false)
@@ -95,13 +87,9 @@ const Wall = () => {
   }
 
   const hasVideo = (claim: Claim) =>
-    !!(claim as any).images?.some(
-      (img: any) => img.type === 'video' || img.contentType?.startsWith('video/')
-    )
+    !!(claim as any).images?.some((img: any) => img.type === 'video' || img.contentType?.startsWith('video/'))
   const hasImage = (claim: Claim) =>
-    !!(claim as any).images?.some(
-      (img: any) => img.type !== 'video' && !img.contentType?.startsWith('video/')
-    )
+    !!(claim as any).images?.some((img: any) => img.type !== 'video' && !img.contentType?.startsWith('video/'))
 
   const filtered = claims.filter(c => {
     if (filter === 'video') return hasVideo(c)
@@ -189,7 +177,9 @@ const Wall = () => {
       )}
 
       {error && !loading && (
-        <Alert severity='error' sx={{ mb: 2 }}>{error}</Alert>
+        <Alert severity='error' sx={{ mb: 2 }}>
+          {error}
+        </Alert>
       )}
 
       {!loading && !error && filtered.length === 0 && (
@@ -212,12 +202,7 @@ const Wall = () => {
         <Grid container spacing={2}>
           {filtered.map(claim => (
             <Grid item xs={12} md={6} key={claim.id}>
-              <linked-badge
-                claim-id={claim.id}
-                layout='row'
-                theme={theme.palette.mode}
-                api-base={BACKEND_BASE_URL}
-              />
+              <linked-badge claim-id={claim.id} layout='row' theme={theme.palette.mode} api-base={BACKEND_BASE_URL} />
             </Grid>
           ))}
         </Grid>

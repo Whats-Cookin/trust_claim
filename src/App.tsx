@@ -13,6 +13,7 @@ import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import Endorse from './components/Endorse'
+import RequestEndorsement from './containers/RequestEndorsement'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import ClaimDetails from './containers/ClaimDetails'
@@ -21,7 +22,7 @@ import Terms from './containers/Terms'
 import Privacy from './containers/Privacy'
 import { ClaimCredential } from './containers/ClaimCredential'
 import { checkAuth, AUTH_STATE_CHANGED_EVENT } from './utils/authUtils'
-import CertificateView from './components/Certificate/CertificateView'
+import CertificateView from './components/ClaimCertificate/CertificateView'
 import Present from './components/Present'
 import RequestRating from './components/RequestRating'
 import BadgeEmbed from './components/BadgeEmbed'
@@ -30,6 +31,7 @@ import Wall from './containers/Wall'
 import BadgeEmbedPage from './containers/BadgeEmbed2'
 import BadgePage from './containers/BadgePage'
 import AtprotoFeed from './containers/AtprotoFeed'
+import { PlatformFeedbackForm } from './containers/PlatformFeedback'
 import './App.css'
 
 const App = () => {
@@ -190,9 +192,14 @@ const App = () => {
                 path='/endorse/:claimId'
                 element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
               />
+              <Route path='/endorse' element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />} />
               <Route
-                path='/endorse'
-                element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
+                path='/request-endorsement/:claimId'
+                element={<RequestEndorsement {...commonProps} isAuthenticated={isAuthenticated} />}
+              />
+              <Route
+                path='/request-endorsement'
+                element={<RequestEndorsement {...commonProps} isAuthenticated={isAuthenticated} />}
               />
               <Route
                 path='claim-credential'
@@ -214,6 +221,14 @@ const App = () => {
                 element={
                   isAuthenticated ? <RequestRating /> : <Navigate to='/login' replace state={{ from: location }} />
                 }
+              />
+              <Route
+                path='/feedback/rating'
+                element={<PlatformFeedbackForm {...commonProps} mode='rating' isAuthenticated={isAuthenticated} />}
+              />
+              <Route
+                path='/feedback/endorsement'
+                element={<PlatformFeedbackForm {...commonProps} mode='endorsement' isAuthenticated={isAuthenticated} />}
               />
               {/* Catch-all to avoid blank pages */}
               <Route path='*' element={<Navigate to='/feed' replace />} />

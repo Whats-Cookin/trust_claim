@@ -1,5 +1,15 @@
-import React from 'react'
-import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery } from '@mui/material'
+import React, { useState } from 'react'
+import {
+  Drawer,
+  List,
+  ListItemText,
+  ListItemButton,
+  Box,
+  useTheme,
+  Typography,
+  useMediaQuery,
+  Link as MuiLink
+} from '@mui/material'
 import { Home, DarkMode, Logout, Login } from '@mui/icons-material'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
@@ -9,6 +19,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
 import { clearAuth } from '../../utils/authUtils'
+import EndorseUsDialog from '../../containers/PlatformFeedback/EndorseUsDialog'
 
 interface SidebarProps {
   isAuth: boolean
@@ -27,6 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   isDarkMode,
   isNavbarVisible
 }) => {
+  const [endorseUsOpen, setEndorseUsOpen] = useState(false)
   const navigate = useNavigate()
   const theme = useTheme()
   const location = useLocation()
@@ -48,7 +60,17 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
 
   if (isMobile) {
-    return <BottomNav isAuth={isAuth} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+    return (
+      <>
+        <BottomNav
+          isAuth={isAuth}
+          toggleTheme={toggleTheme}
+          isDarkMode={isDarkMode}
+          onOpenEndorseUs={() => setEndorseUsOpen(true)}
+        />
+        <EndorseUsDialog open={endorseUsOpen} onClose={() => setEndorseUsOpen(false)} />
+      </>
+    )
   }
 
   return (
@@ -115,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         </ListItemButton>
 
-      <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
           <AlternateEmailIcon sx={iconStyle} />
           <ListItemText
             primary='ATProto'
@@ -144,23 +166,56 @@ const Sidebar: React.FC<SidebarProps> = ({
           </ListItemButton>
         )}
       </List>
-      <Footer isOpen={isOpen} />
+      <Footer isOpen={isOpen} onOpenEndorseUs={() => setEndorseUsOpen(true)} />
+      <EndorseUsDialog open={endorseUsOpen} onClose={() => setEndorseUsOpen(false)} />
     </Drawer>
   )
 }
 
-const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
+const Footer: React.FC<{ isOpen: boolean; onOpenEndorseUs: () => void }> = ({ isOpen, onOpenEndorseUs }) => {
   const theme = useTheme()
 
   return (
     <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%' }}>
-      <Box sx={{ display: 'flex', gap: '10px', textAlign: 'left', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '10px',
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}
+      >
         <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           <Typography variant='body2'>Terms of Service</Typography>
         </Link>
         <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           <Typography variant='body2'>Privacy Policy</Typography>
         </Link>
+      </Box>
+      <Box sx={{ marginTop: '10px', display: 'flex', justifyContent: 'flex-start' }}>
+        <MuiLink
+          component='button'
+          type='button'
+          onClick={onOpenEndorseUs}
+          underline='hover'
+          sx={{
+            color: theme.palette.texts,
+            textDecoration: 'none',
+            cursor: 'pointer',
+            border: 'none',
+            background: 'none',
+            padding: 0,
+            font: 'inherit',
+            textAlign: 'left'
+          }}
+        >
+          <Typography variant='body2' sx={{ fontWeight: 600 }}>
+            Endorse Us
+          </Typography>
+        </MuiLink>
       </Box>
       <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
         <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
