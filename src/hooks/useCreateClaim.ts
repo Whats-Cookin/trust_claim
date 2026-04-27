@@ -5,7 +5,10 @@ import { getCurrentAccount, signAndPrepareClaim } from '../utils/web3Auth'
 
 export function useCreateClaim() {
   const createClaim = useCallback(
-    async (payload: any): Promise<{ message: string; isSuccess: boolean; claimId?: number }> => {
+    async (
+      payload: any,
+      options?: { skipWalletCheck?: boolean }
+    ): Promise<{ message: string; isSuccess: boolean; claimId?: number }> => {
       let message = 'Something went wrong!'
       let isSuccess = false
       let claimId: number | undefined
@@ -19,8 +22,8 @@ export function useCreateClaim() {
       )
 
       try {
-        // Check if user has wallet connected for client-side signing
-        const walletAddress = await getCurrentAccount()
+        // Optional fast path for flows where wallet signing is not required (e.g. platform feedback).
+        const walletAddress = options?.skipWalletCheck ? null : await getCurrentAccount()
         let finalPayload = payload
 
         if (walletAddress) {
