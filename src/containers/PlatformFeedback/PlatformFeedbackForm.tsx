@@ -446,7 +446,11 @@ const PlatformFeedbackForm = ({
                 <span>Submitting...</span>
               </Box>
             ) : submitStarted ? (
-              mode === 'rating' ? 'Submit rating' : 'Submit endorsement'
+              mode === 'rating' ? (
+                'Submit rating'
+              ) : (
+                'Submit endorsement'
+              )
             ) : (
               primarySubmitLabel
             )}
