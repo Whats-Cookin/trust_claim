@@ -8,7 +8,7 @@ import Rating from '@mui/material/Rating'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import Link from '@mui/material/Link'
-import { useTheme } from '@mui/material'
+import { useTheme, CircularProgress } from '@mui/material'
 import type { Theme } from '@mui/material/styles'
 import { Controller, useForm } from 'react-hook-form'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
@@ -125,6 +125,7 @@ const PlatformFeedbackForm = ({
   const [submitted, setSubmitted] = useState(false)
   const [newClaimId, setNewClaimId] = useState<number | null>(null)
   const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const [submitStarted, setSubmitStarted] = useState(false)
 
   const { handleSubmit, control, watch } = useForm<FormValues>({
     defaultValues: {
@@ -153,10 +154,12 @@ const PlatformFeedbackForm = ({
           images: [] as [],
           ...(videoUrl && { videoUrl })
         }
-        const { message, isSuccess, claimId } = await createClaim(payload)
+        const { message, isSuccess, claimId } = await createClaim(payload, { skipWalletCheck: true })
         if (isSuccess) {
           setSubmitted(true)
           if (claimId) setNewClaimId(claimId)
+          setSnackbarMessage('Rating submitted successfully.')
+          toggleSnackbar(true)
         } else {
           setSnackbarMessage(message || 'Could not submit your rating.')
           toggleSnackbar(true)
@@ -175,10 +178,12 @@ const PlatformFeedbackForm = ({
           images: [] as [],
           ...(videoUrl && { videoUrl })
         }
-        const { message, isSuccess, claimId } = await createClaim(payload)
+        const { message, isSuccess, claimId } = await createClaim(payload, { skipWalletCheck: true })
         if (isSuccess) {
           setSubmitted(true)
           if (claimId) setNewClaimId(claimId)
+          setSnackbarMessage('Endorsement submitted successfully.')
+          toggleSnackbar(true)
         } else {
           setSnackbarMessage(message || 'Could not submit your endorsement.')
           toggleSnackbar(true)
@@ -199,6 +204,7 @@ const PlatformFeedbackForm = ({
       setShowAuthDialog(true)
       return
     }
+    setSubmitStarted(true)
     await runCreate(data)
   }
 
@@ -206,11 +212,13 @@ const PlatformFeedbackForm = ({
 
   const handleAuthThenSubmit = () => {
     setShowAuthDialog(false)
+    setSubmitStarted(true)
     handleSubmit(runCreate)()
   }
 
   const handleSubmitAnonymous = () => {
     setShowAuthDialog(false)
+    setSubmitStarted(true)
     handleSubmit(runCreate)()
   }
 
@@ -247,6 +255,15 @@ const PlatformFeedbackForm = ({
           <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mt: 1 }}>
             Your feedback will be visible on LinkedTrust.
           </Typography>
+          {newClaimId != null ? (
+            <Button
+              variant='contained'
+              onClick={() => navigate(`/claim/${newClaimId}`)}
+              sx={{ textTransform: 'none', mt: 2 }}
+            >
+              View your submission
+            </Button>
+          ) : null}
           {newClaimId != null ? (
             <Box sx={{ mt: 3, textAlign: 'left' }}>
               <BadgeSharePanel claimId={newClaimId} />
@@ -423,7 +440,20 @@ const PlatformFeedbackForm = ({
               mt: 2
             }}
           >
-            {primarySubmitLabel}
+            {loading ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={18} sx={{ color: 'inherit' }} />
+                <span>Submitting...</span>
+              </Box>
+            ) : submitStarted ? (
+              mode === 'rating' ? (
+                'Submit rating'
+              ) : (
+                'Submit endorsement'
+              )
+            ) : (
+              primarySubmitLabel
+            )}
           </Button>
 
           <Typography
