@@ -9,6 +9,7 @@ import Box from '@mui/material/Box'
 import CloseIcon from '@mui/icons-material/Close'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined'
+import { PLATFORM_FEEDBACK_SUBJECT } from './constants'
 
 export interface EndorseUsDialogProps {
   open: boolean
@@ -23,7 +24,7 @@ const EndorseUsDialog = ({ open, onClose }: EndorseUsDialogProps) => {
 
   const goRating = () => {
     onClose()
-    navigate('/feedback/rating')
+    navigate(`/request-rating?about=${encodeURIComponent(PLATFORM_FEEDBACK_SUBJECT)}`)
   }
 
   const goEndorsement = () => {

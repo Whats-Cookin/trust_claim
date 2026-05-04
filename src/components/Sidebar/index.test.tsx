@@ -1,11 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { MemoryRouter, useNavigate } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 import Sidebar from './index'
-import { vi } from 'vitest'
+import { vi, beforeEach, describe, it, expect } from 'vitest'
 
-vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn()
-}))
+// `var` so the mock factory (hoisted) can assign before TDZ issues with `let`/`const`.
+var mockNavigate: ReturnType<typeof vi.fn>
+
+vi.mock('react-router-dom', async importOriginal => {
+  const actual = await importOriginal<typeof import('react-router-dom')>()
+  mockNavigate = vi.fn()
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate
+  }
+})
 
 describe('Sidebar component', () => {
   const toggleSidebar = vi.fn()
@@ -13,12 +21,24 @@ describe('Sidebar component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // Desktop sidebar (not BottomNav): `down('md')` must not match.
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockImplementation(() => ({
+        matches: false,
+        media: '',
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn()
+      }))
+    })
   })
 
   it('should render correctly when authenticated', () => {
-    const navigate = vi.fn()
-    ;(useNavigate as jest.Mock).mockReturnValue(navigate)
-
     render(
       <MemoryRouter>
         <Sidebar
@@ -35,12 +55,6 @@ describe('Sidebar component', () => {
     const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
-    /* // what we had a search, we do NOT want, just explore from graph
-   // we may LATER add a real search of advanced filters for the feed
-    const searchButton = screen.getByText('Search')
-    expect(searchButton).toBeInTheDocument()
-*/
-
     const createButton = screen.getByText('Claim')
     expect(createButton).toBeInTheDocument()
 
@@ -48,13 +62,10 @@ describe('Sidebar component', () => {
     expect(logoutButton).toBeInTheDocument()
 
     fireEvent.click(logoutButton)
-    expect(navigate).toHaveBeenCalledWith('/login')
+    expect(mockNavigate).toHaveBeenCalledWith('/login')
   })
 
   it('should render correctly when not authenticated', () => {
-    const navigate = vi.fn()
-    ;(useNavigate as jest.Mock).mockReturnValue(navigate)
-
     render(
       <MemoryRouter>
         <Sidebar
@@ -71,21 +82,13 @@ describe('Sidebar component', () => {
     const homeButton = screen.getByText('Home')
     expect(homeButton).toBeInTheDocument()
 
-    /*    const searchButton = screen.getByText('Search')
-    expect(searchButton).toBeInTheDocument()
-*/
-
     const loginButton = screen.getByText('Login')
     expect(loginButton).toBeInTheDocument()
 
-    const registerButton = screen.getByText('Register')
-    expect(registerButton).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /endorse us/i })).toBeInTheDocument()
 
     fireEvent.click(loginButton)
-    expect(navigate).toHaveBeenCalledWith('/login')
-
-    fireEvent.click(registerButton)
-    expect(navigate).toHaveBeenCalledWith('/register')
+    expect(mockNavigate).toHaveBeenCalledWith('/login')
   })
 
   it('should call toggleSidebar when ArrowBack button is clicked', () => {
@@ -102,7 +105,7 @@ describe('Sidebar component', () => {
       </MemoryRouter>
     )
 
-    const arrowBackButton = screen.getByRole('button', { name: /keyboarddoublearrowleft/i })
+    const arrowBackButton = screen.getByRole('button', { name: /close/i })
     expect(arrowBackButton).toBeInTheDocument()
 
     fireEvent.click(arrowBackButton)

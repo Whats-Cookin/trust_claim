@@ -1,18 +1,12 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import Rating from '@mui/material/Rating'
-import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
-import Link from '@mui/material/Link'
 import { useTheme, CircularProgress } from '@mui/material'
 import type { Theme } from '@mui/material/styles'
 import { Controller, useForm } from 'react-hook-form'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
-import StarIcon from '@mui/icons-material/Star'
+import { useNavigate } from 'react-router-dom'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import IHomeProps from '../Form/types'
 import { useCreateClaim } from '../../hooks/useCreateClaim'
@@ -24,21 +18,17 @@ import PlatformFeedbackCard from './PlatformFeedbackCard'
 import SignInDivider from './SignInDivider'
 import PlatformFeedbackVideoSection from './PlatformFeedbackVideoSection'
 import { PLATFORM_FEEDBACK_SUBJECT } from './constants'
-import { ratingAspectOptions } from './ratingAspectOptions'
+import LegalConsentFooter from '../../components/LegalConsentFooter'
 
 const FORM_ID = 'platform-feedback-form'
 
-export type PlatformFeedbackMode = 'rating' | 'endorsement'
-
 interface PlatformFeedbackFormProps extends IHomeProps {
-  mode: PlatformFeedbackMode
   isAuthenticated?: boolean
 }
 
 interface FormValues {
   aspect: string
   statement: string
-  stars: number | null
 }
 
 const outlinedFieldSx = (theme: Theme) => ({
@@ -112,7 +102,6 @@ const unsignedSubmitSx = {
 }
 
 const PlatformFeedbackForm = ({
-  mode,
   isAuthenticated,
   toggleSnackbar,
   setSnackbarMessage,
@@ -127,67 +116,41 @@ const PlatformFeedbackForm = ({
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [submitStarted, setSubmitStarted] = useState(false)
 
-  const { handleSubmit, control, watch } = useForm<FormValues>({
+  const { handleSubmit, control } = useForm<FormValues>({
     defaultValues: {
       aspect: '',
-      statement: '',
-      stars: null
+      statement: ''
     }
   })
 
   const { createClaim } = useCreateClaim()
-  const watchStars = watch('stars')
 
   const runCreate = async (data: FormValues) => {
     setLoading(true)
     setAppLoading(true)
     try {
-      if (mode === 'rating') {
-        const payload = {
-          subject: PLATFORM_FEEDBACK_SUBJECT,
-          claim: 'rated' as const,
-          statement: data.statement.trim(),
-          aspect: data.aspect,
-          howKnown: 'FIRST_HAND' as const,
-          effectiveDate: new Date().toISOString(),
-          stars: data.stars ?? undefined,
-          images: [] as [],
-          ...(videoUrl && { videoUrl })
-        }
-        const { message, isSuccess, claimId } = await createClaim(payload, { skipWalletCheck: true })
-        if (isSuccess) {
-          setSubmitted(true)
-          if (claimId) setNewClaimId(claimId)
-          setSnackbarMessage('Rating submitted successfully.')
-          toggleSnackbar(true)
-        } else {
-          setSnackbarMessage(message || 'Could not submit your rating.')
-          toggleSnackbar(true)
-        }
+      const statementCombined = data.aspect.trim()
+        ? `${data.aspect.trim()}\n\n${data.statement.trim()}`
+        : data.statement.trim()
+      const payload = {
+        subject: PLATFORM_FEEDBACK_SUBJECT,
+        statement: statementCombined,
+        sourceURI: PLATFORM_FEEDBACK_SUBJECT,
+        howKnown: 'FIRST_HAND' as const,
+        effectiveDate: new Date().toISOString(),
+        claim: 'validated' as const,
+        images: [] as [],
+        ...(videoUrl && { videoUrl })
+      }
+      const { message, isSuccess, claimId } = await createClaim(payload, { skipWalletCheck: true })
+      if (isSuccess) {
+        setSubmitted(true)
+        if (claimId) setNewClaimId(claimId)
+        setSnackbarMessage('Endorsement submitted successfully.')
+        toggleSnackbar(true)
       } else {
-        const statementCombined = data.aspect.trim()
-          ? `${data.aspect.trim()}\n\n${data.statement.trim()}`
-          : data.statement.trim()
-        const payload = {
-          subject: PLATFORM_FEEDBACK_SUBJECT,
-          statement: statementCombined,
-          sourceURI: PLATFORM_FEEDBACK_SUBJECT,
-          howKnown: 'FIRST_HAND' as const,
-          effectiveDate: new Date().toISOString(),
-          claim: 'validated' as const,
-          images: [] as [],
-          ...(videoUrl && { videoUrl })
-        }
-        const { message, isSuccess, claimId } = await createClaim(payload, { skipWalletCheck: true })
-        if (isSuccess) {
-          setSubmitted(true)
-          if (claimId) setNewClaimId(claimId)
-          setSnackbarMessage('Endorsement submitted successfully.')
-          toggleSnackbar(true)
-        } else {
-          setSnackbarMessage(message || 'Could not submit your endorsement.')
-          toggleSnackbar(true)
-        }
+        setSnackbarMessage(message || 'Could not submit your endorsement.')
+        toggleSnackbar(true)
       }
     } catch (e) {
       console.error(e)
@@ -210,13 +173,7 @@ const PlatformFeedbackForm = ({
 
   const onFormSubmit = handleSubmit(onValid)
 
-  const handleAuthThenSubmit = () => {
-    setShowAuthDialog(false)
-    setSubmitStarted(true)
-    handleSubmit(runCreate)()
-  }
-
-  const handleSubmitAnonymous = () => {
+  const resumeSubmitAfterAuthDialog = () => {
     setShowAuthDialog(false)
     setSubmitStarted(true)
     handleSubmit(runCreate)()
@@ -244,13 +201,9 @@ const PlatformFeedbackForm = ({
             textAlign: 'center'
           }}
         >
-          {mode === 'rating' ? (
-            <StarIcon sx={{ fontSize: 48, color: theme.palette.warning.main }} />
-          ) : (
-            <CheckCircleIcon sx={{ fontSize: 48, color: theme.palette.success.main }} />
-          )}
+          <CheckCircleIcon sx={{ fontSize: 48, color: theme.palette.success.main }} />
           <Typography variant='h5' sx={{ fontWeight: 700, mt: 2 }}>
-            {mode === 'rating' ? 'Thank you for your rating!' : 'Thank you for your endorsement!'}
+            Thank you for your endorsement!
           </Typography>
           <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mt: 1 }}>
             Your feedback will be visible on LinkedTrust.
@@ -258,7 +211,7 @@ const PlatformFeedbackForm = ({
           {newClaimId != null ? (
             <Button
               variant='contained'
-              onClick={() => navigate(`/claim/${newClaimId}`)}
+              onClick={() => navigate(`/claims/${newClaimId}`)}
               sx={{ textTransform: 'none', mt: 2 }}
             >
               View your submission
@@ -279,13 +232,21 @@ const PlatformFeedbackForm = ({
     )
   }
 
-  const title = mode === 'rating' ? 'Rate Your Experience' : 'Write an Endorsement'
+  const primarySubmitLabel = isAuthenticated === true ? 'Submit endorsement' : 'Sign in to Submit'
 
-  const footerVisibility =
-    mode === 'rating' ? 'Your rating will be publicly visible on ' : 'Your endorsement will be publicly visible on '
-
-  const primarySubmitLabel =
-    isAuthenticated === true ? (mode === 'rating' ? 'Submit rating' : 'Submit endorsement') : 'Sign in to Submit'
+  let submitButtonContent: ReactNode
+  if (loading) {
+    submitButtonContent = (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <CircularProgress size={18} sx={{ color: 'inherit' }} />
+        <span>Submitting...</span>
+      </Box>
+    )
+  } else if (submitStarted) {
+    submitButtonContent = 'Submit endorsement'
+  } else {
+    submitButtonContent = primarySubmitLabel
+  }
 
   return (
     <>
@@ -300,101 +261,33 @@ const PlatformFeedbackForm = ({
           minHeight: { xs: 'calc(100vh - 120px)', sm: 'auto' }
         }}
       >
-        <PlatformFeedbackCard mode={mode} title={title}>
+        <PlatformFeedbackCard mode='endorsement' title='Write an Endorsement'>
           <form id={FORM_ID} onSubmit={onFormSubmit} noValidate>
-            {mode === 'rating' && (
-              <Box sx={{ mb: 2.5 }}>
-                <Typography component='label' sx={labelSx}>
-                  Your Rating *
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Controller
-                    name='stars'
-                    control={control}
-                    rules={{
-                      required: 'Please select a rating',
-                      validate: v => (v != null && v > 0) || 'Please select a rating'
-                    }}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                      <FormControl error={!!error}>
-                        <Rating
-                          name='stars'
-                          value={value ?? 0}
-                          onChange={(_, newValue) => onChange(newValue)}
-                          size='large'
-                          sx={{
-                            fontSize: '2.25rem',
-                            '& .MuiRating-iconFilled': { color: theme.palette.warning.main }
-                          }}
-                        />
-                        {error && <FormHelperText sx={{ textAlign: 'center' }}>{error.message}</FormHelperText>}
-                      </FormControl>
-                    )}
-                  />
-                </Box>
-                {watchStars != null && watchStars > 0 && (
-                  <Typography variant='body2' sx={{ textAlign: 'center', mt: 0.5, color: '#62748E', fontSize: '13px' }}>
-                    {watchStars === 5 && 'Excellent!'}
-                    {watchStars === 4 && 'Very good'}
-                    {watchStars === 3 && 'Good'}
-                    {watchStars === 2 && 'Fair'}
-                    {watchStars === 1 && 'Poor'}
-                  </Typography>
-                )}
-              </Box>
-            )}
-
             <Box sx={{ mb: 2.5 }}>
               <Typography component='label' sx={labelSx} htmlFor='pf-aspect'>
-                {mode === 'rating' ? 'What aspect are you rating? *' : 'What aspect are you endorsing? *'}
+                What aspect are you endorsing? *
               </Typography>
-              {mode === 'rating' ? (
-                <Controller
-                  name='aspect'
-                  control={control}
-                  rules={{ required: 'Please select an aspect' }}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      {...field}
-                      id='pf-aspect'
-                      select
-                      fullWidth
-                      error={!!error}
-                      helperText={error?.message}
-                      sx={outlinedFieldSx(theme)}
-                    >
-                      <MenuItem value=''>Select an aspect…</MenuItem>
-                      {ratingAspectOptions.map(opt => (
-                        <MenuItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  )}
-                />
-              ) : (
-                <Controller
-                  name='aspect'
-                  control={control}
-                  rules={{ required: 'Please describe what you are endorsing' }}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      {...field}
-                      id='pf-aspect'
-                      fullWidth
-                      placeholder='e.g. Product quality, support, trustworthiness'
-                      error={!!error}
-                      helperText={error?.message}
-                      sx={outlinedFieldSx(theme)}
-                    />
-                  )}
-                />
-              )}
+              <Controller
+                name='aspect'
+                control={control}
+                rules={{ required: 'Please describe what you are endorsing' }}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    id='pf-aspect'
+                    fullWidth
+                    placeholder='e.g. Product quality, support, trustworthiness'
+                    error={!!error}
+                    helperText={error?.message}
+                    sx={outlinedFieldSx(theme)}
+                  />
+                )}
+              />
             </Box>
 
             <Box sx={{ mb: 2.5 }}>
               <Typography component='label' sx={labelSx} htmlFor='pf-statement'>
-                {mode === 'rating' ? 'Your Testimonial *' : 'Your Endorsement *'}
+                Your Endorsement *
               </Typography>
               <Controller
                 name='statement'
@@ -440,61 +333,19 @@ const PlatformFeedbackForm = ({
               mt: 2
             }}
           >
-            {loading ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <CircularProgress size={18} sx={{ color: 'inherit' }} />
-                <span>Submitting...</span>
-              </Box>
-            ) : submitStarted ? (
-              mode === 'rating' ? (
-                'Submit rating'
-              ) : (
-                'Submit endorsement'
-              )
-            ) : (
-              primarySubmitLabel
-            )}
+            {submitButtonContent}
           </Button>
 
-          <Typography
-            component='p'
-            sx={{
-              fontSize: '12px',
-              lineHeight: '16px',
-              color: '#62748E',
-              textAlign: 'center',
-              mt: 2,
-              mb: 0.5
-            }}
-          >
-            {footerVisibility}
-            <Link href='https://linkedtrust.us' target='_blank' rel='noopener noreferrer' sx={{ color: '#155DFC' }}>
-              linkedtrust.us
-            </Link>
-          </Typography>
-          <Typography
-            component='p'
-            sx={{ fontSize: '12px', lineHeight: '16px', color: '#62748E', textAlign: 'center', m: 0 }}
-          >
-            By submitting, you agree to our{' '}
-            <Link href='/terms' sx={{ color: '#155DFC' }}>
-              Terms
-            </Link>{' '}
-            and{' '}
-            <Link href='/privacy' sx={{ color: '#155DFC' }}>
-              Privacy Policy
-            </Link>
-            .
-          </Typography>
+          <LegalConsentFooter variant='endorsement' />
         </PlatformFeedbackCard>
       </Box>
 
       {showAuthDialog && (
         <QuickAuth
           mode='dialog'
-          onAuthenticated={handleAuthThenSubmit}
+          onAuthenticated={resumeSubmitAfterAuthDialog}
           onDismiss={() => setShowAuthDialog(false)}
-          onSubmitAnonymous={handleSubmitAnonymous}
+          onSubmitAnonymous={resumeSubmitAfterAuthDialog}
           dialogTitle='Sign in to submit'
           dialogDescription='Sign in to publish your feedback on LinkedTrust. You can also submit without signing in.'
           dialogHideMetaMask

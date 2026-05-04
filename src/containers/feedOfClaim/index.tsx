@@ -9,7 +9,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
-import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined' // <-- NEW
+import WorkspacePremiumOutlinedIcon from '@mui/icons-material/WorkspacePremiumOutlined'
+import ForwardToInboxOutlinedIcon from '@mui/icons-material/ForwardToInboxOutlined'
 import { IHomeProps } from './types'
 import type { Claim, Entity } from '../../api/types'
 import {
@@ -514,6 +515,23 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                                       }}
                                     >
                                       Present
+                                    </Button>
+                                  </Link>
+                                )}
+                                {!!claimId && (
+                                  <Link to={`/request-endorsement/${claimId}`}>
+                                    <Button
+                                      startIcon={<ForwardToInboxOutlinedIcon />}
+                                      variant='text'
+                                      sx={{
+                                        fontSize: isMediumScreen ? '8px' : '12px',
+                                        marginRight: '10px',
+                                        p: '4px',
+                                        color: theme.palette.sidecolor,
+                                        '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                                      }}
+                                    >
+                                      Request endorsement
                                     </Button>
                                   </Link>
                                 )}

@@ -304,10 +304,18 @@ const QuickAuth = ({
           </Typography>
         )}
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2, justifyContent: 'space-between' }}>
-        <Button onClick={onSubmitAnonymous} sx={{ textTransform: 'none', color: theme.palette.text.secondary }}>
-          Submit without signing in
-        </Button>
+      <DialogActions
+        sx={{
+          px: 3,
+          pb: 2,
+          justifyContent: onSubmitAnonymous ? 'space-between' : 'flex-end'
+        }}
+      >
+        {onSubmitAnonymous ? (
+          <Button onClick={onSubmitAnonymous} sx={{ textTransform: 'none', color: theme.palette.text.secondary }}>
+            Submit without signing in
+          </Button>
+        ) : null}
         <Button onClick={onDismiss} sx={{ textTransform: 'none' }}>
           Cancel
         </Button>
