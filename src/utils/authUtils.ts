@@ -19,14 +19,32 @@ export const handleAuthSuccess = (authData: AuthState) => {
   window.dispatchEvent(new Event(AUTH_STATE_CHANGED_EVENT))
 }
 
+const isJwtExpired = (token: string): boolean => {
+  try {
+    const part = token.split('.')[1]
+    if (!part) return false
+    const normalized = part.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4)
+    const payload = JSON.parse(atob(padded))
+    if (typeof payload.exp !== 'number') return false
+    return Date.now() >= payload.exp * 1000
+  } catch {
+    return false
+  }
+}
+
 export const checkAuth = () => {
   const accessToken = localStorage.getItem('accessToken')
   const refreshToken = localStorage.getItem('refreshToken')
   const ethAddress = localStorage.getItem('ethAddress') || undefined
   const did = localStorage.getItem('did')
 
-  // JWT auth is primary authentication method
-  if (accessToken && refreshToken) return true
+  // JWT auth is primary authentication method.
+  // Session lives as long as the refresh token; access token is renewed by the axios interceptor.
+  if (accessToken && refreshToken) {
+    if (isJwtExpired(refreshToken)) return false
+    return true
+  }
 
   // Support legacy DID-only auth
   if (did && ethAddress) return true
@@ -61,6 +79,7 @@ export const clearAuth = () => {
   localStorage.removeItem('refreshToken')
   localStorage.removeItem('ethAddress')
   localStorage.removeItem('did')
+  window.dispatchEvent(new Event(AUTH_STATE_CHANGED_EVENT))
 }
 
 // Ceramic-related functions removed
