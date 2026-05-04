@@ -12,8 +12,11 @@ import Add from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import { neutralColors } from '../../theme/colors'
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom'
+import LegalConsentFooter from '../../components/LegalConsentFooter'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const isHttpSubjectUri = (s: string) => /^https?:\/\//i.test((s ?? '').trim())
 
 const endorseOutlinedFieldSx = (theme: Theme) => ({
   '& .MuiOutlinedInput-root': {
@@ -283,6 +286,14 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
     )
   }
 
+  const subjectIsUrl = Boolean(subjectValue && isHttpSubjectUri(subjectValue))
+  const endorsementHeadline =
+    claimName && subject_name
+      ? `${claimName} - ${subject_name}`
+      : !subjectValue || !isHttpSubjectUri(subjectValue)
+      ? subjectValue
+      : claimName || subject_name || ''
+
   return (
     <Box sx={pageShellSx()}>
       <form onSubmit={onSubmit} style={{ width: '100%', maxWidth: 576, margin: '0 auto' }}>
@@ -376,28 +387,50 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
                     />
                   ) : null}
                 </Box>
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography
-                    sx={{
-                      fontSize: '16px',
-                      fontWeight: 500,
-                      lineHeight: '24px',
-                      color: neutralColors.gray[900],
-                      wordBreak: 'break-word'
-                    }}
-                  >
-                    {claimName && subject_name ? `${claimName} - ${subject_name}` : subjectValue}
-                  </Typography>
+                <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+                  {subjectIsUrl ? (
+                    <MuiLink
+                      href={subjectValue}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      sx={{
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        lineHeight: 1.45,
+                        wordBreak: 'break-word',
+                        overflowWrap: 'anywhere',
+                        color: 'primary.main',
+                        alignSelf: 'flex-start',
+                        maxWidth: '100%'
+                      }}
+                    >
+                      {subjectValue}
+                    </MuiLink>
+                  ) : null}
+                  {endorsementHeadline ? (
+                    <Typography
+                      sx={{
+                        fontSize: '16px',
+                        fontWeight: 500,
+                        lineHeight: 1.4,
+                        color: neutralColors.gray[900],
+                        wordBreak: 'break-word',
+                        overflowWrap: 'anywhere'
+                      }}
+                    >
+                      {endorsementHeadline}
+                    </Typography>
+                  ) : null}
                   {statementValue && (
                     <Typography
                       sx={{
-                        fontSize: '12px',
-                        lineHeight: '16px',
+                        fontSize: '13px',
+                        lineHeight: 1.5,
                         color: neutralColors.gray[500],
-                        mt: 0.75,
                         wordBreak: 'break-word',
+                        overflowWrap: 'anywhere',
                         display: '-webkit-box',
-                        WebkitLineClamp: 3,
+                        WebkitLineClamp: 5,
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden'
                       }}
@@ -517,13 +550,7 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
                 )}
               />
 
-              <Typography sx={{ fontSize: '12px', lineHeight: '16px', color: neutralColors.gray[500] }}>
-                We open your email app with a draft — you send the message. By continuing, you agree to our{' '}
-                <MuiLink href='/terms' underline='hover' sx={{ fontSize: '12px' }}>
-                  Terms
-                </MuiLink>
-                .
-              </Typography>
+              <LegalConsentFooter variant='emailDraftTerms' />
 
               {invitationSent ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>

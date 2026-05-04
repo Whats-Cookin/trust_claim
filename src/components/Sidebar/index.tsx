@@ -5,10 +5,10 @@ import {
   ListItemText,
   ListItemButton,
   Box,
+  Button,
   useTheme,
   Typography,
-  useMediaQuery,
-  Link as MuiLink
+  useMediaQuery
 } from '@mui/material'
 import { Home, DarkMode, Logout, Login } from '@mui/icons-material'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
@@ -176,7 +176,22 @@ const Footer: React.FC<{ isOpen: boolean; onOpenEndorseUs: () => void }> = ({ is
   const theme = useTheme()
 
   return (
-    <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%' }}>
+    <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%', gap: 1 }}>
+      <Button
+        variant='contained'
+        color='primary'
+        fullWidth
+        onClick={onOpenEndorseUs}
+        sx={{
+          textTransform: 'none',
+          fontWeight: 700,
+          py: 1,
+          borderRadius: 2,
+          boxShadow: theme.shadows[2]
+        }}
+      >
+        Endorse Us
+      </Button>
       <Box
         sx={{
           display: 'flex',
@@ -195,29 +210,7 @@ const Footer: React.FC<{ isOpen: boolean; onOpenEndorseUs: () => void }> = ({ is
           <Typography variant='body2'>Privacy Policy</Typography>
         </Link>
       </Box>
-      <Box sx={{ marginTop: '10px', display: 'flex', justifyContent: 'flex-start' }}>
-        <MuiLink
-          component='button'
-          type='button'
-          onClick={onOpenEndorseUs}
-          underline='hover'
-          sx={{
-            color: theme.palette.texts,
-            textDecoration: 'none',
-            cursor: 'pointer',
-            border: 'none',
-            background: 'none',
-            padding: 0,
-            font: 'inherit',
-            textAlign: 'left'
-          }}
-        >
-          <Typography variant='body2' sx={{ fontWeight: 600 }}>
-            Endorse Us
-          </Typography>
-        </MuiLink>
-      </Box>
-      <Box sx={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-start' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
         <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           <Typography variant='body2'>© {new Date().getFullYear()} LinkedTrust</Typography>
         </Link>

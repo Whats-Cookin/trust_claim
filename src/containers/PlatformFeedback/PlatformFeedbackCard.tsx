@@ -10,6 +10,8 @@ type Mode = 'rating' | 'endorsement'
 interface PlatformFeedbackCardProps {
   mode: Mode
   title: string
+  /** When set, replaces the default “Share about linkedtrust.us” subtitle. */
+  subtitle?: ReactNode
   subtitleLinkHref?: string
   children: ReactNode
 }
@@ -17,6 +19,7 @@ interface PlatformFeedbackCardProps {
 const PlatformFeedbackCard = ({
   mode,
   title,
+  subtitle,
   subtitleLinkHref = 'https://linkedtrust.us/',
   children
 }: PlatformFeedbackCardProps) => {
@@ -78,18 +81,20 @@ const PlatformFeedbackCard = ({
           {title}
         </Typography>
 
-        <Typography component='p' sx={{ fontSize: '16px', lineHeight: '20px', color: '#62748E', m: 0 }}>
-          Share about{' '}
-          <Typography
-            component='a'
-            href={subtitleLinkHref}
-            target='_blank'
-            rel='noopener noreferrer'
-            sx={{ color: '#155DFC', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
-          >
-            linkedtrust.us
+        {subtitle ?? (
+          <Typography component='p' sx={{ fontSize: '16px', lineHeight: '20px', color: '#62748E', m: 0 }}>
+            Share about{' '}
+            <Typography
+              component='a'
+              href={subtitleLinkHref}
+              target='_blank'
+              rel='noopener noreferrer'
+              sx={{ color: '#155DFC', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+            >
+              linkedtrust.us
+            </Typography>
           </Typography>
-        </Typography>
+        )}
       </Box>
 
       {children}
