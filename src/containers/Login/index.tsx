@@ -42,6 +42,21 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   const handleAuth = useCallback(
     (accessToken: string, refreshToken: string) => {
       handleAuthSuccess({ accessToken, refreshToken })
+      // "Sign in with LinkedTrust" (OIDC) bridge: if this login was started by an
+      // app redirecting to /oauth/authorize, establish the LinkedTrust IdP session
+      // and send the browser back to the authorize URL so it can issue the code.
+      // Stored in sessionStorage so it survives the Bluesky redirect chain (which
+      // drops query params on the way back).
+      const oidcReturn = sessionStorage.getItem('lt_oidc_return')
+      if (oidcReturn) {
+        sessionStorage.removeItem('lt_oidc_return')
+        axios
+          .post('/oauth/session', { access_token: accessToken })
+          .finally(() => {
+            window.location.href = oidcReturn
+          })
+        return
+      }
       setLoading(false)
       navigate(location.state?.from || '/')
     },
@@ -52,6 +67,16 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   const githubAuthCode = queryParams.get('code')
   const accessToken = queryParams.get('accessToken')
   const refreshToken = queryParams.get('refreshToken')
+
+  // Capture an incoming "Sign in with LinkedTrust" (OIDC) request so we can
+  // resume it after the user authenticates by any method.
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    const returnTo = sp.get('return_to')
+    if (sp.get('lt_oidc') === '1' && returnTo) {
+      sessionStorage.setItem('lt_oidc_return', returnTo)
+    }
+  }, [])
 
   useEffect(() => {
     if (accessToken && refreshToken) {
