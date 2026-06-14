@@ -24,7 +24,7 @@ import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import DayNightToggle from 'react-day-and-night-toggle'
 import MobileLogin from './MobileLogin'
 import { GoogleLogin } from '@react-oauth/google'
-import { handleAuthSuccess } from '../../utils/authUtils'
+import { handleAuthSuccess, captureOidcFlow, maybeCompleteOidcLogin } from '../../utils/authUtils'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
@@ -40,9 +40,12 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   const navigate = useNavigate()
 
   const handleAuth = useCallback(
-    (accessToken: string, refreshToken: string) => {
+    async (accessToken: string, refreshToken: string) => {
       handleAuthSuccess({ accessToken, refreshToken })
       setLoading(false)
+      // In the "Sign in with LinkedTrust" OIDC flow this returns the browser to
+      // the relying-party app instead of navigating into LinkedTrust.
+      if (await maybeCompleteOidcLogin(accessToken)) return
       navigate(location.state?.from || '/')
     },
     [location.state?.from, navigate, setLoading]
@@ -52,6 +55,11 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
   const githubAuthCode = queryParams.get('code')
   const accessToken = queryParams.get('accessToken')
   const refreshToken = queryParams.get('refreshToken')
+
+  // Persist OIDC flow params on first arrival, before any external login round-trip.
+  useEffect(() => {
+    captureOidcFlow(queryParams)
+  }, [])
 
   useEffect(() => {
     if (accessToken && refreshToken) {

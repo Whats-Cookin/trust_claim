@@ -18,7 +18,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
 import { GoogleLogin } from '@react-oauth/google'
-import { handleAuthSuccess } from '../../utils/authUtils'
+import { handleAuthSuccess, maybeCompleteOidcLogin } from '../../utils/authUtils'
 import { GITHUB_CLIENT_ID } from '../../utils/settings'
 
 const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
@@ -35,9 +35,12 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
   } = useForm()
 
   const handleAuth = useCallback(
-    (accessToken: string, refreshToken: string) => {
+    async (accessToken: string, refreshToken: string) => {
       handleAuthSuccess({ accessToken, refreshToken })
       setLoading(false)
+      // In the "Sign in with LinkedTrust" OIDC flow this returns the browser to
+      // the relying-party app instead of navigating into LinkedTrust.
+      if (await maybeCompleteOidcLogin(accessToken)) return
       navigate(location.state?.from || '/')
     },
     [navigate, location.state?.from, setLoading]
