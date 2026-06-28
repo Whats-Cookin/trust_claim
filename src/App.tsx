@@ -6,6 +6,7 @@ import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
 import Navbar from './components/Navbar'
 import Login from './containers/Login'
+import SsoInvite from './containers/SsoInvite'
 import Register from './containers/Register'
 import Form from './containers/Form'
 import Explore from './containers/Explore'
@@ -156,6 +157,7 @@ const App = () => {
               <Route path='explore/:nodeId' element={<Explore {...commonProps} />} />
               <Route path='register' element={<Register {...commonProps} />} />
               <Route path='login' element={<Login {...commonProps} />} />
+              <Route path='sso-invite' element={<SsoInvite />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
               {/* <Route path='cookie' element={<Cookie />} /> */}
