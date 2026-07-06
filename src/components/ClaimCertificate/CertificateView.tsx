@@ -65,6 +65,21 @@ const CertificateView: React.FC = () => {
     fetchData()
   }, [id, location.state])
 
+  // Credentials issued with a certify template have a dedicated presentation
+  // page — redirect there instead of rendering the generic certificate.
+  useEffect(() => {
+    const c = data?.claim
+    if (!c || c.claim !== 'HAS' || typeof c.object !== 'string' || !c.object.startsWith('urn:uuid:')) return
+    fetch(`${BACKEND_BASE_URL}/api/credentials/${encodeURIComponent(c.object)}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(res => {
+        if (res?.credential?.sameAs?.templateId) {
+          window.location.replace(`/certs/cert/${c.object.slice('urn:uuid:'.length)}`)
+        }
+      })
+      .catch(() => {})
+  }, [data])
+
   if (loading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' minHeight='100vh'>
