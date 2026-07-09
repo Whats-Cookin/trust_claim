@@ -10,6 +10,7 @@ import * as api from '../../api'
 import MailOutline from '@mui/icons-material/MailOutline'
 import Add from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
+import ContentCopy from '@mui/icons-material/ContentCopy'
 import { neutralColors } from '../../theme/colors'
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom'
 import LegalConsentFooter from '../../components/LegalConsentFooter'
@@ -164,7 +165,7 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
     personalNote: ''
   }
 
-  const { handleSubmit, reset, control, setValue } = useForm<FormData>({ defaultValues })
+  const { handleSubmit, reset, control, setValue, getValues } = useForm<FormData>({ defaultValues })
 
   const {
     fields: recipientFields,
@@ -185,17 +186,14 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
     hasSyncedClaimToForm.current = true
   }, [dataLoading, subjectValue, setValue])
 
-  const openInvitationMailto = (data: Pick<FormData, 'recipients' | 'personalNote' | 'endorsementTopic'>) => {
-    const emails = data.recipients.map(r => r.email.trim()).filter(Boolean)
-    if (emails.length === 0 || !number) return
-    const endorsePath = `/endorse/${number}`
-    const endorseUrl = `${window.location.origin}${endorsePath}`
+  const buildDraft = ({ personalNote, endorsementTopic }: Pick<FormData, 'personalNote' | 'endorsementTopic'>) => {
+    const endorseUrl = `${window.location.origin}/endorse/${number}`
     const claimSubjectUri = `${window.location.origin}/claims/${number}`
     const validateUrl = `${window.location.origin}/validate?subject=${encodeURIComponent(claimSubjectUri)}`
-    const topic = data.endorsementTopic.trim()
+    const topic = endorsementTopic.trim()
     let body = ''
-    if (data.personalNote.trim()) {
-      body += `${data.personalNote.trim()}\n\n`
+    if (personalNote.trim()) {
+      body += `${personalNote.trim()}\n\n`
     }
     body += `I'm requesting your endorsement for:\n${topic}\n\n`
     body += `Write your endorsement on LinkedTrust:\n${validateUrl}\n\n`
@@ -203,10 +201,36 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
     const mailSubject = `Request for endorsement${
       topic ? `: ${topic.slice(0, 60)}${topic.length > 60 ? '…' : ''}` : ''
     }`
+    return { body, mailSubject, validateUrl }
+  }
+
+  const openInvitationMailto = (data: Pick<FormData, 'recipients' | 'personalNote' | 'endorsementTopic'>) => {
+    const emails = data.recipients.map(r => r.email.trim()).filter(Boolean)
+    if (emails.length === 0 || !number) return
+    const { body, mailSubject } = buildDraft(data)
     const mailto = `mailto:${emails.join(',')}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(
       body
     )}`
     window.open(mailto, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleCopyDraft = async () => {
+    if (!number) return
+    const { endorsementTopic, personalNote } = getValues()
+    if (!endorsementTopic.trim()) {
+      setSnackbarMessage('Please describe what you would like to be endorsed for.')
+      toggleSnackbar(true)
+      return
+    }
+    const { body } = buildDraft({ endorsementTopic, personalNote })
+    try {
+      await navigator.clipboard.writeText(body)
+      setSnackbarMessage('Draft and link copied to clipboard')
+      toggleSnackbar(true)
+    } catch {
+      setSnackbarMessage('Could not copy — please select the text and copy manually.')
+      toggleSnackbar(true)
+    }
   }
 
   const doSubmit = ({ subject, personalNote, endorsementTopic, recipients }: FormData) => {
@@ -574,9 +598,21 @@ const RequestEndorsement = ({ toggleSnackbar, setSnackbarMessage }: IHomeProps &
                   </Button>
                 </Box>
               ) : (
-                <Button type='submit' fullWidth variant='contained' sx={sendButtonGradientSx}>
-                  Send endorsement request
-                </Button>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                  <Button type='submit' fullWidth variant='contained' sx={sendButtonGradientSx}>
+                    Send endorsement request
+                  </Button>
+                  <Button
+                    type='button'
+                    fullWidth
+                    variant='outlined'
+                    startIcon={<ContentCopy />}
+                    onClick={handleCopyDraft}
+                    sx={{ textTransform: 'none', borderRadius: '10px', minHeight: 48 }}
+                  >
+                    Copy draft & link
+                  </Button>
+                </Box>
               )}
             </Box>
           </Box>

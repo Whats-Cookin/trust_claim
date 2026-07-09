@@ -53,6 +53,10 @@ const CLAIM_TYPES = {
     label: 'Achievement',
     aspects: ['achievement:completed', 'achievement:earned', 'achievement:won', 'achievement:reached']
   },
+  effort: {
+    label: 'Effort',
+    aspects: ['effort:ongoing', 'effort:planned', 'effort:started', 'effort:building']
+  },
   thankyou: {
     label: 'Thank You',
     aspects: ['thankyou:help', 'thankyou:support', 'thankyou:mentorship', 'thankyou:collaboration']

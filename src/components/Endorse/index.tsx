@@ -256,7 +256,7 @@ const Endorse = ({
     otherRejectReason: ''
   }
 
-  const { handleSubmit, reset, control, register, watch } = useForm<FormData>({ defaultValues })
+  const { handleSubmit, reset, control, register, watch, setValue } = useForm<FormData>({ defaultValues })
   const watchBasis = watch('basis')
   const watchDecision = watch('decision')
   const watchOtherRejectReason = watch('otherRejectReason')
@@ -277,6 +277,13 @@ const Endorse = ({
   })
 
   const { createClaim } = useCreateClaim()
+
+  // Clean URLs (/endorse/:claimId) have no ?subject= query, so the form's subject
+  // field starts empty. Sync the loaded claim's subject into the form once it loads,
+  // otherwise submit bails with "Subject is required".
+  useEffect(() => {
+    if (subjectValue) setValue('subject', subjectValue)
+  }, [subjectValue, setValue])
 
   const doSubmit = async ({
     subject,
