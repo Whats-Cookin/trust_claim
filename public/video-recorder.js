@@ -109,6 +109,11 @@
     connectedCallback() {
       const existing = this.getAttribute('video-url');
       if (existing) {
+        // Show the surviving video itself, playable — not just a label.
+        const v = this.$.video;
+        v.srcObject = null; v.src = existing; v.controls = true; v.muted = false;
+        v.classList.remove('mirror');
+        this.$.stage.classList.add('on');
         this.$.done.classList.add('on');
         this._buttons(['remove']);
       }
