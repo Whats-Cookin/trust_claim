@@ -19,7 +19,7 @@ const truncateText = (text: string, length: number) => {
   return text.slice(0, length) + '...'
 }
 
-const EXCLUDED_FIELDS = ['id', 'userId', 'issuerId', 'issuerIdType', 'createdAt', 'lastUpdatedAt']
+const EXCLUDED_FIELDS = ['id', 'userId', 'issuerId', 'issuerIdType', 'createdAt', 'lastUpdatedAt', 'edges', 'images']
 
 const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: Theme }) => {
   const [showFullText, setShowFullText] = useState<{ [key: string]: boolean }>({})
@@ -42,6 +42,10 @@ const RenderClaimDetails = ({ claimData, theme }: { claimData: Claim; theme: The
         if (key === 'subject' && typeof value === 'object' && value.uri) {
           displayValue = value.name || value.uri
         }
+
+        // Skip any remaining non-primitive value (arrays/objects like `edges`) —
+        // rendering an object as a React child crashes the page (React error #31).
+        if (displayValue !== null && typeof displayValue === 'object') return null
 
         const displayText =
           key === 'statement' && displayValue && !showFullText[key] ? truncateText(displayValue, 120) : displayValue
