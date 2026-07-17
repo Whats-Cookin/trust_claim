@@ -15,7 +15,10 @@
  *   video-uploaded  detail: { videoUrl }
  *   video-removed   detail: {}
  *
- * Attributes: api-base (required), max-duration (seconds, default 60).
+ * Attributes: api-base (required), max-duration (seconds, default 60),
+ * video-url (optional: a previously uploaded video — the component mounts
+ * in the "attached" state so a failed form submit never looks like a lost
+ * recording).
  * Styling: system font, inherits currentColor for text; accent via
  * --lvr-accent (default #0d9488).
  */
@@ -102,6 +105,14 @@
 
     get maxDuration() { return parseInt(this.getAttribute('max-duration') || '60', 10); }
     get apiBase() { return (this.getAttribute('api-base') || '').replace(/\/$/, ''); }
+
+    connectedCallback() {
+      const existing = this.getAttribute('video-url');
+      if (existing) {
+        this.$.done.classList.add('on');
+        this._buttons(['remove']);
+      }
+    }
 
     disconnectedCallback() { this._teardown(); }
 
