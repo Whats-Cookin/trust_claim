@@ -1,5 +1,42 @@
 # OpenTrustClaims 
 
+## Embeddable web components
+
+Drop LinkedTrust claims into any site — no React, no build step. One script tag,
+one element. Source lives in [`public/`](public/); served from
+`https://demos.linkedtrust.us/embed/`.
+
+**Badge** — a claim as a verified card or row (what you see at
+[live.linkedtrust.us/badge/124713](https://live.linkedtrust.us/badge/124713);
+every badge page has copy-paste embed buttons):
+
+```html
+<script src="https://demos.linkedtrust.us/embed/badge.js" defer></script>
+<linked-badge claim-id="124713" layout="row"></linked-badge>
+```
+
+Attributes: `claim-id` (required) · `layout` "card" | "row" · `theme` "light" | "dark"
+· `compact` · `api-base` (default `https://live.linkedtrust.us`).
+
+**Video recorder** — record-and-upload with live self-view, retake, and progress;
+uploads to `/api/video/upload` and emits `video-uploaded {videoUrl}`:
+
+```html
+<script src="https://demos.linkedtrust.us/embed/video-recorder.js" defer></script>
+<linked-video-recorder api-base="https://live.linkedtrust.us" max-duration="60"></linked-video-recorder>
+```
+
+Attributes: `api-base` (required) · `max-duration` seconds · `video-url` (mount
+already-attached). Events: `video-uploaded`, `video-removed`.
+
+**Claims feed** (`claims-feed.js`, `<linked-claims-feed>`) and **ATProto claims**
+(`atproto-claims.js`, `<linked-claims-atproto>`) follow the same pattern — see the
+usage header in each file.
+
+Prefer an iframe? Every claim also has a bare embed page at
+`https://live.linkedtrust.us/embed/<claim-id>`.
+
+
 
 ## TO RUN LOCALLY
 
