@@ -57,6 +57,8 @@
     <div class="row">
       <button type="button" class="primary" data-a="start">Record a video</button>
       <button type="button" data-a="upload-file">Upload a file</button>
+      <button type="button" class="primary" data-a="record" hidden>Start recording</button>
+      <button type="button" data-a="cancel" hidden>Cancel</button>
       <button type="button" data-a="stop" hidden>Stop</button>
       <button type="button" data-a="use" hidden class="primary">Use this video</button>
       <button type="button" data-a="retake" hidden>Retake</button>
@@ -76,11 +78,14 @@
       const $ = (s) => this.shadowRoot.querySelector(s);
       this.$ = {
         stage: $('.stage'), video: $('video'), timer: $('.timer'), t: $('.t'),
-        start: $('[data-a=start]'), stop: $('[data-a=stop]'), use: $('[data-a=use]'),
+        start: $('[data-a=start]'), record: $('[data-a=record]'), cancel: $('[data-a=cancel]'),
+        stop: $('[data-a=stop]'), use: $('[data-a=use]'),
         retake: $('[data-a=retake]'), remove: $('[data-a=remove]'), uploadFile: $('[data-a=upload-file]'),
         file: $('input[type=file]'), bar: $('.bar'), fill: $('.bar i'), msg: $('.msg'), done: $('.done'),
       };
       this.$.start.addEventListener('click', () => this._startCamera());
+      this.$.record.addEventListener('click', () => this._startRecording());
+      this.$.cancel.addEventListener('click', () => this._reset(false));
       this.$.stop.addEventListener('click', () => this._stopRecording());
       this.$.use.addEventListener('click', () => this._upload(this._blob, 'recording.webm'));
       this.$.retake.addEventListener('click', () => this._startCamera());
@@ -103,33 +108,47 @@
     _say(text, err) { this.$.msg.textContent = text || ''; this.$.msg.classList.toggle('err', !!err); }
 
     _buttons(visible) {
-      for (const k of ['start', 'stop', 'use', 'retake', 'remove', 'uploadFile']) {
+      for (const k of ['start', 'record', 'cancel', 'stop', 'use', 'retake', 'remove', 'uploadFile']) {
         this.$[k].hidden = !visible.includes(k);
       }
     }
 
     async _startCamera() {
       this._reset(false);
+      this._buttons([]);
       this._say('Starting your camera…');
       try {
-        this._stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        this._stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: true,
+        });
       } catch (e) {
-        this._say('Camera unavailable. You can upload a video file instead.', true);
+        this._say('Could not access the camera. Check permission, or upload a file instead.', true);
+        this._buttons(['start', 'uploadFile']);
         return;
       }
       const v = this.$.video;
-      v.srcObject = this._stream; v.muted = true; v.classList.add('mirror');
+      v.srcObject = this._stream; v.muted = true; v.controls = false; v.classList.add('mirror');
       this.$.stage.classList.add('on');
       await v.play().catch(() => {});
+      // Ready: the person watches themselves; nothing records until they say so.
+      this._buttons(['record', 'cancel']);
+      this._say('Camera on. Start when you are ready.');
+    }
+
+    _startRecording() {
+      if (!this._stream) return;
       this._chunks = [];
-      this._rec = new MediaRecorder(this._stream);
+      const mime = (window.MediaRecorder && MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))
+        ? 'video/webm;codecs=vp9' : 'video/webm';
+      this._rec = new MediaRecorder(this._stream, { mimeType: mime });
       this._rec.ondataavailable = (e) => { if (e.data.size) this._chunks.push(e.data); };
       this._rec.onstop = () => {
         this._blob = new Blob(this._chunks, { type: 'video/webm' });
-        this._stream.getTracks().forEach((t) => t.stop());
+        if (this._stream) { this._stream.getTracks().forEach((t) => t.stop()); this._stream = null; }
         this._showPlayback(URL.createObjectURL(this._blob));
       };
-      this._rec.start();
+      this._rec.start(1000);
       this._t = 0; this.$.t.textContent = '0:00'; this.$.timer.classList.add('on');
       this._timerId = setInterval(() => {
         this._t += 1;
@@ -137,7 +156,7 @@
         if (this._t >= this.maxDuration) this._stopRecording();
       }, 1000);
       this._buttons(['stop']);
-      this._say(`Recording. Up to ${this.maxDuration} seconds; you can stop any time.`);
+      this._say(`Recording. Up to ${this.maxDuration} seconds; stop any time.`);
     }
 
     _stopRecording() {
