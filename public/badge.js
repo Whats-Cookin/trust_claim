@@ -55,6 +55,19 @@
     return url
   }
 
+  function getSubjectImage (claim) {
+    const subjectUri = claim.subject || null
+    if (!subjectUri) return null
+    for (const edge of claim.edges || []) {
+      for (const node of [edge.startNode, edge.endNode]) {
+        if (node && node.nodeUri === subjectUri && (node.image || node.thumbnail)) {
+          return node.image || node.thumbnail
+        }
+      }
+    }
+    return null
+  }
+
   function getVideoUrl (images, apiBase) {
     const v = (images || []).find(i =>
       i.type === 'video' ||
@@ -83,13 +96,15 @@
     const imageResult = getImageUrl(data.images, apiBase)
     const imageUrl = imageResult ? imageResult.url : null
     const imageNeedsResolve = imageResult ? imageResult.needsResolve : false
+    // Poster for video thumbnails: the person's own picture beats a blank frame.
+    const posterUrl = resolveUrl(getSubjectImage(claim) || source.image, apiBase)
     const isRated = claim.claim && claim.claim.toLowerCase() === 'rated' && claim.stars != null && claim.stars > 0
     const date = claim.effectiveDate ? new Date(claim.effectiveDate).toLocaleDateString() : ''
     const claimUrl = `${apiBase}/explore/${claim.id}`
     const sourceLink = source.uri || claim.sourceURI || null
     const aspect = claim.aspect ? (claim.aspect.includes(':') ? claim.aspect.split(':')[1] : claim.aspect) : ''
 
-    return { claim, source, videoUrl, imageUrl, imageNeedsResolve, isRated, date, claimUrl, sourceLink, aspect }
+    return { claim, source, videoUrl, imageUrl, imageNeedsResolve, posterUrl, isRated, date, claimUrl, sourceLink, aspect }
   }
 
   // ── Shared HTML fragments ───────────────────────────────────────
@@ -150,8 +165,11 @@
 
   function videoMediaHtml (ctx) {
     if (!ctx.videoUrl) return ''
+    // No poster: seek to 0.5s (media fragment) so browsers paint a real frame
+    // instead of a blank box; playback is reset to 0 on play.
+    const src = ctx.posterUrl ? ctx.videoUrl : ctx.videoUrl + '#t=0.5'
     return `<div class="media-wrap" id="media">
-      <video src="${esc(ctx.videoUrl)}" preload="metadata" playsinline></video>
+      <video src="${esc(src)}" preload="metadata" ${ctx.posterUrl ? `poster="${esc(ctx.posterUrl)}"` : ''} playsinline muted></video>
       <div class="play-overlay" id="playBtn">
         <svg viewBox="0 0 48 48" width="56" height="56"><circle cx="24" cy="24" r="23" fill="rgba(0,0,0,0.5)" stroke="white" stroke-width="1.5"/><polygon points="19,14 19,34 35,24" fill="white"/></svg>
       </div>
@@ -597,7 +615,7 @@
         if (playBtn && media) {
           playBtn.addEventListener('click', () => {
             const vid = media.querySelector('video')
-            if (vid) { vid.controls = true; vid.play(); playBtn.style.display = 'none' }
+            if (vid) { vid.currentTime = 0; vid.muted = false; vid.controls = true; vid.play(); playBtn.style.display = 'none' }
           })
         }
       }
