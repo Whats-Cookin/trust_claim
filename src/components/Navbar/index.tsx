@@ -3,10 +3,11 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { useMediaQuery, useTheme, Button } from '@mui/material'
+import { useMediaQuery, useTheme, Button, Chip } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import SearchBar from '../searchbar'
 import Logo from '../../assets/logolinkedtrust.svg'
+import { AccountCircle } from '@mui/icons-material'
 import { IdentityButton } from '../IdentityManager'
 import { hasIdentity } from '../../utils/web3Auth'
 
@@ -91,7 +92,15 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
           {isAuth ? (
             hasIdentity() ? (
               <IdentityButton />
-            ) : null
+            ) : (
+              <Chip
+                icon={<AccountCircle />}
+                label='Profile'
+                onClick={() => navigate('/feed')}
+                variant='outlined'
+                size='small'
+              />
+            )
           ) : (
             <Button
               onClick={() => navigate('/login')}
