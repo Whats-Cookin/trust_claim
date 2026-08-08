@@ -7,6 +7,7 @@ import Snackbar from './components/Snackbar'
 import Navbar from './components/Navbar'
 import Login from './containers/Login'
 import SsoInvite from './containers/SsoInvite'
+import SsoLogin from './containers/SsoLogin'
 import Register from './containers/Register'
 import Form from './containers/Form'
 import Explore from './containers/Explore'
@@ -80,7 +81,9 @@ const App = () => {
     isDarkMode
   }
 
-  const isLoginPage = location.pathname === '/login'
+  // The per-client SSO page is a standalone page like /login — no chrome.
+  const isSsoLoginPage = location.pathname.startsWith('/sso/')
+  const isLoginPage = location.pathname === '/login' || isSsoLoginPage
   const isRegisterPage = location.pathname === '/register'
   const isEmbedPage = location.pathname.startsWith('/embed/')
 
@@ -158,6 +161,7 @@ const App = () => {
               <Route path='register' element={<Register {...commonProps} />} />
               <Route path='login' element={<Login {...commonProps} />} />
               <Route path='sso-invite' element={<SsoInvite />} />
+              <Route path='sso/:clientId' element={<SsoLogin {...commonProps} />} />
               <Route path='terms' element={<Terms />} />
               <Route path='privacy' element={<Privacy />} />
               {/* <Route path='cookie' element={<Cookie />} /> */}

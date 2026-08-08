@@ -14,7 +14,7 @@ import RegisterIllustration from '../../assets/images/RegisterIllustration.svg'
 import formBackgrounddark from '../../assets/images/formBackgrounddark.svg'
 import formBackgroundlight from '../../assets/images/formBackgroundlight.svg'
 import MobileRegister from './MobileRegister'
-import { handleAuth } from '../../utils/authUtils'
+import { handleAuth, maybeCompleteOidcLogin } from '../../utils/authUtils'
 
 const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: IRegisterProps) => {
   const theme = useTheme()
@@ -45,6 +45,9 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
 
         handleAuth(accessToken, refreshToken)
         setLoading(false)
+        // If they got here from an app's SSO page, return them to that app
+        // instead of dropping them into the LinkedTrust feed.
+        if (await maybeCompleteOidcLogin(accessToken)) return
         navigate('/feed')
       }
     } catch (err: any) {
