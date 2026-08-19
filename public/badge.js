@@ -632,16 +632,7 @@
         }
       }
 
-      // Resolve API image URLs
-      if (ctx.imageNeedsResolve && ctx.imageUrl) {
-        const img = this.shadowRoot.querySelector('.media-img')
-        if (img) {
-          fetch(ctx.imageUrl).then(r => r.json()).then(j => {
-            if (j.imageUrl) img.src = j.imageUrl
-          }).catch(() => {})
-        }
-      }
-
+  
       // Wire up statement expand
       const stmt = this.shadowRoot.getElementById('stmt')
       if (stmt) {
