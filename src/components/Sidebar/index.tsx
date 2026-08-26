@@ -1,5 +1,5 @@
-import React from 'react'
-import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery, SvgIcon } from '@mui/material'
+import React, { useState } from 'react'
+import { Drawer, List, ListItemText, ListItemButton, Box, useTheme, Typography, useMediaQuery, SvgIcon, Button } from '@mui/material'
 import { Home, DarkMode, Logout, Login } from '@mui/icons-material'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft'
@@ -8,6 +8,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
+import EndorseUsDialog from '../../containers/PlatformFeedback/EndorseUsDialog'
 import { clearAuth } from '../../utils/authUtils'
 
 function AtSymbolIcon(props: any) {
@@ -54,9 +55,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   })
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+  const [endorseUsOpen, setEndorseUsOpen] = useState(false)
 
   if (isMobile) {
-    return <BottomNav isAuth={isAuth} toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+    return (
+      <>
+        <BottomNav
+          isAuth={isAuth}
+          toggleTheme={toggleTheme}
+          isDarkMode={isDarkMode}
+          onOpenEndorseUs={() => setEndorseUsOpen(true)}
+        />
+        <EndorseUsDialog open={endorseUsOpen} onClose={() => setEndorseUsOpen(false)} />
+      </>
+    )
   }
 
   return (
@@ -122,17 +134,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             primaryTypographyProps={{ variant: 'body2' }}
           />
         </ListItemButton>
-        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/contact') }} onClick={() => navigate('/contact')}>
-          <AlternateEmailIcon sx={iconStyle} />
-          <ListItemText
-            primary='Contact'
-            sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
-            primaryTypographyProps={{ variant: 'body2' }}
-          />
-        </ListItemButton>
-
         <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
-          <AtSymbolIcon sx={iconStyle} />
+          <AlternateEmailIcon sx={iconStyle} />
           <ListItemText
             primary='ATProto'
             sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
@@ -160,17 +163,33 @@ const Sidebar: React.FC<SidebarProps> = ({
           </ListItemButton>
         )}
       </List>
-      <Footer isOpen={isOpen} />
+      <Footer isOpen={isOpen} onOpenEndorseUs={() => setEndorseUsOpen(true)} />
+      <EndorseUsDialog open={endorseUsOpen} onClose={() => setEndorseUsOpen(false)} />
     </Drawer>
   )
 }
 
-const Footer: React.FC<{ isOpen: boolean }> = ({ isOpen }) => {
+const Footer: React.FC<{ isOpen: boolean; onOpenEndorseUs: () => void }> = ({ isOpen, onOpenEndorseUs }) => {
   const theme = useTheme()
 
   return (
-    <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%' }}>
-      <Box sx={{ display: 'flex', gap: '10px', textAlign: 'left', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center' }}>
+    <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%', gap: 1 }}>
+      <Button
+        variant='contained'
+        color='primary'
+        fullWidth
+        onClick={onOpenEndorseUs}
+        sx={{
+          textTransform: 'none',
+          fontWeight: 700,
+          py: 1,
+          borderRadius: 2,
+          boxShadow: theme.shadows[2]
+        }}
+      >
+        Endorse Us
+      </Button>
+      <Box sx={{ display: 'flex', gap: '10px', textAlign: 'left', justifyContent: 'flex-start', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
         <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
           <Typography variant='body2'>Terms of Service</Typography>
         </Link>
