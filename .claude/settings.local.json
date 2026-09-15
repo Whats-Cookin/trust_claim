@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tsc:*)",
+      "Bash(yarn build:*)",
+      "WebFetch(domain:live.linkedtrust.us)",
+      "Bash(pm2 restart:*)",
+      "Bash(pm2 status:*)",
+      "Bash(source .env)",
+      "Bash(psql:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(pm2 logs:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(nvm use:*)",
+      "Bash(pm2 describe:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(netstat:*)",
+      "Bash(ss:*)",
+      "Bash(pm2 delete:*)",
+      "Bash(pm2 start:*)",
+      "Bash(pm2 save:*)",
+      "Bash(pm2 update:*)",
+      "Bash(pm2 resurrect:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

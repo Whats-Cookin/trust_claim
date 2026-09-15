@@ -44,7 +44,15 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   const chunksRef = useRef<Blob[]>([])
 
   const [status, setStatus] = useState<
-    'idle' | 'requesting' | 'ready' | 'recording' | 'recorded' | 'uploading' | 'uploaded' | 'error'
+    | 'idle'
+    | 'requesting'
+    | 'ready'
+    | 'recording'
+    | 'recorded'
+    | 'uploading'
+    | 'uploaded'
+    | 'upload-failed'
+    | 'error'
   >('idle')
   const [error, setError] = useState<string | null>(null)
   const [recordedUrl, setRecordedUrl] = useState<string | null>(null)
@@ -99,7 +107,9 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       setStatus('ready')
     } catch (err) {
       console.error('Camera access error:', err)
-      setError('Could not access camera. Please ensure you have granted permission.')
+      // Inside the WhatsApp and Instagram browsers the camera is usually blocked
+      // outright, and no permission prompt was ever shown to grant.
+      setError('No camera here. If you opened this inside another app, open it in your browser instead — or just write a few words.')
       setStatus('error')
     }
   }, [])
@@ -135,9 +145,21 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     chunksRef.current = []
     setRecordingTime(0)
 
-    const mediaRecorder = new MediaRecorder(streamRef.current, {
-      mimeType: MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm'
-    })
+    const preferred = ['video/webm;codecs=vp9', 'video/webm', 'video/mp4'].find(
+      t => typeof MediaRecorder.isTypeSupported === 'function' && MediaRecorder.isTypeSupported(t)
+    )
+
+    let mediaRecorder: MediaRecorder
+    try {
+      mediaRecorder = preferred
+        ? new MediaRecorder(streamRef.current, { mimeType: preferred })
+        : new MediaRecorder(streamRef.current)
+    } catch (err) {
+      console.error('MediaRecorder error:', err)
+      setError('This browser won’t record video. Try Safari or Chrome, or just write a few words.')
+      setStatus('error')
+      return
+    }
 
     mediaRecorder.ondataavailable = event => {
       if (event.data.size > 0) {
@@ -146,7 +168,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     }
 
     mediaRecorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: 'video/webm' })
+      const blob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType || 'video/webm' })
       const url = URL.createObjectURL(blob)
       setRecordedUrl(url)
       setRecordedBlob(blob)
@@ -198,8 +220,8 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
       onVideoUploaded(videoUrl)
     } catch (err) {
       console.error('Upload error:', err)
-      setError('Failed to upload video. Please try again.')
-      setStatus('recorded') // Allow retry
+      setError('That video didn’t upload. Try again, or send your words without it.')
+      setStatus('upload-failed')
     }
   }, [recordedBlob, onVideoUploaded])
 
@@ -214,6 +236,8 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   }, [status, recordedBlob, uploadVideo])
 
   useEffect(() => {
+    // 'upload-failed' is deliberately not pending: the form must not wait for
+    // an upload that is never coming.
     onPendingChange?.(status === 'recorded' || status === 'uploading')
   }, [status, onPendingChange])
 
@@ -332,7 +356,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
         />
 
         {/* Recorded/uploaded video playback */}
-        {(status === 'recorded' || status === 'uploading' || status === 'uploaded') && recordedUrl && (
+        {(status === 'recorded' || status === 'uploading' || status === 'uploaded' || status === 'upload-failed') && recordedUrl && (
           <video
             ref={playbackRef}
             // Once uploaded, prefer the hosted copy: it is a real HTTP resource,
@@ -492,7 +516,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
           </Button>
         )}
 
-        {status === 'recorded' && (
+        {(status === 'recorded' || status === 'upload-failed') && (
           <>
             <Button
               variant='contained'
@@ -501,7 +525,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
               onClick={uploadVideo}
               sx={{ textTransform: 'none' }}
             >
-              Upload Video
+              {status === 'upload-failed' ? 'Try the upload again' : 'Upload Video'}
             </Button>
             <Button variant='outlined' startIcon={<ReplayIcon />} onClick={reRecord} sx={{ textTransform: 'none' }}>
               Re-record

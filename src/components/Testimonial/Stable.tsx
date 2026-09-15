@@ -48,14 +48,28 @@ const TestimonialStable: React.FC = () => {
   const [invite, setInvite] = useState<Invite | null>(preloaded)
   const [loading, setLoading] = useState(!preloaded)
   const [gone, setGone] = useState(false)
+  const [offline, setOffline] = useState(false)
   const [replacing, setReplacing] = useState(false)
 
   const draftKey = `testimonial_draft_${token}`
-  const [statement, setStatement] = useState(() => localStorage.getItem(draftKey) ?? '')
-  const [stars, setStars] = useState<number | null>(null)
+  const draft = useMemo(() => {
+    try {
+      const raw = localStorage.getItem(draftKey)
+      if (!raw) return {}
+      // Older drafts were the bare statement, before the video was kept too.
+      return raw.startsWith('{') ? JSON.parse(raw) : { statement: raw }
+    } catch {
+      return {}
+    }
+  }, [draftKey])
+
+  const [statement, setStatement] = useState<string>(draft.statement ?? '')
+  const [stars, setStars] = useState<number | null>(draft.stars ?? null)
   const [profile, setProfile] = useState('')
   const [editingProfile, setEditingProfile] = useState(false)
-  const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const [signedAs, setSignedAs] = useState('')
+  const [editingName, setEditingName] = useState(false)
+  const [videoUrl, setVideoUrl] = useState<string | null>(draft.videoUrl ?? null)
   const [videoPending, setVideoPending] = useState(false)
   const [showExamples, setShowExamples] = useState(false)
 
@@ -80,7 +94,14 @@ const TestimonialStable: React.FC = () => {
     axios
       .get(`/api/testimonial-requests/${token}`)
       .then(res => live && setInvite(res.data))
-      .catch(err => live && setGone([404, 410].includes(err?.response?.status)))
+      .catch(err => {
+        if (!live) return
+        // No status at all means the request never landed — a timeout, a dead
+        // connection, the API down. Saying "expired" there sends them back to
+        // ask for a new link that will fail exactly the same way.
+        if ([404, 410].includes(err?.response?.status)) setGone(true)
+        else setOffline(true)
+      })
       .finally(() => live && setLoading(false))
     return () => {
       live = false
@@ -91,14 +112,20 @@ const TestimonialStable: React.FC = () => {
     if (invite?.recipientProfile) setProfile(invite.recipientProfile)
   }, [invite?.recipientProfile])
 
-  // In-app browsers get killed mid-sentence; never lose what they typed.
+  // In-app browsers get killed mid-sentence. Keep the video with the words:
+  // footage uploaded and then orphaned is worse than no footage at all.
   useEffect(() => {
-    if (statement) localStorage.setItem(draftKey, statement)
-  }, [statement, draftKey])
+    if (!statement && !videoUrl && !stars) return
+    try {
+      localStorage.setItem(draftKey, JSON.stringify({ statement, videoUrl, stars }))
+    } catch {
+      /* private mode */
+    }
+  }, [statement, videoUrl, stars, draftKey])
 
   const send = async () => {
     if (!invite || sending) return
-    if (!statement.trim()) return setError('Please write a few words first.')
+    if (!statement.trim() && !videoUrl) return setError('Write a few words, or record a video.')
     if (videoPending) return setError('Your video is still uploading, one moment.')
 
     setError(null)
@@ -125,9 +152,17 @@ const TestimonialStable: React.FC = () => {
 
       localStorage.removeItem(draftKey)
       setSent(true)
-      if (claimId) setClaimRef(claimId)
       if (claimId) {
-        axios.post(`/api/testimonial-requests/${token}/responded`, { claimId }).catch(() => undefined)
+        setClaimRef(claimId)
+        // If this never lands the invite still looks unanswered, and reopening
+        // the link offers a blank form — so the same person publishes twice.
+        // Keep it locally and the next open closes the loop instead.
+        try {
+          localStorage.setItem(`testimonial_sent_${token}`, String(claimId))
+        } catch {
+          /* private mode */
+        }
+        markResponded(claimId)
       }
     } catch {
       setError('Couldn’t send. Your words are saved, please try again.')
@@ -135,6 +170,27 @@ const TestimonialStable: React.FC = () => {
       setSending(false)
     }
   }
+
+  const markResponded = useCallback(
+    async (claimId: number, attempt = 0) => {
+      try {
+        await axios.post(`/api/testimonial-requests/${token}/responded`, { claimId })
+        localStorage.removeItem(`testimonial_sent_${token}`)
+      } catch (err: any) {
+        // A rejection is final; a dropped connection is not.
+        if (err?.response || attempt >= 3) return
+        setTimeout(() => markResponded(claimId, attempt + 1), 2000 * (attempt + 1))
+      }
+    },
+    [token]
+  )
+
+  // A send that got through but never got recorded: finish it on the next open.
+  useEffect(() => {
+    if (!invite || invite.responded) return
+    const pending = Number(localStorage.getItem(`testimonial_sent_${token}`))
+    if (pending) markResponded(pending)
+  }, [invite, token, markResponded])
 
   const shell = (children: React.ReactNode) => (
     <Box
@@ -176,6 +232,20 @@ const TestimonialStable: React.FC = () => {
 
   if (loading) return shell(<CircularProgress size={24} sx={{ display: 'block', mx: 'auto' }} />)
 
+  if (offline && !invite) {
+    return shell(
+      <>
+        <Typography sx={{ fontSize: 22, fontWeight: 600, mb: 1 }}>We couldn’t load this</Typography>
+        <Typography sx={{ color: muted, fontSize: 16, lineHeight: 1.6, mb: 2.5 }}>
+          The link is fine. Something between here and us isn’t. Try again in a moment.
+        </Typography>
+        <Link component='button' type='button' onClick={() => window.location.reload()} sx={{ fontSize: 15.5 }}>
+          Try again
+        </Link>
+      </>
+    )
+  }
+
   if (gone || !invite || invite.expired) {
     return shell(
       <>
@@ -187,8 +257,9 @@ const TestimonialStable: React.FC = () => {
     )
   }
 
-  const who = invite.requesterName?.trim() || 'them'
-  const you = invite.recipientName?.trim()
+  const who = invite.requesterName?.trim() || ''
+  const asker = who || 'whoever asked you'
+  const you = signedAs || invite.recipientName?.trim() || ''
   const subject = invite.subjectName?.trim() || invite.subjectUri.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
   if (invite.responded && !sent && !replacing) {
@@ -196,7 +267,7 @@ const TestimonialStable: React.FC = () => {
       <>
         <Typography sx={{ fontSize: 24, fontWeight: 600, mb: 1 }}>You already sent this</Typography>
         <Typography sx={{ color: muted, fontSize: 15.5, lineHeight: 1.6, mb: 2.5 }}>
-          {who} has your words. Nothing more to do.
+          {who ? `${who} has your words.` : 'Your words are in.'} Nothing more to do.
         </Typography>
         {invite.claimId && (
           <Typography sx={{ fontSize: 15.5, mb: 2.5 }}>
@@ -205,11 +276,15 @@ const TestimonialStable: React.FC = () => {
             </Link>
           </Typography>
         )}
+        <Typography sx={{ color: muted, fontSize: 14, lineHeight: 1.6, mb: 1.5 }}>
+          To change or take it down, email <Link href='mailto:support@linkedtrust.us'>support@linkedtrust.us</Link>.
+        </Typography>
         <Typography sx={{ color: muted, fontSize: 14, lineHeight: 1.6 }}>
-          Want to say something different?{' '}
+          Want to add something?{' '}
           <Link component='button' type='button' onClick={() => setReplacing(true)} sx={{ fontSize: 14 }}>
             Write another
-          </Link>
+          </Link>{' '}
+          — the first one stays up too.
         </Typography>
       </>
     )
@@ -255,30 +330,9 @@ const TestimonialStable: React.FC = () => {
         </Box>
       )}
 
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 1.5,
-          mt: 3,
-          pt: 3,
-          borderTop: `1px solid ${rule}`
-        }}
-      >
-        <Typography sx={{ fontSize: 16, overflowWrap: 'anywhere' }}>Rate {subject}:</Typography>
-        <Rating
-          value={stars}
-          onChange={(_, v) => setStars(v && v > 0 ? v : null)}
-          icon={<StarRoundedIcon fontSize='inherit' />}
-          emptyIcon={<StarRoundedIcon fontSize='inherit' />}
-          sx={{ fontSize: '2rem', '& .MuiRating-iconEmpty': { color: rule } }}
-        />
-      </Box>
-
       <Typography sx={{ fontSize: 16, lineHeight: 1.5, mt: 3, mb: 1, overflowWrap: 'anywhere' }}>
         Could you write a few words about {subject}?
-        {invite.workSummary ? ` Some of the work we did for you involved ${invite.workSummary}.` : ''}
+        {invite.workSummary ? ` They mentioned ${invite.workSummary}.` : ''}
       </Typography>
 
       <TextField
@@ -286,7 +340,8 @@ const TestimonialStable: React.FC = () => {
         onChange={e => setStatement(e.target.value)}
         fullWidth
         multiline
-        minRows={5}
+        minRows={4}
+        placeholder={`Two or three sentences is plenty. What you saw them do, and what it meant.`}
         sx={{
           '& .MuiOutlinedInput-root': {
             borderRadius: '12px',
@@ -299,6 +354,24 @@ const TestimonialStable: React.FC = () => {
           }
         }}
       />
+
+      <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1.5, mt: 2.5 }}>
+        <Typography sx={{ fontSize: 15, color: muted, overflowWrap: 'anywhere' }}>
+          Stars too, if you want:
+        </Typography>
+        <Rating
+          value={stars}
+          onChange={(_, v) => setStars(v && v > 0 ? v : null)}
+          icon={<StarRoundedIcon fontSize='inherit' />}
+          emptyIcon={<StarRoundedIcon fontSize='inherit' />}
+          sx={{ fontSize: '1.6rem', '& .MuiRating-iconEmpty': { color: rule } }}
+        />
+        {stars ? (
+          <Link component='button' type='button' onClick={() => setStars(null)} sx={{ fontSize: 13, color: muted }}>
+            clear
+          </Link>
+        ) : null}
+      </Box>
 
       <Box
         sx={{
@@ -335,7 +408,7 @@ const TestimonialStable: React.FC = () => {
         <PlatformFeedbackVideoSection
           alwaysOpen
           autoOpenCamera={false}
-          heading='Video is gold, the most meaningful way to attest if you are comfortable:'
+          heading='Rather say it out loud? Record a short video instead, or as well. Optional.'
           videoUrl={videoUrl}
           onVideoUploaded={url => {
             setVideoUrl(url)
@@ -351,7 +424,18 @@ const TestimonialStable: React.FC = () => {
 
 
       <Box sx={{ mt: 3, pt: 3, borderTop: `1px solid ${rule}`, mb: 2.5 }}>
-        {editingProfile ? (
+        {editingName ? (
+          <TextField
+            value={you}
+            onChange={e => setSignedAs(e.target.value)}
+            fullWidth
+            size='small'
+            autoFocus
+            label='Sign as'
+            onBlur={() => setEditingName(false)}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px', bgcolor: tint } }}
+          />
+        ) : editingProfile ? (
           <TextField
             value={profile}
             onChange={e => setProfile(e.target.value)}
@@ -369,8 +453,11 @@ const TestimonialStable: React.FC = () => {
               {profile ? ` · ${profile.replace(/^https?:\/\/(www\.)?/, '')}` : ''}
             </Typography>
             <Box sx={{ display: 'flex', gap: 2, mt: 0.5 }}>
+              <Link component='button' type='button' onClick={() => setEditingName(true)} sx={{ fontSize: 13, color: muted }}>
+                change name
+              </Link>
               <Link component='button' type='button' onClick={() => setEditingProfile(true)} sx={{ fontSize: 13, color: muted }}>
-                edit
+                {profile ? 'edit link' : 'add a link'}
               </Link>
               {profile && (
                 <Link component='button' type='button' onClick={() => setProfile('')} sx={{ fontSize: 13, color: muted }}>
@@ -381,6 +468,11 @@ const TestimonialStable: React.FC = () => {
           </>
         )}
       </Box>
+
+      <Typography sx={{ color: muted, fontSize: 13.5, lineHeight: 1.6, mb: 1.75 }}>
+        This goes up publicly under your name, for {asker} to share. You can have it taken
+        down any time: <Link href='mailto:support@linkedtrust.us'>support@linkedtrust.us</Link>.
+      </Typography>
 
       {error && <Typography sx={{ color: '#B3261E', fontSize: 14.5, mb: 1.5 }}>{error}</Typography>}
 
@@ -400,19 +492,15 @@ const TestimonialStable: React.FC = () => {
           '&:hover': { bgcolor: '#0F1720' }
         }}
       >
-        {sending ? 'Sending…' : `Send to ${who}`}
+        {sending ? 'Sending…' : who ? `Send to ${who}` : 'Send'}
       </Button>
-
-      <Typography sx={{ color: muted, fontSize: 13, mt: 1.25, textAlign: 'center' }}>
-        Posts publicly so {who} can share it.
-      </Typography>
 
       {!isAuthed && !showSignIn && (
         <Typography sx={{ color: muted, fontSize: 13, mt: 1.5, textAlign: 'center' }}>
           <Link component='button' type='button' onClick={() => setShowSignIn(true)} sx={{ fontSize: 13 }}>
-            Sign in
+            Sign in first
           </Link>{' '}
-          if you want to manage this later. Not required.
+          to edit or delete this later. Optional.
         </Typography>
       )}
 
