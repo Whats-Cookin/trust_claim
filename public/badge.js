@@ -79,6 +79,9 @@
   function parseClaimData (data, apiBase) {
     const claim = data.claim
     const source = getSource(claim)
+    // Someone who answered without an account has no source node to be named
+    // by; the name they signed with is the only byline there is.
+    if (!source.name && claim.author) source.name = claim.author
     const videoUrl = getVideoUrl(data.images, apiBase)
     const imageResult = getImageUrl(data.images, apiBase)
     const imageUrl = imageResult ? imageResult.url : null

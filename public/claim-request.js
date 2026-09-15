@@ -93,6 +93,8 @@
       .asked .who { overflow-wrap: anywhere; }
       .asked .state { color: ${muted}; font-size: 12.5px; white-space: nowrap; }
       .asked .state.done { color: #1B806A; }
+      a.state.done { text-decoration: none; }
+      a.state.done:hover { text-decoration: underline; }
       .asked button.relink {
         background: none; border: 0; padding: 0; font-size: 12.5px; font-weight: 500;
         color: ${accent}; cursor: pointer; white-space: nowrap;
@@ -111,6 +113,7 @@
       this._made = null
       this._busy = false
       this._error = null
+      this._fatal = null
       // Kept across re-renders so a failed send never empties the boxes.
       this._form = { recipientName: '', recipientProfile: '', requesterName: '', note: '' }
     }
@@ -194,6 +197,15 @@
             ...this._form
           })
         })
+        if (res.status === 401 || res.status === 403) {
+          this._fatal = 'This page isn’t set up to send invites yet. Tell whoever runs the site — ' +
+            'the widget needs to point at their server (api-base), not straight at LinkedTrust.'
+          return
+        }
+        if (res.status === 429) {
+          this._error = 'That’s a lot of links at once. Wait a couple of minutes and try again.'
+          return
+        }
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const made = await res.json()
         if (!made.url) throw new Error('No link returned')
@@ -242,7 +254,9 @@
             <li>
               <span class="who">${esc(a.name || 'someone')}</span>
               ${a.answered
-                ? '<span class="state done">answered</span>'
+                ? (a.claimId
+                    ? `<a class="state done" href="${esc(DEFAULT_API)}/claims/${encodeURIComponent(a.claimId)}" target="_blank" rel="noopener">read what they wrote</a>`
+                    : '<span class="state done">answered</span>')
                 : `<button class="relink" data-i="${i}">send the link again</button>`}
             </li>`).join('')}
           </ul>
@@ -263,6 +277,15 @@
     _render () {
       const s = `<style>${styles(this._theme)}</style>`
 
+      if (this._fatal) {
+        this.shadowRoot.innerHTML = `${s}
+          <div class="card">
+            <h2>Can’t make a link here</h2>
+            <p class="lede" style="margin:0">${esc(this._fatal)}</p>
+          </div>`
+        return
+      }
+
       if (this._made) {
         this.shadowRoot.innerHTML = `${s}
           <div class="card">
@@ -281,6 +304,7 @@
         this.shadowRoot.getElementById('share').onclick = () => this._share()
         this.shadowRoot.getElementById('again').onclick = () => {
           this._made = null
+          this._noteEdited = false
           this._form = { recipientName: '', recipientProfile: '', requesterName: this._form.requesterName, note: '' }
           this._render()
         }
@@ -328,8 +352,17 @@
       const name = this.shadowRoot.getElementById('recipient-name')
       note.addEventListener('input', () => { this._noteEdited = true })
       name.addEventListener('input', () => {
-        if (!this._noteEdited) note.value = this._suggestedNote(name.value.trim())
+        const next = name.value.trim()
+        if (!this._noteEdited) {
+          note.value = this._suggestedNote(next)
+        } else if (this._greeted && note.value.includes(`Hi ${this._greeted},`)) {
+          // They rewrote the note and then changed who it is for. Sending it
+          // with the previous person's name is the one unrecoverable mistake.
+          note.value = note.value.replace(`Hi ${this._greeted},`, next ? `Hi ${next},` : 'Hi,')
+        }
+        this._greeted = next
       })
+      this._greeted = f.recipientName
       note.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) this._create()
       })

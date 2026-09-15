@@ -67,7 +67,7 @@ const TestimonialStable: React.FC = () => {
   const [stars, setStars] = useState<number | null>(draft.stars ?? null)
   const [profile, setProfile] = useState('')
   const [editingProfile, setEditingProfile] = useState(false)
-  const [signedAs, setSignedAs] = useState('')
+  const [signedAs, setSignedAs] = useState<string | null>(null)
   const [editingName, setEditingName] = useState(false)
   const [videoUrl, setVideoUrl] = useState<string | null>(draft.videoUrl ?? null)
   const [videoPending, setVideoPending] = useState(false)
@@ -138,6 +138,9 @@ const TestimonialStable: React.FC = () => {
           // not a rating that happens to be blank.
           claim: stars && stars > 0 ? 'rated' : 'is_vouched_for',
           statement: statement.trim(),
+          // Without this the words publish under nobody, which is the whole
+          // reason a named person was asked.
+          author: (signedAs ?? invite.recipientName ?? '').trim() || undefined,
           aspect: invite.aspect || undefined,
           howKnown: 'FIRST_HAND',
           effectiveDate: new Date().toISOString(),
@@ -150,7 +153,6 @@ const TestimonialStable: React.FC = () => {
       )
       if (!isSuccess) return setError(message || 'Couldn’t send. Your words are saved, please try again.')
 
-      localStorage.removeItem(draftKey)
       setSent(true)
       if (claimId) {
         setClaimRef(claimId)
@@ -176,6 +178,7 @@ const TestimonialStable: React.FC = () => {
       try {
         await axios.post(`/api/testimonial-requests/${token}/responded`, { claimId })
         localStorage.removeItem(`testimonial_sent_${token}`)
+        localStorage.removeItem(draftKey)
       } catch (err: any) {
         // A rejection is final; a dropped connection is not.
         if (err?.response || attempt >= 3) return
@@ -185,11 +188,15 @@ const TestimonialStable: React.FC = () => {
     [token]
   )
 
-  // A send that got through but never got recorded: finish it on the next open.
+  // A send that got through but never got recorded: finish it on the next open,
+  // and show them what they sent rather than an empty page.
   useEffect(() => {
     if (!invite || invite.responded) return
     const pending = Number(localStorage.getItem(`testimonial_sent_${token}`))
-    if (pending) markResponded(pending)
+    if (!pending) return
+    setClaimRef(pending)
+    setSent(true)
+    markResponded(pending)
   }, [invite, token, markResponded])
 
   const shell = (children: React.ReactNode) => (
@@ -259,7 +266,7 @@ const TestimonialStable: React.FC = () => {
 
   const who = invite.requesterName?.trim() || ''
   const asker = who || 'whoever asked you'
-  const you = signedAs || invite.recipientName?.trim() || ''
+  const you = (signedAs ?? invite.recipientName?.trim() ?? '').trim()
   const subject = invite.subjectName?.trim() || invite.subjectUri.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
 
   if (invite.responded && !sent && !replacing) {
@@ -277,7 +284,15 @@ const TestimonialStable: React.FC = () => {
           </Typography>
         )}
         <Typography sx={{ color: muted, fontSize: 14, lineHeight: 1.6, mb: 1.5 }}>
-          To change or take it down, email <Link href='mailto:support@linkedtrust.us'>support@linkedtrust.us</Link>.
+          To change or take it down,{' '}
+          {isAuthed ? (
+            <>
+              use <Link href='/mine'>your list</Link>, or email{' '}
+            </>
+          ) : (
+            'email '
+          )}
+          <Link href='mailto:support@linkedtrust.us'>support@linkedtrust.us</Link>.
         </Typography>
         <Typography sx={{ color: muted, fontSize: 14, lineHeight: 1.6 }}>
           Want to add something?{' '}
@@ -309,7 +324,17 @@ const TestimonialStable: React.FC = () => {
           </Typography>
         )}
         <Typography sx={{ color: muted, fontSize: 14, mt: 2, lineHeight: 1.6 }}>
-          To change or remove it, email support@linkedtrust.us. No questions asked.
+          {isAuthed ? (
+            <>
+              Take it down any time from <Link href='/mine'>your list</Link>, or email{' '}
+              <Link href='mailto:support@linkedtrust.us'>support@linkedtrust.us</Link>.
+            </>
+          ) : (
+            <>
+              To change or remove it, email{' '}
+              <Link href='mailto:support@linkedtrust.us'>support@linkedtrust.us</Link>. No questions asked.
+            </>
+          )}
         </Typography>
       </>
     )
@@ -406,9 +431,8 @@ const TestimonialStable: React.FC = () => {
 
       <Box sx={{ mt: 3, pt: 3, borderTop: `1px solid ${rule}` }}>
         <PlatformFeedbackVideoSection
-          alwaysOpen
+          compact
           autoOpenCamera={false}
-          heading='Rather say it out loud? Record a short video instead, or as well. Optional.'
           videoUrl={videoUrl}
           onVideoUploaded={url => {
             setVideoUrl(url)
@@ -427,11 +451,17 @@ const TestimonialStable: React.FC = () => {
         {editingName ? (
           <TextField
             value={you}
-            onChange={e => setSignedAs(e.target.value)}
+            onChange={e => {
+              // A link gets forwarded. Whoever is writing now should not be
+              // signing under the profile of the person it was sent to.
+              if (invite.recipientProfile && profile === invite.recipientProfile) setProfile('')
+              setSignedAs(e.target.value)
+            }}
             fullWidth
             size='small'
             autoFocus
             label='Sign as'
+            placeholder='Leave blank to stay anonymous'
             onBlur={() => setEditingName(false)}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px', bgcolor: tint } }}
           />
