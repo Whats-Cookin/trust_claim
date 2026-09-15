@@ -16,6 +16,8 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import BottomNav from './BottomNav'
 import { clearAuth } from '../../utils/authUtils'
@@ -94,7 +96,15 @@ const Sidebar: React.FC<SidebarProps> = ({
           borderRadius: '0 20px 40px 0',
           marginTop: isNavbarVisible && !isAuthPage ? '64px' : '0',
           height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 64px)' : '100vh',
-          overflowX: 'hidden'
+          overflowX: 'hidden',
+          // Collapsed the rail is 40px, but a list item's default padding plus
+          // a 24px icon needs 56px, so the icons spill over the edge.
+          '& .MuiListItemButton-root': {
+            paddingLeft: isOpen ? '16px' : '8px',
+            paddingRight: isOpen ? '16px' : '8px',
+            gap: isOpen ? '20px' : 0,
+            justifyContent: isOpen ? 'flex-start' : 'center'
+          }
         }
       }}
     >
@@ -122,6 +132,31 @@ const Sidebar: React.FC<SidebarProps> = ({
             <AddCircleOutlineOutlinedIcon sx={iconStyle} />
             <ListItemText
               primary='Claim'
+              sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+              primaryTypographyProps={{ variant: 'body2' }}
+            />
+          </ListItemButton>
+        )}
+
+        {isAuth && (
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/mine') }} onClick={() => navigate('/mine')}>
+            <FormatQuoteIcon sx={iconStyle} />
+            <ListItemText
+              primary='Mine'
+              sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
+              primaryTypographyProps={{ variant: 'body2' }}
+            />
+          </ListItemButton>
+        )}
+
+        {isAuth && (
+          <ListItemButton
+            sx={{ gap: '20px', ...getActiveStyle('/request-testimonial') }}
+            onClick={() => navigate('/request-testimonial')}
+          >
+            <StarOutlineIcon sx={iconStyle} />
+            <ListItemText
+              primary='Request a Rating'
               sx={{ display: isOpen ? 'block' : 'none', transition: 'all 0.3s' }}
               primaryTypographyProps={{ variant: 'body2' }}
             />

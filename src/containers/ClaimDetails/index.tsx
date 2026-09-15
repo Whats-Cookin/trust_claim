@@ -1,204 +1,203 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import MainContainer from '../../components/MainContainer'
-import { Box, Button, Card, Typography, useMediaQuery, useTheme } from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Box, Button, CircularProgress, Link, Typography, useTheme } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import * as api from '../../api'
 import { BACKEND_BASE_URL } from '../../utils/settings'
-import imageSvg from '../../assets/images/imgplaceholder.svg'
-import imageSvgDark from '../../assets/images/imgplaceholderdark.svg'
-import arrow from '../../assets/images/arrow.svg'
-import arrowDark from '../../assets/images/arrowdark.svg'
-import circle from '../../assets/images/circle.svg'
-import dottedCircle from '../../assets/images/dotttedCircle.svg'
-import RenderClaimDetails from './RenderClaimDetails'
-import LoadingState from './LoadingState'
-import ErrorState from './ErrorState'
 
-interface LocalClaim {
-  statement?: string | null | undefined
-  subject: string | { uri: string; name?: string; type?: string; image?: string }
-  id: string
-  claim_id?: number
-  [key: string]: any
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'linked-badge': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        'claim-id': number | string
+        layout?: string
+        theme?: string
+        'api-base'?: string
+      }
+    }
+  }
 }
 
 interface IHomeProps {
   isDarkMode: boolean
 }
 
+const serif = "'Literata', Georgia, serif"
+
+const label = (k: string) =>
+  k
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/^./, c => c.toUpperCase())
+    .replace(/Uri$/i, 'URI')
+    .replace(/Id$/i, 'ID')
+
+const isUrl = (v: unknown) => typeof v === 'string' && /^https?:\/\//.test(v)
+
+// Anything already shown by the badge itself, plus internals nobody reads.
+const HIDDEN = new Set([
+  'id',
+  'claim_id',
+  'statement',
+  'stars',
+  'score',
+  'image',
+  'images',
+  'edges',
+  'proof',
+  'digestMultibase',
+  'lastProcessedAt',
+  'processedAt',
+  'createdAt',
+  'updatedAt'
+])
+
 const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
   const { claimId } = useParams<{ claimId: string }>()
-  const [isLoading, setIsLoading] = useState(false)
-  const [claimData, setClaimData] = useState<LocalClaim | null>(null)
-  const [error, setError] = useState<string>('')
   const navigate = useNavigate()
-  const claimImage = claimData?.image ?? null
-
   const theme = useTheme()
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const fetchReportData = useCallback(async () => {
-    setIsLoading(true)
+  const [claim, setClaim] = useState<Record<string, any> | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  // The badge web component carries the visual style; reuse it rather than
+  // rebuilding the card here.
+  useEffect(() => {
+    if (document.querySelector('script[data-badge-script]')) return
+    const script = document.createElement('script')
+    script.src = '/badge.js'
+    script.defer = true
+    script.setAttribute('data-badge-script', 'true')
+    document.head.appendChild(script)
+  }, [])
+
+  const load = useCallback(async () => {
+    setLoading(true)
     try {
-      const response = await api.getClaim(claimId!)
-      setClaimData({
-        ...response.data.claim,
-        id: (response.data.claim.id || response.data.claim.claim_id || 0).toString()
-      })
+      const res = await api.getClaim(claimId!)
+      setClaim(res.data.claim as any)
     } catch (err) {
-      setError('Failed to fetch report data')
-      console.error('Error fetching report data:', err)
+      console.error('Error fetching claim:', err)
+      setError('Could not load this claim.')
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }, [claimId])
 
   useEffect(() => {
-    fetchReportData()
-  }, [fetchReportData])
+    if (claimId) load()
+  }, [claimId, load])
 
-  if (error || (!claimData && !isLoading)) return <ErrorState error={error} theme={theme} />
-  if (isLoading) return <LoadingState />
+  const rows = Object.entries(claim || {})
+    .filter(([k, v]) => !HIDDEN.has(k) && v !== null && v !== undefined && v !== '')
+    .map(([k, v]) => [k, typeof v === 'object' ? JSON.stringify(v) : String(v)] as [string, string])
 
-  const handleBackButton = () => {
-    navigate('/feed')
-  }
+  const line = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : '#E6E9EE'
+  const muted = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.6)' : '#6B7684'
 
   return (
-    <MainContainer>
-      <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'left', mb: '20px' }}>
-        <Typography
-          variant='h6'
-          component='div'
-          sx={{
-            color: theme.palette.texts,
-            textAlign: 'center',
-            marginLeft: isMediumScreen ? '0' : '1rem',
-            fontSize: '23px',
-            fontWeight: 'bold'
-          }}
-        >
-          Claim Details
-          <Box
-            sx={{
-              height: '4px',
-              backgroundColor: theme.palette.maintext,
-              marginTop: '4px',
-              borderRadius: '2px',
-              width: '80%'
-            }}
-          />
-        </Typography>
-      </Box>
-      <Card
-        sx={{
-          maxWidth: 'fit',
-          height: 'fit',
-          borderRadius: '20px',
-          display: isMediumScreen ? 'column' : 'row',
-          backgroundColor: theme.palette.cardBackground,
-          backgroundImage: 'none',
-          color: theme.palette.texts
-        }}
-      >
-        <Box
-          sx={{
-            border: '20px ',
-            borderRadius: '20px',
-            height: '364px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: theme.palette.pageBackground,
-            textWrap: 'wrap',
-            marginY: '45px',
-            marginX: { lg: '150px', md: '90px', sm: '90px', xs: '45px' }
-          }}
-        >
-          <img
-            src={claimImage || (isDarkMode ? imageSvgDark : imageSvg)}
-            style={{ maxWidth: '100%', maxHeight: '100%' }}
-            alt='claim'
-          />
-        </Box>
-        <Box
-          sx={{
-            width: { lg: '98%', md: '98%', sm: '98%', xs: '95%' },
-            height: 376,
-            m: '10px',
-            overflowY: 'auto',
-            '&::-webkit-scrollbar': {
-              width: '15px'
-            },
-            '&::-webkit-scrollbar-track': {
-              background: theme.palette.pageBackground,
-              borderRadius: '10px'
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: theme.palette.menuBackground,
-              borderRadius: '10px'
-            }
-          }}
-        >
-          {claimData && <RenderClaimDetails claimData={claimData} theme={theme} />}
-        </Box>
-      </Card>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: '15px', mb: '35px' }}>
+    <Box
+      sx={{
+        width: '100%',
+        
+        bgcolor: theme.palette.pageBackground,
+        px: { xs: 2, sm: 3 },
+        py: { xs: 3, sm: 5 }
+      }}
+    >
+      <Box sx={{ maxWidth: 760, mx: 'auto' }}>
         <Button
-          variant='contained'
-          onClick={handleBackButton}
-          sx={{
-            justifyContent: 'left',
-            backgroundColor: '#4C726F',
-            color: '#F2FAF9',
-            borderRadius: '91px',
-            fontWeight: 600,
-            fontSize: isMediumScreen ? '12px' : '18px',
-            width: '14vw',
-            mb: '-35px',
-            maxWidth: '192px',
-            minWidth: '132px',
-            textTransform: 'none',
-            position: 'relative',
-            overflow: 'hidden',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              right: '11px',
-              width: { lg: '36px', md: '30px', sm: '30px', xs: '30px' },
-              height: { lg: '36px', md: '30px', sm: '30px', xs: '30px' },
-              backgroundImage: `url(${dottedCircle})`,
-              backgroundSize: 'cover',
-              zIndex: 1
-            },
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              right: '14px',
-              width: { lg: '50px', md: '40px', sm: '36px', xs: '36px' },
-              height: '28px',
-              backgroundImage: `url(${arrow})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              zIndex: 1,
-              transition: 'background-image 0.3s ease-in-out'
-            },
-            '&:hover::before': {
-              backgroundImage: `url(${circle})`
-            },
-            '&:hover::after': {
-              backgroundImage: `url(${isDarkMode ? arrow : arrowDark})`
-            },
-            '&:hover': {
-              backgroundColor: `${isDarkMode ? '#0A1C1D' : '#F2FAF9'}`,
-              color: `${isDarkMode ? '#F2FAF9' : '#0A1C1D'}`
-            }
-          }}
+          onClick={() => navigate(-1)}
+          startIcon={<ArrowBackIcon />}
+          sx={{ textTransform: 'none', color: muted, mb: 2, pl: 0 }}
         >
-          BACK
+          Back
         </Button>
+
+        {loading && <CircularProgress size={26} sx={{ display: 'block', mx: 'auto', my: 6 }} />}
+
+        {error && !loading && (
+          <Typography sx={{ color: 'error.main', fontSize: 16 }}>{error}</Typography>
+        )}
+
+        {!loading && !error && claimId && (
+          <>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                // The component caps a card at 480px; widen it here so the
+                // detail page reads as a larger version of the same thing.
+                '& linked-badge': { width: '100%' },
+                '& linked-badge::part(badge)': { maxWidth: 'none' }
+              }}
+            >
+              <linked-badge
+                claim-id={claimId}
+                theme={isDarkMode ? 'dark' : 'light'}
+                api-base={BACKEND_BASE_URL}
+              />
+            </Box>
+
+            {rows.length > 0 && (
+              <Box
+                sx={{
+                  mt: 4,
+                  bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : '#fff',
+                  border: `1px solid ${line}`,
+                  borderRadius: '14px',
+                  overflow: 'hidden'
+                }}
+              >
+                {rows.map(([k, v], i) => (
+                  <Box
+                    key={k}
+                    sx={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 1,
+                      px: { xs: 2, sm: 3 },
+                      py: 1.75,
+                      borderTop: i === 0 ? 'none' : `1px solid ${line}`
+                    }}
+                  >
+                    <Typography sx={{ fontSize: 13.5, color: muted, minWidth: 150, flexShrink: 0 }}>
+                      {label(k)}
+                    </Typography>
+                    {isUrl(v) ? (
+                      <Link
+                        href={v}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        sx={{ fontSize: 14.5, wordBreak: 'break-all' }}
+                      >
+                        {v.replace(/^https?:\/\/(www\.)?/, '')}
+                      </Link>
+                    ) : (
+                      <Typography sx={{ fontFamily: serif, fontSize: 14.5, wordBreak: 'break-word' }}>
+                        {v}
+                      </Typography>
+                    )}
+                  </Box>
+                ))}
+              </Box>
+            )}
+
+            <Box sx={{ display: 'flex', gap: 3, mt: 3, flexWrap: 'wrap' }}>
+              <Link href={`/explore/${claimId}`} sx={{ fontSize: 14.5 }}>
+                Explore the graph
+              </Link>
+              <Link href={`/report/${claimId}`} sx={{ fontSize: 14.5 }}>
+                Full report
+              </Link>
+              <Link href={`/badge/${claimId}`} sx={{ fontSize: 14.5 }}>
+                Embed this
+              </Link>
+            </Box>
+          </>
+        )}
       </Box>
-    </MainContainer>
+    </Box>
   )
 }
 

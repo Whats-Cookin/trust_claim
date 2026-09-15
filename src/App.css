@@ -1,7 +1,5 @@
-* {
-  /* border: 1px solid red; */
-  font-family: 'Montserrat', sans-serif;
-}
+/* No catch-all font rule: it outranks MUI's sx and makes the serif inert.
+   The body rule in index.css already sets the sans. */
 
 .app {
   position: relative;

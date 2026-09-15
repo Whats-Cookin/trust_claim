@@ -125,6 +125,7 @@ const darkModeTheme = createTheme({
     }
   },
   palette: {
+    primary: { main: '#00b2e5', contrastText: '#ffffff' },
     mode: 'dark',
     background: {
       default: neutralColors.gray[900]
@@ -207,6 +208,7 @@ const lightModeTheme = createTheme({
     }
   },
   palette: {
+    primary: { main: '#00b2e5', contrastText: '#ffffff' },
     mode: 'light',
     background: {
       default: uiColors.pageBg

@@ -24,7 +24,7 @@ import { primaryColors } from '../../theme/colors'
 import logo from '../../assets/logolinkedtrust.svg'
 import ILoginProps from '../Login/types'
 
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
+const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=read:user%20user:email`
 
 interface ClientInfo {
   clientId: string

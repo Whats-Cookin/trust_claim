@@ -68,7 +68,9 @@ export function useCreateClaim() {
           transformedDto.stars = isNaN(starsNum) ? null : starsNum
           console.log(`🔧 stars: ${payload.stars} → ${transformedDto.stars} (${typeof transformedDto.stars})`)
         } else {
-          transformedDto.stars = null
+          // No rating given: omit the field entirely rather than sending a
+          // zero/null that renders as an empty star row.
+          delete transformedDto.stars
           console.log('🔧 stars: set to null (was undefined/null/empty)')
         }
 

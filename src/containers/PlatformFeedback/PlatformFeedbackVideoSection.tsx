@@ -9,15 +9,30 @@ import VideoRecorder from '../../components/VideoRecorder'
 import { neutralColors } from '../../theme/colors'
 
 interface PlatformFeedbackVideoSectionProps {
+  /** Show the recorder itself rather than a trigger the user must find. */
+  alwaysOpen?: boolean
+  /** Heading above the recorder when alwaysOpen. */
+  heading?: string
   videoUrl: string | null
   onVideoUploaded: (url: string) => void
   onVideoRemoved: () => void
+  /** Fires while footage is recorded but not yet uploaded. */
+  onPendingChange?: (pending: boolean) => void
+  /** Opening the camera unprompted is hostile in an in-app browser; opt out. */
+  autoOpenCamera?: boolean
+  /** Render as a quiet text link rather than a dashed drop-zone row. */
+  compact?: boolean
 }
 
 const PlatformFeedbackVideoSection = ({
   videoUrl,
   onVideoUploaded,
-  onVideoRemoved
+  onVideoRemoved,
+  onPendingChange,
+  autoOpenCamera = true,
+  compact = false,
+  alwaysOpen = false,
+  heading
 }: PlatformFeedbackVideoSectionProps) => {
   const [open, setOpen] = useState(false)
   const [session, setSession] = useState(0)
@@ -39,8 +54,52 @@ const PlatformFeedbackVideoSection = ({
     [toggle]
   )
 
+  if (alwaysOpen) {
+    return (
+      <Box sx={{ mb: 2.5 }}>
+        {heading && (
+          <Typography sx={{ fontSize: 15, fontWeight: 500, color: '#1B2430', mb: 1.25, lineHeight: 1.5 }}>
+            {heading}
+          </Typography>
+        )}
+        <VideoRecorder
+          hideHeading
+          noPaper
+          openCameraOnMount={autoOpenCamera}
+          maxDuration={60}
+          onVideoUploaded={onVideoUploaded}
+          onVideoRemoved={onVideoRemoved}
+          onPendingChange={onPendingChange}
+        />
+      </Box>
+    )
+  }
+
   return (
-    <Box sx={{ mb: 2.5 }}>
+    <Box sx={{ mb: compact ? 0 : 2.5 }}>
+      {compact ? (
+        <Box
+          role='button'
+          tabIndex={0}
+          onClick={toggle}
+          onKeyDown={onKeyDown}
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 0.75,
+            cursor: 'pointer',
+            color: '#155DFC',
+            fontSize: 14,
+            outline: 'none',
+            '&:focus-visible': { textDecoration: 'underline' }
+          }}
+        >
+          <VideocamIcon sx={{ fontSize: 18 }} />
+          <Typography sx={{ fontSize: 14, color: 'inherit' }}>
+            {videoUrl ? 'Video added, change it' : 'Video is gold, the most meaningful way to attest if you are comfortable:'}
+          </Typography>
+        </Box>
+      ) : (
       <Box
         role='button'
         tabIndex={0}
@@ -94,6 +153,7 @@ const PlatformFeedbackVideoSection = ({
           </Typography>
         </Box>
       </Box>
+      )}
 
       <Collapse in={open} timeout='auto' unmountOnExit>
         <Box
@@ -116,12 +176,13 @@ const PlatformFeedbackVideoSection = ({
             key={session}
             hideHeading
             noPaper
-            openCameraOnMount
+            openCameraOnMount={autoOpenCamera}
             maxDuration={60}
             onVideoUploaded={url => {
               onVideoUploaded(url)
               setOpen(false)
             }}
+            onPendingChange={onPendingChange}
             onVideoRemoved={onVideoRemoved}
           />
         </Box>

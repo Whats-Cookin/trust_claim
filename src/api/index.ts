@@ -93,3 +93,8 @@ export const submitCredential = (credential: any) =>
 
 export const getCredential = (uri: string) =>
   axios.get<{ credential: Credential }>(`/api/credentials/${encodeURIComponent(uri)}`)
+
+// Claims this signed-in user issued, for the "your recommendations" page.
+export const getMyClaims = () => axios.get<{ claims: any[] }>('/api/my/claims')
+
+export const deleteClaim = (id: string | number) => axios.delete(`/api/claims/${id}`)

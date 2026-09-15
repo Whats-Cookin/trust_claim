@@ -209,7 +209,7 @@
 
   function sharedStyles () {
     return `
-      @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;1,400&family=Nunito:ital,wght@0,400;1,400&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500&display=swap');
       :host {
         display: block;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -295,7 +295,7 @@
       .statement {
         margin: 0 0 12px;
         font-size: 14px;
-        font-family: Raleway, Nunito, Quicksand, sans-serif;
+        font-family: 'Literata', Georgia, serif;
         font-style: italic;
         display: -webkit-box;
         -webkit-line-clamp: 3;

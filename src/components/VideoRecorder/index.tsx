@@ -10,6 +10,8 @@ import axiosInstance from '../../axiosInstance'
 
 interface VideoRecorderProps {
   onVideoUploaded: (videoUrl: string, thumbnailUrl?: string) => void
+  /** Fires whenever there is recorded footage that is not yet safely uploaded. */
+  onPendingChange?: (pending: boolean) => void
   onVideoRemoved?: () => void
   maxDuration?: number // in seconds
   /** Hide the “Video Testimonial (Optional)” heading (e.g. when embedded in another layout). */
@@ -28,6 +30,7 @@ interface VideoRecorderProps {
  */
 const VideoRecorder: React.FC<VideoRecorderProps> = ({
   onVideoUploaded,
+  onPendingChange,
   onVideoRemoved,
   maxDuration = 30, // 30 seconds default
   hideHeading = false,
@@ -51,6 +54,8 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
   const [uploadProgress, setUploadProgress] = useState(0)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const autoCameraStartedRef = useRef(false)
+  const autoUploadedBlobRef = useRef<Blob | null>(null)
+  const playbackRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     return () => {
@@ -198,6 +203,20 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     }
   }, [recordedBlob, onVideoUploaded])
 
+  // Footage that exists but isn't on the server yet would be silently lost on
+  // submit, so upload it the moment recording stops. The ref keeps a failed
+  // upload (which returns to 'recorded' for retry) from looping.
+  useEffect(() => {
+    if (status !== 'recorded' || !recordedBlob) return
+    if (autoUploadedBlobRef.current === recordedBlob) return
+    autoUploadedBlobRef.current = recordedBlob
+    uploadVideo()
+  }, [status, recordedBlob, uploadVideo])
+
+  useEffect(() => {
+    onPendingChange?.(status === 'recorded' || status === 'uploading')
+  }, [status, onPendingChange])
+
   // Delete recording and restart
   const deleteRecording = useCallback(() => {
     if (recordedUrl) {
@@ -206,6 +225,7 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     setRecordedUrl(null)
     setRecordedBlob(null)
     setUploadedVideoUrl(null)
+    autoUploadedBlobRef.current = null
     setStatus('idle')
     setRecordingTime(0)
     setUploadProgress(0)
@@ -314,14 +334,48 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
         {/* Recorded/uploaded video playback */}
         {(status === 'recorded' || status === 'uploading' || status === 'uploaded') && recordedUrl && (
           <video
+            ref={playbackRef}
+            // Once uploaded, prefer the hosted copy: it is a real HTTP resource,
+            // so the browser can range-request the end and work out the length.
             src={uploadedVideoUrl || recordedUrl}
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover'
+              objectFit: 'contain',
+              backgroundColor: '#000'
             }}
             controls
             playsInline
+            // MediaRecorder writes webm with no duration in the header, so the
+            // element reports Infinity and will not seek or play. Seeking past
+            // the end forces the browser to measure it. The timeout matters: if
+            // the seek is refused the position must still come back to zero,
+            // otherwise playback sits at the end and the play button does nothing.
+            onError={() => {
+              const el = playbackRef.current
+              console.error('Playback error', el?.error?.code, el?.error?.message, el?.currentSrc)
+              setError('Could not play that back. The recording was still saved.')
+            }}
+            onLoadedMetadata={() => {
+              const el = playbackRef.current
+              console.log('Playback metadata: duration', el?.duration, 'src', el?.currentSrc)
+              if (!el || el.duration !== Infinity) return
+              const reset = () => {
+                try {
+                  el.currentTime = 0
+                } catch {
+                  /* nothing more to do */
+                }
+              }
+              el.addEventListener('seeked', reset, { once: true })
+              el.addEventListener('durationchange', reset, { once: true })
+              try {
+                el.currentTime = 1e101
+              } catch {
+                reset()
+              }
+              window.setTimeout(reset, 800)
+            }}
           />
         )}
 

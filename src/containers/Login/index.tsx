@@ -26,7 +26,7 @@ import MobileLogin from './MobileLogin'
 import { GoogleLogin } from '@react-oauth/google'
 import { handleAuthSuccess, captureOidcFlow, maybeCompleteOidcLogin } from '../../utils/authUtils'
 
-const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`
+const githubUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=read:user%20user:email`
 const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, isDarkMode }: ILoginProps) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))

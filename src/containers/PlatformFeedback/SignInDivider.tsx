@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 /** Figma: horizontal rule with “Sign in to submit” centered on the line. */
-const SignInDivider = () => (
+const SignInDivider = ({ label = 'Sign in to submit' }: { label?: string }) => (
   <Box sx={{ position: 'relative', width: '100%', height: 16, my: 2.5 }}>
     <Box
       sx={{
@@ -24,7 +24,7 @@ const SignInDivider = () => (
       }}
     >
       <Typography sx={{ fontSize: '12px', lineHeight: '16px', color: '#62748E', whiteSpace: 'nowrap' }}>
-        Sign in to submit
+        {label}
       </Typography>
     </Box>
   </Box>

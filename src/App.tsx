@@ -27,6 +27,10 @@ import { checkAuth, AUTH_STATE_CHANGED_EVENT } from './utils/authUtils'
 import CertificateView from './components/ClaimCertificate/CertificateView'
 import Present from './components/Present'
 import RequestRating from './components/RequestRating'
+import RequestTestimonial from './components/RequestTestimonial'
+import Testimonial from './components/Testimonial'
+import TestimonialStable from './components/Testimonial/Stable'
+import MyClaims from './containers/MyClaims'
 import BadgeEmbed from './components/BadgeEmbed'
 import BadgeView from './components/BadgeView'
 import Wall from './containers/Wall'
@@ -86,6 +90,9 @@ const App = () => {
   const isLoginPage = location.pathname === '/login' || isSsoLoginPage
   const isRegisterPage = location.pathname === '/register'
   const isEmbedPage = location.pathname.startsWith('/embed/')
+  // A testimonial invite goes to someone who has never seen the app; give them
+  // the page and nothing else.
+  const isInvitePage = location.pathname.startsWith('/t/') || location.pathname.startsWith('/t2/')
 
   const globalStyles = (
     <GlobalStyles
@@ -107,7 +114,7 @@ const App = () => {
       <CssBaseline />
       {globalStyles}
 
-      {!isLoginPage && !isRegisterPage && !isEmbedPage && (
+      {!isLoginPage && !isRegisterPage && !isEmbedPage && !isInvitePage && (
         <Navbar
           isAuth={isAuthenticated}
           toggleTheme={toggleTheme}
@@ -117,7 +124,7 @@ const App = () => {
         />
       )}
       <Box sx={{ display: 'flex' }}>
-        {!isLoginPage && !isRegisterPage && !isEmbedPage && (
+        {!isLoginPage && !isRegisterPage && !isEmbedPage && !isInvitePage && (
           <Sidebar
             isAuth={isAuthenticated}
             isOpen={isSidebarOpen}
@@ -150,7 +157,7 @@ const App = () => {
               alignItems: isMediumScreen || isLoginPage || isRegisterPage ? 'center' : 'stretch',
               justifyContent: 'flex-start',
               width: '100%',
-              paddingTop: isNavbarVisible && !isLoginPage && !isRegisterPage ? '64px' : '0'
+              paddingTop: isNavbarVisible && !isLoginPage && !isRegisterPage && !isInvitePage ? '64px' : '0'
             }}
           >
             <Routes>
@@ -224,6 +231,12 @@ const App = () => {
               <Route path='/badge/:claimId' element={<BadgePage />} />
               <Route path='/at' element={<AtprotoFeed />} />
               <Route path='/request-rating' element={<RequestRating />} />
+              <Route path='/request-testimonial' element={<RequestTestimonial />} />
+              <Route path='/mine' element={<MyClaims />} />
+              {/* Live links people already hold: frozen. */}
+              <Route path='/t/:token' element={<TestimonialStable />} />
+              {/* Same page, under development. */}
+              <Route path='/t2/:token' element={<Testimonial />} />
               <Route
                 path='/feedback/rating'
                 element={

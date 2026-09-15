@@ -107,18 +107,39 @@ const QuickAuth = ({
     }
   }
 
+  // One field pair for both cases: someone arriving from an invite has no
+  // account yet, and a login-only form is a dead end for them. Try to sign in,
+  // and create the account if there isn't one.
   const onEmailSubmit = handleSubmit(async ({ email, password }) => {
     try {
       setLoading(true)
       setError(null)
-      const {
-        data: { accessToken, refreshToken }
-      } = await axios.post('/auth/login', { email, password })
-      handleAuthSuccess({ accessToken, refreshToken })
+
+      let tokens
+      try {
+        const { data } = await axios.post('/auth/login', { email, password })
+        tokens = data
+      } catch (loginErr: any) {
+        if (loginErr?.response?.status === 500) throw loginErr
+        try {
+          const { data } = await axios.post('/auth/signup', { email, password })
+          tokens = data
+        } catch (signupErr: any) {
+          // 409 means the address is taken, so the login above failed on the
+          // password rather than on a missing account.
+          if (signupErr?.response?.status === 409) {
+            setError('That password doesn’t match this email.')
+            return
+          }
+          throw signupErr
+        }
+      }
+
+      handleAuthSuccess({ accessToken: tokens.accessToken, refreshToken: tokens.refreshToken })
       onAuthenticated()
     } catch (err) {
       console.error('Email auth error:', err)
-      setError('Sign-in failed. Check your email and password.')
+      setError('Couldn’t sign you in. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -245,7 +266,7 @@ const QuickAuth = ({
           disabled={loading}
           sx={{ textTransform: 'none', mt: '3px' }}
         >
-          Sign in
+          Continue
         </Button>
       </Box>
     </Collapse>
