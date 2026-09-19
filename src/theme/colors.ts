@@ -95,6 +95,9 @@ export const uiColors = {
   textSecondary: neutralColors.gray[700],
   textMuted: neutralColors.gray[500],
 
+  // Link text on a light background (the logo cyan is too light for body text)
+  linkText: darkColors.cyan,
+
   // Borders
   border: neutralColors.gray[200],
   borderHover: neutralColors.gray[300],
@@ -155,6 +158,13 @@ export const linkedTrustTheme = {
     md: '8px',
     lg: '12px',
     full: '9999px'
+  },
+  // Printable document pages (/report): A4 sheet, print margin, media sizes
+  document: {
+    pageWidth: '210mm',
+    pageMargin: '18mm',
+    imageMaxWidth: '240px',
+    videoMaxWidth: '480px'
   },
   shadows: {
     sm: `0 1px 2px ${uiColors.shadow}`,
