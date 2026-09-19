@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
 import styles from './styles'
+import { brandColors, neutralColors, linkedTrustTheme } from '../../theme/colors'
 import { TextField, Box, Button, useTheme, IconButton, useMediaQuery } from '@mui/material'
 import DayNightToggle from 'react-day-and-night-toggle'
 import CloseIcon from '@mui/icons-material/Close'
@@ -101,7 +102,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
               maxHeight: '658px',
               minHeight: '600px',
               zIndex: 20,
-              borderRadius: '10px',
+              borderRadius: linkedTrustTheme.borderRadius.md,
               position: 'relative',
               backgroundImage: `url(${isDarkMode ? formBackgrounddark : formBackgroundlight})`,
               backgroundRepeat: 'no-repeat',
@@ -121,7 +122,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                 minHeight: '500px',
                 top: '8.359%',
                 right: '-16.893%',
-                borderRadius: '30px',
+                borderRadius: linkedTrustTheme.borderRadius.lg,
                 opacity: '1',
                 zIndex: 200,
                 backgroundImage: `url(${RegisterIllustration})`,
@@ -165,7 +166,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
               <Link to='/feed' style={{ textDecoration: 'none' }}>
                 <IconButton
                   sx={{
-                    color: '#fff',
+                    color: neutralColors.white,
                     zIndex: 30
                   }}
                 >
@@ -308,7 +309,7 @@ const Register = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme,
                     color: theme.palette.buttontext,
                     backgroundColor: theme.palette.buttons,
                     '&:hover': { backgroundColor: theme.palette.buttonHover },
-                    borderRadius: '80px'
+                    borderRadius: linkedTrustTheme.borderRadius.full
                   }}
                   type='submit'
                   variant='contained'

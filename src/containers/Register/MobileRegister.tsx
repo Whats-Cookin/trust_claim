@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import IRegisterProps from './types'
-import { TextField, Box, Button, useTheme, IconButton } from '@mui/material'
+import { TextField, Box, Button, useTheme } from '@mui/material'
 import DayNightToggle from 'react-day-and-night-toggle'
 import styles from './styles'
+import { linkedTrustTheme } from '../../theme/colors'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import RegisterIllustrationPhone from '../../assets/images/RegisterIllustrationPhone.svg'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
@@ -51,14 +52,7 @@ const MobileRegister = ({
   })
 
   return (
-    <Box
-      sx={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
+    <Box sx={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
       <Box
         sx={{
           width: '11.528vw',
@@ -67,9 +61,10 @@ const MobileRegister = ({
           height: '11.528vw',
           minHeight: '88px',
           maxHeight: '100px',
-          bottom: '2.344vh',
-          left: '4.306vw',
-          position: 'absolute'
+          bottom: theme.spacing(2),
+          left: theme.spacing(2),
+          position: 'absolute',
+          pointerEvents: 'none'
         }}
       >
         <Box component='img' src={circles} alt='' sx={{ width: '100px' }} />
@@ -81,75 +76,33 @@ const MobileRegister = ({
           minHeight: '400px',
           backgroundImage: `url(${RegisterIllustrationPhone})`,
           backgroundRepeat: 'no-repeat',
-          borderRadius: '0 0 20px 20px',
+          borderRadius: `0 0 ${linkedTrustTheme.borderRadius.lg} ${linkedTrustTheme.borderRadius.lg}`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       />
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
-          bottom: '152px'
-        }}
-      >
-        <form onSubmit={onSubmit}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', px: 2, mt: -19 }}>
+        <form onSubmit={onSubmit} style={{ width: '100%', maxWidth: 533 }}>
           <Box
             sx={{
-              width: '74.028vw',
-              minWidth: '433px',
-              maxWidth: '533px',
-              height: '49.844vh',
-              minHeight: '538px',
-              maxHeight: '638px',
-              padding: '20px',
-              borderRadius: '20px',
+              p: 3,
+              borderRadius: linkedTrustTheme.borderRadius.lg,
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
               alignItems: 'center',
+              gap: 2,
               position: 'relative',
-              backgroundColor: theme.palette.pageBackground,
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
+              overflow: 'hidden',
+              backgroundColor: theme.palette.pageBackground
             }}
           >
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '0px',
-                right: '0px',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
+            <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', alignItems: 'center' }}>
               <img src={Ellipse} alt='' />
             </Box>
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '40px',
-                right: '15px',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={35} />
+            <Box sx={{ position: 'absolute', top: theme.spacing(2), right: theme.spacing(2), zIndex: 1 }}>
+              <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={30} />
             </Box>
-            <Typography
-              variant='h5'
-              sx={{
-                color: theme.palette.darkinputtext,
-                textAlign: 'center',
-                fontWeight: 500,
-                fontSize: '2.5rem',
-                marginBottom: '20px'
-              }}
-            >
+            <Typography variant='h4' sx={{ color: theme.palette.darkinputtext, fontWeight: 500, zIndex: 1 }}>
               Create Account
             </Typography>
             <TextField
@@ -191,8 +144,7 @@ const MobileRegister = ({
                 },
                 '& .MuiFormHelperText-root': {
                   color: theme.palette.darkinputtext
-                },
-                paddingBottom: '53px'
+                }
               }}
               fullWidth
               variant='filled'
@@ -247,48 +199,33 @@ const MobileRegister = ({
             />
             <Button
               sx={{
-                width: '31.528vw',
-                minWidth: '200px',
-                maxWidth: '227px',
-                height: '72px',
+                minWidth: 200,
+                px: 4,
                 color: theme.palette.buttontext,
                 backgroundColor: theme.palette.buttons,
                 '&:hover': { backgroundColor: theme.palette.buttonHover },
-                borderRadius: '80px',
-                fontWeight: 'bold',
-                fontSize: '20px',
-                marginTop: '20px'
+                borderRadius: linkedTrustTheme.borderRadius.full,
+                mt: 1
               }}
               type='submit'
               variant='contained'
-              size='medium'
+              size='large'
             >
               SIGN UP <LogoutIcon sx={{ ml: 2 }} />
             </Button>
           </Box>
         </form>
       </Box>
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          position: 'relative',
-          bottom: '102px'
-        }}
-      >
-        <Typography variant='body1' sx={{ color: theme.palette.texts, marginTop: '20px' }}>
-          Click here to
-          <Typography
-            component='span'
-            onClick={() => navigate('/login')}
-            sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
-          >
-            Login
-          </Typography>
+      <Typography variant='body1' sx={{ color: theme.palette.texts, textAlign: 'center', my: 3 }}>
+        Click here to
+        <Typography
+          component='span'
+          onClick={() => navigate('/login')}
+          sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
+        >
+          Login
         </Typography>
-      </Box>
+      </Typography>
     </Box>
   )
 }
