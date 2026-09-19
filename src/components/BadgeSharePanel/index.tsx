@@ -26,7 +26,7 @@ interface BadgeSharePanelProps {
 const BASE_URL = typeof window !== 'undefined' ? window.location.origin : 'https://live.linkedtrust.us'
 
 export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
-  const [copied, setCopied] = useState<'link' | 'embed' | 'imgurl' | null>(null)
+  const [copied, setCopied] = useState<'link' | 'embed' | 'iframe' | 'imgurl' | null>(null)
   const [emailOpen, setEmailOpen] = useState(false)
 
   const badgeUrl = `${BASE_URL}/badge/${claimId}`
@@ -34,7 +34,10 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
   const imageUrl = `${BASE_URL}/api/badge-image/${claimId}`
   const presentUrl = `${BASE_URL}/present/${claimId}`
 
-  const embedCode = `<iframe src="${embedUrl}" width="600" height="180" frameborder="0" style="border:none;max-width:100%"></iframe>`
+  // The <linked-badge> web component, the same one linkedtrust.us uses.
+  const embedCode = `<script src="${BASE_URL}/badge.js" defer></script>\n<linked-badge claim-id="${claimId}" layout="row"></linked-badge>`
+  // For sites that do not allow scripts.
+  const iframeCode = `<iframe src="${embedUrl}" width="600" height="180" frameborder="0" style="border:none;max-width:100%"></iframe>`
 
   // Load badge.js once
   useEffect(() => {
@@ -46,7 +49,7 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
     document.head.appendChild(script)
   }, [])
 
-  const copy = (text: string, key: 'link' | 'embed' | 'imgurl') => {
+  const copy = (text: string, key: 'link' | 'embed' | 'iframe' | 'imgurl') => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(key)
       setTimeout(() => setCopied(null), 2000)
@@ -94,7 +97,15 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
             {copied === 'embed' ? 'Copied!' : 'Copy embed code'}
           </Button>
           <Typography variant='caption' color='text.secondary'>
-            Paste into any website, portfolio, or HTML email signature
+            Paste into any website or portfolio.{' '}
+            <Link
+              component='button'
+              variant='caption'
+              onClick={() => copy(iframeCode, 'iframe')}
+              sx={{ verticalAlign: 'baseline' }}
+            >
+              {copied === 'iframe' ? 'Copied!' : 'Site blocks scripts? Copy iframe code'}
+            </Link>
           </Typography>
         </Box>
 
