@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Box, Button, CircularProgress, Link, Typography, useTheme } from '@mui/material'
+import { Box, Button, CircularProgress, Link, Paper, Typography, useTheme } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import * as api from '../../api'
 import { BACKEND_BASE_URL } from '../../utils/settings'
@@ -21,8 +21,6 @@ declare global {
 interface IHomeProps {
   isDarkMode: boolean
 }
-
-const serif = "'Literata', Georgia, serif"
 
 const label = (k: string) =>
   k
@@ -92,46 +90,25 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
     .filter(([k, v]) => !HIDDEN.has(k) && v !== null && v !== undefined && v !== '')
     .map(([k, v]) => [k, typeof v === 'object' ? JSON.stringify(v) : String(v)] as [string, string])
 
-  const line = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : '#E6E9EE'
-  const muted = theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.6)' : '#6B7684'
-
   return (
-    <Box
-      sx={{
-        width: '100%',
-        
-        bgcolor: theme.palette.pageBackground,
-        px: { xs: 2, sm: 3 },
-        py: { xs: 3, sm: 5 }
-      }}
-    >
-      <Box sx={{ maxWidth: 760, mx: 'auto' }}>
+    <Box sx={{ width: '100%', px: { xs: 2, md: 3 }, py: { xs: 2, md: 3 } }}>
+      <Box sx={{ maxWidth: theme.breakpoints.values.md, mx: 'auto' }}>
         <Button
           onClick={() => navigate(-1)}
           startIcon={<ArrowBackIcon />}
-          sx={{ textTransform: 'none', color: muted, mb: 2, pl: 0 }}
+          sx={{ color: theme.palette.text.secondary, mb: 2, pl: 0 }}
         >
           Back
         </Button>
 
         {loading && <CircularProgress size={26} sx={{ display: 'block', mx: 'auto', my: 6 }} />}
 
-        {error && !loading && (
-          <Typography sx={{ color: 'error.main', fontSize: 16 }}>{error}</Typography>
-        )}
+        {error && !loading && <Typography color='error'>{error}</Typography>}
 
         {!loading && !error && claimId && (
           <>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                // The component caps a card at 480px; widen it here so the
-                // detail page reads as a larger version of the same thing.
-                '& linked-badge': { width: '100%' },
-                '& linked-badge::part(badge)': { maxWidth: 'none' }
-              }}
-            >
+            {/* The badge web component carries the visual style; it caps its own width. */}
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <linked-badge
                 claim-id={claimId}
                 theme={isDarkMode ? 'dark' : 'light'}
@@ -140,57 +117,44 @@ const ClaimDetails: React.FC<IHomeProps> = ({ isDarkMode }) => {
             </Box>
 
             {rows.length > 0 && (
-              <Box
-                sx={{
-                  mt: 4,
-                  bgcolor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : '#fff',
-                  border: `1px solid ${line}`,
-                  borderRadius: '14px',
-                  overflow: 'hidden'
-                }}
-              >
+              <Paper variant='outlined' sx={{ mt: 3, overflow: 'hidden' }}>
                 {rows.map(([k, v], i) => (
                   <Box
                     key={k}
                     sx={{
                       display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 1,
-                      px: { xs: 2, sm: 3 },
-                      py: 1.75,
-                      borderTop: i === 0 ? 'none' : `1px solid ${line}`
+                      flexDirection: { xs: 'column', sm: 'row' },
+                      gap: { xs: 0.5, sm: 2 },
+                      px: 2,
+                      py: 1.5,
+                      borderTop: i === 0 ? 'none' : `1px solid ${theme.palette.divider}`
                     }}
                   >
-                    <Typography sx={{ fontSize: 13.5, color: muted, minWidth: 150, flexShrink: 0 }}>
+                    <Typography variant='body2' sx={{ color: theme.palette.text.secondary, width: { sm: 160 }, flexShrink: 0 }}>
                       {label(k)}
                     </Typography>
                     {isUrl(v) ? (
-                      <Link
-                        href={v}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        sx={{ fontSize: 14.5, wordBreak: 'break-all' }}
-                      >
+                      <Link href={v} target='_blank' rel='noopener noreferrer' variant='body2' sx={{ wordBreak: 'break-all' }}>
                         {v.replace(/^https?:\/\/(www\.)?/, '')}
                       </Link>
                     ) : (
-                      <Typography sx={{ fontFamily: serif, fontSize: 14.5, wordBreak: 'break-word' }}>
+                      <Typography variant='body2' sx={{ wordBreak: 'break-word' }}>
                         {v}
                       </Typography>
                     )}
                   </Box>
                 ))}
-              </Box>
+              </Paper>
             )}
 
-            <Box sx={{ display: 'flex', gap: 3, mt: 3, flexWrap: 'wrap' }}>
-              <Link href={`/explore/${claimId}`} sx={{ fontSize: 14.5 }}>
+            <Box sx={{ display: 'flex', gap: 2, mt: 2, flexWrap: 'wrap' }}>
+              <Link href={`/explore/${claimId}`} variant='body2'>
                 Explore the graph
               </Link>
-              <Link href={`/report/${claimId}`} sx={{ fontSize: 14.5 }}>
+              <Link href={`/report/${claimId}`} variant='body2'>
                 Full report
               </Link>
-              <Link href={`/badge/${claimId}`} sx={{ fontSize: 14.5 }}>
+              <Link href={`/badge/${claimId}`} variant='body2'>
                 Embed this
               </Link>
             </Box>

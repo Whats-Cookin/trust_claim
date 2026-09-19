@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined'
 import FeedOutlinedIcon from '@mui/icons-material/FeedOutlined'
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
-import StarIcon from '@mui/icons-material/Star'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
@@ -17,6 +16,7 @@ import {
   Box,
   Button,
   Card,
+  CardActions,
   CardContent,
   Fab,
   Grow,
@@ -25,7 +25,7 @@ import {
   Fade,
   useMediaQuery,
   useTheme,
-  Chip
+  Rating
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import * as api from '../../api'
@@ -75,9 +75,9 @@ const ClaimName = ({ claim, searchTerm }: { claim: Claim; searchTerm: string }) 
     : displayName
 
   return (
-    <Typography variant='body2' sx={{ marginBottom: '10px', color: theme.palette.texts }}>
+    <Typography variant='body1' sx={{ fontWeight: 600, color: theme.palette.texts, wordBreak: 'break-word' }}>
       <span dangerouslySetInnerHTML={{ __html: highlightedName }} />
-      <OpenInNewIcon sx={{ marginLeft: '5px', color: theme.palette.texts, fontSize: '1rem' }} />
+      <OpenInNewIcon sx={{ ml: 0.5, fontSize: 'inherit', verticalAlign: 'text-bottom' }} />
     </Typography>
   )
 }
@@ -292,340 +292,145 @@ const FeedClaim: React.FC<IHomeProps> = () => {
                 const validationTypes = ['is_vouched_for', 'agree', 'verified', 'validated']
                 const isValidationClaim = validationTypes.includes(claim.claim || '')
 
+                const action = (label: string, icon: React.ReactNode, onClick?: () => void) => (
+                  <Button size='small' startIcon={icon} onClick={onClick} sx={{ color: theme.palette.sidecolor }}>
+                    {label}
+                  </Button>
+                )
+
                 return (
                   <Grow in={true} timeout={1000} key={claimId}>
-                    <Box sx={{ marginBottom: '15px' }}>
-                      <Card
-                        sx={{
-                          maxWidth: 'fit',
-                          height: 'fit',
-                          borderRadius: '20px',
-                          display: isMediumScreen ? 'column' : 'row',
-                          backgroundColor: theme.palette.cardBackground,
-                          backgroundImage: 'none',
-                          color: theme.palette.texts
-                        }}
-                      >
-                        <Box sx={{ display: 'block', position: 'relative', width: '100%' }}>
-                          {/* Badge positioned absolutely in top right */}
-                          <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 1 }}>
-                            <Badge claim={claim.claim || ''} />
-                          </Box>
-
-                          <CardContent>
-                            <Box sx={{ pr: '140px' }}>
-                              {/* Add padding to prevent overlap with badge */}
-                              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-                                <IconButton
-                                  size='small'
-                                  onClick={() => toggleCardExpansion(claimId)}
-                                  sx={{
-                                    p: 0,
-                                    mr: 0.5,
-                                    mt: '4px',
-                                    color: theme.palette.date,
-                                    '&:hover': { backgroundColor: 'transparent' }
-                                  }}
-                                >
-                                  <Box
-                                    component='span'
-                                    sx={{
-                                      fontSize: '10px',
-                                      display: 'inline-block',
-                                      transform: expandedCards.has(claimId) ? 'rotate(90deg)' : 'rotate(0deg)',
-                                      transition: 'transform 0.2s'
-                                    }}
-                                  >
-                                    ▶
-                                  </Box>
-                                </IconButton>
-                                <Link
-                                  to={subject.uri}
-                                  onClick={e => handleLinkClick(e, subject.uri)}
-                                  target='_blank'
-                                  rel='noopener noreferrer'
-                                  style={{ textDecoration: 'none' }}
-                                >
-                                  <ClaimName claim={claim} searchTerm={searchTerm} />
-                                </Link>
-                              </Box>
-                            </Box>
-                            {claim.statement && (
-                              <Typography
-                                variant='body2'
-                                sx={{
-                                  padding: '5px 1 1 5px',
-                                  wordBreak: 'break-word',
-                                  marginBottom: '10px',
-                                  color: theme.palette.texts
-                                }}
-                              >
-                                <span
-                                  dangerouslySetInnerHTML={{
-                                    __html: searchTerm
-                                      ? claim.statement.replace(
-                                          new RegExp(`(${searchTerm})`, 'gi'),
-                                          (match: any) =>
-                                            `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
-                                        )
-                                      : claim.statement
-                                  }}
-                                />
-                              </Typography>
-                            )}
-                            {(claim.sourceURI || claim.effectiveDate) && (
-                              <Typography
-                                variant='body2'
-                                sx={{
-                                  padding: '5px 1 1 5px',
-                                  fontSize: '12px',
-                                  color: theme.palette.date,
-                                  fontFamily: 'Roboto, sans-serif'
-                                }}
-                              >
-                                {claim.sourceURI && `source: ${extractSourceName(claim.sourceURI)}`}
-                                {claim.sourceURI && claim.effectiveDate && ' · '}
-                                {claim.effectiveDate &&
-                                  new Date(claim.effectiveDate).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                  })}
-                              </Typography>
-                            )}
-
-                            {/* Expanded details */}
-                            {expandedCards.has(claimId) && (
-                              <Box sx={{ mt: 2, p: '5px 1 1 5px', animation: 'fadeIn 0.2s ease-in' }}>
-                                {claim.aspect && (
-                                  <Typography
-                                    variant='body2'
-                                    sx={{
-                                      mb: 0.5,
-                                      fontSize: '12px',
-                                      color: theme.palette.date,
-                                      fontFamily: 'Roboto, sans-serif'
-                                    }}
-                                  >
-                                    Aspect: {claim.aspect}
-                                  </Typography>
-                                )}
-                                {claim.howKnown && (
-                                  <Typography
-                                    variant='body2'
-                                    sx={{
-                                      mb: 0.5,
-                                      fontSize: '12px',
-                                      color: theme.palette.date,
-                                      fontFamily: 'Roboto, sans-serif'
-                                    }}
-                                  >
-                                    How Known: {claim.howKnown}
-                                  </Typography>
-                                )}
-                                {claim.score !== undefined && claim.score !== null && (
-                                  <Typography
-                                    variant='body2'
-                                    sx={{
-                                      mb: 0.5,
-                                      fontSize: '12px',
-                                      color: theme.palette.date,
-                                      fontFamily: 'Roboto, sans-serif'
-                                    }}
-                                  >
-                                    Score: {claim.score}
-                                  </Typography>
-                                )}
-                                {claim.amt !== undefined && claim.amt !== null && (
-                                  <Typography
-                                    variant='body2'
-                                    sx={{
-                                      mb: 0.5,
-                                      fontSize: '12px',
-                                      color: theme.palette.date,
-                                      fontFamily: 'Roboto, sans-serif'
-                                    }}
-                                  >
-                                    Amount: ${claim.amt} {claim.unit || ''}
-                                  </Typography>
-                                )}
-                              </Box>
-                            )}
-                          </CardContent>
-
-                          {/* Actions row */}
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'flex-start',
-                              position: 'relative',
-                              mt: '5px',
-                              mb: '10px',
-                              pl: '20px',
-                              pr: '20px'
-                            }}
+                    <Card variant='outlined' sx={{ mb: 2, backgroundColor: theme.palette.cardBackground, color: theme.palette.texts }}>
+                      <CardContent sx={{ pb: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1 }}>
+                          <IconButton
+                            size='small'
+                            aria-label={expandedCards.has(claimId) ? 'collapse' : 'expand'}
+                            onClick={() => toggleCardExpansion(claimId)}
+                            sx={{ color: theme.palette.date, p: 0, mt: 0.25 }}
                           >
-                            {/* Only show Validate, Evidence, and Certificate for non-validation claims */}
-                            {!isValidationClaim && (
-                              <>
-                                <Button
-                                  onClick={() => handleValidation(claimId)}
-                                  startIcon={<VerifiedOutlinedIcon />}
-                                  variant='text'
-                                  sx={{
-                                    fontSize: isMediumScreen ? '8px' : '12px',
-                                    marginRight: '10px',
-                                    p: '4px',
-                                    color: theme.palette.sidecolor,
-                                    '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                  }}
-                                >
-                                  Validate
-                                </Button>
-
-                                <Link to={'/report/' + claimId}>
-                                  <Button
-                                    startIcon={<FeedOutlinedIcon />}
-                                    variant='text'
-                                    sx={{
-                                      fontSize: isMediumScreen ? '8px' : '12px',
-                                      marginRight: '10px',
-                                      p: '4px',
-                                      color: theme.palette.sidecolor,
-                                      '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                    }}
-                                  >
-                                    Evidence
-                                  </Button>
-                                </Link>
-
-                                {/* Present button - opens presentation options (certificate, embed, share) */}
-                                {!!claimId && (
-                                  <Link to={`/present/${claimId}`}>
-                                    <Button
-                                      startIcon={<WorkspacePremiumOutlinedIcon />}
-                                      variant='text'
-                                      sx={{
-                                        fontSize: isMediumScreen ? '8px' : '12px',
-                                        marginRight: '10px',
-                                        p: '4px',
-                                        color: theme.palette.sidecolor,
-                                        '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                      }}
-                                    >
-                                      Present
-                                    </Button>
-                                  </Link>
-                                )}
-                                {!!claimId && (
-                                  <Link to={`/request-endorsement/${claimId}`}>
-                                    <Button
-                                      startIcon={<ForwardToInboxOutlinedIcon />}
-                                      variant='text'
-                                      sx={{
-                                        fontSize: isMediumScreen ? '8px' : '12px',
-                                        marginRight: '10px',
-                                        p: '4px',
-                                        color: theme.palette.sidecolor,
-                                        '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                      }}
-                                    >
-                                      Request endorsement
-                                    </Button>
-                                  </Link>
-                                )}
-                              </>
-                            )}
-
-                            {/* Always show Graph View */}
-                            <Button
-                              startIcon={<ShareOutlinedIcon />}
-                              onClick={() => handleSchema(claim)}
-                              variant='text'
-                              sx={{
-                                fontSize: isMediumScreen ? '8px' : '12px',
-                                marginRight: '10px',
-                                p: '4px',
-                                color: theme.palette.sidecolor,
-                                '&:hover': { backgroundColor: theme.palette.cardsbuttons }
+                            {expandedCards.has(claimId) ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
+                          </IconButton>
+                          <Link
+                            to={subject.uri}
+                            onClick={e => handleLinkClick(e, subject.uri)}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            style={{ textDecoration: 'none', flex: 1, minWidth: 0 }}
+                          >
+                            <ClaimName claim={claim} searchTerm={searchTerm} />
+                          </Link>
+                          <Badge claim={claim.claim || ''} />
+                        </Box>
+                        {claim.statement && (
+                          <Typography variant='body1' sx={{ mt: 1, wordBreak: 'break-word', color: theme.palette.texts }}>
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: searchTerm
+                                  ? claim.statement.replace(
+                                      new RegExp(`(${searchTerm})`, 'gi'),
+                                      (match: any) =>
+                                        `<span style="background-color:${theme.palette.searchBarBackground};">${match}</span>`
+                                    )
+                                  : claim.statement
                               }}
-                            >
-                              Graph View
-                            </Button>
+                            />
+                          </Typography>
+                        )}
+                        {(claim.sourceURI || claim.effectiveDate) && (
+                          <Typography variant='caption' sx={{ display: 'block', mt: 1, color: theme.palette.date }}>
+                            {claim.sourceURI && `source: ${extractSourceName(claim.sourceURI)}`}
+                            {claim.sourceURI && claim.effectiveDate && ' · '}
+                            {claim.effectiveDate &&
+                              new Date(claim.effectiveDate).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                          </Typography>
+                        )}
 
-                            {expandedCards.has(claimId) && (
-                              <Button
-                                startIcon={<SystemUpdateAltIcon />}
-                                onClick={() => handleExportClaim(claim)}
-                                variant='text'
-                                sx={{
-                                  fontSize: isMediumScreen ? '8px' : '12px',
-                                  marginRight: '10px',
-                                  p: '4px',
-                                  color: theme.palette.sidecolor,
-                                  '&:hover': { backgroundColor: theme.palette.cardsbuttons }
-                                }}
-                              >
-                                Export
-                              </Button>
+                        {/* Expanded details */}
+                        {expandedCards.has(claimId) && (
+                          <Box sx={{ mt: 1, animation: 'fadeIn 0.2s ease-in' }}>
+                            {claim.aspect && (
+                              <Typography variant='caption' sx={{ display: 'block', color: theme.palette.date }}>
+                                Aspect: {claim.aspect}
+                              </Typography>
                             )}
-
-                            <Box sx={{ flexGrow: 1 }} />
-
-                            {claim.stars && (
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  p: '4px',
-                                  flexWrap: 'wrap',
-                                  justifyContent: 'flex-end'
-                                }}
-                              >
-                                {Array.from({ length: claim.stars }).map((_, index) => (
-                                  <StarIcon
-                                    key={index}
-                                    sx={{
-                                      color: theme.palette.stars,
-                                      width: '3vw',
-                                      height: '3vw',
-                                      fontSize: '3vw',
-                                      maxWidth: '24px',
-                                      maxHeight: '24px'
-                                    }}
-                                  />
-                                ))}
-                              </Box>
+                            {claim.howKnown && (
+                              <Typography variant='caption' sx={{ display: 'block', color: theme.palette.date }}>
+                                How Known: {claim.howKnown}
+                              </Typography>
+                            )}
+                            {claim.score !== undefined && claim.score !== null && (
+                              <Typography variant='caption' sx={{ display: 'block', color: theme.palette.date }}>
+                                Score: {claim.score}
+                              </Typography>
+                            )}
+                            {claim.amt !== undefined && claim.amt !== null && (
+                              <Typography variant='caption' sx={{ display: 'block', color: theme.palette.date }}>
+                                Amount: ${claim.amt} {claim.unit || ''}
+                              </Typography>
                             )}
                           </Box>
-                        </Box>
-                      </Card>
-                    </Box>
+                        )}
+                      </CardContent>
+
+                      <CardActions sx={{ flexWrap: 'wrap', px: 2, pb: 2, gap: 0.5 }}>
+                        {/* Only show Validate, Evidence, and Certificate for non-validation claims */}
+                        {!isValidationClaim && (
+                          <>
+                            {action('Validate', <VerifiedOutlinedIcon />, () => handleValidation(claimId))}
+                            <Link to={'/report/' + claimId} style={{ textDecoration: 'none' }}>
+                              {action('Evidence', <FeedOutlinedIcon />)}
+                            </Link>
+                            {/* Present button - opens presentation options (certificate, embed, share) */}
+                            {!!claimId && (
+                              <Link to={`/present/${claimId}`} style={{ textDecoration: 'none' }}>
+                                {action('Present', <WorkspacePremiumOutlinedIcon />)}
+                              </Link>
+                            )}
+                            {!!claimId && (
+                              <Link to={`/request-endorsement/${claimId}`} style={{ textDecoration: 'none' }}>
+                                {action('Request endorsement', <ForwardToInboxOutlinedIcon />)}
+                              </Link>
+                            )}
+                          </>
+                        )}
+
+                        {/* Always show Graph View */}
+                        {action('Graph View', <ShareOutlinedIcon />, () => handleSchema(claim))}
+
+                        {expandedCards.has(claimId) &&
+                          action('Export', <SystemUpdateAltIcon />, () => handleExportClaim(claim))}
+
+                        {claim.stars && (
+                          <Rating
+                            readOnly
+                            size='small'
+                            value={claim.stars}
+                            sx={{ ml: 'auto', color: theme.palette.stars }}
+                          />
+                        )}
+                      </CardActions>
+                    </Card>
                   </Grow>
                 )
               })}
               <Grow in={showScrollButton}>
                 <Fab
                   aria-label='scroll to top'
+                  size='medium'
                   onClick={handleScrollToTop}
                   sx={{
                     position: 'fixed',
-                    bottom: {
-                      xs: 145,
-                      sm: 140,
-                      md: 120,
-                      lg: 120
-                    },
-                    right: 36,
+                    right: theme.spacing(2),
                     color: theme.palette.buttontext,
-                    width: '4.5vw',
-                    minWidth: '35px',
-                    minHeight: '35px',
-                    height: '4.5vw',
-                    maxWidth: '79px',
-                    maxHeight: '79px',
                     backgroundColor: theme.palette.buttons,
-                    '&:hover': { backgroundColor: theme.palette.buttonHover }
+                    '&:hover': { backgroundColor: theme.palette.buttonHover },
+                    // above the create-claim FAB, which sits above the bottom nav on phones
+                    bottom: isMediumScreen ? `calc(${theme.mixins.bottomNav.height + 72}px + env(safe-area-inset-bottom))` : theme.spacing(11)
                   }}
                 >
                   <ArrowUpwardIcon />
@@ -654,25 +459,15 @@ const FeedClaim: React.FC<IHomeProps> = () => {
           {isAuth && (
             <Fab
               aria-label='create claim'
+              size='medium'
               onClick={handleCreateClaim}
               sx={{
                 position: 'fixed',
-                bottom: {
-                  xs: 84,
-                  sm: 75,
-                  md: 45,
-                  lg: 40
-                },
-                right: 36,
+                right: theme.spacing(2),
                 color: theme.palette.buttontext,
-                width: '4.5vw',
-                minWidth: '35px',
-                minHeight: '35px',
-                height: '4.5vw',
-                maxWidth: '79px',
-                maxHeight: '79px',
                 backgroundColor: theme.palette.buttons,
-                '&:hover': { backgroundColor: theme.palette.buttonHover }
+                '&:hover': { backgroundColor: theme.palette.buttonHover },
+                bottom: isMediumScreen ? `calc(${theme.mixins.bottomNav.height + 16}px + env(safe-area-inset-bottom))` : theme.spacing(3)
               }}
             >
               <AddCircleOutlineOutlined />
