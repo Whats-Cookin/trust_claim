@@ -1,5 +1,5 @@
 import React from 'react'
-import { BottomNavigation, BottomNavigationAction } from '@mui/material'
+import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material'
 import {
   Home,
   AddCircleOutlineOutlined,
@@ -30,88 +30,54 @@ const BottomNav: React.FC<BottomNavProps> = ({ isAuth, toggleTheme, isDarkMode, 
     navigate('/login')
   }
 
-  const getActiveStyle = (path: string) => ({
-    backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
-    borderRadius: '0 0 50% 50%',
-    transition: 'background-color 0.3s',
-    marginBottom: '4px',
-    maxWidth: '52px'
-  })
-
+  // MUI pattern: BottomNavigation inside a fixed Paper; the current route is the selected value.
   return (
-    <BottomNavigation
+    <Paper
+      elevation={3}
+      square
       sx={{
-        bottom: 0,
         position: 'fixed',
-        height: '60px',
-        width: '100%',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: theme.zIndex.appBar,
+        pb: 'env(safe-area-inset-bottom)',
         backgroundColor: theme.palette.menuBackground,
-        color: theme.palette.sidecolor,
-        zIndex: 10
+        backgroundImage: 'none'
       }}
-      showLabels
     >
-      <BottomNavigationAction
-        label='Home'
-        icon={<Home />}
-        onClick={() => navigate('/feed')}
-        sx={{ ...getActiveStyle('/feed'), color: theme.palette.sidecolor }}
-      />
-      {isAuth && (
-        <BottomNavigationAction
-          label='Claim'
-          icon={<AddCircleOutlineOutlined />}
-          onClick={() => navigate('/claim')}
-          sx={{ ...getActiveStyle('/claim'), color: theme.palette.sidecolor }}
-        />
-      )}
-      <BottomNavigationAction
-        label='Endorse Us'
-        icon={<FavoriteBorder />}
-        onClick={onOpenEndorseUs}
+      <BottomNavigation
+        showLabels
+        value={location.pathname}
         sx={{
-          transition: 'background-color 0.3s',
-          maxWidth: '64px',
-          marginBottom: '4px',
-          color: theme.palette.sidecolor,
-          '& .MuiBottomNavigationAction-label': { fontSize: '0.65rem' }
+          height: theme.mixins.bottomNav.height,
+          backgroundColor: 'transparent',
+          '& .MuiBottomNavigationAction-root': { color: theme.palette.sidecolor, minWidth: 0 },
+          '& .Mui-selected': { color: theme.palette.primary.main }
         }}
-      />
-      <BottomNavigationAction
-        label={isDarkMode ? 'Light' : 'Dark'}
-        icon={isDarkMode ? <LightModeOutlined /> : <DarkMode />}
-        onClick={toggleTheme}
-        sx={{
-          transition: 'background-color 0.3s',
-          maxWidth: '52px',
-          marginBottom: '4px',
-          color: theme.palette.sidecolor
-        }}
-      />
-      {isAuth ? (
+      >
+        <BottomNavigationAction label='Home' value='/feed' icon={<Home />} onClick={() => navigate('/feed')} />
+        {isAuth && (
+          <BottomNavigationAction
+            label='Claim'
+            value='/claim'
+            icon={<AddCircleOutlineOutlined />}
+            onClick={() => navigate('/claim')}
+          />
+        )}
+        <BottomNavigationAction label='Endorse Us' icon={<FavoriteBorder />} onClick={onOpenEndorseUs} />
         <BottomNavigationAction
-          label='Logout'
-          icon={<Logout />}
-          onClick={handleLogout}
-          sx={{
-            transition: 'background-color 0.3s',
-            maxWidth: '52px',
-            marginBottom: '4px',
-            color: theme.palette.sidecolor
-          }}
+          label={isDarkMode ? 'Light' : 'Dark'}
+          icon={isDarkMode ? <LightModeOutlined /> : <DarkMode />}
+          onClick={toggleTheme}
         />
-      ) : (
-        <BottomNavigationAction
-          label='Login'
-          icon={<Login />}
-          onClick={() => navigate('/login')}
-          sx={{
-            ...getActiveStyle('/login'),
-            color: theme.palette.sidecolor
-          }}
-        />
-      )}
-    </BottomNavigation>
+        {isAuth ? (
+          <BottomNavigationAction label='Logout' icon={<Logout />} onClick={handleLogout} />
+        ) : (
+          <BottomNavigationAction label='Login' value='/login' icon={<Login />} onClick={() => navigate('/login')} />
+        )}
+      </BottomNavigation>
+    </Paper>
   )
 }
 

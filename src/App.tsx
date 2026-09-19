@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
-import { CssBaseline, ThemeProvider, GlobalStyles, Box, useTheme, useMediaQuery } from '@mui/material'
+import { CssBaseline, ThemeProvider, GlobalStyles, Box, Toolbar, useTheme, useMediaQuery } from '@mui/material'
 import { darkModeTheme, lightModeTheme } from './Theme'
 import Loader from './components/Loader'
 import Snackbar from './components/Snackbar'
@@ -93,6 +93,7 @@ const App = () => {
   // A testimonial invite goes to someone who has never seen the app; give them
   // the page and nothing else.
   const isInvitePage = location.pathname.startsWith('/t/') || location.pathname.startsWith('/t2/')
+  const hasChrome = !isLoginPage && !isRegisterPage && !isEmbedPage && !isInvitePage
 
   const globalStyles = (
     <GlobalStyles
@@ -114,7 +115,7 @@ const App = () => {
       <CssBaseline />
       {globalStyles}
 
-      {!isLoginPage && !isRegisterPage && !isEmbedPage && !isInvitePage && (
+      {hasChrome && (
         <Navbar
           isAuth={isAuthenticated}
           toggleTheme={toggleTheme}
@@ -124,7 +125,7 @@ const App = () => {
         />
       )}
       <Box sx={{ display: 'flex' }}>
-        {!isLoginPage && !isRegisterPage && !isEmbedPage && !isInvitePage && (
+        {hasChrome && (
           <Sidebar
             isAuth={isAuthenticated}
             isOpen={isSidebarOpen}
@@ -141,8 +142,7 @@ const App = () => {
             flexDirection: 'column',
             flex: 1,
             minHeight: '100vh',
-            backgroundColor: theme => theme.palette.pageBackground,
-            fontSize: 'calc(3px + 2vmin)',
+            backgroundColor: t => t.palette.pageBackground,
             overflow: 'auto',
             width: '100%',
             boxSizing: 'border-box'
@@ -158,9 +158,13 @@ const App = () => {
               alignItems: isMediumScreen || isLoginPage || isRegisterPage ? 'center' : 'stretch',
               justifyContent: 'flex-start',
               width: '100%',
-              paddingTop: isNavbarVisible && !isLoginPage && !isRegisterPage && !isInvitePage ? '64px' : '0'
+              // Phones: clear the fixed bottom navigation and the home-indicator safe area
+              paddingBottom: t =>
+                hasChrome && isMediumScreen ? `calc(${t.mixins.bottomNav.height}px + env(safe-area-inset-bottom))` : 0
             }}
           >
+            {/* Spacer the height of the fixed AppBar (MUI "fixed placement" pattern) */}
+            {hasChrome && <Toolbar />}
             <Routes>
               <Route path='feed' element={<FeedClaim {...commonProps} />} />
               <Route path='report/:claimId' element={<ClaimReport />} />

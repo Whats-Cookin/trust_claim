@@ -11,27 +11,19 @@ const MainContainer: React.FC<Props> = ({ children, flexRowOnDesktop, sx }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
+  // One content column for every page: page-background behind, cards carry their own surface.
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: flexRowOnDesktop && !isMobile ? 'row' : 'column',
         justifyContent: flexRowOnDesktop && !isMobile ? 'flex-end' : 'center',
-        height: 'auto',
-
-        mt: isMobile ? '8px' : '16px',
-        mb: isMobile ? '77px' : '28px',
-
-        paddingTop: isMobile ? '20px' : '41px',
-        paddingBottom: '20px',
-        paddingLeft: isMobile ? '16px' : '30px',
-        paddingRight: isMobile ? '16px' : '30px',
-
-        maxWidth: '100%',
-        width: '95%',
+        width: '100%',
+        maxWidth: theme.breakpoints.values.md,
+        mx: 'auto',
+        px: { xs: 2, md: 3 },
+        py: { xs: 2, md: 3 },
         boxSizing: 'border-box',
-        backgroundColor: theme.palette.menuBackground,
-        borderRadius: '20px',
         ...(sx ?? {})
       }}
     >
