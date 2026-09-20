@@ -135,7 +135,6 @@ const App = () => {
           />
         )}
         <Box
-          component='main'
           sx={{
             display: 'flex',
             flexDirection: 'column',
