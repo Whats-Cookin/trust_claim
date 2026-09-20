@@ -73,13 +73,14 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
             textWrap: 'wrap'
           }}
         >
-          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '16px' }} />
+          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: isSmallScreen ? '8px' : '16px' }} />
           <Typography
             variant='body1'
             sx={{
               color: theme.palette.maintext,
               flexWrap: 'wrap',
-              fontSize: isSmallScreen ? '20px' : '20px',
+              fontSize: isSmallScreen ? '15px' : '20px',
+              whiteSpace: 'nowrap',
               transition: 'opacity 0.3s'
             }}
           >
