@@ -26,15 +26,16 @@ import type { Claim } from '../../api/types'
 const PageContainer = styled(Box)(({ theme }) => ({
   minHeight: 'calc(100vh - 64px)',
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(2),
-  paddingTop: theme.spacing(1),
+  maxWidth: 760,
+  margin: '0 auto',
+  padding: theme.spacing(3, 2, 6),
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1.5)
+    padding: theme.spacing(2, 1.5, 10)
   }
 }))
 
 const Section = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(3)
+  marginBottom: theme.spacing(4)
 }))
 
 const ValidationCard = styled(Card)(({ theme }) => ({
@@ -269,7 +270,7 @@ const ClaimReport: React.FC = () => {
       {/* The Claim */}
       <Section>
         <ValidationCard elevation={0}>
-          <CardContent sx={{ p: 2 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant='overline' color='text.secondary' sx={{ display: 'block', mb: 1 }}>
               {claim.claim || 'Claim'}
               {claim.howKnown && ` · ${claim.howKnown.replace(/_/g, ' ').toLowerCase()}`}
@@ -285,9 +286,9 @@ const ClaimReport: React.FC = () => {
             {reportData.image && (
               <Box sx={{ my: 2 }}>
                 {isVideoUrl(reportData.image) ? (
-                  <video src={reportData.image} controls style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }} />
+                  <video src={reportData.image} controls style={{ width: '100%', maxWidth: 320, borderRadius: 8 }} />
                 ) : (
-                  <img src={reportData.image} alt='' style={{ width: '50vw', maxWidth: '100%', borderRadius: 8 }} />
+                  <img src={reportData.image} alt='' style={{ width: '100%', maxWidth: 320, borderRadius: 8 }} />
                 )}
               </Box>
             )}
