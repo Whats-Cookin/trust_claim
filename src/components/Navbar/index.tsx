@@ -50,38 +50,62 @@ const Navbar: React.FC<NavbarProps> = ({ isAuth, toggleTheme, isDarkMode, isSide
   return (
     <AppBar
       position='fixed'
-      elevation={0}
       sx={{
         backgroundColor: theme.palette.pageBackground,
         color: theme.palette.texts,
         backgroundImage: 'none',
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        zIndex: theme.zIndex.appBar,
+        boxShadow: 'none',
+        width: '100%',
+        zIndex: 999,
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.3s ease-in-out',
+        flexDirection: 'row',
         display: isSmallScreen ? displayValue : 'block'
       }}
     >
-      <Toolbar sx={{ gap: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
-          <Box component='img' src={Logo} alt='LinkedTrust Logo' sx={{ width: 28, height: 28, flexShrink: 0 }} />
-          {/* MUI "App bar with search field": the wordmark yields to the search on phones, the logo stays */}
+      <Toolbar sx={{ display: 'flex' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            width: '50%',
+            textWrap: 'wrap'
+          }}
+        >
+          <img src={Logo} alt='LinkedTrust Logo' style={{ width: '28px', height: '28px', marginRight: '16px' }} />
           <Typography
-            variant='h6'
-            noWrap
-            sx={{ color: theme.palette.maintext, fontWeight: 500, display: { xs: 'none', sm: 'block' } }}
+            variant='body1'
+            sx={{
+              color: theme.palette.maintext,
+              flexWrap: 'wrap',
+              fontSize: isSmallScreen ? '20px' : '20px',
+              transition: 'opacity 0.3s'
+            }}
           >
             Linked Trust
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto', gap: 2 }}>
           <SearchBar />
           {isAuth ? (
             hasIdentity() ? (
               <IdentityButton />
             ) : null
           ) : (
-            <Button onClick={() => navigate('/login')} color='inherit' sx={{ color: theme.palette.sidecolor }}>
+            <Button
+              onClick={() => navigate('/login')}
+              sx={{
+                color: theme.palette.sidecolor || theme.palette.text.secondary,
+                fontSize: '14px',
+                textTransform: 'none',
+                minWidth: 'auto',
+                padding: '4px 12px',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                }
+              }}
+            >
               Login
             </Button>
           )}

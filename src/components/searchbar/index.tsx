@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material/styles'
-import { Box, TextField, IconButton } from '@mui/material'
+import { Box, TextField, IconButton, useMediaQuery } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -12,6 +12,8 @@ const SearchBar = () => {
   const query = new URLSearchParams(search).get('query') ?? ''
   const [searchVal, setSearchVal] = useState<string>(query)
   const searchRef = useRef<HTMLDivElement | null>(null)
+
+  const isSmallScreen = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
     const currentQuery = new URLSearchParams(location.search).get('query') ?? ''
@@ -46,10 +48,19 @@ const SearchBar = () => {
   }
 
   return (
-    <Box ref={searchRef} sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box
+      ref={searchRef}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        width: 'auto',
+        position: 'relative',
+        backgroundColor: 'transparent'
+      }}
+    >
       <IconButton
         type='button'
-        sx={{ color: theme.palette.searchBarText }}
+        sx={{ color: theme.palette.searchBarText, zIndex: 1 }}
         aria-label='search'
         onClick={handleSearch}
         className='search-btn'
@@ -61,11 +72,36 @@ const SearchBar = () => {
         onChange={handleInputChange}
         onKeyUp={handleSearchKeypress}
         variant='standard'
-        placeholder='Search'
-        inputProps={{ 'aria-label': 'search' }}
+        placeholder='Type to search...'
+        InputProps={{
+          sx: {
+            color: 'white',
+            '&::before': {
+              borderBottom: `2px solid ${theme.palette.searchBarText}`
+            },
+            '&:hover:not(.Mui-disabled)::before': {
+              borderBottom: `2px solid ${theme.palette.searchBarText}`
+            },
+            '&.Mui-focused::before': {
+              borderBottom: `2px solid ${theme.palette.searchBarText}`
+            }
+          }
+        }}
         sx={{
-          width: { xs: 120, sm: 200, md: 280 },
-          input: { fontSize: theme.typography.body2.fontSize, fontWeight: 500, color: theme.palette.searchBarText }
+          flex: 1,
+          input: {
+            fontSize: isSmallScreen ? '12px' : '14px',
+            fontWeight: 500,
+            textAlign: 'left',
+            color: theme.palette.searchBarText,
+            letterSpacing: '1px'
+          },
+          minWidth: isSmallScreen ? '155px' : '180px',
+          maxWidth: isSmallScreen ? '260px' : '360px',
+          width: isSmallScreen ? '35vw' : '25vw',
+          overflow: 'hidden',
+          position: 'absolute',
+          right: 0
         }}
         className='search-txt'
       />

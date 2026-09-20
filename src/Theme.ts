@@ -1,14 +1,7 @@
 import { createTheme } from '@mui/material/styles'
-import { primaryColors, darkColors, neutralColors, uiColors, linkedTrustTheme } from './theme/colors'
+import { primaryColors, lightColors, darkColors, neutralColors, uiColors } from './theme/colors'
 
 declare module '@mui/material/styles' {
-  interface Mixins {
-    bottomNav: { height: number }
-  }
-  interface MixinsOptions {
-    bottomNav?: { height: number }
-  }
-
   interface Palette {
     formBackground: string
     texts: string
@@ -96,37 +89,8 @@ declare module '@mui/material/Typography' {
   }
 }
 
-const radius = linkedTrustTheme.borderRadius
-
-// Shared between light and dark: type scale, shape, component defaults.
-// body1/body2 are one size at every width so a component's fontSize is what renders.
-const baseTheme = {
-  typography: {
-    fontFamily: 'Montserrat',
-    body1: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.5 },
-    body2: { fontSize: '0.875rem', fontWeight: 400, lineHeight: 1.43 },
-    caption: { fontSize: '0.75rem', fontWeight: 400, lineHeight: 1.4 },
-    button: { textTransform: 'none' as const, fontWeight: 600 }
-  },
-  shape: { borderRadius: parseInt(radius.md, 10) },
-  mixins: {
-    // Fixed bottom navigation on phones; pages clear it with this height plus the safe-area inset.
-    bottomNav: { height: 56 }
-  },
-  breakpoints: {
-    values: { xs: 0, sm: 600, md: 900, lg: 1280, xl: 1920 }
-  }
-}
-
-const baseComponents = {
-  MuiCard: { styleOverrides: { root: { borderRadius: radius.lg, backgroundImage: 'none' } } },
-  MuiLink: { defaultProps: { underline: 'hover' as const } }
-}
-
 const darkModeTheme = createTheme({
-  ...baseTheme,
   components: {
-    ...baseComponents,
     MuiCssBaseline: {
       styleOverrides: `
       input:-webkit-autofill,
@@ -141,19 +105,31 @@ const darkModeTheme = createTheme({
       `
     }
   },
+  typography: {
+    fontFamily: 'Montserrat',
+    body1: {
+      fontSize: '1rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
+      '@media (min-width:600px)': {
+        fontSize: '1.25rem'
+      }
+    },
+    body2: {
+      fontSize: '0.875rem',
+      fontWeight: 300,
+      lineHeight: 1.43,
+      '@media (min-width:600px)': {
+        fontSize: '1rem'
+      }
+    }
+  },
   palette: {
+    primary: { main: '#00b2e5', contrastText: '#ffffff' },
     mode: 'dark',
-    primary: { main: primaryColors.cyan, contrastText: neutralColors.gray[900] },
     background: {
-      default: neutralColors.gray[900],
-      paper: neutralColors.gray[800]
+      default: neutralColors.gray[900]
     },
-    text: {
-      primary: neutralColors.white,
-      secondary: neutralColors.gray[300],
-      disabled: neutralColors.gray[500]
-    },
-    divider: neutralColors.gray[700],
     smallButton: neutralColors.gray[600],
     buttons: primaryColors.green,
     buttonHover: darkColors.green,
@@ -184,13 +160,20 @@ const darkModeTheme = createTheme({
     sidecolor: neutralColors.white,
     darkinputtext: neutralColors.white,
     input: neutralColors.gray[700]
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1280,
+      xl: 1920
+    }
   }
 })
 
 const lightModeTheme = createTheme({
-  ...baseTheme,
   components: {
-    ...baseComponents,
     MuiCssBaseline: {
       styleOverrides: `
       input:-webkit-autofill,
@@ -205,19 +188,31 @@ const lightModeTheme = createTheme({
       `
     }
   },
+  typography: {
+    fontFamily: 'Montserrat',
+    body1: {
+      fontSize: '1rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
+      '@media (min-width:600px)': {
+        fontSize: '1.25rem'
+      }
+    },
+    body2: {
+      fontSize: '0.875rem',
+      fontWeight: 300,
+      lineHeight: 1.43,
+      '@media (min-width:600px)': {
+        fontSize: '1rem'
+      }
+    }
+  },
   palette: {
+    primary: { main: '#00b2e5', contrastText: '#ffffff' },
     mode: 'light',
-    primary: { main: uiColors.linkText, light: primaryColors.cyan, contrastText: neutralColors.white },
     background: {
-      default: uiColors.pageBg,
-      paper: uiColors.cardBg
+      default: uiColors.pageBg
     },
-    text: {
-      primary: uiColors.textPrimary,
-      secondary: uiColors.textSecondary,
-      disabled: uiColors.textMuted
-    },
-    divider: uiColors.border,
     smallButton: neutralColors.gray[500],
     buttons: primaryColors.green,
     buttonHover: darkColors.green,
@@ -247,6 +242,15 @@ const lightModeTheme = createTheme({
     sidecolor: uiColors.textPrimary,
     darkinputtext: uiColors.textPrimary,
     input: neutralColors.gray[100]
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1280,
+      xl: 1920
+    }
   }
 })
 

@@ -8,7 +8,6 @@ import {
   Button,
   useTheme,
   Typography,
-  Toolbar,
   useMediaQuery
 } from '@mui/material'
 import { Home, DarkMode, Logout, Login } from '@mui/icons-material'
@@ -52,11 +51,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     navigate('/login')
   }
 
-  const iconStyle = { color: theme.palette.sidecolor }
+  const iconStyle = { color: theme.palette.sidecolor, width: '1.5rem', height: '1.5rem' }
 
   const getActiveStyle = (path: string) => ({
     backgroundColor: location.pathname === path ? theme.palette.pageBackground : 'transparent',
-    transition: 'background-color 0.3s, box-shadow 0.3s'
+    transition: 'background-color 0.3s, box-shadow 0.3s',
+    minHeight: '65px'
   })
 
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -75,47 +75,41 @@ const Sidebar: React.FC<SidebarProps> = ({
     )
   }
 
-  const railWidth = isOpen ? theme.spacing(25) : theme.spacing(5)
-
-  // Permanent drawer clipped under the AppBar (MUI pattern): full viewport height, sticky, a
-  // Toolbar-height spacer at the top; the page scrolls beside it.
   return (
     <Drawer
       variant='permanent'
       sx={{
-        width: railWidth,
+        width: isOpen ? 200 : 40,
         flexShrink: 0,
-        position: 'sticky',
-        top: 0,
-        alignSelf: 'flex-start',
-        height: '100vh',
         '& .MuiDrawer-paper': {
-          width: railWidth,
-          position: 'static',
-          height: '100%',
+          width: isOpen ? 200 : 40,
+          position: 'relative',
           boxSizing: 'border-box',
           backgroundColor: theme.palette.menuBackground,
           color: theme.palette.sidecolor,
-          transition: 'width 0.3s',
+          transition: 'width 0.3s, opacity 0.3s, margin-top 0.3s',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
+          overflow: 'hidden',
+          borderRight: 'none',
+          borderRadius: '0 20px 40px 0',
+          marginTop: isNavbarVisible && !isAuthPage ? '64px' : '0',
+          height: isNavbarVisible && !isAuthPage ? 'calc(100vh - 64px)' : '100vh',
           overflowX: 'hidden',
-          borderRight: `1px solid ${theme.palette.divider}`,
           // Collapsed the rail is 40px, but a list item's default padding plus
           // a 24px icon needs 56px, so the icons spill over the edge.
           '& .MuiListItemButton-root': {
-            px: isOpen ? 2 : 1,
-            gap: isOpen ? 2.5 : 0,
-            minHeight: theme.spacing(8),
+            paddingLeft: isOpen ? '16px' : '8px',
+            paddingRight: isOpen ? '16px' : '8px',
+            gap: isOpen ? '20px' : 0,
             justifyContent: isOpen ? 'flex-start' : 'center'
           }
         }
       }}
     >
-      <Toolbar />
-      <List sx={{ pt: 0, flex: 1 }}>
-        <ListItemButton sx={{ transition: 'all 0.3s' }} onClick={toggleSidebar}>
+      <List sx={{ paddingTop: '0px' }}>
+        <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleSidebar}>
           {isOpen ? <KeyboardDoubleArrowLeftIcon sx={iconStyle} /> : <KeyboardDoubleArrowRightIcon sx={iconStyle} />}
           <ListItemText
             primary='Close'
@@ -124,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         </ListItemButton>
 
-        <ListItemButton sx={{ ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/feed') }} onClick={() => navigate('/feed')}>
           <Home sx={iconStyle} />
           <ListItemText
             primary='Home'
@@ -134,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </ListItemButton>
 
         {isAuth && (
-          <ListItemButton sx={{ ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/claim') }} onClick={() => navigate('/claim')}>
             <AddCircleOutlineOutlinedIcon sx={iconStyle} />
             <ListItemText
               primary='Claim'
@@ -145,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
 
         {isAuth && (
-          <ListItemButton sx={{ ...getActiveStyle('/mine') }} onClick={() => navigate('/mine')}>
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/mine') }} onClick={() => navigate('/mine')}>
             <FormatQuoteIcon sx={iconStyle} />
             <ListItemText
               primary='Mine'
@@ -157,7 +151,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {isAuth && (
           <ListItemButton
-            sx={{ ...getActiveStyle('/request-testimonial') }}
+            sx={{ gap: '20px', ...getActiveStyle('/request-testimonial') }}
             onClick={() => navigate('/request-testimonial')}
           >
             <StarOutlineIcon sx={iconStyle} />
@@ -169,7 +163,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </ListItemButton>
         )}
 
-        <ListItemButton sx={{ transition: 'all 0.3s' }} onClick={toggleTheme}>
+        <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={toggleTheme}>
           {isDarkMode ? <LightModeOutlinedIcon sx={iconStyle} /> : <DarkMode sx={iconStyle} />}
           <ListItemText
             primary={isDarkMode ? 'Light' : 'Dark'}
@@ -178,7 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         </ListItemButton>
 
-        <ListItemButton sx={{ ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
+        <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/at') }} onClick={() => navigate('/at')}>
           <AlternateEmailIcon sx={iconStyle} />
           <ListItemText
             primary='ATProto'
@@ -188,7 +182,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </ListItemButton>
 
         {isAuth ? (
-          <ListItemButton sx={{ transition: 'all 0.3s' }} onClick={handleLogout}>
+          <ListItemButton sx={{ gap: '20px', transition: 'all 0.3s', minHeight: '65px' }} onClick={handleLogout}>
             <Logout sx={iconStyle} />
             <ListItemText
               primary='Log out'
@@ -197,7 +191,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             />
           </ListItemButton>
         ) : (
-          <ListItemButton sx={{ ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
+          <ListItemButton sx={{ gap: '20px', ...getActiveStyle('/login') }} onClick={() => navigate('/login')}>
             <Login sx={iconStyle} />
             <ListItemText
               primary='Login'
@@ -217,21 +211,45 @@ const Footer: React.FC<{ isOpen: boolean; onOpenEndorseUs: () => void }> = ({ is
   const theme = useTheme()
 
   return (
-    <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', p: 1, width: '100%', gap: 1 }}>
-      <Button variant='contained' color='primary' fullWidth onClick={onOpenEndorseUs}>
+    <Box sx={{ display: isOpen ? 'flex' : 'none', flexDirection: 'column', padding: '0.5rem', width: '100%', gap: 1 }}>
+      <Button
+        variant='contained'
+        color='primary'
+        fullWidth
+        onClick={onOpenEndorseUs}
+        sx={{
+          textTransform: 'none',
+          fontWeight: 700,
+          py: 1,
+          borderRadius: 2,
+          boxShadow: theme.shadows[2]
+        }}
+      >
         Endorse Us
       </Button>
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '10px',
+          textAlign: 'left',
+          justifyContent: 'flex-start',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}
+      >
         <Link to='/terms' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-          <Typography variant='caption'>Terms of Service</Typography>
+          <Typography variant='body2'>Terms of Service</Typography>
         </Link>
         <Link to='/privacy' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-          <Typography variant='caption'>Privacy Policy</Typography>
+          <Typography variant='body2'>Privacy Policy</Typography>
         </Link>
       </Box>
-      <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
-        <Typography variant='caption'>© {new Date().getFullYear()} LinkedTrust</Typography>
-      </Link>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+        <Link to='https://linkedtrust.us/' style={{ color: theme.palette.texts, textDecoration: 'none' }}>
+          <Typography variant='body2'>© {new Date().getFullYear()} LinkedTrust</Typography>
+        </Link>
+      </Box>
     </Box>
   )
 }
