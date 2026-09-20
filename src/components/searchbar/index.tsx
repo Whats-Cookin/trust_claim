@@ -96,9 +96,9 @@ const SearchBar = () => {
             color: theme.palette.searchBarText,
             letterSpacing: '1px'
           },
-          minWidth: isSmallScreen ? '84px' : '180px',
+          minWidth: isSmallScreen ? '155px' : '180px',
           maxWidth: isSmallScreen ? '260px' : '360px',
-          width: isSmallScreen ? '22vw' : '25vw',
+          width: isSmallScreen ? '35vw' : '25vw',
           overflow: 'hidden',
           position: 'absolute',
           right: 0
