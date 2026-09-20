@@ -10,7 +10,6 @@ import DayNightToggle from 'react-day-and-night-toggle'
 import { useTheme } from '@mui/material/styles'
 import metaicon from './metamask-icon.svg'
 import styles from './styles'
-import { brandColors, neutralColors, linkedTrustTheme } from '../../theme/colors'
 import ILoginProps from './types'
 import loginIllustrationPhone from '../../assets/images/loginIllustrationPhone.svg'
 import { connectWallet, createDidFromAddress } from '../../utils/web3Auth'
@@ -135,19 +134,6 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
     }
   })
 
-  const socialCircle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: theme.palette.buttontext,
-    backgroundColor: theme.palette.formBackground,
-    cursor: 'pointer',
-    boxShadow: linkedTrustTheme.shadows.sm,
-    borderRadius: '50%',
-    width: theme.spacing(10),
-    height: theme.spacing(10)
-  }
-
   let ethLoginOpt
   if (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) {
     ethLoginOpt = (
@@ -173,7 +159,14 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
   }
 
   return (
-    <Box sx={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
+    <Box
+      sx={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
       <Box
         sx={{
           width: '11.528vw',
@@ -182,10 +175,9 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           height: '11.528vw',
           minHeight: '88px',
           maxHeight: '100px',
-          bottom: theme.spacing(2),
-          left: theme.spacing(2),
-          position: 'absolute',
-          pointerEvents: 'none'
+          bottom: '2.344vh',
+          left: '4.306vw',
+          position: 'absolute'
         }}
       >
         <Box component='img' src={circles} alt='' sx={{ width: '100px' }} />
@@ -197,39 +189,110 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
           minHeight: '400px',
           backgroundImage: `url(${loginIllustrationPhone})`,
           backgroundRepeat: 'no-repeat',
-          borderRadius: `0 0 ${linkedTrustTheme.borderRadius.lg} ${linkedTrustTheme.borderRadius.lg}`,
+          borderRadius: '0 0 20px 20px',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       />
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', px: 2, mt: -19 }}>
-        <form onSubmit={onSubmit} style={{ width: '100%', maxWidth: 533 }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+          bottom: '152px'
+        }}
+      >
+        <form onSubmit={onSubmit}>
           <Box
             sx={{
-              p: 3,
-              borderRadius: linkedTrustTheme.borderRadius.lg,
+              width: '74.028vw',
+              minWidth: '320px',
+              maxWidth: '533px',
+              height: '49.844vh',
+              minHeight: '430px',
+              maxHeight: '638px',
+              padding: '20px',
+              borderRadius: '20px',
               display: 'flex',
               flexDirection: 'column',
+              justifyContent: 'center',
               alignItems: 'center',
-              gap: 2,
               position: 'relative',
-              overflow: 'hidden',
-              backgroundColor: theme.palette.pageBackground
+              backgroundColor: theme.palette.pageBackground,
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
             }}
           >
-            <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', alignItems: 'center' }}>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '0px',
+                right: '0px',
+                display: 'flex',
+                alignItems: 'center',
+                zIndex: '1'
+              }}
+            >
               <img src={Ellipse} alt='' />
             </Box>
-            <Box sx={{ position: 'absolute', top: theme.spacing(2), right: theme.spacing(2), zIndex: 1 }}>
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '30px',
+                right: '7px',
+                display: 'flex',
+                alignItems: 'center',
+                zIndex: '5'
+              }}
+            >
               <DayNightToggle onChange={toggleTheme} checked={isDarkMode} size={30} />
             </Box>
-            <Typography variant='h4' sx={{ color: theme.palette.texts, fontWeight: 500, zIndex: 1 }}>
+            <Typography
+              variant='h5'
+              sx={{
+                color: theme.palette.texts,
+                top: '15px',
+                right: '51%',
+                transform: 'translateX(50%)',
+                textAlign: 'center',
+                fontWeight: 500,
+                fontSize: '2.5rem',
+                position: 'absolute',
+                marginBottom: '20px',
+                zIndex: '1'
+              }}
+            >
               Sign in
             </Typography>
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', zIndex: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '29px',
+                alignItems: 'center',
+                marginBottom: '20px',
+                mt: '65px',
+                zIndex: '2',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
+              }}
+            >
               <Box
                 sx={{
-                  ...socialCircle
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.formBackground,
+                  cursor: 'pointer',
+                  boxShadow: '0px 1px 5px #ffffff20',
+                  borderRadius: '50%',
+                  width: '82px',
+                  height: '82px'
                 }}
               >
                 <GoogleLogin
@@ -258,29 +321,57 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
               </Box>
               <Box
                 sx={{
-                  ...socialCircle
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.formBackground,
+                  cursor: 'pointer',
+                  boxShadow: '0px 1px 5px #ffffff20',
+                  borderRadius: '50%',
+                  width: '82px',
+                  height: '82px'
                 }}
               >
                 <MuiLink href={githubUrl} sx={{ color: theme.palette.texts }}>
-                  <GitHubIcon sx={{ fontSize: 44 }} />
+                  <GitHubIcon sx={{ fontSize: '50px' }} />
                 </MuiLink>
               </Box>
               {/* Bluesky */}
               <Box
                 onClick={() => setShowBlueskyInput(!showBlueskyInput)}
                 sx={{
-                  ...socialCircle,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: theme.palette.buttontext,
                   backgroundColor: showBlueskyInput ? theme.palette.pageBackground : theme.palette.formBackground,
+                  cursor: 'pointer',
+                  boxShadow: '0px 1px 5px #ffffff20',
+                  borderRadius: '50%',
+                  width: '82px',
+                  height: '82px',
                   transition: 'background-color 0.2s'
                 }}
               >
-                <Typography sx={{ fontSize: 32, lineHeight: 1 }}>🦋</Typography>
+                <Typography sx={{ fontSize: '36px', fontWeight: 700, color: '#0085ff', lineHeight: 1 }}>🦋</Typography>
               </Box>
               {/* MetaMask — hidden on mobile, preserved for future use */}
               <Box
                 sx={{
-                  ...socialCircle,
-                  display: 'none'
+                  display: 'none',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: theme.palette.buttontext,
+                  backgroundColor: theme.palette.formBackground,
+                  cursor: 'pointer',
+                  boxShadow: '0px 1px 5px #ffffff20',
+                  borderRadius: '50%',
+                  width: '82px',
+                  height: '82px'
                 }}
               >
                 {ethLoginOpt}
@@ -317,8 +408,8 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                   sx={{
                     textTransform: 'none',
                     whiteSpace: 'nowrap',
-                    backgroundColor: brandColors.bluesky,
-                    '&:hover': { backgroundColor: brandColors.blueskyHover }
+                    backgroundColor: '#0085ff',
+                    '&:hover': { backgroundColor: '#0066cc' }
                   }}
                 >
                   {blueskyLoading ? '...' : 'Go'}
@@ -364,7 +455,8 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
                 },
                 '& .MuiFormHelperText-root': {
                   color: theme.palette.darkinputtext
-                }
+                },
+                paddingBottom: '53px'
               }}
               fullWidth
               variant='filled'
@@ -419,33 +511,48 @@ const MobileLogin = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleThe
             />
             <Button
               sx={{
-                minWidth: 200,
-                px: 4,
+                width: '31.528vw',
+                minWidth: '200px',
+                maxWidth: '227px',
+                height: '72px',
                 color: theme.palette.buttontext,
                 backgroundColor: theme.palette.buttons,
                 '&:hover': { backgroundColor: theme.palette.buttonHover },
-                borderRadius: linkedTrustTheme.borderRadius.full,
-                mt: 1
+                borderRadius: '80px',
+                fontWeight: 'bold',
+                fontSize: '20px',
+                marginTop: '20px'
               }}
               type='submit'
               variant='contained'
-              size='large'
+              size='medium'
             >
               Sign in <LogoutIcon sx={{ ml: 2 }} />
             </Button>
           </Box>
         </form>
       </Box>
-      <Typography variant='body1' sx={{ color: theme.palette.texts, textAlign: 'center', my: 3 }}>
-        Click here to
-        <Typography
-          component='span'
-          onClick={() => navigate('/register')}
-          sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
-        >
-          Register
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          position: 'relative',
+          bottom: '102px'
+        }}
+      >
+        <Typography variant='body1' sx={{ color: theme.palette.texts, marginTop: '20px' }}>
+          Click here to
+          <Typography
+            component='span'
+            onClick={() => navigate('/register')}
+            sx={{ color: theme.palette.maintext, display: 'inline', cursor: 'pointer', ml: 1 }}
+          >
+            Register
+          </Typography>
         </Typography>
-      </Typography>
+      </Box>
     </Box>
   )
 }

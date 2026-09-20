@@ -48,16 +48,7 @@ export const darkColors = {
   purple: '#6B21A8',
   green: '#065F46',
   amber: '#78350F',
-  red: '#7F1D1D',
-  teal: '#115E59'
-} as const
-
-// Third-party brand colours, used only on that brand's own button
-export const brandColors = {
-  bluesky: '#0085FF',
-  blueskyHover: '#0066CC',
-  linkedin: '#0077B5',
-  linkedinHover: '#005885'
+  red: '#7F1D1D'
 } as const
 
 // Neutral colors

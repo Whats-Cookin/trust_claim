@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { brandColors } from '../../theme/colors'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
   Box,
@@ -158,7 +157,7 @@ const Present: React.FC = () => {
             const url = encodeURIComponent(linkedInShareUrl)
             window.open(`https://www.linkedin.com/feed/?shareActive=true&shareUrl=${url}&text=${text}`, '_blank')
           }}
-          sx={{ backgroundColor: brandColors.linkedin, '&:hover': { backgroundColor: brandColors.linkedinHover } }}
+          sx={{ textTransform: 'none', backgroundColor: '#0077B5', '&:hover': { backgroundColor: '#005885' } }}
         >
           Share on LinkedIn
         </Button>

@@ -517,12 +517,8 @@ const Explore = (homeProps: IHomeProps) => {
           onClick={handleFitToScreen}
           sx={{
             position: 'fixed',
-            // clears the fixed bottom navigation on phones
-            bottom: {
-              xs: `calc(${theme.mixins.bottomNav.height}px + ${theme.spacing(2)} + env(safe-area-inset-bottom))`,
-              md: theme.spacing(2.5)
-            },
-            right: theme.spacing(2.5),
+            bottom: '20px',
+            right: '20px',
             backgroundColor: theme.palette.primary.main,
             '&:hover': {
               backgroundColor: theme.palette.primary.dark

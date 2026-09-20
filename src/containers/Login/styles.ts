@@ -1,5 +1,3 @@
-import { neutralColors, uiColors, linkedTrustTheme } from '../../theme/colors'
-
 const styles = {
   authContainer: {
     display: 'flex',
@@ -9,18 +7,18 @@ const styles = {
     padding: '2rem',
     maxWidth: '430px',
     marginTop: 2,
-    background: neutralColors.white,
-    boxShadow: linkedTrustTheme.shadows.lg,
+    background: '#ffffff',
+    boxShadow: '0px 1px 20px #00000040',
     zIndex: 20,
     borderRadius: '10px'
   },
   inputField: {
-    backgroundColor: 'transparent'
+    backgroundColor: '#00000000'
   },
   authbtn: {
     display: 'flex',
     cursor: 'pointer',
-    backgroundColor: neutralColors.white,
+    backgroundColor: 'white',
     gap: '2%',
     width: '100%',
     alignItems: 'center',
@@ -33,7 +31,7 @@ const styles = {
   },
   authLinkButton: {
     textDecoration: 'none',
-    color: uiColors.textPrimary,
+    color: 'black',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',

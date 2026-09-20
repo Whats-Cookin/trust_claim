@@ -6,7 +6,6 @@ import Modal from '@mui/material/Modal'
 import DensityMediumIcon from '@mui/icons-material/DensityMedium'
 import { Grid, IconButton, useMediaQuery, useTheme } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import { primaryColors, darkColors, neutralColors, linkedTrustTheme } from '../../theme/colors'
 import Left from '../../assets/leftClick.svg'
 import Right from '../../assets/rightClick.svg'
 import Middle from '../../assets/middlewheel.svg'
@@ -26,22 +25,22 @@ export default function BasicModal() {
           sx={{
             position: 'fixed',
             top: '40%',
-            right: theme.spacing(-3.75),
-            zIndex: theme.zIndex.appBar - 1,
-            backgroundColor: primaryColors.teal,
-            color: neutralColors.white,
+            right: '-30px',
+            zIndex: 999,
+            backgroundColor: '#009688',
+            color: '#fff',
             writingMode: 'vertical-lr',
             letterSpacing: '0.3rem',
             display: 'flex',
             alignItems: 'start',
             justifyContent: 'center',
-            width: theme.spacing(1.25),
-            height: theme.spacing(21),
-            borderRadius: linkedTrustTheme.borderRadius.lg,
-            boxShadow: linkedTrustTheme.shadows.md,
+            width: '10px',
+            height: '170px',
+            borderRadius: '20px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             transition: 'background-color 0.3s, transform 0.3s',
             '&:hover': {
-              backgroundColor: darkColors.teal,
+              backgroundColor: '#00796b',
               transform: 'scale(1.05)'
             }
           }}
@@ -75,10 +74,10 @@ export default function BasicModal() {
             maxWidth: '526px',
             height: 'auto',
             maxHeight: '90vh',
-            zIndex: theme.zIndex.modal,
-            background: `${neutralColors.gray[900]}8C`,
-            borderRadius: linkedTrustTheme.borderRadius.lg,
-            boxShadow: linkedTrustTheme.shadows.xl,
+            zIndex: 1000,
+            background: 'rgba(0, 0, 0, 0.55)',
+            borderRadius: '16px',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
             backdropFilter: 'blur(4.9px)',
             WebkitBackdropFilter: 'blur(4.9px)',
             overflow: 'auto',
@@ -91,8 +90,8 @@ export default function BasicModal() {
             sx={{
               position: 'absolute',
               top: '30px',
-              right: theme.spacing(1),
-              color: neutralColors.white
+              right: '8px',
+              color: '#fff'
             }}
           >
             <CloseIcon sx={{ fontSize: '20px' }} />
@@ -102,12 +101,12 @@ export default function BasicModal() {
               zIndex: 1000,
               width: '100%',
               minWidth: '255px',
-              backgroundColor: neutralColors.gray[800],
-              color: neutralColors.white,
-              borderRadius: linkedTrustTheme.borderRadius.lg,
-              boxShadow: linkedTrustTheme.shadows.md,
-              lineHeight: 1.5,
-              p: 2.5
+              backgroundColor: '#253939',
+              color: '#fff',
+              borderRadius: '16px',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+              lineHeight: '1.5',
+              padding: '20px'
             }}
           >
             <Grid container spacing={2} alignItems='center' gap={10}>
@@ -116,10 +115,10 @@ export default function BasicModal() {
                   <img src={Left} alt='Left Click' width='97.59' height='115.82' />
                 </Grid>
                 <Grid item xs={8} sx={{ padding: '1.1vh' }}>
-                  <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+                  <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
                     Left Click
                   </Typography>
-                  <Typography variant='body2'>
+                  <Typography sx={{ fontSize: '15px' }}>
                     When clicked on the nodes, it expands the graph to show more relation, if any.
                   </Typography>
                 </Grid>
@@ -129,10 +128,10 @@ export default function BasicModal() {
                   <img src={Right} alt='Right Click' width='97.59' height='115.82' />
                 </Grid>
                 <Grid item xs={8} sx={{ padding: '1.1vh' }}>
-                  <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+                  <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
                     Right Click
                   </Typography>
-                  <Typography variant='body2'>
+                  <Typography sx={{ fontSize: '15px' }}>
                     When clicked on the nodes, it shows option to either validate a claim or if you want to create a
                     claim.
                   </Typography>
@@ -143,10 +142,10 @@ export default function BasicModal() {
                   <img src={Middle} alt='Middle Wheel' width='76.99' height='95.62' />
                 </Grid>
                 <Grid item xs={8} sx={{ padding: '1.1vh' }}>
-                  <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left' }}>
+                  <Typography variant='h6' sx={{ display: 'flex', justifyContent: 'left', fontSize: '30px' }}>
                     Middle Wheel
                   </Typography>
-                  <Typography variant='body2'>Zooms in or zoom out the graph.</Typography>
+                  <Typography sx={{ fontSize: '15px' }}>Zooms in or zoom out the graph.</Typography>
                 </Grid>
               </Box>
             </Grid>

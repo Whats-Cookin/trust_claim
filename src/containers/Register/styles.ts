@@ -1,5 +1,3 @@
-import { neutralColors, uiColors, linkedTrustTheme } from '../../theme/colors'
-
 const styles = {
   authContainer: {
     display: 'flex',
@@ -9,8 +7,8 @@ const styles = {
     maxWidth: '430px',
     margin: '0 auto',
     marginTop: 2,
-    background: neutralColors.white,
-    boxShadow: linkedTrustTheme.shadows.lg,
+    background: '#ffffff',
+    boxShadow: '0px 1px 20px #00000040',
     zIndex: 20,
     borderRadius: '10px'
   },
@@ -18,7 +16,7 @@ const styles = {
     width: '100%'
   },
   inputField: {
-    backgroundColor: 'transparent'
+    backgroundColor: '#00000000'
   }
 }
 export default styles

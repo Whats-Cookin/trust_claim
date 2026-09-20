@@ -38,7 +38,6 @@ import {
   getVisibleValidationCount
 } from '../../constants/certificateStyles'
 import { extractProfileName, isValidUrl } from '../../utils/string.utils'
-import { primaryColors, darkColors, neutralColors, uiColors, linkedTrustTheme } from '../../theme/colors'
 import { inferCertificateType, extractCertificationTopic } from '../../utils/certificate/certificateTypeInference'
 import { useAuth } from '../../hooks/useAuth'
 import { BASE_URL } from '../../utils/settings'
@@ -446,7 +445,7 @@ const Certificate: React.FC<CertificateProps> = ({
               position: 'relative',
               px: { xs: 1, sm: 2, md: 3, lg: 4 },
               py: { xs: 1, sm: 1.5, md: 2 },
-              backgroundColor: neutralColors.white,
+              backgroundColor: '#fff',
               '@media print': { boxShadow: 'none', borderRadius: 0 }
             }}
           >
@@ -486,7 +485,7 @@ const Certificate: React.FC<CertificateProps> = ({
                   display: 'block',
                   mx: 'auto',
                   mb: { xs: 1, sm: 1.5, md: 2 },
-                  filter: `drop-shadow(0px 4px 8px ${uiColors.shadowHover})`
+                  filter: 'drop-shadow(0px 4px 8px rgba(0,0,0,.12))'
                 }}
               />
 
@@ -617,10 +616,10 @@ const Certificate: React.FC<CertificateProps> = ({
                       position: 'relative',
                       width: '100%',
                       aspectRatio: '16/9',
-                      backgroundColor: neutralColors.gray[900],
-                      borderRadius: linkedTrustTheme.borderRadius.md,
+                      backgroundColor: '#000',
+                      borderRadius: 2,
                       overflow: 'hidden',
-                      boxShadow: linkedTrustTheme.shadows.lg
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
                     }}
                   >
                     {!videoPlaying ? (
@@ -633,14 +632,14 @@ const Certificate: React.FC<CertificateProps> = ({
                           alignItems: 'center',
                           justifyContent: 'center',
                           cursor: 'pointer',
-                          background: `linear-gradient(135deg, ${primaryColors.indigo}E6 0%, ${darkColors.purple}E6 100%)`,
+                          background: 'linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%)',
                           transition: 'opacity 0.2s',
                           '&:hover': {
                             opacity: 0.9
                           }
                         }}
                       >
-                        <Box sx={{ textAlign: 'center', color: neutralColors.white }}>
+                        <Box sx={{ textAlign: 'center', color: 'white' }}>
                           <PlayCircleOutlineIcon sx={{ fontSize: 64, mb: 1 }} />
                           <Typography variant='body2' sx={{ fontWeight: 500 }}>
                             Click to play

@@ -9,7 +9,6 @@ import MuiLink from '@mui/material/Link'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import metaicon from './metamask-icon.svg'
 import styles from './styles'
-import { brandColors, neutralColors, linkedTrustTheme } from '../../theme/colors'
 import ILoginProps from './types'
 // Ceramic imports removed
 import { useQueryParams } from '../../hooks'
@@ -219,7 +218,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
               maxHeight: '658px',
               minHeight: '600px',
               zIndex: 20,
-              borderRadius: linkedTrustTheme.borderRadius.md,
+              borderRadius: '10px',
               position: 'relative',
               backgroundImage: `url(${isDarkMode ? formBackgrounddark : formBackgroundlight})`,
               backgroundRepeat: 'no-repeat',
@@ -239,7 +238,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                 minHeight: '500px',
                 top: '8.359%',
                 right: '-16.893%',
-                borderRadius: linkedTrustTheme.borderRadius.lg,
+                borderRadius: '30px',
                 opacity: '1',
                 zIndex: 200,
                 backgroundImage: `url(${loginIllustration})`,
@@ -283,7 +282,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
               <Link to='/feed' style={{ textDecoration: 'none' }}>
                 <IconButton
                   sx={{
-                    color: neutralColors.white,
+                    color: '#fff',
                     zIndex: 30
                   }}
                 >
@@ -341,10 +340,10 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     color: theme.palette.buttontext,
                     backgroundColor: theme.palette.formBackground,
                     cursor: 'pointer',
-                    boxShadow: linkedTrustTheme.shadows.sm,
+                    boxShadow: '0px 1px 5px #ffffff20',
                     borderRadius: '50%',
-                    width: 72,
-                    height: 72
+                    width: '72px',
+                    height: '72px'
                   }}
                 >
                   <GoogleLogin
@@ -379,10 +378,10 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     color: theme.palette.buttontext,
                     backgroundColor: theme.palette.formBackground,
                     cursor: 'pointer',
-                    boxShadow: linkedTrustTheme.shadows.sm,
+                    boxShadow: '0px 1px 5px #ffffff20',
                     borderRadius: '50%',
-                    width: 72,
-                    height: 72
+                    width: '72px',
+                    height: '72px'
                   }}
                 >
                   <MuiLink href={githubUrl} sx={{ color: theme.palette.texts }}>
@@ -400,14 +399,14 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     color: theme.palette.buttontext,
                     backgroundColor: showBlueskyInput ? theme.palette.pageBackground : theme.palette.formBackground,
                     cursor: 'pointer',
-                    boxShadow: linkedTrustTheme.shadows.sm,
+                    boxShadow: '0px 1px 5px #ffffff20',
                     borderRadius: '50%',
-                    width: 72,
-                    height: 72,
+                    width: '72px',
+                    height: '72px',
                     transition: 'background-color 0.2s'
                   }}
                 >
-                  <Typography sx={{ fontSize: '32px', fontWeight: 700, color: brandColors.bluesky, lineHeight: 1 }}>
+                  <Typography sx={{ fontSize: '32px', fontWeight: 700, color: '#0085ff', lineHeight: 1 }}>
                     🦋
                   </Typography>
                 </Box>
@@ -423,7 +422,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                       color: theme.palette.buttontext,
                       backgroundColor: theme.palette.formBackground,
                       cursor: 'pointer',
-                      boxShadow: linkedTrustTheme.shadows.sm,
+                      boxShadow: '0px 1px 5px #ffffff20',
                       borderRadius: '50%',
                       width: '72px',
                       height: '72px'
@@ -465,8 +464,8 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     sx={{
                       textTransform: 'none',
                       whiteSpace: 'nowrap',
-                      backgroundColor: brandColors.bluesky,
-                      '&:hover': { backgroundColor: brandColors.blueskyHover }
+                      backgroundColor: '#0085ff',
+                      '&:hover': { backgroundColor: '#0066cc' }
                     }}
                   >
                     {blueskyLoading ? 'Connecting…' : 'Sign in'}
@@ -579,7 +578,7 @@ const Login = ({ toggleSnackbar, setSnackbarMessage, setLoading, toggleTheme, is
                     color: theme.palette.buttontext,
                     backgroundColor: theme.palette.buttons,
                     '&:hover': { backgroundColor: theme.palette.buttonHover },
-                    borderRadius: linkedTrustTheme.borderRadius.full
+                    borderRadius: '80px'
                   }}
                   type='submit'
                   variant='contained'
