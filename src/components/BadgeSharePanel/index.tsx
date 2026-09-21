@@ -34,8 +34,10 @@ export default function BadgeSharePanel({ claimId }: BadgeSharePanelProps) {
   const imageUrl = `${BASE_URL}/api/badge-image/${claimId}`
   const presentUrl = `${BASE_URL}/present/${claimId}`
 
-  // The <linked-badge> web component, the same one linkedtrust.us uses.
-  const embedCode = `<script src="${BASE_URL}/badge.js" defer></script>\n<linked-badge claim-id="${claimId}" layout="row"></linked-badge>`
+  // The <linked-badge> web component, the same one linkedtrust.us uses. Wrapped in a
+  // max-width:42rem stack so the row layout gets the ~600px it needs and does not squash
+  // when pasted into a narrow column — the layout linkedtrust.us's own wall uses.
+  const embedCode = `<script src="${BASE_URL}/badge.js" defer></script>\n<div style="max-width:42rem">\n  <linked-badge claim-id="${claimId}" layout="row"></linked-badge>\n</div>`
   // For sites that do not allow scripts.
   const iframeCode = `<iframe src="${embedUrl}" width="600" height="180" frameborder="0" style="border:none;max-width:100%"></iframe>`
 
