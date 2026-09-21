@@ -81,6 +81,19 @@ interface FormData {
 }
 
 // Reusable URL Input Field Component
+// A URL the source field accepts: http(s), or a bare www. host.
+// Parsed rather than pattern-matched — the previous regex backtracked
+// catastrophically on any URL containing '#', freezing the tab for a minute
+// on every keystroke.
+const isAcceptableUrl = (value: string): boolean => {
+  try {
+    const { protocol } = new URL(/^www\./i.test(value) ? `https://${value}` : value)
+    return protocol === 'http:' || protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 const URLInputField: React.FC<{
   control: Control<FormData>
   label: string
@@ -98,10 +111,8 @@ const URLInputField: React.FC<{
         defaultValue=''
         rules={{
           required: 'This field is required',
-          pattern: {
-            value: /^(https?:\/\/|www\.)[\w\-\.]+(\.[a-z]{2,})([\/\w \-\.\?\=\&\%]*)*\/?$/,
-            message: 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
-          }
+          validate: value =>
+            isAcceptableUrl(value) || 'Please enter a valid URL (e.g., http://example.com or www.example.com)'
         }}
         render={({ field, fieldState: { error } }) => (
           <TextField

@@ -1,3 +1,10 @@
+// Requested-endorsement page (/endorse-invite/:claimId).
+//
+// Someone asked this person, by name, for an endorsement. They are not here to
+// judge the claim, so there is no validate/reject choice — the decision is
+// fixed to 'validate' and the page only asks how they know and what they'd say.
+// Deliberately a separate page from /endorse, which stays the neutral
+// anyone-can-weigh-in surface with both options.
 import { useState, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import { Link, useNavigate, useSearchParams, useParams } from 'react-router-dom'
@@ -18,11 +25,7 @@ import {
   FormHelperText,
   CardContent,
   Alert,
-  Skeleton,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormLabel
+  Skeleton
 } from '@mui/material'
 import { Controller, useForm, useFieldArray, Control } from 'react-hook-form'
 import IHomeProps from '../../containers/Form/types'
@@ -154,7 +157,7 @@ const URLInputField: React.FC<{
   )
 }
 
-const Endorse = ({
+const EndorseInvite = ({
   toggleSnackbar,
   setSnackbarMessage,
   isAuthenticated
@@ -268,13 +271,12 @@ const Endorse = ({
     basis: '',
     effectiveDate: new Date(),
     images: [],
-    decision: '' as 'validate' | 'reject' | '',
+    decision: 'validate' as 'validate' | 'reject' | '',
     otherRejectReason: ''
   }
 
   const { handleSubmit, reset, control, register, watch, setValue } = useForm<FormData>({ defaultValues })
   const watchBasis = watch('basis')
-  const watchDecision = watch('decision')
   const watchOtherRejectReason = watch('otherRejectReason')
 
   const {
@@ -433,13 +435,6 @@ const Endorse = ({
     { value: FIRST_HAND_BENEFIT, text: 'Direct benefit (I personally benefited)' }
   ]
 
-  const rejectOptions = [
-    { value: HOW_KNOWN.FirstHand, text: 'I know this is false from direct experience' },
-    { value: HOW_KNOWN.SecondHand, text: 'I believe this is false from what someone told me, who had experience' },
-    { value: HOW_KNOWN.WebDocument, text: 'I believe this is false from a source I read' },
-    { value: NOT_RELEVANT, text: 'Not relevant / spam' }
-  ]
-
   const tooltips = {
     validate: [
       'I can validate this claim from personal experience or firsthand knowledge.',
@@ -447,12 +442,7 @@ const Endorse = ({
       'Validate this claim based on information known from a website or other source.',
       'I personally benefited directly from the claim described'
     ],
-    reject: [
-      'I have direct personal experience that contradicts this claim.',
-      'Someone with direct experience told me information that contradicts this claim.',
-      'I have read credible sources that contradict this claim.',
-      'This claim is not relevant to the topic or appears to be spam.'
-    ]
+    reject: [] as string[]
   }
 
   const handleTooltipToggle = useCallback(
@@ -561,10 +551,10 @@ const Endorse = ({
                       mb: 1
                     }}
                   >
-                    {issuer_name ? `${issuer_name} has requested your endorsement` : 'Endorse This Claim'}
+                    {issuer_name ? `${issuer_name} asked you for an endorsement` : 'You were asked for an endorsement'}
                   </Typography>
                   <Typography variant='body2' sx={{ color: theme.palette.text.secondary, fontSize: '0.9375rem' }}>
-                    Help validate their claim with your testimonial
+                    Say what you experienced, in your own words.
                   </Typography>
                 </Box>
 
@@ -779,151 +769,84 @@ const Endorse = ({
                     <Card elevation={0} sx={{ backgroundColor: 'transparent', border: 'none', borderRadius: 0 }}>
                       <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
                         <Box sx={{ width: '100%' }}>
-                          {/* Decision Radio Buttons */}
-                          <FormControl component='fieldset' sx={{ mb: 3, display: 'flex' }}>
-                            <Controller
-                              name='decision'
-                              control={control}
-                              defaultValue=''
-                              rules={{
-                                required: 'Please select either Validate or Reject'
-                              }}
-                              render={({ field, fieldState: { error } }) => (
-                                <>
-                                  <FormLabel
-                                    component='legend'
-                                    sx={{
-                                      ...fieldLabelSx,
-                                      mb: 0.5,
-                                      '&.Mui-focused': { color: 'text.secondary' }
-                                    }}
-                                  >
-                                    What is your decision? *
-                                  </FormLabel>
-                                  <RadioGroup {...field} sx={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-                                    <FormControlLabel
-                                      value='validate'
-                                      control={
-                                        <Radio
-                                          sx={{
-                                            '&.Mui-checked': {
-                                              color: theme.palette.success.main
-                                            }
-                                          }}
-                                        />
-                                      }
-                                      label={<Typography sx={{ fontSize: '0.95rem' }}>Validate</Typography>}
-                                    />
-                                    <FormControlLabel
-                                      value='reject'
-                                      control={
-                                        <Radio
-                                          sx={{
-                                            '&.Mui-checked': {
-                                              color: theme.palette.error.main
-                                            }
-                                          }}
-                                        />
-                                      }
-                                      label={<Typography sx={{ fontSize: '0.95rem' }}>Reject</Typography>}
-                                    />
-                                  </RadioGroup>
-                                  {error && (
-                                    <FormHelperText sx={{ mt: 1, ml: 0 }} error>
-                                      {error.message}
-                                    </FormHelperText>
-                                  )}
-                                </>
-                              )}
-                            />
-                          </FormControl>
-
-                          {watchDecision && (
-                            <Box sx={{ mb: 3 }}>
-                              <Typography variant='body2' sx={fieldLabelSx}>
-                                {watchDecision === 'validate' ? 'How do you know?' : 'Why do you reject?'} *
-                              </Typography>
-                              <FormControl fullWidth>
-                                <Controller
-                                  name='basis'
-                                  control={control}
-                                  defaultValue=''
-                                  rules={{
-                                    required: 'This field is required'
-                                  }}
-                                  render={({ field, fieldState: { error } }) => (
-                                    <>
-                                      <Select
-                                        {...field}
-                                        size={isMobile ? 'small' : 'medium'}
-                                        displayEmpty
-                                        sx={{ fontSize: '0.95rem' }}
-                                        error={Boolean(error)}
-                                      >
-                                        <MenuItem value='' disabled>
-                                          <Typography sx={{ color: theme.palette.text.secondary }}>
-                                            Select a reason...
-                                          </Typography>
-                                        </MenuItem>
-                                        {(watchDecision === 'validate' ? validateOptions : rejectOptions).map(
-                                          (option, index: number) => (
-                                            <MenuItem
-                                              key={option.value}
-                                              value={option.value}
-                                              onClick={handleItemSelect}
-                                              sx={{ fontSize: '0.95rem', py: 1.25 }}
+                          <Box sx={{ mb: 3 }}>
+                            <Typography variant='body2' sx={fieldLabelSx}>
+                              How do you know?
+                            </Typography>
+                            <FormControl fullWidth>
+                              <Controller
+                                name='basis'
+                                control={control}
+                                defaultValue=''
+                                rules={{
+                                  required: 'This field is required'
+                                }}
+                                render={({ field, fieldState: { error } }) => (
+                                  <>
+                                    <Select
+                                      {...field}
+                                      size={isMobile ? 'small' : 'medium'}
+                                      displayEmpty
+                                      sx={{ fontSize: '0.95rem' }}
+                                      error={Boolean(error)}
+                                    >
+                                      <MenuItem value='' disabled>
+                                        <Typography sx={{ color: theme.palette.text.secondary }}>
+                                          Select a reason...
+                                        </Typography>
+                                      </MenuItem>
+                                      {validateOptions.map((option, index: number) => (
+                                        <MenuItem
+                                          key={option.value}
+                                          value={option.value}
+                                          onClick={handleItemSelect}
+                                          sx={{ fontSize: '0.95rem', py: 1.25 }}
+                                        >
+                                          <Tooltip
+                                            title={tooltips.validate[index]}
+                                            placement={isTouchDevice ? 'top' : 'right'}
+                                            arrow
+                                            TransitionComponent={Fade}
+                                            open={isTouchDevice ? openTooltipIndex === index : undefined}
+                                            onClose={() => setOpenTooltipIndex(null)}
+                                            disableFocusListener={isTouchDevice}
+                                            disableHoverListener={isTouchDevice}
+                                            disableTouchListener={isTouchDevice}
+                                          >
+                                            <Box
+                                              sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                width: '100%',
+                                                justifyContent: 'space-between'
+                                              }}
                                             >
-                                              <Tooltip
-                                                title={
-                                                  watchDecision === 'validate'
-                                                    ? tooltips.validate[index]
-                                                    : tooltips.reject[index]
-                                                }
-                                                placement={isTouchDevice ? 'top' : 'right'}
-                                                arrow
-                                                TransitionComponent={Fade}
-                                                open={isTouchDevice ? openTooltipIndex === index : undefined}
-                                                onClose={() => setOpenTooltipIndex(null)}
-                                                disableFocusListener={isTouchDevice}
-                                                disableHoverListener={isTouchDevice}
-                                                disableTouchListener={isTouchDevice}
-                                              >
-                                                <Box
-                                                  sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    width: '100%',
-                                                    justifyContent: 'space-between'
+                                              <span>{option.text}</span>
+                                              {isTouchDevice && (
+                                                <IconButton
+                                                  size='small'
+                                                  onClick={e => {
+                                                    e.stopPropagation()
+                                                    handleTooltipToggle(index)
                                                   }}
+                                                  sx={{ ml: 1 }}
                                                 >
-                                                  <span>{option.text}</span>
-                                                  {isTouchDevice && (
-                                                    <IconButton
-                                                      size='small'
-                                                      onClick={e => {
-                                                        e.stopPropagation()
-                                                        handleTooltipToggle(index)
-                                                      }}
-                                                      sx={{ ml: 1 }}
-                                                    >
-                                                      <HelpIcon
-                                                        sx={{ color: theme.palette.primary.main, fontSize: '1rem' }}
-                                                      />
-                                                    </IconButton>
-                                                  )}
-                                                </Box>
-                                              </Tooltip>
-                                            </MenuItem>
-                                          )
-                                        )}
-                                      </Select>
-                                      {error && <FormHelperText error>{error.message}</FormHelperText>}
-                                    </>
-                                  )}
-                                />
-                              </FormControl>
-                            </Box>
-                          )}
+                                                  <HelpIcon
+                                                    sx={{ color: theme.palette.primary.main, fontSize: '1rem' }}
+                                                  />
+                                                </IconButton>
+                                              )}
+                                            </Box>
+                                          </Tooltip>
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                    {error && <FormHelperText error>{error.message}</FormHelperText>}
+                                  </>
+                                )}
+                              />
+                            </FormControl>
+                          </Box>
 
                           {(watchBasis === HOW_KNOWN.FirstHand ||
                             watchBasis === HOW_KNOWN.SecondHand ||
@@ -1034,7 +957,7 @@ const Endorse = ({
                           textTransform: 'none'
                         }}
                       >
-                        {loading ? 'Submitting...' : 'Submit Endorsement'}
+                        {loading ? 'Sending…' : 'Send Endorsement'}
                       </Button>
                     </Box>
                   </Box>
@@ -1061,4 +984,4 @@ const Endorse = ({
   )
 }
 
-export default Endorse
+export default EndorseInvite

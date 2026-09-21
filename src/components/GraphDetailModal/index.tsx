@@ -18,6 +18,7 @@ import { Link } from 'react-router-dom'
 import { checkAuth } from '../../utils/authUtils'
 import Badge from '../../containers/feedOfClaim/Badge'
 import { EntityType } from '../../types/entities'
+import { extractProfileName } from '../../utils/string.utils'
 import axios from '../../axiosInstance'
 
 interface GraphDetailModalProps {
@@ -167,7 +168,14 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
 
           {/* Node name/title */}
           <Typography variant='h6' align='center' gutterBottom sx={{ fontSize: '1.1rem' }}>
-            {truncateText(data.name || data.label || displayClaimData.claim || 'Unknown', 80)}
+            {truncateText(
+              data.name ||
+                data.label ||
+                displayClaimData.claim ||
+                extractProfileName(data.nodeUri || data.uri || '') ||
+                'Unknown',
+              80
+            )}
           </Typography>
 
           {/* Entity type for non-claim nodes */}
@@ -362,7 +370,11 @@ const GraphDetailModal: React.FC<GraphDetailModalProps> = ({
     const entityNode = endNode
     const claimNode = startNode
 
-    const entityName = entityNode?.name || entityNode?.label || 'Unknown'
+    const entityName =
+      entityNode?.name ||
+      entityNode?.label ||
+      extractProfileName(entityNode?.nodeUri || entityNode?.uri || '') ||
+      'Unknown'
     const claimType = claimNode?.name || claimNode?.claim || 'claim'
 
     return (

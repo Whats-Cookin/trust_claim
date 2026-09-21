@@ -15,6 +15,7 @@ import FeedClaim from './containers/feedOfClaim/index'
 import Rate from './components/Rate'
 import Validate from './components/Validate'
 import Endorse from './components/Endorse'
+import EndorseInvite from './components/EndorseInvite'
 import RequestEndorsement from './containers/RequestEndorsement'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
@@ -207,6 +208,11 @@ const App = () => {
                 element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />}
               />
               <Route path='/endorse' element={<Endorse {...commonProps} isAuthenticated={isAuthenticated} />} />
+              {/* Asked-for endorsement: no reject option, because she was invited by name. */}
+              <Route
+                path='/endorse-invite/:claimId'
+                element={<EndorseInvite {...commonProps} isAuthenticated={isAuthenticated} />}
+              />
               <Route
                 path='/request-endorsement/:claimId'
                 element={<RequestEndorsement {...commonProps} isAuthenticated={isAuthenticated} />}
