@@ -198,6 +198,7 @@ const Endorse = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const isTouchDevice = useMediaQuery('(hover: none)')
+  const isWide = useMediaQuery(theme.breakpoints.up('lg'))
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
 
   // Resolve claim ID: path param takes priority, then parse from query string
@@ -420,7 +421,10 @@ const Endorse = ({
     return `${text.substring(0, length)}...`
   }
 
-  const isStatementLong = statementValue.length > (isMobile ? 200 : 300)
+  // How much of the claim shows before a Show More link appears. A wide screen
+  // has the room, so it shows the whole thing.
+  const statementClamp = isMobile ? 200 : isWide ? 4000 : 300
+  const isStatementLong = statementValue.length > statementClamp
 
   const handleToggleExpand = useCallback(() => {
     setIsExpanded(prev => !prev)
@@ -570,19 +574,16 @@ const Endorse = ({
 
                 <Box
                   sx={{
-                    display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1fr) minmax(0, 1.15fr)' },
-                    gap: { xs: 4, lg: 7 },
-                    alignItems: 'start'
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: { xs: 4, lg: 5 }
                   }}
                 >
                   <Box
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: 3,
-                      position: { lg: 'sticky' },
-                      top: { lg: 32 }
+                      gap: 3
                     }}
                   >
                     {/* Auth banner for anonymous users */}
@@ -691,7 +692,7 @@ const Endorse = ({
                             >
                               {isExpanded || !isStatementLong
                                 ? statementValue
-                                : truncateText(statementValue, isMobile ? 200 : 300)}
+                                : truncateText(statementValue, statementClamp)}
                               {isStatementLong && (
                                 <MuiLink
                                   onClick={handleToggleExpand}
