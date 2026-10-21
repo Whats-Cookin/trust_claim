@@ -13,6 +13,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import LogoutIcon from '@mui/icons-material/Logout'
 import circles from '../../assets/images/Circles.svg'
 import Ellipse from '../../assets/images/Ellipse.svg'
+import { handleAuth, maybeCompleteOidcLogin } from '../../utils/authUtils'
 
 const MobileRegister = ({
   toggleSnackbar,
@@ -37,10 +38,20 @@ const MobileRegister = ({
         setSnackbarMessage('Both email and password are required fields.')
       } else {
         const signupUrl = '/auth/signup'
+        const loginUrl = '/auth/login'
         const data = { email, password }
         await axios.post(signupUrl, data)
+
+        const {
+          data: { accessToken, refreshToken }
+        } = await axios.post(loginUrl, data)
+
+        handleAuth(accessToken, refreshToken)
         setLoading(false)
-        navigate('/login')
+        // If they got here from an app's SSO page, return them to that app
+        // instead of dropping them into the LinkedTrust feed.
+        if (await maybeCompleteOidcLogin(accessToken)) return
+        navigate('/feed')
       }
     } catch (err: any) {
       setLoading(false)
