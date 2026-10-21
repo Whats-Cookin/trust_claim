@@ -44,7 +44,6 @@ const MediaUploader = <TFieldValues extends FieldValues>({
 
   const [open, setOpen] = useState(false)
   const [currentMedia, setCurrentMedia] = useState<MediaI | null>(null)
-  const [hiddenMedia, setHiddenMedia] = useState<MediaI[]>([])
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [isCompressing, setIsCompressing] = useState<boolean>(false)
 
@@ -207,7 +206,6 @@ const MediaUploader = <TFieldValues extends FieldValues>({
   const handleSaveMedia = () => {
     if (currentMedia && currentMedia.url && currentMedia.url.trim() !== '') {
       append(currentMedia as unknown as TFieldValues['media'][number])
-      setHiddenMedia([...hiddenMedia, currentMedia])
       setCurrentMedia(null)
       setOpen(false)
     } else {
@@ -277,9 +275,6 @@ const MediaUploader = <TFieldValues extends FieldValues>({
 
       {fields.map((field, index) => {
         const mediaField = field as unknown as MediaI
-        if (hiddenMedia.some(hiddenMedia => hiddenMedia.url === mediaField.url)) {
-          return null
-        }
         return mediaField.url ? (
           <Card key={field.id} sx={{ mb: 6, p: 2, border: '1px solid', borderColor: 'grey.300', borderRadius: 2 }}>
             {mediaField.type === 'image' ? (

@@ -9,6 +9,32 @@ interface AuthState {
   did?: string
 }
 
+// What to sign an endorsement with, learned at sign-in: the backend issues a
+// token carrying only userId, so the name and profile link have to be kept here
+// when the provider hands them over.
+const IDENTITY_NAME_KEY = 'lt_identity_name'
+const IDENTITY_LINK_KEY = 'lt_identity_link'
+
+export const setIdentityHints = ({ name, link }: { name?: string; link?: string }) => {
+  try {
+    if (name) localStorage.setItem(IDENTITY_NAME_KEY, name)
+    if (link) localStorage.setItem(IDENTITY_LINK_KEY, link)
+  } catch {
+    /* private mode */
+  }
+}
+
+export const getIdentityHints = (): { name: string; link: string } => {
+  try {
+    return {
+      name: localStorage.getItem(IDENTITY_NAME_KEY) ?? '',
+      link: localStorage.getItem(IDENTITY_LINK_KEY) ?? ''
+    }
+  } catch {
+    return { name: '', link: '' }
+  }
+}
+
 export const handleAuthSuccess = (authData: AuthState) => {
   if (authData.accessToken) localStorage.setItem('accessToken', authData.accessToken)
   if (authData.refreshToken) localStorage.setItem('refreshToken', authData.refreshToken)

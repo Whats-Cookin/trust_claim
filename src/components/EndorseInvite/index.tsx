@@ -160,8 +160,9 @@ const URLInputField: React.FC<{
 const EndorseInvite = ({
   toggleSnackbar,
   setSnackbarMessage,
-  isAuthenticated
-}: IHomeProps & { isAuthenticated?: boolean }) => {
+  isAuthenticated,
+  variant = 'invited'
+}: IHomeProps & { isAuthenticated?: boolean; variant?: 'invited' | 'open' }) => {
   const [loading, setLoading] = useState(false)
   const [dataLoading, setDataLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -185,6 +186,7 @@ const EndorseInvite = ({
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [submittedClaimId, setSubmittedClaimId] = useState<number | null>(null)
   const [submittedStatement, setSubmittedStatement] = useState('')
+  const [editingDate, setEditingDate] = useState(false)
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const [pendingSubmit, setPendingSubmit] = useState(false)
 
@@ -201,6 +203,7 @@ const EndorseInvite = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const isTablet = useMediaQuery(theme.breakpoints.down('md'))
   const isTouchDevice = useMediaQuery('(hover: none)')
+  const isWide = useMediaQuery(theme.breakpoints.up('lg'))
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null)
 
   // Resolve claim ID: path param takes priority, then parse from query string
@@ -268,7 +271,9 @@ const EndorseInvite = ({
     statement: '',
     sourceURI: '',
     amt: '',
-    basis: '',
+    // A shared link reaches people who were there; first-hand is the answer for
+    // almost all of them, so it is pre-filled and they only change it if not.
+    basis: variant === 'open' ? (HOW_KNOWN.FirstHand as string) : '',
     effectiveDate: new Date(),
     images: [],
     decision: 'validate' as 'validate' | 'reject' | '',
@@ -422,7 +427,10 @@ const EndorseInvite = ({
     return `${text.substring(0, length)}...`
   }
 
-  const isStatementLong = statementValue.length > (isMobile ? 200 : 300)
+  // How much of the claim shows before a Show More link appears. A wide screen
+  // has the room, so it shows the whole thing.
+  const statementClamp = isMobile ? 200 : isWide ? 4000 : 300
+  const isStatementLong = statementValue.length > statementClamp
 
   const handleToggleExpand = useCallback(() => {
     setIsExpanded(prev => !prev)
@@ -551,28 +559,31 @@ const EndorseInvite = ({
                       mb: 1
                     }}
                   >
-                    {issuer_name ? `${issuer_name} asked you for an endorsement` : 'You were asked for an endorsement'}
+                    {variant === 'open'
+                      ? 'Endorse this'
+                      : issuer_name
+                      ? `${issuer_name} asked you for an endorsement`
+                      : 'You were asked for an endorsement'}
                   </Typography>
                   <Typography variant='body2' sx={{ color: theme.palette.text.secondary, fontSize: '0.9375rem' }}>
-                    Say what you experienced, in your own words.
+                    {variant === 'open'
+                      ? 'Say what you experienced, in your own words — write it, or record a short video.'
+                      : 'Say what you experienced, in your own words.'}
                   </Typography>
                 </Box>
 
                 <Box
                   sx={{
-                    display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1fr) minmax(0, 1.15fr)' },
-                    gap: { xs: 4, lg: 7 },
-                    alignItems: 'start'
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: { xs: 4, lg: 5 }
                   }}
                 >
                   <Box
                     sx={{
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: 3,
-                      position: { lg: 'sticky' },
-                      top: { lg: 32 }
+                      gap: 3
                     }}
                   >
                     {/* Auth banner for anonymous users */}
@@ -681,7 +692,7 @@ const EndorseInvite = ({
                             >
                               {isExpanded || !isStatementLong
                                 ? statementValue
-                                : truncateText(statementValue, isMobile ? 200 : 300)}
+                                : truncateText(statementValue, statementClamp)}
                               {isStatementLong && (
                                 <MuiLink
                                   onClick={handleToggleExpand}
@@ -777,7 +788,7 @@ const EndorseInvite = ({
                               <Controller
                                 name='basis'
                                 control={control}
-                                defaultValue=''
+                                defaultValue={variant === 'open' ? HOW_KNOWN.FirstHand : ''}
                                 rules={{
                                   required: 'This field is required'
                                 }}
@@ -851,36 +862,65 @@ const EndorseInvite = ({
                           {(watchBasis === HOW_KNOWN.FirstHand ||
                             watchBasis === HOW_KNOWN.SecondHand ||
                             watchBasis === FIRST_HAND_BENEFIT) && (
-                            <URLInputField control={control} label='Your Website (Required)' />
+                            <URLInputField control={control} label='Your Website' />
                           )}
                           {watchBasis === HOW_KNOWN.WebDocument && (
-                            <URLInputField control={control} label='Source URL (Required)' />
+                            <URLInputField control={control} label='Source URL' />
                           )}
 
+                          {/* The date is almost always today. It reads as one small line
+                              and only becomes a picker if they click to change it. */}
                           <Box sx={{ mb: 3 }}>
-                            <Typography variant='body2' sx={fieldLabelSx}>
-                              Effective Date
-                            </Typography>
                             <Controller
                               name='effectiveDate'
                               control={control}
-                              render={({ field }) => (
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                  <DatePicker
-                                    value={field.value}
-                                    onChange={date => field.onChange(date)}
-                                    renderInput={params => (
-                                      <TextField {...params} fullWidth size={isMobile ? 'small' : 'medium'} />
-                                    )}
-                                  />
-                                </LocalizationProvider>
-                              )}
+                              render={({ field }) =>
+                                editingDate ? (
+                                  <>
+                                    <Typography variant='body2' sx={fieldLabelSx}>
+                                      Effective Date
+                                    </Typography>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                      <DatePicker
+                                        value={field.value}
+                                        onChange={date => field.onChange(date)}
+                                        renderInput={params => (
+                                          <TextField {...params} fullWidth size={isMobile ? 'small' : 'medium'} />
+                                        )}
+                                      />
+                                    </LocalizationProvider>
+                                  </>
+                                ) : (
+                                  <Typography variant='body2' sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>
+                                    {field.value instanceof Date && !isNaN(field.value.getTime())
+                                      ? field.value.toLocaleDateString('en-US', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric'
+                                        })
+                                      : 'No date'}
+                                    <MuiLink
+                                      component='button'
+                                      type='button'
+                                      onClick={() => setEditingDate(true)}
+                                      sx={{
+                                        ml: 1,
+                                        fontSize: '0.8125rem',
+                                        color: 'text.secondary',
+                                        textDecoration: 'underline'
+                                      }}
+                                    >
+                                      Change
+                                    </MuiLink>
+                                  </Typography>
+                                )
+                              }
                             />
                           </Box>
 
                           <Box sx={{ mb: 3 }}>
                             <Typography variant='body2' sx={fieldLabelSx}>
-                              Your Testimonial (Required)
+                              Your Testimonial
                             </Typography>
                             <Controller
                               name='statement'
@@ -918,7 +958,7 @@ const EndorseInvite = ({
                           {/* Image Uploader */}
                           <Box sx={{ mb: 3 }}>
                             <Typography variant='body2' sx={fieldLabelSx}>
-                              Upload Supporting Evidence (Optional)
+                              Upload Supporting Evidence
                             </Typography>
                             <ImageUploader
                               fieldArray={{

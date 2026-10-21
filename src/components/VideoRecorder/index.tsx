@@ -200,9 +200,16 @@ const VideoRecorder: React.FC<VideoRecorderProps> = ({
     setError(null)
 
     try {
-      // Create FormData and send to backend
+      // Chrome hands the recorded Blob to multipart as text/plain, which the
+      // server's video-only filter rejects with a 500. Wrapping it in a File
+      // with an explicit type pins the part's Content-Type to what it actually
+      // is, whatever the browser would have guessed.
+      const recordedType = recordedBlob.type.startsWith('video/') ? recordedBlob.type : 'video/webm'
+      const filename = recordedType.includes('mp4') ? 'video.mp4' : 'video.webm'
+      const videoFile = new File([recordedBlob], filename, { type: recordedType })
+
       const formData = new FormData()
-      formData.append('video', recordedBlob, 'video.webm')
+      formData.append('video', videoFile)
 
       const response = await axiosInstance.post('/api/video/upload', formData, {
         timeout: 120000, // 2 min timeout for video uploads (default 10s is too short)

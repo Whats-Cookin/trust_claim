@@ -96,7 +96,7 @@ const PlatformFeedbackVideoSection = ({
         >
           <VideocamIcon sx={{ fontSize: 18 }} />
           <Typography sx={{ fontSize: 14, color: 'inherit' }}>
-            {videoUrl ? 'Video added, change it' : 'Rather say it out loud? Record a short video'}
+            {videoUrl ? 'Video added, change it' : 'Live words are the strongest. Record a short video?'}
           </Typography>
         </Box>
       ) : (

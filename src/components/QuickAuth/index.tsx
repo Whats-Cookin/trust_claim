@@ -17,7 +17,7 @@ import { GoogleLogin } from '@react-oauth/google'
 import { useForm } from 'react-hook-form'
 import axios from '../../axiosInstance'
 import { connectWallet, createDidFromAddress } from '../../utils/web3Auth'
-import { handleAuthSuccess } from '../../utils/authUtils'
+import { handleAuthSuccess, setIdentityHints } from '../../utils/authUtils'
 import metaicon from '../../containers/Login/metamask-icon.svg'
 
 interface QuickAuthProps {
@@ -49,6 +49,8 @@ const QuickAuth = ({
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [showEmail, setShowEmail] = useState(false)
+  const [showBluesky, setShowBluesky] = useState(false)
+  const [blueskyHandle, setBlueskyHandle] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -67,6 +69,12 @@ const QuickAuth = ({
       } = await axios.post('/auth/google', {
         googleAuthCode: credentialResponse.credential
       })
+      try {
+        const claims = JSON.parse(atob(credentialResponse.credential.split('.')[1]))
+        setIdentityHints({ name: claims.name })
+      } catch {
+        /* no name in the token, leave it blank */
+      }
       handleAuthSuccess({ accessToken, refreshToken })
       onAuthenticated()
     } catch (err) {
@@ -145,6 +153,23 @@ const QuickAuth = ({
     }
   })
 
+  const handleBluesky = async () => {
+    const handle = blueskyHandle.trim().replace(/^@/, '')
+    if (!handle) return setError('Enter your Bluesky handle.')
+    try {
+      setLoading(true)
+      setError(null)
+      setIdentityHints({ name: handle, link: `https://bsky.app/profile/${handle}` })
+      const res = await axios.post('/auth/atproto/authorize', { handle })
+      if (res.data?.url) window.location.href = res.data.url
+      else setError('Bluesky sign-in is unavailable right now.')
+    } catch (err: any) {
+      setError(err?.response?.data?.error || 'Bluesky sign-in failed.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const hasMetaMask = typeof window.ethereum !== 'undefined' && (window.ethereum as any).isMetaMask
 
   const showMetaMaskButton =
@@ -160,29 +185,78 @@ const QuickAuth = ({
         width: mode === 'inline' ? '100%' : 'auto'
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: mode === 'inline' ? '10px' : '8px',
-          overflow: 'hidden',
-          width: mode === 'inline' ? '100%' : 'auto',
-          minHeight: mode === 'inline' ? 42 : 'auto',
-          border: mode === 'inline' ? '0.8px solid #CAD5E2' : 'none',
-          bgcolor: mode === 'inline' ? '#fff' : 'transparent',
-          boxSizing: 'border-box'
-        }}
-      >
-        <GoogleLogin
-          type='standard'
-          size='medium'
-          text='signin'
-          shape='rectangular'
-          onSuccess={handleGoogleSuccess}
-          onError={() => setError('Google sign-in failed')}
-        />
+      <Box sx={{ display: 'flex', alignItems: 'stretch', gap: '8px', width: mode === 'inline' ? '100%' : 'auto' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: mode === 'inline' ? '10px' : '8px',
+            overflow: 'hidden',
+            flex: mode === 'inline' ? 1 : 'none',
+            minHeight: mode === 'inline' ? 42 : 'auto',
+            border: mode === 'inline' ? '0.8px solid #CAD5E2' : 'none',
+            bgcolor: mode === 'inline' ? '#fff' : 'transparent',
+            boxSizing: 'border-box'
+          }}
+        >
+          <GoogleLogin
+            type='standard'
+            size='medium'
+            text='signin'
+            shape='rectangular'
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google sign-in failed')}
+          />
+        </Box>
+        <Button
+          type='button'
+          onClick={() => setShowBluesky(v => !v)}
+          variant='outlined'
+          disabled={loading}
+          aria-label='Sign in with Bluesky'
+          sx={{
+            minWidth: 48,
+            px: 1.5,
+            minHeight: 42,
+            fontSize: '20px',
+            lineHeight: 1,
+            borderColor: '#CAD5E2',
+            borderRadius: '10px'
+          }}
+        >
+          🦋
+        </Button>
       </Box>
+
+      <Collapse in={showBluesky}>
+        <Box sx={{ display: 'flex', gap: '8px', mt: 1 }}>
+          <TextField
+            size='small'
+            placeholder='you.bsky.social'
+            value={blueskyHandle}
+            onChange={e => setBlueskyHandle(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                handleBluesky()
+              }
+            }}
+            disabled={loading}
+            sx={{ flex: 1, minWidth: 150 }}
+          />
+          <Button
+            type='button'
+            variant='contained'
+            size='small'
+            onClick={handleBluesky}
+            disabled={loading}
+            sx={{ textTransform: 'none', whiteSpace: 'nowrap', bgcolor: '#0085ff', '&:hover': { bgcolor: '#0066cc' } }}
+          >
+            {loading ? 'Connecting…' : 'Go'}
+          </Button>
+        </Box>
+      </Collapse>
 
       {showMetaMaskButton && (
         <Button

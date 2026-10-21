@@ -17,6 +17,7 @@ import Validate from './components/Validate'
 import Endorse from './components/Endorse'
 import EndorseInvite from './components/EndorseInvite'
 import RequestEndorsement from './containers/RequestEndorsement'
+import EndorseRequest from './components/EndorseRequest'
 import ClaimReport from './components/ClaimReport'
 import Sidebar from './components/Sidebar'
 import ClaimDetails from './containers/ClaimDetails'
@@ -93,7 +94,10 @@ const App = () => {
   const isEmbedPage = location.pathname.startsWith('/embed/')
   // A testimonial invite goes to someone who has never seen the app; give them
   // the page and nothing else.
-  const isInvitePage = location.pathname.startsWith('/t/') || location.pathname.startsWith('/t2/')
+  const isInvitePage =
+    location.pathname.startsWith('/t/') ||
+    location.pathname.startsWith('/t2/') ||
+    location.pathname.startsWith('/e/')
 
   const globalStyles = (
     <GlobalStyles
@@ -213,6 +217,10 @@ const App = () => {
                 path='/endorse-invite/:claimId'
                 element={<EndorseInvite {...commonProps} isAuthenticated={isAuthenticated} />}
               />
+              {/* Open endorsement request: one link, shared with many people at
+                  once. Same standalone design as the /t/ invite page. */}
+              <Route path='/e/:claimId' element={<EndorseRequest />} />
+              <Route path='/endorse-request/:claimId' element={<EndorseRequest />} />
               <Route
                 path='/request-endorsement/:claimId'
                 element={<RequestEndorsement {...commonProps} isAuthenticated={isAuthenticated} />}
